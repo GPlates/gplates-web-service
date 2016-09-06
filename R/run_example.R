@@ -4,6 +4,7 @@ library(rgdal) # needs gdal > 1.11.0
 library(ggplot2)
 library(jsonlite)
 library(httr)
+library(ggthemes)
 
 
 #jsonfile = '/Users/Simon/Work/DataMining/Paleogeography/Heine_AJES_15_GlobalPaleoshorelines-master 2/Smith_Paleoshorelines/Smith_Timesteps_geojson/Global_Paleoshorelines_Smith_FROMAGE__70.6.geojson'
@@ -12,7 +13,7 @@ library(httr)
 #  paste(collapse = "\n") %>%
 #  fromJSON(simplifyVector = TRUE)
 
-recon_time <- 190
+recon_time <- 50
 
 full_request = sprintf('http://portal.gplates.org/service/get_coastline_polygons/?time=%d',recon_time)
 r <- GET(full_request)
@@ -22,7 +23,7 @@ writeBin(bin, "myfile.geojson")
 dat <- readOGR(dsn="myfile.geojson", layer="OGRGeoJSON", stringsAsFactors=FALSE)
 
 
-coords = gplates_reconstruct_point(20,-25,recon_time)
+coords = gplates_reconstruct_point(20,25,recon_time)
 
 
 #dat = readOGR(jsonfile, "OGRGeoJSON", stringsAsFactors=FALSE)
