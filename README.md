@@ -28,7 +28,7 @@ Enter the following commands
 - Open to GWS/urls.py, then add a statement to import include
 and add a line to the url patterns list, 
 
-e.g. url(r'^reconstructions/', include('reconstructions.urls')),
+    e.g. url(r'^reconstructions/', include('reconstructions.urls')),
 
 Back in the terminal, check that the server runs by typing
 
