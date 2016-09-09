@@ -1,6 +1,16 @@
 # gplates-web
 repository for demoing gplates web services with different languages
 
+#### [This repo will be kept private to begin with - once it is ready for public consumption we will move it to the 'gplates' github account]
+
+## Contents
+- files for the django framework 
+- examples of making requests to this server using python (ipython notebooks)
+- examples of making requests to this server using R (tested in Rstudio)
+- examples of making requests to this server using bash/GMT 
+- folder containing a store of different reconstruction model files
+
+## Notes on django setup
 Some instructions to set up your own django server and make an app like the one in this repo
 
 1. Install django
