@@ -1,11 +1,6 @@
-gplates_reconstruct_coastlines <- function(age){
-  
-  library(jsonlite)
-  library(rgdal)
-  #library(geojsonio)
+gplates_reconstruct_plate_boundaries <- function(age){
 
-  #url <- 'http://portal.gplates.org/service/get_coastline_polygons/'
-  url <- 'http://127.0.0.1:8000/paleocoherence/coastlines/'
+  url <- 'http://127.0.0.1:8000/paleocoherence/plate_boundaries/'
   query <- sprintf('?time=%d',age)
 
   fullrequest <- sprintf(paste0(url,query))
