@@ -60,9 +60,9 @@ def reconstruct_points(request):
 
     model_dict = get_reconstruction_model_dict(model)
 
-    rotation_model = pygplates.RotationModel('%s/%s/%s' %
-        (MODEL_STORE,model,model_dict['RotationFile']))
-    static_polygons_filename = '%s/%s/%s' % (MODEL_STORE,model,model_dict['StaticPolygons'])
+    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
+        (MODEL_STORE,model,model_dict['RotationFile'])))
+    static_polygons_filename = str('%s/%s/%s' % (MODEL_STORE,model,model_dict['StaticPolygons']))
 
     # create point features from input coordinates
     point_features = []
@@ -105,14 +105,14 @@ def get_coastline_polygons(request):
     model = request.GET.get('model','SETON2012')
     
     model_dict = get_reconstruction_model_dict(model)
-    
-    features = []
-    rotation_model = pygplates.RotationModel('%s/%s/%s' %
-        (MODEL_STORE,model,model_dict['RotationFile'])) 
+    model_string = str('%s/%s/%s' % (MODEL_STORE,model,model_dict['RotationFile']))
+
+    rotation_model = pygplates.RotationModel(str('%s/%s/%s' % 
+        (MODEL_STORE,model,model_dict['RotationFile'])))
 
     reconstructed_polygons = []
     pygplates.reconstruct(
-        '%s/%s/%s' % (MODEL_STORE,model,model_dict['Coastlines']), 
+        str('%s/%s/%s' % (MODEL_STORE,model,model_dict['Coastlines'])), 
         rotation_model, 
         reconstructed_polygons,
         float(time))
@@ -132,12 +132,12 @@ def get_static_polygons(request):
     model_dict = get_reconstruction_model_dict(model)
     
     features = []
-    rotation_model = pygplates.RotationModel('%s/%s/%s' %
-        (MODEL_STORE,model,model_dict['RotationFile']))    
+    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
+        (MODEL_STORE,model,model_dict['RotationFile'])))    
 
     reconstructed_polygons = []
     pygplates.reconstruct(
-        '%s/%s/%s' % (MODEL_STORE,model,model_dict['StaticPolygons']), 
+        str('%s/%s/%s' % (MODEL_STORE,model,model_dict['StaticPolygons'])), 
         rotation_model, 
         reconstructed_polygons,
         float(time))
@@ -157,12 +157,12 @@ def get_plate_polygons(request):
     model_dict = get_reconstruction_model_dict(model)    
 
     features = []
-    rotation_model = pygplates.RotationModel('%s/%s/%s' %
-        (MODEL_STORE,model,model_dict['RotationFile']))  
+    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
+        (MODEL_STORE,model,model_dict['RotationFile'])))  
 
     resolved_polygons = []
     pygplates.resolve_topologies(
-        '%s/%s/%s' % (MODEL_STORE,model,model_dict['PlatePolygons']),
+        str('%s/%s/%s' % (MODEL_STORE,model,model_dict['PlatePolygons'])),
         rotation_model, 
         resolved_polygons,
         float(time))
@@ -185,12 +185,12 @@ def get_topological_boundaries(request):
     model_dict = get_reconstruction_model_dict(model)
     
     features = []
-    rotation_model = pygplates.RotationModel('%s/%s/%s' %
-        (MODEL_STORE,model,model_dict['RotationFile']))   
+    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
+        (MODEL_STORE,model,model_dict['RotationFile'])))   
 
     resolved_polygons = []
     pygplates.resolve_topologies(
-        '%s/%s/%s' % (MODEL_STORE,model,model_dict['PlatePolygons']),
+        str('%s/%s/%s' % (MODEL_STORE,model,model_dict['PlatePolygons'])),
         rotation_model, 
         resolved_polygons,
         float(time))
@@ -258,3 +258,4 @@ def wrap_polygons(polygons,lon0,tesselate_degrees=1):
             data["features"].append(feature)
     
     return data
+
