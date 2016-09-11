@@ -33,6 +33,7 @@ and add a line to the url patterns list,
 Back in the terminal, check that the server runs by typing
 
 - python manage.py runserver
+- [TODO also necessary to run 'python manage.py migrate' at this point?]
 
 
 
