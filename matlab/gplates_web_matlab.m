@@ -10,6 +10,7 @@ js = urlread(['http://127.0.0.1:8000/reconstructions/plate_polygons/?time=', ...
     num2str(recon_time)]);
 pp = loadjson(js);
 
+
 figure
 hold on
 box on
