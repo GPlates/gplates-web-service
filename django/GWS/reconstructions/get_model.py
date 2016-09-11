@@ -50,7 +50,7 @@ def get_model_name_list(MODEL_STORE):
 
 
 def get_model_dictionary(MODEL_STORE):
-
+    # NOT WORKING YET
     MODEL_LIST = [o for o in os.listdir(MODEL_STORE) if os.path.isdir(os.path.join(MODEL_STORE,o))]
 
     for MODEL in MODEL_LIST:

@@ -189,37 +189,25 @@ def get_topological_boundaries(request):
         (MODEL_STORE,model,model_dict['RotationFile'])))   
 
     resolved_polygons = []
+    shared_boundary_sections = []
     pygplates.resolve_topologies(
         str('%s/%s/%s' % (MODEL_STORE,model,model_dict['PlatePolygons'])),
         rotation_model, 
         resolved_polygons,
-        float(time))
+        float(time),
+        shared_boundary_sections)
     
-    wrapper = pygplates.DateLineWrapper(0.)
-
-    data = {"type": "FeatureCollection"}
-    data["features"] = [] 
-    for p in resolved_polygons:
-        for seg in p.get_boundary_sub_segments():
-            split_geometry = wrapper.wrap(seg.get_geometry())
-            for geometry in split_geometry:
-                feature = {"type": "Feature"}
-                feature["geometry"] = {}
-                feature["geometry"]["type"] = "Polygon"
-                point_list = []
-                for point in geometry.get_points():
-                    point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
-                feature["geometry"]["coordinates"] = [point_list]
-                data["features"].append(feature)
+    data = wrap_plate_boundaries(shared_boundary_sections,0.)
+    print 'here'
     ret = json.dumps(pretty_floats(data))
    
     return HttpResponse(ret, content_type='application/json')
 
 
 #################################################################
-def wrap_reconstructed_polygons(reconstructed_polygons,lon0,tesselate_degrees=1):
+def wrap_reconstructed_polygons(reconstructed_polygons,lon0=0,tesselate_degrees=1):
     
-    wrapper = pygplates.DateLineWrapper(0.)
+    wrapper = pygplates.DateLineWrapper(lon0)
     
     data = {"type": "FeatureCollection"}
     data["features"] = [] 
@@ -233,14 +221,13 @@ def wrap_reconstructed_polygons(reconstructed_polygons,lon0,tesselate_degrees=1)
             for point in geometry.get_exterior_points():
                 point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
             feature["geometry"]["coordinates"] = [point_list]
-            print feature["geometry"]["coordinates"]
             data["features"].append(feature)
     
     return data
 
-def wrap_polygons(polygons,lon0,tesselate_degrees=1):
+def wrap_polygons(polygons,lon0=0,tesselate_degrees=1):
     
-    wrapper = pygplates.DateLineWrapper(0.)
+    wrapper = pygplates.DateLineWrapper(lon0)
     
     data = {"type": "FeatureCollection"}
     data["features"] = [] 
@@ -254,8 +241,30 @@ def wrap_polygons(polygons,lon0,tesselate_degrees=1):
             for point in geometry.get_exterior_points():
                 point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
             feature["geometry"]["coordinates"] = [point_list]
-            print feature["geometry"]["coordinates"]
             data["features"].append(feature)
+    
+    return data
+
+def wrap_plate_boundaries(shared_boundary_sections,lon0=0,tesselate_degrees=1):
+    
+    wrapper = pygplates.DateLineWrapper(lon0)
+    
+    data = {"type": "FeatureCollection"}
+    data["features"] = [] 
+    for shared_boundary_section in shared_boundary_sections:
+        for shared_sub_segment in shared_boundary_section.get_shared_sub_segments():
+
+            split_geometry = wrapper.wrap(shared_sub_segment.get_geometry(),tesselate_degrees)
+            for geometry in split_geometry:
+                feature = {"type": "Feature"}
+                feature["geometry"] = {}
+                feature["geometry"]["type"] = "Polyline"
+                point_list = []
+                for point in geometry.get_points():
+                    point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
+                feature["geometry"]["coordinates"] = [point_list]
+                feature["geometry"]["feature_type"] = str(shared_sub_segment.get_feature().get_feature_type())
+                data["features"].append(feature)
     
     return data
 
