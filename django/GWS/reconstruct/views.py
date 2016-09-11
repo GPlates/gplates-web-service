@@ -2,13 +2,13 @@ from django.shortcuts import render, render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseServerError, HttpResponseNotAllowed
 from django.conf import settings
-import csv
-import pandas as pd
+
 from get_model import get_reconstruction_model_dict
 
 import sys, json
 
 import pygplates
+import numpy as np
 
 MODEL_DEFAULT = 'SETON2012'
 
@@ -21,23 +21,6 @@ def index(request):
         'list.html',
         context_instance = RequestContext(request,
             {}))
-
-def upload(request):
-    file = request.FILES['paleodata']
-    tmp = []
-    for chunk in file.chunks():
-        tmp.append(chunk)
-
-    df = pd.DataFrame(tmp)
-    print df
-
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="mydata.csv"'
-    writer = csv.writer(response)
-    df.to_csv(response)
-
-    return response
-    #return  HttpResponse("OK")
 
 class PrettyFloat(float):
     def __repr__(self):
@@ -125,13 +108,12 @@ def get_coastline_polygons(request):
 
 
 def get_static_polygons(request):
-    
+
     time = request.GET.get('time', 0)
     model = request.GET.get('model','SETON2012')
 
     model_dict = get_reconstruction_model_dict(model)
     
-    features = []
     rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
         (MODEL_STORE,model,model_dict['RotationFile'])))    
 
@@ -148,6 +130,79 @@ def get_static_polygons(request):
    
     return HttpResponse(ret, content_type='application/json')
 
+
+def motion_path(request):
+
+    seedpoints = request.GET.get('seedpoints', None)
+    times = request.GET.get('timespec', '0,100,10')
+    time = request.GET.get('time', 0)
+    RelativePlate = request.GET.get('fixplate', 0)
+    MovingPlate = request.GET.get('movplate', None)
+    model = request.GET.get('model','SETON2012')
+
+    points = []
+    if seedpoints:
+        ps = seedpoints.split(',')
+        if len(ps)%2==0:
+            for lat,lon in zip(ps[1::2], ps[0::2]):
+                points.append((float(lat),float(lon)))
+
+    seed_points_at_digitisation_time = pygplates.MultiPointOnSphere(points)
+
+    if times:
+        ts = times.split(',')
+        if len(ts)==3:
+            times = np.arange(float(ts[0]),float(ts[1])+0.1,float(ts[2]))
+
+    model_dict = get_reconstruction_model_dict(model)
+
+    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
+        (MODEL_STORE,model,model_dict['RotationFile'])))
+
+    # Create the motion path feature
+    digitisation_time = 0
+    #seed_points_at_digitisation_time = pygplates.MultiPointOnSphere([SeedPoint])
+    motion_path_feature = pygplates.Feature.create_motion_path(
+            seed_points_at_digitisation_time,
+            times = times,
+            valid_time=(2000, 0),
+            relative_plate=int(RelativePlate),
+            reconstruction_plate_id = int(MovingPlate))
+
+    # Create the shape of the motion path
+    reconstruction_time = 0
+    reconstructed_motion_paths = []
+    pygplates.reconstruct(
+            motion_path_feature, rotation_model, reconstructed_motion_paths, reconstruction_time,
+            reconstruct_type=pygplates.ReconstructType.motion_path)
+
+    #for reconstructed_motion_path in reconstructed_motion_paths:
+    #    trail = reconstructed_motion_path.get_motion_path().to_lat_lon_array()
+
+    data = {"type": "FeatureCollection"}
+    data["features"] = [] 
+    for reconstructed_motion_path in reconstructed_motion_paths:
+        Dist = []
+        for segment in reconstructed_motion_path.get_motion_path().get_segments():
+            Dist.append(segment.get_arc_length()*pygplates.Earth.mean_radius_in_kms)
+        feature = {"type": "Feature"}
+        feature["geometry"] = {}
+        feature["geometry"]["type"] = "Polyline"
+        #### NEED TO FLIP COORDINATES
+        feature["geometry"]["coordinates"] = [reconstructed_motion_path.get_motion_path().to_lat_lon_list()]
+        feature["geometry"]["distance"] = Dist
+        data["features"].append(feature)
+
+    ret = json.dumps(pretty_floats(data))
+   
+    return HttpResponse(ret, content_type='application/json')
+
+
+def flowline(request):
+
+    ret = json.dumps(pretty_floats(data))
+   
+    return HttpResponse(ret, content_type='application/json')
 
 
 #################################################################
