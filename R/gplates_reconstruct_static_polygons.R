@@ -1,6 +1,6 @@
 gplates_reconstruct_static_polygons <- function(age){
 
-  url <- 'http://127.0.0.1:8000/paleocoherence/static_polygons/'
+  url <- 'http://127.0.0.1:8000/reconstruct/static_polygons/'
   query <- sprintf('?time=%d',age)
 
   fullrequest <- sprintf(paste0(url,query))

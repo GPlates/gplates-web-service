@@ -1,6 +1,6 @@
 gplates_reconstruct_plate_boundaries <- function(age){
 
-  url <- 'http://127.0.0.1:8000/paleocoherence/plate_boundaries/'
+  url <- 'http://127.0.0.1:8000/topology/plate_boundaries/'
   query <- sprintf('?time=%d',age)
 
   fullrequest <- sprintf(paste0(url,query))

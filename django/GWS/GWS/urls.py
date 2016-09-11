@@ -18,7 +18,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^reconstructions/', include('reconstructions.urls')),
+    url(r'^reconstruct/', include('reconstruct.urls')),
     url(r'^topology/', include('topology.urls')),
     url(r'^rotation/', include('rotation.urls')),
 ]
