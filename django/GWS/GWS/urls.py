@@ -16,7 +16,10 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+from reconstruct import views as reconstruct_views
+
 urlpatterns = [
+    url(r'^$', reconstruct_views.index),
     url(r'^admin/', admin.site.urls),
     url(r'^reconstruct/', include('reconstruct.urls')),
     url(r'^topology/', include('topology.urls')),
