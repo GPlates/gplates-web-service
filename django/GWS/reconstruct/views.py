@@ -14,12 +14,6 @@ import pygplates
 import numpy as np
 
 
-def index(request):
-    return render_to_response(
-        'list.html',
-        context_instance = RequestContext(request,
-            {}))
-
 class PrettyFloat(float):
     def __repr__(self):
         return '%.2f' % self

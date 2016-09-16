@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'reconstruct',
     'rotation',
     'topology',
+    'doc',
 ]
 
 MIDDLEWARE_CLASSES = [
