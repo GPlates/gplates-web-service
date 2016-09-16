@@ -11,10 +11,6 @@ from utils.wrapping_tools import wrap_polylines
 
 import pygplates
 
-MODEL_DEFAULT = 'SETON2012'
-
-MODEL_STORE = '/Users/Simon/GIT/gplates-web/MODELS/'
-
 
 def index(request):
     return render_to_response(
@@ -38,13 +34,13 @@ def pretty_floats(obj):
 
 def reconstruction_tree_map(request):
     time = request.GET.get('time', None)
-    model = request.GET.get('model',MODEL_DEFAULT)
+    model = request.GET.get('model',settings.MODEL_DEFAULT)
 
     model_dict = get_reconstruction_model_dict(model)
 
     rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (MODEL_STORE,model,model_dict['RotationFile'])))
-    static_polygons_filename = str('%s/%s/%s' % (MODEL_STORE,model,model_dict['StaticPolygons']))
+        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+    static_polygons_filename = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons']))
     
     tree = rotation_model.get_reconstruction_tree(float(time))
 

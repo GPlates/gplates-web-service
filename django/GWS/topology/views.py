@@ -10,10 +10,6 @@ from utils.wrapping_tools import wrap_polygons, wrap_plate_boundaries
 
 import pygplates
 
-MODEL_DEFAULT = 'SETON2012'
-
-MODEL_STORE = '/Users/Simon/GIT/gplates-web/MODELS/'
-
 
 def index(request):
     return render_to_response(
@@ -38,17 +34,17 @@ def pretty_floats(obj):
 def get_plate_polygons(request):
     
     time = request.GET.get('time', 0)
-    model = request.GET.get('model','SETON2012')
+    model = request.GET.get('model',settings.MODEL_DEFAULT)
 
     model_dict = get_reconstruction_model_dict(model)    
 
     features = []
     rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (MODEL_STORE,model,model_dict['RotationFile'])))  
+        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))  
 
     resolved_polygons = []
     pygplates.resolve_topologies(
-        str('%s/%s/%s' % (MODEL_STORE,model,model_dict['PlatePolygons'])),
+        str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['PlatePolygons'])),
         rotation_model, 
         resolved_polygons,
         float(time))
@@ -72,12 +68,12 @@ def get_topological_boundaries(request):
     
     features = []
     rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (MODEL_STORE,model,model_dict['RotationFile'])))   
+        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))   
 
     resolved_polygons = []
     shared_boundary_sections = []
     pygplates.resolve_topologies(
-        str('%s/%s/%s' % (MODEL_STORE,model,model_dict['PlatePolygons'])),
+        str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['PlatePolygons'])),
         rotation_model, 
         resolved_polygons,
         float(time),

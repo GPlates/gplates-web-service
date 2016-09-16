@@ -13,11 +13,6 @@ import sys, json
 import pygplates
 import numpy as np
 
-MODEL_DEFAULT = 'SETON2012'
-
-MODEL_STORE = '/Users/Simon/GIT/gplates-web/MODELS/'
-
-
 
 def index(request):
     return render_to_response(
@@ -42,13 +37,13 @@ def reconstruct_points(request):
     points = request.GET.get('points', None)
     plate_id = request.GET.get('pid', None)
     time = request.GET.get('time', None)
-    model = request.GET.get('model',MODEL_DEFAULT)
+    model = request.GET.get('model',settings.MODEL_DEFAULT)
 
     model_dict = get_reconstruction_model_dict(model)
 
     rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (MODEL_STORE,model,model_dict['RotationFile'])))
-    static_polygons_filename = str('%s/%s/%s' % (MODEL_STORE,model,model_dict['StaticPolygons']))
+        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+    static_polygons_filename = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons']))
 
     # create point features from input coordinates
     point_features = []
@@ -88,17 +83,17 @@ def reconstruct_points(request):
 def get_coastline_polygons(request):
     
     time = request.GET.get('time', 0)
-    model = request.GET.get('model','SETON2012')
+    model = request.GET.get('model',settings.MODEL_DEFAULT)
     
     model_dict = get_reconstruction_model_dict(model)
-    model_string = str('%s/%s/%s' % (MODEL_STORE,model,model_dict['RotationFile']))
+    model_string = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['RotationFile']))
 
     rotation_model = pygplates.RotationModel(str('%s/%s/%s' % 
-        (MODEL_STORE,model,model_dict['RotationFile'])))
+        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
 
     reconstructed_polygons = []
     pygplates.reconstruct(
-        str('%s/%s/%s' % (MODEL_STORE,model,model_dict['Coastlines'])), 
+        str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['Coastlines'])), 
         rotation_model, 
         reconstructed_polygons,
         float(time))
@@ -113,16 +108,16 @@ def get_coastline_polygons(request):
 def get_static_polygons(request):
 
     time = request.GET.get('time', 0)
-    model = request.GET.get('model','SETON2012')
+    model = request.GET.get('model',settings.MODEL_DEFAULT)
 
     model_dict = get_reconstruction_model_dict(model)
     
     rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (MODEL_STORE,model,model_dict['RotationFile'])))    
+        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))    
 
     reconstructed_polygons = []
     pygplates.reconstruct(
-        str('%s/%s/%s' % (MODEL_STORE,model,model_dict['StaticPolygons'])), 
+        str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons'])), 
         rotation_model, 
         reconstructed_polygons,
         float(time))
@@ -141,7 +136,7 @@ def motion_path(request):
     time = request.GET.get('time', 0)
     RelativePlate = request.GET.get('fixplate', 0)
     MovingPlate = request.GET.get('movplate', None)
-    model = request.GET.get('model','SETON2012')
+    model = request.GET.get('model',settings.MODEL_DEFAULT)
 
     points = []
     if seedpoints:
@@ -160,7 +155,7 @@ def motion_path(request):
     model_dict = get_reconstruction_model_dict(model)
 
     rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (MODEL_STORE,model,model_dict['RotationFile'])))
+        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
 
     # Create the motion path feature
     digitisation_time = 0

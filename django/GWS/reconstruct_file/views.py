@@ -13,11 +13,6 @@ import sys, json
 import pygplates
 import numpy as np
 
-MODEL_DEFAULT = 'SETON2012'
-
-MODEL_STORE = '/Users/Simon/GIT/gplates-web/MODELS/'
-
-
 # Create your views here.
 def index(request):
     return render_to_response(
