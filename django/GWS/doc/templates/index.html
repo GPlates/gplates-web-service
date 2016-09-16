@@ -1,1 +1,185 @@
-'hello'
+<!DOCTYPE html>
+<html>
+    <head>
+    <link type="image/png" rel="icon" href="http://portal.gplates.org/static/img/GPlates-icon.png">
+    <meta charset="utf-8">
+    </head>
+<body>
+    <h2 style="color:red;text-align: center;">This page is under construction. Everything in this page is subject to change without notice.</h2>
+    <div style="width:962px; overflow:hidden; margin:20px auto; text-align: left;">
+        <h3 style="text-align: center;">Calculate Paleo-geographic Coordinates</h3>
+        <div style="font-size:120%;">
+            <pre>
+<strong>Description:</strong>
+    Reconstruct the geographic locations from present day coordinates back to their paleo-positions.
+    Each location will be assigned a plate id and moved back in time using the chosen reconstruction model.
+
+<strong>URL:</strong>
+    http://portal.gplates.org/service/reconstruct_points
+
+<strong>Parameters:</strong>
+    <strong>points</strong>
+        The present-day coordinates of locations in longitude and latitude separated by ','.
+    <strong>time</strong>
+        The geological age in million years(Ma) to which the coordinates will be reconstructed. 
+        The valid input value depends on the chosen reconstruction model.
+    <strong>model</strong>
+        The reconstruction model name.
+        Models:
+        "default" -- The valid time range is between 0 and 440.
+
+<strong>Return:</strong>
+    Paleo-coordinates in GeoJson format.
+<strong>Example:</strong>
+    The URL below reconstructs two locations((lon:95,lat:54)(lon:142,lat:-33)) back to 140 million years ago 
+    using the "default" reconstrution model.
+
+    <a href="/service/reconstruct_points/?points=95,54,142,-33&amp;time=140&amp;model=default" target="_blank">http://portal.gplates.org/service/reconstruct_points/?points=95,54,142,-33&amp;time=140&amp;model=default</a>
+
+    <strong><a href="/service/d3_demo/?view=points" target='_blank'>Try it in an interactive online map</a></strong>
+            </pre>
+        </div>
+    </div>
+
+    <div style="width:962px; overflow:hidden; margin:20px auto; text-align: center; border-top:solid grey 1px;">
+        <h3 style="text-align: center;">Reconstruct Feature Collection</h3>
+        <div style="font-size:120%; width:100px;text-align:left;">
+            <pre>
+<strong>Description:</strong>
+    Reconstruct feature collection in GeoJSON format back in time. 
+    Each feature will be assigned a plate id and moved back in time using the given reconstruction model.
+    Reconstructed features will be returned in GeoJSON format.
+
+<strong>URL:</strong>
+    http://portal.gplates.org/service/reconstruct_feature_collection
+
+<strong>Parameters:</strong>
+    <strong>feature_collection:</strong>
+        The feature collection in GeoJSON format.
+    <strong>geologicage:</strong>
+        The geological age in million years(Ma) to which the feature collection will be reconstructed.
+        The valid input value depends on the chosen reconstruction model.
+    <strong>model:</strong>
+        The reconstruction model name.
+        Models:
+        "default" -- The valid time range is between between 0 and 440.
+    <strong>Return:</strong>
+        Feature collection in GeoJson format.
+
+<strong>Example:</strong>
+<a href="http://portal.gplates.org/service/reconstruct_feature_collection/?feature_collection={
+&quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,
+&quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:
+[[[23,-20],[-9,35],[14,44],[23,-20]]]},&quot;properties&quot;:{}}]}&amp;geologicage=140&amp;model=default" target="_blank">
+http://portal.gplates.org/service/reconstruct_feature_collection/?feature_collection={
+"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon",
+"coordinates":[[[23,-20],[-9,35],[14,44],[23,-20]]]},"properties":{}}]}&amp;geologicage=140&amp;model=default</a>
+
+<strong><a href="/service/d3_demo/?view=feature_collection" target='_blank'>Try it in an interactive online map</a></strong>
+
+<strong>Feature Collection Examples:</strong>
+    
+    <strong>#Polygon</strong>
+    {
+        "type":"FeatureCollection",
+        "features":
+        [{
+            "type":"Feature",
+            "geometry":
+            {
+                "type": "Polygon",
+                "coordinates": [
+                    [ [23, -20.0], [-9.0, 35.0],[14.0, 44.0],[23, -20.0] ]
+                ]
+            },
+            "properties":{}
+        }]
+    }
+
+    <strong>#LineString</strong>
+    {
+        "type":"FeatureCollection",
+        "features":
+        [{
+            "type":"Feature",
+            "geometry":
+            {
+                "type": "LineString",
+                "coordinates": [
+                    [23, -20.0], [-9.0, 35.0] 
+                ]
+            },
+            "properties":{}
+        }]
+    }
+
+    <strong>#MultiPoint</strong>
+    {
+        "type":"FeatureCollection",
+        "features":
+        [{
+            "type":"Feature",
+            "geometry":
+            {
+                "type": "MultiPoint",
+                "coordinates": [
+                    [23, -20.0], [-9.0, 35.0],[14.0, 44.0] 
+                ]
+            },
+            "properties":{}
+        }]
+    }
+
+    <strong>#Point</strong>
+    {
+        "type":"FeatureCollection",
+        "features":
+        [{
+            "type":"Feature",
+            "geometry":
+            {
+                "type":"Point",
+                "coordinates":[51.0, 38.0]
+            },
+            "properties":{}
+        }]
+    }
+            </pre>
+        </div>
+    </div>
+
+<div style="width:962px; overflow:hidden; margin:20px auto; text-align: left; border-top:solid grey 1px;">
+        <h3 style="text-align: center;">Reconstruct Coastlines</h3>
+        <div style="font-size:120%;">
+            <pre>
+<strong>Description:</strong>
+    Return the coastlines' paleo-coordinates.
+
+<strong>URL:</strong>
+    http://portal.gplates.org/service/get_coastline_polygons
+
+<strong>Parameters:</strong>
+    <strong>time</strong>
+        The geological age in million years(Ma). 
+        The valid input value depends on the chosen reconstruction model.
+    <strong>model</strong>
+        The reconstruction model name(optional).
+        Models:
+        "default" -- The valid time range is between 0 and 440.
+
+<strong>Return:</strong>
+    Feature collection in GeoJSON format.
+
+<strong>Example:</strong>
+
+    <a href="/service/get_coastline_polygons/?time=140" target="_blank">http://portal.gplates.org/service/get_coastline_polygons/?time=140</a>
+
+    <strong><a href="/service/d3_demo/" target='_blank'>Try it in an interactive online map</a></strong>
+            </pre>
+        </div>
+    </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+</body>
+</html>
+
