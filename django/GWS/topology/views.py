@@ -5,7 +5,8 @@ from django.conf import settings
 
 import sys, json
 
-from get_model import get_reconstruction_model_dict
+from utils.get_model import get_reconstruction_model_dict
+from utils.wrapping_tools import wrap_polygons, wrap_plate_boundaries
 
 import pygplates
 
@@ -88,47 +89,3 @@ def get_topological_boundaries(request):
    
     return HttpResponse(ret, content_type='application/json')
 
-
-#################################################################
-def wrap_plate_boundaries(shared_boundary_sections,lon0=0,tesselate_degrees=1):
-    
-    wrapper = pygplates.DateLineWrapper(lon0)
-    
-    data = {"type": "FeatureCollection"}
-    data["features"] = [] 
-    for shared_boundary_section in shared_boundary_sections:
-        for shared_sub_segment in shared_boundary_section.get_shared_sub_segments():
-
-            split_geometry = wrapper.wrap(shared_sub_segment.get_geometry(),tesselate_degrees)
-            for geometry in split_geometry:
-                feature = {"type": "Feature"}
-                feature["geometry"] = {}
-                feature["geometry"]["type"] = "Polyline"
-                point_list = []
-                for point in geometry.get_points():
-                    point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
-                feature["geometry"]["coordinates"] = [point_list]
-                feature["geometry"]["feature_type"] = str(shared_sub_segment.get_feature().get_feature_type())
-                data["features"].append(feature)
-    
-    return data
-
-def wrap_polygons(polygons,lon0=0,tesselate_degrees=1):
-    
-    wrapper = pygplates.DateLineWrapper(lon0)
-    
-    data = {"type": "FeatureCollection"}
-    data["features"] = [] 
-    for polygon in polygons:
-        split_geometry = wrapper.wrap(polygon.get_geometry(),tesselate_degrees)
-        for geometry in split_geometry:
-            feature = {"type": "Feature"}
-            feature["geometry"] = {}
-            feature["geometry"]["type"] = "Polygon"
-            point_list = []
-            for point in geometry.get_exterior_points():
-                point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
-            feature["geometry"]["coordinates"] = [point_list]
-            data["features"].append(feature)
-    
-    return data

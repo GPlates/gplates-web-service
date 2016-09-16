@@ -6,7 +6,8 @@ from django.conf import settings
 import sys, json
 import numpy as np
 
-from get_model import get_reconstruction_model_dict
+from utils.get_model import get_reconstruction_model_dict
+from utils.wrapping_tools import wrap_polylines
 
 import pygplates
 
@@ -107,23 +108,3 @@ def GetPolygonCentroid(static_polygons,plateid):
     
     return centroid
 
-def wrap_polylines(polylines,lon0=0,tesselate_degrees=1):
-    
-    wrapper = pygplates.DateLineWrapper(lon0)
-    
-    data = {"type": "FeatureCollection"}
-    data["features"] = [] 
-    for polyline in polylines:
-
-        split_geometry = wrapper.wrap(polyline.get_geometry(),tesselate_degrees)
-        for geometry in split_geometry:
-            feature = {"type": "Feature"}
-            feature["geometry"] = {}
-            feature["geometry"]["type"] = "Polyline"
-            point_list = []
-            for point in geometry.get_points():
-                point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
-            feature["geometry"]["coordinates"] = [point_list]
-            data["features"].append(feature)
- 
-    return data

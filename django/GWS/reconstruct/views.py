@@ -3,7 +3,10 @@ from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseServerError, HttpResponseNotAllowed
 from django.conf import settings
 
-from get_model import get_reconstruction_model_dict
+
+#from get_model import get_reconstruction_model_dict
+from utils.get_model import get_reconstruction_model_dict
+from utils.wrapping_tools import wrap_reconstructed_polygons
 
 import sys, json
 
@@ -205,24 +208,4 @@ def flowline(request):
     return HttpResponse(ret, content_type='application/json')
 
 
-#################################################################
-def wrap_reconstructed_polygons(reconstructed_polygons,lon0=0,tesselate_degrees=1):
-    
-    wrapper = pygplates.DateLineWrapper(lon0)
-    
-    data = {"type": "FeatureCollection"}
-    data["features"] = [] 
-    for reconstructed_polygon in reconstructed_polygons:
-        split_geometry = wrapper.wrap(reconstructed_polygon.get_reconstructed_geometry(),tesselate_degrees)
-        for geometry in split_geometry:
-            feature = {"type": "Feature"}
-            feature["geometry"] = {}
-            feature["geometry"]["type"] = "Polygon"
-            point_list = []
-            for point in geometry.get_exterior_points():
-                point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
-            feature["geometry"]["coordinates"] = [point_list]
-            data["features"].append(feature)
-    
-    return data
 
