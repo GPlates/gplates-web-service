@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^topology/', include('topology.urls')),
     url(r'^rotation/', include('rotation.urls')),
     url(r'^reconstruct_file/', include('reconstruct_file.urls')),
+    url(r'^earth/', include('earth.urls')),
 ]

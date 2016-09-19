@@ -16,9 +16,11 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MODEL_STORE_DIR = '%s/DATA/MODELS/' % BASE_DIR
+EARTH_STORE_DIR = '%s/DATA/EARTH/' % BASE_DIR
 
 MODEL_DEFAULT = 'SETON2012'
 
+MEDIA_ROOT = '%s/DATA/tmp/' % BASE_DIR
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -44,6 +46,7 @@ INSTALLED_APPS = [
     'reconstruct',
     'rotation',
     'topology',
+    'earth',
     'doc',
 ]
 
