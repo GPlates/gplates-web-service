@@ -6,7 +6,7 @@ library(jsonlite)
 library(httr)
 library(ggthemes)
 
-recon_time <- 150
+recon_time <- 110
 
 dat <- gplates_reconstruct_coastlines(recon_time)
 

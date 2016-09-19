@@ -16,3 +16,15 @@ python/.ipynb_checkpoints/request-motion-path-checkpoint.ipynb
 django/GWS/DATA/tmp/tmp.gpmlz
 
 django/GWS/DATA/tmp/tmp.rot
+
+python/output.gpmlz
+
+python/output.gpml
+
+python/.ipynb_checkpoints/post-file-examples-checkpoint.ipynb
+
+django/GWS/tree.gmt.gplates.xml
+
+*.gmt
+
+django/GWS/tree.gmt
