@@ -197,4 +197,82 @@ def flowline(request):
     return HttpResponse(ret, content_type='application/json')
 
 
+def reconstruct_feature_collection(request):
+    if request.method == 'POST':
+        return HttpResponse('POST method is not accepted for now.')
+
+    geologicage = request.GET.get('geologicage', 140)
+    output_format = request.GET.get('output', 'geojson')
+    fc_str = request.GET.get('feature_collection')
+    fc = json.loads(fc_str)
+
+    features=[]
+    for f in fc['features']:
+        geom = f['geometry']
+        feature = pygplates.Feature()
+        if geom['type'] == 'Point':
+            feature.set_geometry(pygplates.PointOnSphere(
+                float(geom['coordinates'][1]),
+                float(geom['coordinates'][0])))
+        if geom['type'] == 'LineString':
+            feature.set_geometry(
+                pygplates.PolylineOnSphere([(point[1],point[0]) for point in geom['coordinates']]))
+        if geom['type'] == 'Polygon':
+            feature.set_geometry(
+                pygplates.PolygonOnSphere([(point[1],point[0]) for point in geom['coordinates'][0]]))
+        if geom['type'] == 'MultiPoint':
+             feature.set_geometry(
+                pygplates.MultiPointOnSphere([(point[1],point[0]) for point in geom['coordinates']]))
+
+        features.append(feature)
+
+
+    model = request.GET.get('model',settings.MODEL_DEFAULT)
+    model_dict = get_reconstruction_model_dict(model)
+    rotation_model = pygplates.RotationModel(settings.MODEL_STORE_DIR+model+'/'+model_dict['RotationFile'])
+
+    assigned_features = pygplates.partition_into_plates(
+        settings.MODEL_STORE_DIR+model+'/'+model_dict['StaticPolygons'],
+        rotation_model,
+        features,
+        properties_to_copy = [
+            pygplates.PartitionProperty.reconstruction_plate_id,
+            pygplates.PartitionProperty.valid_time_period],
+
+        partition_method = pygplates.PartitionMethod.most_overlapping_plate
+    )
+
+    reconstructed_geometries = []
+    pygplates.reconstruct(assigned_features, rotation_model, reconstructed_geometries, float(geologicage), 0)
+
+
+    data = {"type": "FeatureCollection"}
+    data["features"] = []
+    for g in reconstructed_geometries:
+        geom =  g.get_reconstructed_geometry()
+        feature = {"type": "Feature"}
+        feature["geometry"] = {}
+        if isinstance(geom, pygplates.PointOnSphere):
+            feature["geometry"]["type"] = "Point"
+            p = geom.to_lat_lon_list()[0]
+            feature["geometry"]["coordinates"] = [p[1], p[0]]
+        elif isinstance(geom, pygplates.MultiPointOnSphere):
+            feature["geometry"]["type"] = 'MultiPoint'
+            feature["geometry"]["coordinates"] = [[lon,lat] for lat, lon in geom.to_lat_lon_list()]
+        elif isinstance(geom, pygplates.PolylineOnSphere):
+            feature["geometry"]["type"] = 'LineString'
+            feature["geometry"]["coordinates"] = [[lon,lat] for lat, lon in geom.to_lat_lon_list()]
+        elif isinstance(geom, pygplates.PolygonOnSphere):
+            feature["geometry"]["type"] = 'Polygon'
+            feature["geometry"]["coordinates"] = [[[lon,lat] for lat, lon in geom.to_lat_lon_list()]]
+        else:
+            raise 'Unrecognized Geometry Type.'
+
+        feature["properties"]={}
+
+        data["features"].append(feature)
+
+    ret = json.dumps(pretty_floats(data))
+
+    return HttpResponse(ret, content_type='application/json')
 
