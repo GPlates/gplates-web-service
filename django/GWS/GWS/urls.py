@@ -20,6 +20,7 @@ from doc import views as doc_views
 
 urlpatterns = [
     url(r'^$', doc_views.index),
+    url(r'^examples/$', doc_views.examples),
     url(r'^admin/', admin.site.urls),
     url(r'^reconstruct/', include('reconstruct.urls')),
     url(r'^topology/', include('topology.urls')),

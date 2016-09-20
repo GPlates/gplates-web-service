@@ -8,3 +8,10 @@ def index(request):
         'index.html',
         context_instance = RequestContext(request,
             {}))
+
+def examples(request):
+    return render_to_response(
+        'examples.html',
+        context_instance = RequestContext(request,
+            {}))
+
