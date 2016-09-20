@@ -56,7 +56,7 @@
                         Each location will be assigned a plate id and moved back in time using the chosen reconstruction model.</p>
 
                         <strong>URL:</strong>
-                        <p><code>http://portal.gplates.org/service/reconstruct_points</code></p>
+                        <p><code>http://gws.gplates.org/reconstruct/reconstruct_points</code></p>
 
                         <strong>Parameters:</strong>
                         <ul><li><strong>points</strong>
@@ -76,10 +76,10 @@
                         <p>The URL below reconstructs two locations((lon:95,lat:54)(lon:142,lat:-33)) back to 140 million years ago 
                         using the "default" reconstrution model.</p>
 
-                        <p><a href="/reconstruct_points/?points=95,54,142,-33&amp;time=140&amp;model=default" target="_blank">
-                        <pre>http://portal.gplates.org/service/reconstruct_points/?points=95,54,142,-33&amp;time=140&amp;model=default</pre></a></p>
+                        <p><a href="/reconstruct/reconstruct_points/?points=95,54,142,-33&amp;time=140" target="_blank">
+                        <pre>http://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&amp;time=140</pre></a></p>
 
-                        <p><strong><a href="/service/d3_demo/?view=points" target='_blank'>Try it in an interactive online map</a></strong></p>
+                        <p><strong><a href="http://portal.gplates.org/service/d3_demo/?view=points" target='_blank'>Try it in an interactive online map</a></strong></p>
                     </div>
 
                     <div id="recon-fc" class="txt-box">
@@ -114,7 +114,7 @@
                             [[[23,-20],[-9,35],[14,44],[23,-20]]]},&quot;properties&quot;:{}}]}&amp;geologicage=140&amp;model=default" target="_blank">
                             <pre>http://portal.gplates.org/service/reconstruct_feature_collection/?feature_collection={"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[23,-20],[-9,35],[14,44],[23,-20]]]},"properties":{}}]}&amp;geologicage=140&amp;model=default</pre></a></p>
 
-                            <p><strong><a href="/service/d3_demo/?view=feature_collection" target='_blank'>Try it in an interactive online map</a></strong></p>
+                            <p><strong><a href="http://portal.gplates.org/service/d3_demo/?view=feature_collection" target='_blank'>Try it in an interactive online map</a></strong></p>
 
                             <strong>Feature Collection Examples:</strong>
         
@@ -189,7 +189,7 @@
                             <p>Return the coastlines' paleo-coordinates.</p>
 
                         <strong>URL:</strong>
-                            <p><code>http://portal.gplates.org/service/get_coastline_polygons</code></p>
+                            <p><code>http://gws.gplates.org/reconstruct/coastlines</code></p>
 
                         <strong>Parameters:</strong>
                         <ul><li><strong>time</strong>
@@ -206,10 +206,10 @@
 
                         <strong>Example:</strong>
 
-                        <p><a href="/service/get_coastline_polygons/?time=140" target="_blank">
-                        <pre>http://portal.gplates.org/service/get_coastline_polygons/?time=140</pre></a></p>
+                        <p><a href="/reconstruct/coastlines?time=140" target="_blank">
+                        <pre>http://gws.gplates.org/reconstruct/coastlines?time=140</pre></a></p>
 
-                            <strong><a href="/service/d3_demo/" target='_blank'>Try it in an interactive online map</a></strong>
+                            <strong><a href="http://portal.gplates.org/service/d3_demo/" target='_blank'>Try it in an interactive online map</a></strong>
                    </div>
                 </div >
 
