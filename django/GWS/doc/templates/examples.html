@@ -32,12 +32,25 @@
                 border-style: solid;
                 padding: 10px 40px 0px 40px;
                 background-color: #fafafa;
-                margin-bottom: 70px;
+                margin-bottom: 10px;
             }
 
             .ref-title{
                 color: brown;
                 text-align: center;
+            }
+            .nav-sidebar>.active>a{
+                padding-left: 18px;
+                font-weight: 700;
+                color: #563d7c;
+                background-color: transparent;
+                border-left: 2px solid #563d7c;
+            }
+            .nav-sidebar>li>a{
+                padding:4px 20px;
+            }
+            .nav-sidebar{
+                margin-top:10px;
             }
         </style>
     </head>
@@ -69,7 +82,7 @@
                 </div>
 
                 <nav class="col-md-3" id="side-nav">
-                  <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="200">
+                  <ul class="nav nav-sidebar" data-spy="affix">
                     <li><a href="#qgis">QGIS</a></li>
                     <!--<li class="dropdown">
                       <a class="dropdown-toggle" data-toggle="dropdown" href="#">Section 4 <span class="caret"></span></a>
