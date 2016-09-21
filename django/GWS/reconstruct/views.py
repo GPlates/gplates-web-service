@@ -71,7 +71,12 @@ def reconstruct_points(request):
             g.get_reconstructed_geometry().to_lat_lon()[0])
     ret=ret[0:-1]
     ret+=']}'
-    return HttpResponse(ret, content_type='application/json')
+    
+    #add header for CORS
+    #http://www.html5rocks.com/en/tutorials/cors/
+    response = HttpResponse(ret, content_type='application/json')
+    response['Access-Control-Allow-Origin'] = '*'
+    return response
 
 
 def get_coastline_polygons(request):
@@ -95,9 +100,12 @@ def get_coastline_polygons(request):
     data = wrap_reconstructed_polygons(reconstructed_polygons,0.)
 
     ret = json.dumps(pretty_floats(data))
-   
-    return HttpResponse(ret, content_type='application/json')
-
+  
+    #add header for CORS
+    #http://www.html5rocks.com/en/tutorials/cors/ 
+    response = HttpResponse(ret, content_type='application/json')
+    response['Access-Control-Allow-Origin'] = '*'
+    return response
 
 def get_static_polygons(request):
 
@@ -119,8 +127,13 @@ def get_static_polygons(request):
     data = wrap_reconstructed_polygons(reconstructed_polygons,0.)
     
     ret = json.dumps(pretty_floats(data))
-   
-    return HttpResponse(ret, content_type='application/json')
+
+    #add header for CORS
+    #http://www.html5rocks.com/en/tutorials/cors/
+    response = HttpResponse(ret, content_type='application/json')
+    response['Access-Control-Allow-Origin'] = '*'
+    return response
+
 
 
 def motion_path(request):
@@ -186,15 +199,23 @@ def motion_path(request):
         data["features"].append(feature)
 
     ret = json.dumps(pretty_floats(data))
-   
-    return HttpResponse(ret, content_type='application/json')
+    
+    #add header for CORS
+    #http://www.html5rocks.com/en/tutorials/cors/
+    response = HttpResponse(ret, content_type='application/json')
+    response['Access-Control-Allow-Origin'] = '*'
+    return response
 
 
 def flowline(request):
 
     ret = json.dumps(pretty_floats(data))
-   
-    return HttpResponse(ret, content_type='application/json')
+    
+    #add header for CORS
+    #http://www.html5rocks.com/en/tutorials/cors/
+    response = HttpResponse(ret, content_type='application/json')
+    response['Access-Control-Allow-Origin'] = '*'
+    return response
 
 
 def reconstruct_feature_collection(request):
@@ -273,6 +294,9 @@ def reconstruct_feature_collection(request):
         data["features"].append(feature)
 
     ret = json.dumps(pretty_floats(data))
-
-    return HttpResponse(ret, content_type='application/json')
-
+    
+    #add header for CORS
+    #http://www.html5rocks.com/en/tutorials/cors/
+    response = HttpResponse(ret, content_type='application/json')
+    response['Access-Control-Allow-Origin'] = '*'
+    return response

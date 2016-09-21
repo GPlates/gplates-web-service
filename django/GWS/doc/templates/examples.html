@@ -79,11 +79,41 @@
                         <img class="img-responsive" src="http://portal.gplates.org/static/img/qgis-example-3.jpg" alt="QGIS Examples #3" >
                     </div>
 
+                    <div id="cors" class="txt-box">
+                        <h3>JavaScript CORS</h3>
+                    <pre style="text-align:left;">
+    var url = 'http://gws.gplates.org/reconstruct/coastlines/?time=50';
+    var method = "GET"      
+    var xhr = new XMLHttpRequest();
+    if("withCredentials" in xhr){
+        xhr.open(method, url, true);
+    }else if(typeof XDomainRequest != "undefined"){
+        xhr = new XDomainRequest();
+        xhr.open(method, url);
+    }else{
+        xhr = null;
+    }
+    if (!xhr) {
+      throw new Error('Does your web browser support CORS?');
+    }
+    xhr.onload = function() {
+        var text = xhr.responseText;
+        console.log(text);
+    };
+    xhr.onerror = function() {
+        alert('something is wrong!');
+    };
+
+    xhr.send();
+                </pre>
+                </div>
+
                 </div>
 
                 <nav class="col-md-3" id="side-nav">
                   <ul class="nav nav-sidebar" data-spy="affix">
                     <li><a href="#qgis">QGIS</a></li>
+                    <li><a href="#cors">JavaScript CORS</a></li>
                     <!--<li class="dropdown">
                       <a class="dropdown-toggle" data-toggle="dropdown" href="#">Section 4 <span class="caret"></span></a>
                       <ul class="dropdown-menu">
