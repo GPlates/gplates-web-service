@@ -105,8 +105,35 @@
     };
 
     xhr.send();
-                </pre>
-                </div>
+                    </pre>
+                    </div>
+
+                    <div id="c-sharp" class="txt-box">
+                    <h3>C#</h3>
+<pre style="text-align:left;"> 
+    string sURL;
+    sURL = "http://portal.gplates.org/service/get_coastline_polygons/?time=50";
+
+    WebRequest wrGETURL;
+    wrGETURL = WebRequest.Create(sURL);
+    
+    Stream objStream;
+    objStream = wrGETURL.GetResponse().GetResponseStream();
+
+    StreamReader objReader = new StreamReader(objStream);
+    objReader.ReadLine();
+</pre>
+                    </div>
+
+
+                    <div id="shell" class="txt-box">
+                        <h3>Shell</h3>
+                        <pre style="text-align:left;">curl http://gws.gplates.org/reconstruct/coastlines/?time=140 &gt; data.json</pre>
+                        <p style="text-align:left;">or</p>
+                        <pre style="text-align:left;">wget "http://gws.gplates.org/reconstruct/coastlines/?time=140" -O data.json</pre>
+                    </div>
+
+
 
                 </div>
 
@@ -114,6 +141,8 @@
                   <ul class="nav nav-sidebar" data-spy="affix">
                     <li><a href="#qgis">QGIS</a></li>
                     <li><a href="#cors">JavaScript CORS</a></li>
+                    <li><a href="#c-sharp">C#</a></li>
+                    <li><a href="#shell">Shell</a></li>
                     <!--<li class="dropdown">
                       <a class="dropdown-toggle" data-toggle="dropdown" href="#">Section 4 <span class="caret"></span></a>
                       <ul class="dropdown-menu">
@@ -127,6 +156,7 @@
             </div><!--end of row-->
         </div><!-- end of container -->
     </div><!-- end of container-fluid -->
+    <br><br>
     <script src="http://portal.gplates.org/static/libs/jquery-2.1.1/jquery.min.js"></script>
     <script src="http://portal.gplates.org/static/libs/bootstrap-3.3.6/js/bootstrap.js"></script>
 </body>
