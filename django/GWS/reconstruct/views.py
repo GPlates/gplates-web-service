@@ -75,7 +75,10 @@ def reconstruct_points(request):
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/
     response = HttpResponse(ret, content_type='application/json')
-    response['Access-Control-Allow-Origin'] = '*'
+    
+    #TODO: 
+    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
+    #response['Access-Control-Allow-Origin'] = '*'
     return response
 
 
@@ -104,7 +107,10 @@ def get_coastline_polygons(request):
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/ 
     response = HttpResponse(ret, content_type='application/json')
-    response['Access-Control-Allow-Origin'] = '*'
+    
+    #TODO:
+    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
+    #response['Access-Control-Allow-Origin'] = '*'
     return response
 
 def get_static_polygons(request):
@@ -131,7 +137,10 @@ def get_static_polygons(request):
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/
     response = HttpResponse(ret, content_type='application/json')
-    response['Access-Control-Allow-Origin'] = '*'
+
+    #TODO:
+    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
+    #response['Access-Control-Allow-Origin'] = '*'
     return response
 
 
@@ -203,7 +212,9 @@ def motion_path(request):
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/
     response = HttpResponse(ret, content_type='application/json')
-    response['Access-Control-Allow-Origin'] = '*'
+    #TODO:
+    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
+    #response['Access-Control-Allow-Origin'] = '*'
     return response
 
 
@@ -214,7 +225,9 @@ def flowline(request):
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/
     response = HttpResponse(ret, content_type='application/json')
-    response['Access-Control-Allow-Origin'] = '*'
+    #TODO:
+    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
+    #response['Access-Control-Allow-Origin'] = '*'
     return response
 
 
@@ -298,5 +311,88 @@ def reconstruct_feature_collection(request):
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/
     response = HttpResponse(ret, content_type='application/json')
-    response['Access-Control-Allow-Origin'] = '*'
+    #TODO:
+    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
+    #response['Access-Control-Allow-Origin'] = '*'
     return response
+
+
+#put below code here temporarily.
+#some of the coastline polygons have holes inside them.
+#it must be addressed somehow.
+import cProfile , pstats, ast, StringIO
+
+def get_coastline_polygons_low(request):
+    #pr = cProfile.Profile()
+    #pr.enable()
+
+    time = request.GET.get('time', 0)
+    features = []
+    '''
+    polygons = CoastlinePolygons.objects.all()
+    #polygons = StaticPolygons.objects.all()
+
+    for p in polygons:
+        polygon_feature = pygplates.Feature()
+        polygon_feature.set_geometry(
+            pygplates.PolygonOnSphere([(lat,lon) for lon, lat in p.geom[0][0]]))
+        polygon_feature.set_reconstruction_plate_id(int(p.plateid1))
+        features.append(polygon_feature)
+    '''
+    shp_path = settings.MODEL_STORE_DIR+'/'+settings.MODEL_DEFAULT+'/coastlines_low_res/Seton_etal_ESR2012_Coastlines_2012.shp'
+
+    model_dict = get_reconstruction_model_dict(settings.MODEL_DEFAULT)
+    rotation_file_path = settings.MODEL_STORE_DIR+'/'+settings.MODEL_DEFAULT+"/"+model_dict['RotationFile']
+
+    import shapefile
+    sf = shapefile.Reader(shp_path)
+    for record in sf.shapeRecords():
+        if record.shape.shapeType != 5:
+            continue
+        for idx in range(len(record.shape.parts)):
+            start_idx = record.shape.parts[idx]
+            end_idx = len(record.shape.points)
+            if idx < (len(record.shape.parts) -1):
+                end_idx = record.shape.parts[idx+1]
+            polygon_feature = pygplates.Feature()
+            points = record.shape.points[start_idx:end_idx]
+            polygon_feature.set_geometry(
+                pygplates.PolygonOnSphere([(lat,lon) for lon, lat in points]))
+            polygon_feature.set_reconstruction_plate_id(int(record.record[0]))
+            features.append(polygon_feature)
+            break
+
+    feature_collection = pygplates.FeatureCollection(features)
+    reconstructed_polygons = []
+    rotation_model = pygplates.RotationModel(rotation_file_path)
+
+    '''
+    pr.disable()
+    s = StringIO.StringIO()
+    sortby = 'cumulative'
+    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    ps.print_stats(20)
+    print s.getvalue()
+    '''
+    pygplates.reconstruct(
+        feature_collection,
+        rotation_model,
+        reconstructed_polygons,
+        float(time))
+
+    #return HttpResponse('OK')
+    data = {"type": "FeatureCollection"}
+    data["features"] = []
+    for p in reconstructed_polygons:
+        feature = {"type": "Feature"}
+        feature["geometry"] = {}
+        feature["geometry"]["type"] = "Polygon"
+        feature["geometry"]["coordinates"] = [[(lon,lat) for lat, lon in p.get_reconstructed_geometry().to_lat_lon_list()]]
+        data["features"].append(feature)
+    ret = json.dumps(pretty_floats(data))
+
+    response = HttpResponse(ret, content_type='application/json')
+    #TODO:
+    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
+    return response
+
