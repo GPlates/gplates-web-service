@@ -1,4 +1,4 @@
-from django.shortcuts import render, render_to_response, redirect
+from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseServerError, HttpResponseNotAllowed
 from django.conf import settings
@@ -19,10 +19,11 @@ import pandas as pd
 
 # Create your views here.
 def index(request):
-    return render_to_response(
+    return render(
+        request,
         'list.html',
-        context_instance = RequestContext(request,
-            {}))
+        {}
+    )
 
 class PrettyFloat(float):
     def __repr__(self):
@@ -125,8 +126,13 @@ def html_model_list(request):
 
     df = pd.read_csv('/Users/Simon/Data/TimeEncodedData/Yanites+Kesler/ngeo2429-s2.csv',index_col='Deposit number')
     html_table = df.to_html(index=False)
-    return render_to_response('list_template.html',{'html_table': html_table}, 
-                               context_instance = RequestContext(request,{}))
+    return render(
+        request,
+        'list_template.html',
+        {
+            'html_table': html_table
+        } 
+    )
 
 
 @csrf_exempt
@@ -166,5 +172,10 @@ def subduction(request):
         df_OreDepositBirthTimeStats = subduction_parameters(seed_point_features,rotation_model)
 
         html_table = df_OreDepositBirthTimeStats.to_html(index=False)
-        return render_to_response('list_template.html',{'html_table': html_table}, 
-                                   context_instance = RequestContext(request,{}))
+        return render(
+            request,
+            'list_template.html',
+            {
+                'html_table': html_table
+            }
+        ) 
