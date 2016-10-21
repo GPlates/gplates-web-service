@@ -12,7 +12,7 @@
         <title>GPlates Web Service Examples"</title>
         <link type="image/png" rel="icon" href="/static/img/GPlates-icon.png">
 
-        <link href="http://portal.gplates.org/static/libs/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet">
+        <link href="//portal.gplates.org/static/libs/bootstrap-3.3.6/css/bootstrap.min.css" rel="stylesheet">
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -71,18 +71,18 @@
                     <div id="qgis" class="txt-box">
                         <h3>QGIS</h3>
                         <p>Step 1: Click menu item "Layer--&gt;Add Layer--&gt;Add Vector Layer"</p>
-                        <img class="img-responsive" src="http://portal.gplates.org/static/img/qgis-example-1.jpg" alt="QGIS Examples #1" >
+                        <img class="img-responsive" src="https://portal.gplates.org/static/img/qgis-example-1.jpg" alt="QGIS Examples #1" >
                         <p>Step 2: In the popup dialog, choose "Protocol" as "Source Type" and type in the URI, for 
-                        example <pre>http://gws.gplates.org/reconstruct/coastlines?time=100</pre>.</p>
-                        <img class="img-responsive" src="http://portal.gplates.org/static/img/qgis-example-2.jpg" alt="QGIS Examples #2" >
+                        example <pre>https://gws.gplates.org/reconstruct/coastlines?time=100</pre>.</p>
+                        <img class="img-responsive" src="https://portal.gplates.org/static/img/qgis-example-2.jpg" alt="QGIS Examples #2" >
                         <p>Step 3: Click "Open" button and the reconstructed coastlines will show in QGIS.</p>
-                        <img class="img-responsive" src="http://portal.gplates.org/static/img/qgis-example-3.jpg" alt="QGIS Examples #3" >
+                        <img class="img-responsive" src="https://portal.gplates.org/static/img/qgis-example-3.jpg" alt="QGIS Examples #3" >
                     </div>
 
                     <div id="cors" class="txt-box">
                         <h3>JavaScript CORS</h3>
                     <pre style="text-align:left;">
-    var url = 'http://gws.gplates.org/reconstruct/coastlines/?time=50';
+    var url = 'https://gws.gplates.org/reconstruct/coastlines/?time=50';
     var method = "GET"      
     var xhr = new XMLHttpRequest();
     if("withCredentials" in xhr){
@@ -112,7 +112,7 @@
                     <h3>C#</h3>
 <pre style="text-align:left;"> 
     string sURL;
-    sURL = "http://portal.gplates.org/service/get_coastline_polygons/?time=50";
+    sURL = "https://portal.gplates.org/service/get_coastline_polygons/?time=50";
 
     WebRequest wrGETURL;
     wrGETURL = WebRequest.Create(sURL);
@@ -128,9 +128,9 @@
 
                     <div id="shell" class="txt-box">
                         <h3>Shell</h3>
-                        <pre style="text-align:left;">curl http://gws.gplates.org/reconstruct/coastlines/?time=140 &gt; data.json</pre>
+                        <pre style="text-align:left;">curl https://gws.gplates.org/reconstruct/coastlines/?time=140 &gt; data.json</pre>
                         <p style="text-align:left;">or</p>
-                        <pre style="text-align:left;">wget "http://gws.gplates.org/reconstruct/coastlines/?time=140" -O data.json</pre>
+                        <pre style="text-align:left;">wget "https://gws.gplates.org/reconstruct/coastlines/?time=140" -O data.json</pre>
                     </div>
 
 
@@ -157,7 +157,7 @@
         </div><!-- end of container -->
     </div><!-- end of container-fluid -->
     <br><br>
-    <script src="http://portal.gplates.org/static/libs/jquery-2.1.1/jquery.min.js"></script>
-    <script src="http://portal.gplates.org/static/libs/bootstrap-3.3.6/js/bootstrap.js"></script>
+    <script src="//portal.gplates.org/static/libs/jquery-2.1.1/jquery.min.js"></script>
+    <script src="//portal.gplates.org/static/libs/bootstrap-3.3.6/js/bootstrap.js"></script>
 </body>
 </html>
