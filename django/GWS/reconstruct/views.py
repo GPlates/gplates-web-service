@@ -406,6 +406,6 @@ def get_coastline_polygons_low(request):
 
     response = HttpResponse(ret, content_type='application/json')
     #TODO:
-    response['Access-Control-Allow-Origin'] = 'http://130.56.249.211:7777'
+    response['Access-Control-Allow-Origin'] = '*'
     return response
 
