@@ -387,7 +387,26 @@ def get_coastline_polygons_low(request):
         feature = {"type": "Feature"}
         feature["geometry"] = {}
         feature["geometry"]["type"] = "Polygon"
-        feature["geometry"]["coordinates"] = [[(lon,lat) for lat, lon in p.get_reconstructed_geometry().to_lat_lon_list()]]
+
+        #make sure the coordinates are valid.
+        lats, lons = zip( *p.get_reconstructed_geometry().to_lat_lon_list())
+        lats = list(lats)
+        lons = list(lons)
+        #print lats, lons
+        for idx, x in enumerate(lats):
+            if x<-89.99:
+                lats[idx] = -89.99
+            if x>89.99:
+                lats[idx] = 89.99
+
+        for idx, x in enumerate(lons):
+            if x<-179.99:
+                lons[idx] = -179.99
+            if x>179.99:
+                lons[idx] = 179.99
+
+        feature["geometry"]["coordinates"] = [zip(lons,lats)]
+
         data["features"].append(feature)
     ret = json.dumps(pretty_floats(data))
 
