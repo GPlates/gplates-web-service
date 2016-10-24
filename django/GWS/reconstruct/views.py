@@ -77,8 +77,7 @@ def reconstruct_points(request):
     response = HttpResponse(ret, content_type='application/json')
     
     #TODO: 
-    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
-    #response['Access-Control-Allow-Origin'] = '*'
+    response['Access-Control-Allow-Origin'] = '*'
     return response
 
 
@@ -109,8 +108,7 @@ def get_coastline_polygons(request):
     response = HttpResponse(ret, content_type='application/json')
     
     #TODO:
-    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
-    #response['Access-Control-Allow-Origin'] = '*'
+    response['Access-Control-Allow-Origin'] = '*'
     return response
 
 def get_static_polygons(request):
@@ -139,8 +137,7 @@ def get_static_polygons(request):
     response = HttpResponse(ret, content_type='application/json')
 
     #TODO:
-    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
-    #response['Access-Control-Allow-Origin'] = '*'
+    response['Access-Control-Allow-Origin'] = '*'
     return response
 
 
@@ -213,8 +210,7 @@ def motion_path(request):
     #http://www.html5rocks.com/en/tutorials/cors/
     response = HttpResponse(ret, content_type='application/json')
     #TODO:
-    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
-    #response['Access-Control-Allow-Origin'] = '*'
+    response['Access-Control-Allow-Origin'] = '*'
     return response
 
 
@@ -226,8 +222,7 @@ def flowline(request):
     #http://www.html5rocks.com/en/tutorials/cors/
     response = HttpResponse(ret, content_type='application/json')
     #TODO:
-    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
-    #response['Access-Control-Allow-Origin'] = '*'
+    response['Access-Control-Allow-Origin'] = '*'
     return response
 
 
@@ -312,8 +307,7 @@ def reconstruct_feature_collection(request):
     #http://www.html5rocks.com/en/tutorials/cors/
     response = HttpResponse(ret, content_type='application/json')
     #TODO:
-    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
-    #response['Access-Control-Allow-Origin'] = '*'
+    response['Access-Control-Allow-Origin'] = '*'
     return response
 
 
@@ -412,6 +406,6 @@ def get_coastline_polygons_low(request):
 
     response = HttpResponse(ret, content_type='application/json')
     #TODO:
-    response['Access-Control-Allow-Origin'] = 'portal.gplates.org'
+    response['Access-Control-Allow-Origin'] = 'http://130.56.249.211:7777'
     return response
 
