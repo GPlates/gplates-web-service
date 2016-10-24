@@ -27,15 +27,15 @@
                 position: relative;
             }
             .txt-box{
-                font-family: cursive;
-                font-size:120%;
+                font-size:135%;
                 border-color: #ddd; 
                 border-width: 1px; 
                 border-radius: 4px 4px 0 0;
                 border-style: solid;
                 padding: 10px 40px 0px 40px;
                 background-color: #fafafa;
-                margin-top: 10px;
+                margin: 10px 0 40px 0;            
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 128, 0.19);
             }
 
             .ref-title{
@@ -55,6 +55,11 @@
             .nav-sidebar{
                 margin-top:10px;
             }
+
+            .demo-btn{
+                text-align: center;
+                margin: 20px 0px 20px 0px;
+            }
         </style>
     </head>
 
@@ -71,7 +76,7 @@
                         <p>Reconstruct the geographic locations from present day coordinates back to their paleo-positions.
                         Each location will be assigned a plate id and moved back in time using the chosen reconstruction model.</p>
 
-                        <strong>URL:</strong>
+                        <strong>Endpoint:</strong>
                         <p><code>https://gws.gplates.org/reconstruct/reconstruct_points</code></p>
 
                         <strong>Parameters:</strong>
@@ -95,7 +100,7 @@
                         <p><a href="/reconstruct/reconstruct_points/?points=95,54,142,-33&amp;time=140" target="_blank">
                         <pre>https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&amp;time=140</pre></a></p>
 
-                        <p><strong><a href="https://portal.gplates.org/service/d3_demo/?view=points" target='_blank'>Try it in an interactive online map</a></strong></p>
+                        <p class="demo-btn"><a class="btn btn-info" role="button" href="https://portal.gplates.org/service/d3_demo/?view=points" target='_blank'>Try it in an interactive online map</a></p>
                     </div>
 
                     <div id="recon-fc" class="txt-box">
@@ -105,8 +110,8 @@
                             Each feature will be assigned a plate id and moved back in time using the given reconstruction model.
                             Reconstructed features will be returned in GeoJSON format.</p>
 
-                        <strong>URL:</strong>
-                            <p><code>https://portal.gplates.org/service/reconstruct_feature_collection</code></p>
+                        <strong>Endpoint:</strong>
+                            <p><code>https://gws.gplates.org/reconstruct/reconstruct_feature_collection</code></p>
 
                         <strong>Parameters:</strong>
                             <ul><li><strong>feature_collection:</strong>
@@ -124,13 +129,13 @@
                             <ul><li>Feature collection in GeoJson format.</li></ul>
 
                             <strong>Example:</strong>
-                            <p><a href="https://portal.gplates.org/service/reconstruct_feature_collection/?feature_collection={
+                            <p><a href="/reconstruct/reconstruct_feature_collection/?feature_collection={
                             &quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,
                             &quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:
-                            [[[23,-20],[-9,35],[14,44],[23,-20]]]},&quot;properties&quot;:{}}]}&amp;geologicage=140&amp;model=default" target="_blank">
-                            <pre>https://portal.gplates.org/service/reconstruct_feature_collection/?feature_collection={"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[23,-20],[-9,35],[14,44],[23,-20]]]},"properties":{}}]}&amp;geologicage=140&amp;model=default</pre></a></p>
+                            [[[23,-20],[-9,35],[14,44],[23,-20]]]},&quot;properties&quot;:{}}]}&amp;geologicage=140&amp;model=SETON2012" target="_blank">
+                            <pre>https://gws.gplates.org/reconstruct/reconstruct_feature_collection/?feature_collection={"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[23,-20],[-9,35],[14,44],[23,-20]]]},"properties":{}}]}&amp;geologicage=140&amp;model=SETON2012</pre></a></p>
 
-                            <p><strong><a href="https://portal.gplates.org/service/d3_demo/?view=feature_collection" target='_blank'>Try it in an interactive online map</a></strong></p>
+                            <p class="demo-btn"><a class="btn btn-info" role="button" href="https://portal.gplates.org/service/d3_demo/?view=feature_collection" target='_blank'>Try it in an interactive online map</a></p>
 
                             <strong>Feature Collection Examples:</strong>
         
@@ -204,8 +209,8 @@
                         <strong>Description:</strong>
                             <p>Return the coastlines' paleo-coordinates.</p>
 
-                        <strong>URL:</strong>
-                            <p><code>httpd://gws.gplates.org/reconstruct/coastlines</code></p>
+                        <strong>Endpoint:</strong>
+                            <p><code>https://gws.gplates.org/reconstruct/coastlines</code></p>
 
                         <strong>Parameters:</strong>
                         <ul><li><strong>time</strong>
@@ -225,8 +230,8 @@
                         <p><a href="/reconstruct/coastlines?time=140" target="_blank">
                         <pre>https://gws.gplates.org/reconstruct/coastlines?time=140</pre></a></p>
 
-                        <p><strong><a href="http://portal.gplates.org/service/d3_demo/" target='_blank'>
-                            Try it in an interactive online map</a></strong></p>
+                        <p class="demo-btn"><a class="btn btn-info" href="https://portal.gplates.org/service/d3_demo/" target='_blank'>
+                            Try it in an interactive online map</a></p>
                    </div>
                 </div >
 

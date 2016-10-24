@@ -261,7 +261,7 @@ def reconstruct_feature_collection(request):
         features.append(feature)
 
 
-    model = request.GET.get('model',settings.MODEL_DEFAULT)
+    model = str(request.GET.get('model',settings.MODEL_DEFAULT))
     model_dict = get_reconstruction_model_dict(model)
     rotation_model = pygplates.RotationModel(settings.MODEL_STORE_DIR+model+'/'+model_dict['RotationFile'])
 

@@ -32,7 +32,9 @@
                 border-style: solid;
                 padding: 10px 40px 0px 40px;
                 background-color: #fafafa;
-                margin-bottom: 10px;
+                margin: 10px 0 40px 0;
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 128, 0.19);
+                min-height: 600px;
             }
 
             .ref-title{
@@ -112,7 +114,7 @@
                     <h3>C#</h3>
 <pre style="text-align:left;"> 
     string sURL;
-    sURL = "https://portal.gplates.org/service/get_coastline_polygons/?time=50";
+    sURL = "https://gws.gplates.org/reconstruct/coastlines/?time=50";
 
     WebRequest wrGETURL;
     wrGETURL = WebRequest.Create(sURL);
