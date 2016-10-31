@@ -7,6 +7,7 @@ from django.conf import settings
 #from get_model import get_reconstruction_model_dict
 from utils.get_model import get_reconstruction_model_dict
 from utils.wrapping_tools import wrap_reconstructed_polygons
+from utils.access_control import request_access
 
 import sys, json
 
@@ -316,6 +317,7 @@ def reconstruct_feature_collection(request):
 #it must be addressed somehow.
 import cProfile , pstats, ast, StringIO
 
+@request_access
 def get_coastline_polygons_low(request):
     #pr = cProfile.Profile()
     #pr.enable()

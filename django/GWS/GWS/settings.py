@@ -33,6 +33,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+#if empty, there is no access control.
+ACCESS_CONTROL_URL = 'https://portal.gplates.org/access_control/'
 
 # Application definition
 
