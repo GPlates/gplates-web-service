@@ -2,6 +2,7 @@ import numpy as np
 import pygplates
 from scipy import spatial
 import healpy as hp
+from netCDF4 import Dataset
 
 
 def marsaglias_method(N):
@@ -68,18 +69,23 @@ def rtp2xyz(r, theta, phi):
     return xout
 
 
+def create_tree_for_spherical_data(inputLats, inputLons, inputVals, n=16):
+
+    ithetas = np.radians(90-inputLats)
+    iphis   = np.radians(inputLons)
+    irs     = np.ones(np.shape(ithetas))
+    nodes = []
+    
+    ixyzs=rtp2xyz(irs.ravel(), ithetas.ravel(), iphis.ravel())
+    tree = spatial.cKDTree(ixyzs, n)
+
+    return tree
+
+
 def sampleOnSphere(inputLats, inputLons, inputVals, othetas, ophis, tree=None, n=16):
     
     if (tree is None):
-        #print '\nBuilding kd-tree..\n'
-        ithetas = np.radians(90-inputLats)
-        iphis   = np.radians(inputLons)
-        irs     = np.ones(np.shape(ithetas))
-        nodes = []
-        
-        ixyzs=rtp2xyz(irs.ravel(), ithetas.ravel(), iphis.ravel())
-        tree = spatial.cKDTree(ixyzs, n)
-    #end if
+        tree = create_tree_for_spherical_data(inputLats, inputLons, inputVals)
     
     othetas = np.radians(90-othetas)
     ophis   = np.radians(ophis)
