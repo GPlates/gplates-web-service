@@ -16,9 +16,11 @@ def litho1(request):
     mode = request.GET.get('mode', 'random_points')
     filename = request.GET.get('filename', 'litho1_scalar_coverage.gpmlz')
     if mode=='healpix':
-        N = request.GET.get('N', 64)
+        Nstr = request.GET.get('N', 64)
     else:
-        N = request.GET.get('N', 100000)
+        Nstr = request.GET.get('N', 100000)
+
+    N = int(Nstr)
 
     data = np.loadtxt('%s/litho1.0_CrustThickness.csv' % settings.EARTH_STORE_DIR,delimiter=',')
 
