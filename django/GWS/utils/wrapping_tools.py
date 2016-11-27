@@ -17,7 +17,7 @@ def wrap_polylines(polylines,lon0=0,tesselate_degrees=1):
         for geometry in split_geometry:
             feature = {"type": "Feature"}
             feature["geometry"] = {}
-            feature["geometry"]["type"] = "Polyline"
+            feature["geometry"]["type"] = "MultiLineString"
             point_list = []
             for point in geometry.get_points():
                 point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
@@ -79,12 +79,13 @@ def wrap_plate_boundaries(shared_boundary_sections,lon0=0,tesselate_degrees=1):
             for geometry in split_geometry:
                 feature = {"type": "Feature"}
                 feature["geometry"] = {}
-                feature["geometry"]["type"] = "Polyline"
+                feature["geometry"]["type"] = "MultiLineString"
                 point_list = []
                 for point in geometry.get_points():
                     point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
                 feature["geometry"]["coordinates"] = [point_list]
-                feature["geometry"]["feature_type"] = str(shared_sub_segment.get_feature().get_feature_type())
+                feature["feature_type"] = str(shared_sub_segment.get_feature().get_feature_type())
+                feature["Length"] = float(shared_sub_segment.get_geometry().get_arc_length())
                 data["features"].append(feature)
     
     return data
