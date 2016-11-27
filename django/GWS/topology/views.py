@@ -39,7 +39,7 @@ def get_plate_polygons(request):
 
     model_dict = get_reconstruction_model_dict(model)    
 
-    features = []
+    #features = []
     rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))  
 
