@@ -9,6 +9,7 @@ def get_velocities(rotation_model,topology_features,time,velocity_domain_feature
     # All domain points and associated (magnitude, azimuth, inclination) velocities for the current time.
     all_domain_points = []
     all_velocities = []
+    plate_ids = []
 
     # Partition our velocity domain features into our topological plate polygons at the current 'time'.
     plate_partitioner = pygplates.PlatePartitioner(topology_features, rotation_model, time)
@@ -44,10 +45,14 @@ def get_velocities(rotation_model,topology_features,time,velocity_domain_feature
                             [velocity_domain_point],
                             velocity_vectors)
                     all_velocities.append(velocities[0])
+                    plate_ids.append(partitioning_plate_id)
 
                 else:
+                    # If point is not within a polygon, set velocity and plate_id to zero
                     all_velocities.append((0,0,0))
+                    plate_ids.append(0)
 
+    # NOTE: should refactor this to place inside previous loop??
     pt_vel_mag=[]
     pt_vel_az=[]
     for velocity_vector in all_velocities:
@@ -60,4 +65,4 @@ def get_velocities(rotation_model,topology_features,time,velocity_domain_feature
         pt_lon.append(pt.to_lat_lon()[1])
         pt_lat.append(pt.to_lat_lon()[0])
 
-    return pt_lat,pt_lon,pt_vel_mag,pt_vel_az
+    return pt_lat,pt_lon,pt_vel_mag,pt_vel_az,plate_ids

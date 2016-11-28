@@ -46,13 +46,13 @@ def velocity_within_topological_boundaries(request):
     topology_features = pygplates.FeatureCollection(str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,model_dict['PlatePolygons'])))
 
-    lat,lon,vel_mag,vel_az = get_velocities(rotation_model,topology_features,float(time))
+    lat,lon,vel_mag,vel_az,plate_ids = get_velocities(rotation_model,topology_features,float(time))
     
     # prepare the response to be returned
     ret='{"coordinates":['
-    for p in zip(lat,lon,vel_mag,vel_az):
-        ret+='[{0:5.2f},{1:5.2f},{2:5.2f},{3:5.2f}],'.format(
-            p[1],p[0],p[2],p[3])
+    for p in zip(lat,lon,vel_mag,vel_az,plate_ids):
+        ret+='[{0:5.2f},{1:5.2f},{2:5.2f},{3:5.2f},{4:5.2f}],'.format(
+            p[1],p[0],p[2],p[3],p[4])
     ret=ret[0:-1]
     ret+=']}'
 
@@ -72,13 +72,13 @@ def velocity_within_static_polygons(request):
     static_polygons = pygplates.FeatureCollection(str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons'])))
 
-    lat,lon,vel_mag,vel_az = get_velocities(rotation_model,static_polygons,float(time))
+    lat,lon,vel_mag,vel_az,plate_ids = get_velocities(rotation_model,static_polygons,float(time))
     
     # prepare the response to be returned
     ret='{"coordinates":['
-    for p1,p2,p3,p4 in zip(lat,lon,vel_mag,vel_az):
-        ret+='[{0:5.2f},{1:5.2f},{2:5.2f},{3:5.2f}],'.format(
-            p2,p1,p3,p4)
+    for p in zip(lat,lon,vel_mag,vel_az,plate_ids):
+        ret+='[{0:5.2f},{1:5.2f},{2:5.2f},{3:5.2f},{4:5.2f}],'.format(
+            p[1],p[0],p[2],p[3],p[4])
     ret=ret[0:-1]
     ret+=']}'
 
