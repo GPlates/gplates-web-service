@@ -1,7 +1,7 @@
 import pygplates
 from create_gpml import create_gpml_healpix_mesh
 
-def get_velocities(rotation_model,topology_features,time,velocity_domain_features=None,delta_time=1):
+def get_velocities(rotation_model,topology_features,time,velocity_domain_features=None,delta_time=1,velocity_type='MagAzim'):
 
     if velocity_domain_features is None:
         velocity_domain_features = create_gpml_healpix_mesh(32,feature_type='MeshNode')
@@ -40,11 +40,20 @@ def get_velocities(rotation_model,topology_features,time,velocity_domain_feature
                         equivalent_stage_rotation,
                         delta_time)
 
-                    # Convert global 3D velocity vectors to local (magnitude, azimuth, inclination) tuples (one tuple per point).
-                    velocities = pygplates.LocalCartesian.convert_from_geocentric_to_magnitude_azimuth_inclination(
-                            [velocity_domain_point],
-                            velocity_vectors)
-                    all_velocities.append(velocities[0])
+                    if velocity_type=='east_north':
+                        # Convert global 3D velocity vectors to local (magnitude, azimuth, inclination) tuples (one tuple per point).
+                        velocities = pygplates.LocalCartesian.convert_from_geocentric_to_north_east_down(
+                                [velocity_domain_point],
+                                velocity_vectors)
+                        all_velocities.append(velocities[0])
+
+                    else:
+                        # Convert global 3D velocity vectors to local (magnitude, azimuth, inclination) tuples (one tuple per point).
+                        velocities = pygplates.LocalCartesian.convert_from_geocentric_to_magnitude_azimuth_inclination(
+                                [velocity_domain_point],
+                                velocity_vectors)
+                        all_velocities.append(velocities[0])
+
                     plate_ids.append(partitioning_plate_id)
 
                 else:
@@ -52,12 +61,22 @@ def get_velocities(rotation_model,topology_features,time,velocity_domain_feature
                     all_velocities.append((0,0,0))
                     plate_ids.append(0)
 
-    # NOTE: should refactor this to place inside previous loop??
-    pt_vel_mag=[]
-    pt_vel_az=[]
-    for velocity_vector in all_velocities:
-        pt_vel_mag.append(velocity_vector[0])
-        pt_vel_az.append(velocity_vector[1])
+    pt_vel1=[]
+    pt_vel2=[]
+    if velocity_type=='east_north':
+        for velocity_vector in all_velocities:
+            if getattr(velocity_vector,'get_x',None) is not None:
+                pt_vel1.append(velocity_vector.get_y())
+                pt_vel2.append(velocity_vector.get_x())
+            else:
+                pt_vel1.append(0.)
+                pt_vel2.append(0.)
+    else:
+        for velocity_vector in all_velocities:
+            pt_vel1.append(velocity_vector[0])
+            pt_vel2.append(velocity_vector[1])
+
+
 
     pt_lon = []
     pt_lat = []
@@ -65,4 +84,5 @@ def get_velocities(rotation_model,topology_features,time,velocity_domain_feature
         pt_lon.append(pt.to_lat_lon()[1])
         pt_lat.append(pt.to_lat_lon()[0])
 
-    return pt_lat,pt_lon,pt_vel_mag,pt_vel_az,plate_ids
+    return pt_lat,pt_lon,pt_vel1,pt_vel2,plate_ids
+

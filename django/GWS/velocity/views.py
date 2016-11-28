@@ -37,6 +37,7 @@ def velocity_within_topological_boundaries(request):
     
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
+    velocity_type = request.GET.get('velocity_type','MagAzim')
 
     model_dict = get_reconstruction_model_dict(model)
 
@@ -46,11 +47,12 @@ def velocity_within_topological_boundaries(request):
     topology_features = pygplates.FeatureCollection(str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,model_dict['PlatePolygons'])))
 
-    lat,lon,vel_mag,vel_az,plate_ids = get_velocities(rotation_model,topology_features,float(time))
+    lat,lon,velE,velN,plate_ids = get_velocities(rotation_model,topology_features,float(time),
+                                                 velocity_type=velocity_type)
     
     # prepare the response to be returned
     ret='{"coordinates":['
-    for p in zip(lat,lon,vel_mag,vel_az,plate_ids):
+    for p in zip(lat,lon,velE,velN,plate_ids):
         ret+='[{0:5.2f},{1:5.2f},{2:5.2f},{3:5.2f},{4:5.2f}],'.format(
             p[1],p[0],p[2],p[3],p[4])
     ret=ret[0:-1]
@@ -63,6 +65,7 @@ def velocity_within_static_polygons(request):
 
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
+    velocity_type = request.GET.get('velocity_type','MagAzim')
 
     model_dict = get_reconstruction_model_dict(model)
 
@@ -72,11 +75,12 @@ def velocity_within_static_polygons(request):
     static_polygons = pygplates.FeatureCollection(str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons'])))
 
-    lat,lon,vel_mag,vel_az,plate_ids = get_velocities(rotation_model,static_polygons,float(time))
+    lat,lon,velMag,velAz,plate_ids = get_velocities(rotation_model,static_polygons,float(time),
+                                                      velocity_type=velocity_type)
     
     # prepare the response to be returned
     ret='{"coordinates":['
-    for p in zip(lat,lon,vel_mag,vel_az,plate_ids):
+    for p in zip(lat,lon,velMag,velAz,plate_ids):
         ret+='[{0:5.2f},{1:5.2f},{2:5.2f},{3:5.2f},{4:5.2f}],'.format(
             p[1],p[0],p[2],p[3],p[4])
     ret=ret[0:-1]
