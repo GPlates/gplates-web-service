@@ -187,9 +187,6 @@ def motion_path(request):
             motion_path_feature, rotation_model, reconstructed_motion_paths, reconstruction_time,
             reconstruct_type=pygplates.ReconstructType.motion_path)
 
-    #for reconstructed_motion_path in reconstructed_motion_paths:
-    #    trail = reconstructed_motion_path.get_motion_path().to_lat_lon_array()
-
     data = {"type": "FeatureCollection"}
     data["features"] = [] 
     for reconstructed_motion_path in reconstructed_motion_paths:
@@ -199,8 +196,8 @@ def motion_path(request):
         feature = {"type": "Feature"}
         feature["geometry"] = {}
         feature["geometry"]["type"] = "Polyline"
-        #### NEED TO FLIP COORDINATES
-        feature["geometry"]["coordinates"] = [reconstructed_motion_path.get_motion_path().to_lat_lon_list()]
+        #### NOTE CODE TO FLIP COORDINATES TO 
+        feature["geometry"]["coordinates"] = [[(lon,lat) for lat,lon in reconstructed_motion_path.get_motion_path().to_lat_lon_list()]]
         feature["geometry"]["distance"] = Dist
         data["features"].append(feature)
 
@@ -235,6 +232,7 @@ def reconstruct_feature_collection(request):
     fc_str = request.GET.get('feature_collection')
     fc = json.loads(fc_str)
 
+    # Convert geojson input to gplates feature collection
     features=[]
     for f in fc['features']:
         geom = f['geometry']
@@ -258,7 +256,8 @@ def reconstruct_feature_collection(request):
 
     model = str(request.GET.get('model',settings.MODEL_DEFAULT))
     model_dict = get_reconstruction_model_dict(model)
-    rotation_model = pygplates.RotationModel(settings.MODEL_STORE_DIR+model+'/'+model_dict['RotationFile'])
+    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
 
     assigned_features = pygplates.partition_into_plates(
         settings.MODEL_STORE_DIR+model+'/'+model_dict['StaticPolygons'],
@@ -274,7 +273,7 @@ def reconstruct_feature_collection(request):
     reconstructed_geometries = []
     pygplates.reconstruct(assigned_features, rotation_model, reconstructed_geometries, float(geologicage), 0)
 
-
+    # convert feature collection back to geojson
     data = {"type": "FeatureCollection"}
     data["features"] = []
     for g in reconstructed_geometries:

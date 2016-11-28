@@ -76,8 +76,6 @@ def get_velocities(rotation_model,topology_features,time,velocity_domain_feature
             pt_vel1.append(velocity_vector[0])
             pt_vel2.append(velocity_vector[1])
 
-
-
     pt_lon = []
     pt_lat = []
     for pt in all_domain_points:
