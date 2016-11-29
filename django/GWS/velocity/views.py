@@ -8,6 +8,7 @@ import numpy as np
 
 from utils.get_model import get_reconstruction_model_dict
 from utils.velocity_tools import get_velocities
+from utils.create_gpml import create_gpml_regular_long_lat_mesh,create_gpml_healpix_mesh
 
 import pygplates
 
@@ -38,6 +39,7 @@ def velocity_within_topological_boundaries(request):
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
     velocity_type = request.GET.get('velocity_type','MagAzim')
+    domain_type = request.GET.get('domain_type','longLatGrid')
 
     model_dict = get_reconstruction_model_dict(model)
 
@@ -47,12 +49,21 @@ def velocity_within_topological_boundaries(request):
     topology_features = pygplates.FeatureCollection(str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,model_dict['PlatePolygons'])))
 
-    lat,lon,velE,velN,plate_ids = get_velocities(rotation_model,topology_features,float(time),
-                                                 velocity_type=velocity_type)
+    if domain_type=='longLatGrid':
+        domain_features = create_gpml_regular_long_lat_mesh(1.,feature_type='MeshNode')
+        lat,lon,vel1,vel2,plate_ids = get_velocities(rotation_model,topology_features,float(time),
+                                                     velocity_domain_features=domain_features,
+                                                     velocity_type=velocity_type)
+
+    elif domain_type=='healpix':
+        domain_features = create_gpml_healpix_mesh(32,feature_type='MeshNode')
+        lat,lon,vel1,vel2,plate_ids = get_velocities(rotation_model,topology_features,float(time),
+                                                     velocity_domain_features=domain_features,
+                                                     velocity_type=velocity_type)
     
     # prepare the response to be returned
     ret='{"coordinates":['
-    for p in zip(lat,lon,velE,velN,plate_ids):
+    for p in zip(lat,lon,vel1,vel2,plate_ids):
         ret+='[{0:5.2f},{1:5.2f},{2:5.2f},{3:5.2f},{4:5.2f}],'.format(
             p[1],p[0],p[2],p[3],p[4])
     ret=ret[0:-1]
@@ -66,6 +77,7 @@ def velocity_within_static_polygons(request):
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
     velocity_type = request.GET.get('velocity_type','MagAzim')
+    domain_type = request.GET.get('domain_type','longLatGrid')
 
     model_dict = get_reconstruction_model_dict(model)
 
@@ -75,12 +87,21 @@ def velocity_within_static_polygons(request):
     static_polygons = pygplates.FeatureCollection(str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons'])))
 
-    lat,lon,velMag,velAz,plate_ids = get_velocities(rotation_model,static_polygons,float(time),
-                                                      velocity_type=velocity_type)
+    if domain_type=='longLatGrid':
+        domain_features = create_gpml_regular_long_lat_mesh(1.,feature_type='MeshNode')
+        lat,lon,vel1,vel2,plate_ids = get_velocities(rotation_model,static_polygons,float(time),
+                                                     velocity_domain_features=domain_features,
+                                                     velocity_type=velocity_type)
+
+    elif domain_type=='healpix':
+        domain_features = create_gpml_healpix_mesh(32,feature_type='MeshNode')
+        lat,lon,vel1,vel2,plate_ids = get_velocities(rotation_model,static_polygons,float(time),
+                                                     velocity_domain_features=domain_features,
+                                                     velocity_type=velocity_type)
     
     # prepare the response to be returned
     ret='{"coordinates":['
-    for p in zip(lat,lon,velMag,velAz,plate_ids):
+    for p in zip(lat,lon,vel1,vel2,plate_ids):
         ret+='[{0:5.2f},{1:5.2f},{2:5.2f},{3:5.2f},{4:5.2f}],'.format(
             p[1],p[0],p[2],p[3],p[4])
     ret=ret[0:-1]
