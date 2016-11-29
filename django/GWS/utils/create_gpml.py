@@ -59,3 +59,18 @@ def create_gpml_healpix_mesh(nSide,filename=None,feature_type=None):
     else:
         return output_feature_collection
 
+
+def create_gpml_regular_long_lat_mesh(Sampling=1,filename=None,feature_type=None):
+
+    # call the function to create a healpix array
+    longitude_array,latitude_array = np.meshgrid(np.arange(-180.,180.001,Sampling),np.arange(-90.,90.001,Sampling))
+    longitude_array = longitude_array.flatten()
+    latitude_array = latitude_array.flatten()
+
+    # call the function to create a multipoint feature, with user-defined type
+    output_feature_collection = create_gpml_velocity_feature(longitude_array,latitude_array,filename,feature_type)
+
+    if filename is not None:
+        output_feature_collection.write(filename)
+    else:
+        return output_feature_collection
