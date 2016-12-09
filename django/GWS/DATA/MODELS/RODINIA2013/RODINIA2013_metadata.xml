@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<metadata
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:dc="http://purl.org/dc/elements/1.1/">
+<dc:title>Li et al (2008) GPlates Reconstruction</dc:title>
+<dc:creator>Zheng-Xiang Li</dc:creator>
+<dc:subject>empty</dc:subject>
+<dc:description>Rodinia (from 'rodit', meaning 'to beget' or 'to give birth' in Russian) was a 
+supercontinent that existed during the Neoproterozoic and was named as it was thought to have 
+been the original supercontinent that present day continents formed from (McMenamin and McMenamin, 
+1990). Its amalgamation began just after 1100 Ma, with the collision of Baltica (north-east Europe) 
+and Amazonia (north-east South America) along the east coast of Laurentia (North America), 
+Australia-Antarctica, the Kalahari (South Africa) and the Congo (Central Africa) cratons colliding 
+along the west, south-west and south margins respectively and Siberia (eastern Russia) colliding 
+with the northern margin. Due to its central position in the supercontinent, Laurentia is considered 
+the heart of Rodinia, and its breakup, occurring around 750 Ma, resulted in all of these continents 
+rifting off it and reforming into Gondwana (from 650-520 Ma, including South America, Africa, 
+Australia, India and Antarctica) or Laurussia (North America and Baltica).
+
+A number of reconstructions have been proposed over the past twenty years for modelling the breakup 
+of Rodinia, and they all differ slightly in the exact timing and orientation of the continents. The 
+model depicted here is from Li et al. (2008), a large, international collaborative project that was 
+a contribution to IGCP 440, and is probably the most comprehensive review of global evidence for 
+Rodinia. The model is based on a number of lines of evidence, including palaeomagnetism, regional 
+geology, palaeobiology and plate kinematics.
+</dc:description>
+<dc:publisher>empty</dc:publisher>
+<dc:contributor>Zheng-Xiang Li</dc:contributor>
+<dc:date>empty</dc:date>
+<dc:type>empty</dc:type>
+<dc:format>GPlates-compatible file formats</dc:format>
+<dc:identifier>DOI:10.1016/j.precamres.2007.04.021</dc:identifier>
+<dc:source>Li, Z.X., Bogdanova, S.V., Collins, A.S., Davidson, A., De Waele, B., Ernst, R.E., 
+Fitzsimons, I.C.W., Fuck, R.A., Gladkochub, D.P., Jacobs, J., Karlstrom, K.E., Lu, S., Natapov, L.M., 
+Pease, V., Pisarevsky, S.A., Thrane, K., Vernikovsky, V., 2008. Assembly, configuration, and 
+break-up history of Rodinia: a synthesis. Precambrian Research 160, 179.210.</dc:source>
+<dc:language>empty</dc:language>
+<dc:relation>empty</dc:relation>
+<dc:coverage>Global | 530-1100 Ma</dc:coverage>
+<dc:rights>empty</dc:rights>
+
+</metadata>
