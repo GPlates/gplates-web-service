@@ -33,7 +33,24 @@ def pretty_floats(obj):
 
 
 def get_plate_polygons(request):
+    """
+    http GET request to retrieve reconstructed topological plate polygons
+
+    **usage**
     
+    <http-address-to-gws>/topology/plate_polygons/time=\ *reconstruction_time*\&model=\ *reconstruction_model*
+    
+    **parameters:**
+
+    *time* : time for reconstruction [default=0]
+
+    *model* : name for reconstruction model [defaults to default model from web service settings]
+
+    **returns:**
+
+    json containing reconstructed plate polygon features
+    """
+
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
 
@@ -61,9 +78,26 @@ def get_plate_polygons(request):
     return HttpResponse(ret, content_type='application/json')
 
 def get_topological_boundaries(request):
+    """
+    http GET request to retrieve reconstructed topological plate polygons
+
+    **usage**
+    
+    <http-address-to-gws>/topology/plate_boundaries/time=\ *reconstruction_time*\&model=\ *reconstruction_model*
+    
+    **parameters:**
+
+    *time* : time for reconstruction [default=0]
+
+    *model* : name for reconstruction model [defaults to default model from web service settings]
+
+    **returns:**
+
+    json containing reconstructed plate boundary features
+    """
     
     time = request.GET.get('time', 0)
-    model = request.GET.get('model','SETON2012')
+    model = request.GET.get('model',settings.MODEL_DEFAULT)
 
     model_dict = get_reconstruction_model_dict(model)
     

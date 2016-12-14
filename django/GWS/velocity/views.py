@@ -35,7 +35,32 @@ def pretty_floats(obj):
 
 
 def velocity_within_topological_boundaries(request):
+    """
+    http GET request to retrieve plate velocities within topological plate polygons
+
+    **usage**
     
+    <http-address-to-gws>/velocity/plate_polygons/time=\ *reconstruction_time*\&model=\ *reconstruction_model*\&velocity_type=\ *velocity_type*\&domain_type=\ *domain_type*
+    
+    **parameters:**
+
+    *time* : time for reconstruction [default=0]
+
+    *model* : name for reconstruction model [defaults to default model from web service settings]
+
+    *velocity_type* : String specifying the type of velocity representation to return. Can be 'MagAzim' for 
+                      magnitude/azimuth, or 'east_north' for velocity components in east and north directions 
+                      [default='MagAzim']
+
+    *domain_type* : String specifying the arrangement of domain points on which velocities are calculated. Can
+                    be 'longLatGrid' for regular spacing in longitude/latitude, or 'healpix' for an equal area
+                    distribution on the sphere [default='longLatGrid']
+
+    **returns:**
+
+    json containing velocity vector features
+    """
+
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
     velocity_type = request.GET.get('velocity_type','MagAzim')
@@ -73,6 +98,31 @@ def velocity_within_topological_boundaries(request):
 
 
 def velocity_within_static_polygons(request):
+    """
+    http GET request to retrieve plate velocities within static polygons
+
+    **usage**
+    
+    <http-address-to-gws>/velocity/static_polygons/time=\ *reconstruction_time*\&model=\ *reconstruction_model*\&velocity_type=\ *velocity_type*\&domain_type=\ *domain_type*
+    
+    **parameters:**
+
+    *time* : time for reconstruction [default=0]
+
+    *model* : name for reconstruction model [defaults to default model from web service settings]
+
+    *velocity_type* : String specifying the type of velocity representation to return. Can be 'MagAzim' for 
+                      magnitude/azimuth, or 'east_north' for velocity components in east and north directions 
+                      [default='MagAzim']
+
+    *domain_type* : String specifying the arrangement of domain points on which velocities are calculated. Can
+                    be 'longLatGrid' for regular spacing in longitude/latitude, or 'healpix' for an equal area
+                    distribution on the sphere [default='longLatGrid']
+
+    **returns:**
+
+    json containing velocity vector features
+    """
 
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
