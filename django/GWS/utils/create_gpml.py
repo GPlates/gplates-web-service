@@ -54,7 +54,7 @@ def create_gpml_healpix_mesh(nSide,filename=None,feature_type=None):
     # call the function to create a multipoint feature, with user-defined type
     output_feature_collection = create_gpml_velocity_feature(longitude_array,latitude_array,filename,feature_type)
 
-    if filename is not None:
+    if filename is not None:  # This is superfluous, since file has already been written in previous line???
         output_feature_collection.write(filename)
     else:
         return output_feature_collection
