@@ -256,5 +256,31 @@
     <br><br><br>
     <script src="//portal.gplates.org/static/libs/jquery-2.1.1/jquery.min.js"></script>
     <script src="//portal.gplates.org/static/libs/bootstrap-3.3.6/js/bootstrap.js"></script>
+    <script>
+
+     var url = 'http://130.56.249.211/reconstruct/coastlines/?time=50';
+    var method = "GET"      
+    var xhr = new XMLHttpRequest();
+    if("withCredentials" in xhr){
+        xhr.open(method, url, true);
+    }else if(typeof XDomainRequest != "undefined"){
+        xhr = new XDomainRequest();
+        xhr.open(method, url);
+    }else{
+        xhr = null;
+    }
+    if (!xhr) {
+      throw new Error('Does your web browser support CORS?');
+    }
+    xhr.onload = function() {
+        var text = xhr.responseText;
+        console.log(text);
+    };
+    xhr.onerror = function() {
+        alert('something is wrong!');
+    };
+
+    xhr.send();
+    </script>
 </body>
 </html>

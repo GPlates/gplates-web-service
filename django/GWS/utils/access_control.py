@@ -14,10 +14,9 @@ def request_access(function=None, url=settings.ACCESS_CONTROL_URL):
     def request_access_decorator(func):
         @wraps(func, assigned=available_attrs(func))
         def function_wrapper(request, *args, **kwargs):
-            if not url:
-                return func(request, *args, **kwargs)
-            else:
-                print request.path_info
+            origin = request.META.get('HTTP_ORIGIN', None)
+
+            if url: #access control has been enabled.
                 apikey = None
                 if request.method == 'GET':
                     apikey = request.GET.get('apikey', None)
@@ -28,13 +27,20 @@ def request_access(function=None, url=settings.ACCESS_CONTROL_URL):
                     return HttpResponseForbidden()
     
                 payload = {'path': request.path_info, 'key': apikey}
-    
+
+                if origin:
+                    payload['origin'] = origin
+ 
                 r = requests.get(url, params=payload)
     
                 if r.status_code != 200:
                     return HttpResponseForbidden()
-                else:
-                    return func(request, *args, **kwargs)
+            
+            response = func(request, *args, **kwargs)
+            if origin:
+                response['Access-Control-Allow-Origin'] = origin        
+            return response
+
         return function_wrapper
 
     #in order to support both @request_access and @request_access()
@@ -44,3 +50,4 @@ def request_access(function=None, url=settings.ACCESS_CONTROL_URL):
         return request_access_decorator
     else:
         return request_access_decorator(function)
+

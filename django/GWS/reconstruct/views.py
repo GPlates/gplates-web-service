@@ -317,7 +317,7 @@ def reconstruct_feature_collection(request):
 #it must be addressed somehow.
 import cProfile , pstats, ast, StringIO
 
-@request_access
+#@request_access
 def get_coastline_polygons_low(request):
     #pr = cProfile.Profile()
     #pr.enable()
@@ -405,7 +405,6 @@ def get_coastline_polygons_low(request):
 
         data["features"].append(feature)
     ret = json.dumps(pretty_floats(data))
-
     response = HttpResponse(ret, content_type='application/json')
     #TODO:
     response['Access-Control-Allow-Origin'] = '*'
