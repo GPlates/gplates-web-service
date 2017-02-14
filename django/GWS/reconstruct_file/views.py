@@ -124,7 +124,7 @@ def test_post_files(request):
 @csrf_exempt
 def html_model_list(request):
 
-    df = pd.read_csv('/Users/Simon/Data/TimeEncodedData/Yanites+Kesler/ngeo2429-s2.csv',index_col='Deposit number')
+    df = pd.read_csv('%s/%s' % (settings.PALEO_STORE_DIR,'ngeo2429-s2.csv'),index_col='Deposit number')
     html_table = df.to_html(index=False)
     return render(
         request,

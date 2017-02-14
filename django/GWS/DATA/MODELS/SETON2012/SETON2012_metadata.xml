@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<metadata
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:dc="http://purl.org/dc/elements/1.1/">
+<dc:title>Seton et al (2012) GPlates Reconstruction</dc:title>
+<dc:creator>Maria Seton</dc:creator>
+<dc:subject>empty</dc:subject>
+<dc:description>The Seton et al. (2012) rotation file contains a compilation of reconstruction 
+poles that describe the motions of the continents and oceans. These rotations are a synthesis of many 
+previous studies; each line in the rotation file lists the original source of the corresponding pole of rotation. 
+Many of these original sources are listed within the Seton et al. (2012) paper listed below.
+</dc:description>
+<dc:publisher>empty</dc:publisher>
+<dc:contributor>Maria Seton</dc:contributor>
+<dc:date>empty</dc:date>
+<dc:type>empty</dc:type>
+<dc:format>GPlates-compatible file formats</dc:format>
+<dc:identifier>DOI:10.1016/j.earscirev.2012.03.002</dc:identifier>
+<dc:source>Seton, M., Mü R.D., Zahirovic, S., Gaina, C., Torsvik, T. H., Shephard, G., 
+Talsma, A., Gurnis, M., Turner, M., Maus, S., and Chandler, M. 2012. Global continental and 
+ocean basin reconstructions since 200 Ma, Earth-Science Reviews, 113: 212-270</dc:source>
+<dc:language>empty</dc:language>
+<dc:relation>empty</dc:relation>
+<dc:coverage>Global | 0-200 Ma</dc:coverage>
+<dc:rights>empty</dc:rights>
+
+</metadata>

@@ -34,6 +34,25 @@ def pretty_floats(obj):
 
 
 def reconstruction_tree_map(request):
+    """
+    http GET request to retrieve a geographical representation of a reconstruction hierarchy
+
+    **usage**
+    
+    <http-address-to-gws>/rotation/reconstruction_tree_map/time=\ *reconstruction_time*\&model=\ *reconstruction_model*
+    
+    **parameters:**
+
+    *time* : time for reconstruction [required]
+
+    *model* : name for reconstruction model [defaults to default model from web service settings]
+
+    **returns:**
+
+    json containing reconstructed feature collection with a geometry representing the rotation hierarchy in a 
+    geographical arrangement
+    """
+    
     time = request.GET.get('time', None)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
 

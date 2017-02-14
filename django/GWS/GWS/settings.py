@@ -17,6 +17,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MODEL_STORE_DIR = '%s/DATA/MODELS/' % BASE_DIR
 EARTH_STORE_DIR = '%s/DATA/EARTH/' % BASE_DIR
+PALEO_STORE_DIR = '%s/DATA/PALEO/' % BASE_DIR
 
 MODEL_DEFAULT = 'SETON2012'
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admindocs',
     'reconstruct',
     'rotation',
     'topology',

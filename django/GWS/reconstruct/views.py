@@ -29,8 +29,30 @@ def pretty_floats(obj):
     return obj
 
 def reconstruct_points(request):
+    """
+    http GET request to reconstruct points
+
+    **usage**
+    
+    <http-address-to-gws>/reconstruct/reconstruct_points/points=\ *points*\&plate_id=\ *anchor_plate_id*\&time=\ *reconstruction_time*\&model=\ *reconstruction_model*
+    
+    **parameters:**
+
+    *points* : list of points long,lat comma separated coordinates of points to be reconstructed [Required]
+
+    *anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
+
+    *time* : time for reconstruction [required]
+
+    *model* : name for reconstruction model [defaults to default model from web service settings]
+
+    **returns:**
+
+    json list of long,lat reconstructed coordinates
+    """
+
     points = request.GET.get('points', None)
-    plate_id = request.GET.get('pid', None)
+    anchor_plate_id = request.GET.get('pid', 0)
     time = request.GET.get('time', None)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
 
@@ -62,7 +84,11 @@ def reconstruct_points(request):
     # reconstruct the points
     assigned_point_feature_collection = pygplates.FeatureCollection(assigned_point_features)
     reconstructed_feature_geometries = []
-    pygplates.reconstruct(assigned_point_feature_collection, rotation_model, reconstructed_feature_geometries, float(time))
+    pygplates.reconstruct(assigned_point_feature_collection,
+        rotation_model, 
+        reconstructed_feature_geometries, 
+        float(time),
+        anchor_plate_id=anchor_plate_id)
     
     # prepare the response to be returned
     ret='{"coordinates":['
@@ -83,7 +109,27 @@ def reconstruct_points(request):
 
 
 def get_coastline_polygons(request):
+    """
+    http GET request to retrieve reconstructed coastline polygons
+
+    **usage**
     
+    <http-address-to-gws>/reconstruct/coastlines/plate_id=\ *anchor_plate_id*\&time=\ *reconstruction_time*\&model=\ *reconstruction_model*
+    
+    **parameters:**
+
+    *anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
+
+    *time* : time for reconstruction [required]
+
+    *model* : name for reconstruction model [defaults to default model from web service settings]
+
+    **returns:**
+
+    json containing reconstructed coastline features
+    """
+
+    anchor_plate_id = request.GET.get('pid', 0)
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
     
@@ -98,7 +144,8 @@ def get_coastline_polygons(request):
         str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['Coastlines'])), 
         rotation_model, 
         reconstructed_polygons,
-        float(time))
+        float(time),
+        anchor_plate_id=anchor_plate_id)
     
     data = wrap_reconstructed_polygons(reconstructed_polygons,0.)
 
@@ -113,7 +160,27 @@ def get_coastline_polygons(request):
     return response
 
 def get_static_polygons(request):
+    """
+    http GET request to retrieve reconstructed static polygons
 
+    **usage**
+    
+    <http-address-to-gws>/reconstruct/static_polygons/plate_id=\ *anchor_plate_id*\&time=\ *reconstruction_time*\&model=\ *reconstruction_model*
+    
+    **parameters:**
+
+    *anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
+
+    *time* : time for reconstruction [required]
+
+    *model* : name for reconstruction model [defaults to default model from web service settings]
+
+    **returns:**
+
+    json containing reconstructed coastline features
+    """
+
+    anchor_plate_id = request.GET.get('pid', 0)
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
 
@@ -127,7 +194,8 @@ def get_static_polygons(request):
         str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons'])), 
         rotation_model, 
         reconstructed_polygons,
-        float(time))
+        float(time),
+        anchor_plate_id=anchor_plate_id)
     
     data = wrap_reconstructed_polygons(reconstructed_polygons,0.)
     
@@ -142,9 +210,28 @@ def get_static_polygons(request):
     return response
 
 
-
 def motion_path(request):
+    """
+    http GET request to retrieve reconstructed static polygons
 
+    **usage**
+    
+    <http-address-to-gws>/reconstruct/motion_path/seedpoints=\ *points*\&timespec=\ *time_list*\&fixplate=\ *fixed_plate_id*\&movplate=\ *moving_plate_id*\&time=\ *reconstruction_time*\&model=\ *reconstruction_model*
+    
+    :param seedpoints: integer value for reconstruction anchor plate id [required]
+
+    :param timespec: specification for times for motion path construction, in format 'mintime,maxtime,increment' [defaults to '0,100,10']
+
+    :param time: time for reconstruction [default=0]
+
+    :param fixplate: integer plate id for fixed plate [default=0]
+
+    :param movplate: integer plate id for moving plate [required]
+
+    :param model: name for reconstruction model [defaults to default model from web service settings]
+
+    :returns:  json containing reconstructed motion path features
+    """
     seedpoints = request.GET.get('seedpoints', None)
     times = request.GET.get('timespec', '0,100,10')
     time = request.GET.get('time', 0)
@@ -188,9 +275,6 @@ def motion_path(request):
             motion_path_feature, rotation_model, reconstructed_motion_paths, reconstruction_time,
             reconstruct_type=pygplates.ReconstructType.motion_path)
 
-    #for reconstructed_motion_path in reconstructed_motion_paths:
-    #    trail = reconstructed_motion_path.get_motion_path().to_lat_lon_array()
-
     data = {"type": "FeatureCollection"}
     data["features"] = [] 
     for reconstructed_motion_path in reconstructed_motion_paths:
@@ -200,8 +284,8 @@ def motion_path(request):
         feature = {"type": "Feature"}
         feature["geometry"] = {}
         feature["geometry"]["type"] = "Polyline"
-        #### NEED TO FLIP COORDINATES
-        feature["geometry"]["coordinates"] = [reconstructed_motion_path.get_motion_path().to_lat_lon_list()]
+        #### NOTE CODE TO FLIP COORDINATES TO 
+        feature["geometry"]["coordinates"] = [[(lon,lat) for lat,lon in reconstructed_motion_path.get_motion_path().to_lat_lon_list()]]
         feature["geometry"]["distance"] = Dist
         data["features"].append(feature)
 
@@ -216,6 +300,11 @@ def motion_path(request):
 
 
 def flowline(request):
+    """
+    http GET request to retrieve reconstructed static polygons
+    
+    NOT YET IMPLEMENTED
+    """
 
     ret = json.dumps(pretty_floats(data))
     
@@ -236,6 +325,7 @@ def reconstruct_feature_collection(request):
     fc_str = request.GET.get('feature_collection')
     fc = json.loads(fc_str)
 
+    # Convert geojson input to gplates feature collection
     features=[]
     for f in fc['features']:
         geom = f['geometry']
@@ -259,7 +349,8 @@ def reconstruct_feature_collection(request):
 
     model = str(request.GET.get('model',settings.MODEL_DEFAULT))
     model_dict = get_reconstruction_model_dict(model)
-    rotation_model = pygplates.RotationModel(settings.MODEL_STORE_DIR+model+'/'+model_dict['RotationFile'])
+    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
 
     assigned_features = pygplates.partition_into_plates(
         settings.MODEL_STORE_DIR+model+'/'+model_dict['StaticPolygons'],
@@ -275,7 +366,7 @@ def reconstruct_feature_collection(request):
     reconstructed_geometries = []
     pygplates.reconstruct(assigned_features, rotation_model, reconstructed_geometries, float(geologicage), 0)
 
-
+    # convert feature collection back to geojson
     data = {"type": "FeatureCollection"}
     data["features"] = []
     for g in reconstructed_geometries:
@@ -319,6 +410,11 @@ import cProfile , pstats, ast, StringIO
 
 #@request_access
 def get_coastline_polygons_low(request):
+    """
+    http GET request to retrieve reconstructed low resolution coastlines polygons
+
+    TEMPORARY IMPLEMENTATION
+    """
     #pr = cProfile.Profile()
     #pr.enable()
 

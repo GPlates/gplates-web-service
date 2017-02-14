@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<metadata
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:dc="http://purl.org/dc/elements/1.1/">
+<dc:title>Wright et al (2013) GPlates Reconstruction</dc:title>
+<dc:creator>Nicky Wright</dc:creator>
+<dc:subject>empty</dc:subject>
+<dc:description>We base our Phanerozoic relative plate motions on the rotation model made 
+available in the Supplement of Golonka (2007), and use block outlines based on terrane boundaries 
+used in Seton et al. (2012) and interpretations of magnetic and gravity anomalies. The relative plate 
+motions in this model are similar to those in Scotese (2004). Paleozoic plate motions are based on 
+continental paleomagnetic data due to the absence of preserved seafloor spreading histories. Although 
+paleomagnetic data on continents do not provide paleolongitudes, the relative plate motions and 
+tectonic unity of two continental blocks can be inferred from commonalities in the apparent-polar 
+wander (APW) paths (Van der Voo, 1990). If two or more continents share a similar APW path for a 
+time period, then it can be inferred that these continents were joined for these times. In the ideal 
+world such APW paths would coincide perfectly, but due to the inherent uncertainties and errors in 
+paleomagnetic measurements, we assume that the clustering of paleopoles indicates a common tectonic 
+history between two or more plates during Paleozoic times. Similarly, tectonic affinities can be 
+deduced from the continuity of orogenic belts, sedimentary basins, volcanic provinces, biofacies 
+and other large-scale features across presently isolated continents (Wegener, 1915). We assign 
+absolute plate motions to Africa, as the base of our rotation hierarchy, for the Phanerozoic based 
+on the smoothed APW spline path from Torsvik and Van der Voo (2002). All continents that moved 
+independently in the absolute reference frame (i.e. relative to the spin axis) from the Golonka 
+(2007) model were recalculated as equivalent relative rotations to a conjugate neighbouring plate, 
+connected hierarchically in our plate circuit.
+</dc:description>
+<dc:publisher>empty</dc:publisher>
+<dc:contributor>Nicky Wright</dc:contributor>
+<dc:date>empty</dc:date>
+<dc:type>empty</dc:type>
+<dc:format>GPlates-compatible file formats</dc:format>
+<dc:identifier>doi:10.5194/bg-10-1529-2013</dc:identifier>
+<dc:source>Wright, N., Zahirovic, S., Mü R. D., and Seton, M. Towards community-driven paleogeographic 
+reconstructions: integrating open-access paleogeographic and paleobiology data with plate tectonics, 
+Biogeosciences, 10, 1529-1541</dc:source>
+<dc:language>empty</dc:language>
+<dc:relation>empty</dc:relation>
+<dc:coverage>Global | 0-540 Ma</dc:coverage>
+<dc:rights>empty</dc:rights>
+
+</metadata>
