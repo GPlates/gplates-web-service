@@ -19,7 +19,7 @@ def get_reconstruction_model_dict(MODEL_NAME):
 
     elif MODEL_NAME=='PALEOMAP':
         model_dict = {'RotationFile':'PALEOMAP_PlateModel.rot',
-                      'Coastlines':'',
+                      'Coastlines':'PALEOMAP_coastlines.gpmlz',
                       'StaticPolygons':'PALEOMAP_PlatePolygons.gpmlz'}
 
     elif MODEL_NAME=='RODINIA2013':
