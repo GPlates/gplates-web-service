@@ -4,7 +4,6 @@ from django.conf import settings
 def get_reconstruction_model_dict(MODEL_NAME):
     
     if MODEL_NAME=='SETON2012':
-        
         model_dict = {'RotationFile':'Seton_etal_ESR2012_2012.1.rot',
                       'Coastlines':'Seton_etal_ESR2012_Coastlines_2012.1_Polygon.gpmlz',
                       'StaticPolygons':'Seton_etal_ESR2012_StaticPolygons_2012.1.gpmlz',
@@ -23,9 +22,9 @@ def get_reconstruction_model_dict(MODEL_NAME):
                       'StaticPolygons':'PALEOMAP_PlatePolygons.gpmlz'}
 
     elif MODEL_NAME=='RODINIA2013':
-        model_dict = {'RotationFile':'Li_rodinia_v2013.rot',
-                      'Coastlines':'',
-                      'StaticPolygons':'RodiniaBlocks_v2013.gpmlz'}
+        model_dict = {'RotationFile':'Li_Rodinia_v2013.rot',
+                      'Coastlines':'Li_Rodinia_v2013_Coastlines.gpmlz',
+                      'StaticPolygons':'Li_Rodinia_v2013_StaticPolygons.gpmlz'}
 
     elif MODEL_NAME=='GOLONKA':
         model_dict = {'RotationFile':'Phanerozoic_EarthByte.rot',
