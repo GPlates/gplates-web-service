@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseServerError, HttpResponseNotAllowed
 from django.conf import settings
-
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 #from get_model import get_reconstruction_model_dict
 from utils.get_model import get_reconstruction_model_dict
@@ -316,14 +316,31 @@ def flowline(request):
     return response
 
 
+@csrf_exempt
+def html_model_list(request):
+
+    df = pd.read_csv('%s/%s' % (settings.PALEO_STORE_DIR,'ngeo2429-s2.csv'),index_col='Deposit number')
+    html_table = df.to_html(index=False)
+    return render(
+        request,
+        'list_template.html',
+        {
+            'html_table': html_table
+        } 
+    )
+
+@csrf_exempt
 def reconstruct_feature_collection(request):
     if request.method == 'POST':
         return HttpResponse('POST method is not accepted for now.')
 
     geologicage = request.GET.get('geologicage', 140)
     output_format = request.GET.get('output', 'geojson')
+    id_field = request.GET.get('idfield',None)
     fc_str = request.GET.get('feature_collection')
     fc = json.loads(fc_str)
+
+    print 'unique identifier field is %s' % id_field
 
     # Convert geojson input to gplates feature collection
     features=[]
@@ -343,7 +360,8 @@ def reconstruct_feature_collection(request):
         if geom['type'] == 'MultiPoint':
              feature.set_geometry(
                 pygplates.MultiPointOnSphere([(point[1],point[0]) for point in geom['coordinates']]))
-
+        if id_field is not None:
+            feature.set_shapefile_attribute('id',f['properties']['id'][0][0])
         features.append(feature)
 
 
@@ -389,7 +407,9 @@ def reconstruct_feature_collection(request):
         else:
             raise 'Unrecognized Geometry Type.'
 
-        feature["properties"]={}
+        feature["properties"] = {}
+        if id_field is not None:
+            feature["properties"]["id"] = g.get_feature().get_shapefile_attribute('id')
 
         data["features"].append(feature)
 
