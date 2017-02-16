@@ -58,8 +58,9 @@ def reconstruct_points(request):
 
     model_dict = get_reconstruction_model_dict(model)
 
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
+
     static_polygons_filename = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons']))
 
     # create point features from input coordinates
@@ -136,8 +137,8 @@ def get_coastline_polygons(request):
     model_dict = get_reconstruction_model_dict(model)
     model_string = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['RotationFile']))
 
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' % 
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
     reconstructed_polygons = []
     pygplates.reconstruct(
@@ -186,8 +187,8 @@ def get_static_polygons(request):
 
     model_dict = get_reconstruction_model_dict(model)
     
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))    
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
     reconstructed_polygons = []
     pygplates.reconstruct(
@@ -255,8 +256,8 @@ def motion_path(request):
 
     model_dict = get_reconstruction_model_dict(model)
 
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
     # Create the motion path feature
     digitisation_time = 0
@@ -334,10 +335,13 @@ def reconstruct_feature_collection(request):
     if request.method == 'POST':
         return HttpResponse('POST method is not accepted for now.')
 
-    geologicage = request.GET.get('geologicage', 140)
+    anchor_plate_id = request.GET.get('pid', 0)
+    time = request.GET.get('geologicage', 140)
     output_format = request.GET.get('output', 'geojson')
     id_field = request.GET.get('idfield',None)
     fc_str = request.GET.get('feature_collection')
+    model = str(request.GET.get('model',settings.MODEL_DEFAULT))
+    
     fc = json.loads(fc_str)
 
     print 'unique identifier field is %s' % id_field
@@ -364,11 +368,10 @@ def reconstruct_feature_collection(request):
             feature.set_shapefile_attribute('id',f['properties']['id'][0][0])
         features.append(feature)
 
-
-    model = str(request.GET.get('model',settings.MODEL_DEFAULT))
     model_dict = get_reconstruction_model_dict(model)
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
     assigned_features = pygplates.partition_into_plates(
         settings.MODEL_STORE_DIR+model+'/'+model_dict['StaticPolygons'],
@@ -377,12 +380,15 @@ def reconstruct_feature_collection(request):
         properties_to_copy = [
             pygplates.PartitionProperty.reconstruction_plate_id,
             pygplates.PartitionProperty.valid_time_period],
-
         partition_method = pygplates.PartitionMethod.most_overlapping_plate
     )
 
     reconstructed_geometries = []
-    pygplates.reconstruct(assigned_features, rotation_model, reconstructed_geometries, float(geologicage), 0)
+    pygplates.reconstruct(assigned_features, 
+        rotation_model, 
+        reconstructed_geometries, 
+        float(time), 
+        anchor_plate_id=anchor_plate_id)
 
     # convert feature collection back to geojson
     data = {"type": "FeatureCollection"}

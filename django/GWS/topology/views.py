@@ -57,8 +57,8 @@ def get_plate_polygons(request):
     model_dict = get_reconstruction_model_dict(model)    
 
     #features = []
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))  
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
     # need to handle cases where topologies are in one file, and where they are spread across
     # multiple files
@@ -117,8 +117,8 @@ def get_topological_boundaries(request):
     model_dict = get_reconstruction_model_dict(model)
     
     features = []
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))   
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
     # need to handle cases where topologies are in one file, and where they are spread across
     # multiple files
