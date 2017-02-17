@@ -459,8 +459,6 @@ def get_coastline_polygons_low(request):
     '''
     shp_path = settings.MODEL_STORE_DIR+'/'+settings.MODEL_DEFAULT+'/coastlines_low_res/Seton_etal_ESR2012_Coastlines_2012.shp'
 
-    model_dict = get_reconstruction_model_dict(settings.MODEL_DEFAULT)
-    rotation_file_path = settings.MODEL_STORE_DIR+'/'+settings.MODEL_DEFAULT+"/"+model_dict['RotationFile']
 
     import shapefile
     sf = shapefile.Reader(shp_path)
@@ -482,7 +480,11 @@ def get_coastline_polygons_low(request):
 
     feature_collection = pygplates.FeatureCollection(features)
     reconstructed_polygons = []
-    rotation_model = pygplates.RotationModel(rotation_file_path)
+    
+    model_dict = get_reconstruction_model_dict(settings.MODEL_DEFAULT)
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,settings.MODEL_DEFAULT,rot_file)) for rot_file in model_dict['RotationFile']])
+
 
     '''
     pr.disable()
