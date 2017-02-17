@@ -91,7 +91,7 @@ def reconstruct_points(request):
         anchor_plate_id=anchor_plate_id)
     
     # prepare the response to be returned
-    ret='{"coordinates":['
+    ret='{"type":"Multipoint","coordinates":['
     for g in reconstructed_feature_geometries:
         ret+='[{0:5.2f},{1:5.2f}],'.format(
             g.get_reconstructed_geometry().to_lat_lon()[1],
