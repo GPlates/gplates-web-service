@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseServerError, HttpResponseNotAllowed
 from django.conf import settings
-
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 #from get_model import get_reconstruction_model_dict
 from utils.get_model import get_reconstruction_model_dict
@@ -58,8 +58,9 @@ def reconstruct_points(request):
 
     model_dict = get_reconstruction_model_dict(model)
 
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
+
     static_polygons_filename = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons']))
 
     # create point features from input coordinates
@@ -91,7 +92,7 @@ def reconstruct_points(request):
         anchor_plate_id=anchor_plate_id)
     
     # prepare the response to be returned
-    ret='{"coordinates":['
+    ret='{"type":"Multipoint","coordinates":['
     for g in reconstructed_feature_geometries:
         ret+='[{0:5.2f},{1:5.2f}],'.format(
             g.get_reconstructed_geometry().to_lat_lon()[1],
@@ -136,8 +137,8 @@ def get_coastline_polygons(request):
     model_dict = get_reconstruction_model_dict(model)
     model_string = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['RotationFile']))
 
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' % 
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
     reconstructed_polygons = []
     pygplates.reconstruct(
@@ -186,8 +187,8 @@ def get_static_polygons(request):
 
     model_dict = get_reconstruction_model_dict(model)
     
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))    
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
     reconstructed_polygons = []
     pygplates.reconstruct(
@@ -255,8 +256,8 @@ def motion_path(request):
 
     model_dict = get_reconstruction_model_dict(model)
 
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
     # Create the motion path feature
     digitisation_time = 0
@@ -316,14 +317,34 @@ def flowline(request):
     return response
 
 
+@csrf_exempt
+def html_model_list(request):
+
+    df = pd.read_csv('%s/%s' % (settings.PALEO_STORE_DIR,'ngeo2429-s2.csv'),index_col='Deposit number')
+    html_table = df.to_html(index=False)
+    return render(
+        request,
+        'list_template.html',
+        {
+            'html_table': html_table
+        } 
+    )
+
+@csrf_exempt
 def reconstruct_feature_collection(request):
     if request.method == 'POST':
         return HttpResponse('POST method is not accepted for now.')
 
-    geologicage = request.GET.get('geologicage', 140)
+    anchor_plate_id = request.GET.get('pid', 0)
+    time = request.GET.get('geologicage', 140)
     output_format = request.GET.get('output', 'geojson')
+    id_field = request.GET.get('idfield',None)
     fc_str = request.GET.get('feature_collection')
+    model = str(request.GET.get('model',settings.MODEL_DEFAULT))
+    
     fc = json.loads(fc_str)
+
+    print 'unique identifier field is %s' % id_field
 
     # Convert geojson input to gplates feature collection
     features=[]
@@ -343,14 +364,14 @@ def reconstruct_feature_collection(request):
         if geom['type'] == 'MultiPoint':
              feature.set_geometry(
                 pygplates.MultiPointOnSphere([(point[1],point[0]) for point in geom['coordinates']]))
-
+        if id_field is not None:
+            feature.set_shapefile_attribute('id',f['properties']['id'][0][0])
         features.append(feature)
 
-
-    model = str(request.GET.get('model',settings.MODEL_DEFAULT))
     model_dict = get_reconstruction_model_dict(model)
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
     assigned_features = pygplates.partition_into_plates(
         settings.MODEL_STORE_DIR+model+'/'+model_dict['StaticPolygons'],
@@ -359,12 +380,15 @@ def reconstruct_feature_collection(request):
         properties_to_copy = [
             pygplates.PartitionProperty.reconstruction_plate_id,
             pygplates.PartitionProperty.valid_time_period],
-
         partition_method = pygplates.PartitionMethod.most_overlapping_plate
     )
 
     reconstructed_geometries = []
-    pygplates.reconstruct(assigned_features, rotation_model, reconstructed_geometries, float(geologicage), 0)
+    pygplates.reconstruct(assigned_features, 
+        rotation_model, 
+        reconstructed_geometries, 
+        float(time), 
+        anchor_plate_id=anchor_plate_id)
 
     # convert feature collection back to geojson
     data = {"type": "FeatureCollection"}
@@ -389,7 +413,9 @@ def reconstruct_feature_collection(request):
         else:
             raise 'Unrecognized Geometry Type.'
 
-        feature["properties"]={}
+        feature["properties"] = {}
+        if id_field is not None:
+            feature["properties"]["id"] = g.get_feature().get_shapefile_attribute('id')
 
         data["features"].append(feature)
 

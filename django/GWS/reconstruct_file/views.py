@@ -59,8 +59,9 @@ def test_post(request):
         
         model_dict = get_reconstruction_model_dict(model)
 
-        rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-            (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+        rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+            (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
+
         static_polygons_filename = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons']))
 
         # assign plate-ids to points using static polygons
@@ -156,8 +157,9 @@ def subduction(request):
         
         model_dict = get_reconstruction_model_dict(model)
     
-        rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-            (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))
+        rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+            (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
+
         static_polygons_filename = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons']))
     
         # assign plate-ids to points using static polygons

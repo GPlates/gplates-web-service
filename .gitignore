@@ -30,3 +30,11 @@ django/GWS/tree.gmt.gplates.xml
 django/GWS/tree.gmt
 
 *.pyc
+
+python/.ipynb_checkpoints/request-plate-boundaries-checkpoint.ipynb
+
+python/.ipynb_checkpoints/request-plate-velocities-checkpoint.ipynb
+
+python/.ipynb_checkpoints/gwstools-examples-checkpoint.ipynb
+
+django/GWS/DATA/tmp/reconstruct_to_birth_time.gpmlz

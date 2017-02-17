@@ -57,12 +57,23 @@ def get_plate_polygons(request):
     model_dict = get_reconstruction_model_dict(model)    
 
     #features = []
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))  
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
+
+    # need to handle cases where topologies are in one file, and where they are spread across
+    # multiple files
+    topology_features = pygplates.FeatureCollection()
+    if type(model_dict['PlatePolygons']) is list:
+        for file in model_dict['PlatePolygons']:
+            fullfile = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,file))
+            topology_feature = pygplates.FeatureCollection(fullfile)
+            topology_features.add(topology_feature)
+    else:
+        topology_features = pygplates.FeatureCollection(str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['PlatePolygons'])))
 
     resolved_polygons = []
     pygplates.resolve_topologies(
-        str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['PlatePolygons'])),
+        topology_features,
         rotation_model, 
         resolved_polygons,
         float(time))
@@ -75,7 +86,11 @@ def get_plate_polygons(request):
     
     ret = json.dumps(pretty_floats(data))
    
-    return HttpResponse(ret, content_type='application/json')
+    response = HttpResponse(ret, content_type='application/json')
+    #TODO:
+    response['Access-Control-Allow-Origin'] = '*'
+    return response
+
 
 def get_topological_boundaries(request):
     """
@@ -102,13 +117,25 @@ def get_topological_boundaries(request):
     model_dict = get_reconstruction_model_dict(model)
     
     features = []
-    rotation_model = pygplates.RotationModel(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['RotationFile'])))   
+    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
+
+    # need to handle cases where topologies are in one file, and where they are spread across
+    # multiple files
+    topology_features = pygplates.FeatureCollection()
+    if type(model_dict['PlatePolygons']) is list:
+        for file in model_dict['PlatePolygons']:
+            fullfile = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,file))
+            topology_feature = pygplates.FeatureCollection(fullfile)
+            topology_features.add(topology_feature)
+    else:
+        topology_features = pygplates.FeatureCollection(str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['PlatePolygons'])))
+
 
     resolved_polygons = []
     shared_boundary_sections = []
     pygplates.resolve_topologies(
-        str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['PlatePolygons'])),
+        topology_features,
         rotation_model, 
         resolved_polygons,
         float(time),
@@ -118,6 +145,9 @@ def get_topological_boundaries(request):
     print 'here'
     ret = json.dumps(pretty_floats(data))
    
-    return HttpResponse(ret, content_type='application/json')
+    response = HttpResponse(ret, content_type='application/json')
+    #TODO:
+    response['Access-Control-Allow-Origin'] = '*'
+    return response
 
 
