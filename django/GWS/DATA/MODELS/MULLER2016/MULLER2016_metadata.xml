@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<metadata
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:dc="http://purl.org/dc/elements/1.1/">
+<dc:title>Müller et al (2016) GPlates Reconstruction</dc:title>
+<dc:creator>Dietmar Müller</dc:creator>
+<dc:subject>empty</dc:subject>
+<dc:description>The Müller et al. (2016) rotation model builds on the previous Earthbyte compilation 
+(Seton et al, 2012). The updated global model incorporates a range of recent regional studies including
+the South Atlantic, North Atlantic, Southeast Asia, East Gondwana, the Arctic, the Western Tethys,
+the Caribbean, and Southwest Pacific. The absolute reference frame is hybrid of global moving hotspot 
+and paleomagnetic models.
+</dc:description>
+<dc:publisher>empty</dc:publisher>
+<dc:contributor>Dietmar Müller</dc:contributor>
+<dc:date>empty</dc:date>
+<dc:type>empty</dc:type>
+<dc:format>GPlates-compatible file formats</dc:format>
+<dc:identifier>DOI:10.1146/annurev-earth-060115-012211</dc:identifier>
+<dc:source>Müller, R.D., Seton, M., Zahirovic, S., Williams, S.E., Matthews, K.J., Wright, N.M., 
+Shephard, G.E., Maloney, K.T., Barnett-Moore, N., Hosseinpour, M., Bower, D.J., Cannon, J., 2016. 
+Ocean basin evolution and global-scale plate reorganization events since Pangea breakup, AREPS, 44, 107-138.
+</dc:source>
+<dc:language>empty</dc:language>
+<dc:relation>empty</dc:relation>
+<dc:coverage>Global | 0-230 Ma</dc:coverage>
+<dc:rights>empty</dc:rights>
+
+</metadata>

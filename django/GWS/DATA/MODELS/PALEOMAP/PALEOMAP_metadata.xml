@@ -6,8 +6,13 @@ xmlns:dc="http://purl.org/dc/elements/1.1/">
 <dc:title>PALEOMAP GPlates Reconstruction</dc:title>
 <dc:creator>Chris Scotese</dc:creator>
 <dc:subject>empty</dc:subject>
-<dc:description>The PALEOMAP PaleoAtlas for GPlates consists of 91 paleogeographic maps spanning the Phanerozoic and late Neoproterozoic.
-
+<dc:description>The PALEOMAP PaleoAtlas for GPlates consists of 91 paleogeographic 
+maps spanning the Phanerozoic and late Neoproterozoic. The paleogeographic maps in 
+the GPlates version of the PALEOMAP PaleoAtlas were  originally published in the PALEOMAP PaleoAtlas 
+for ArcGIS (Scotese, 2008).  This digital atlas, designed for use with GIS software, 
+consisted of paleogeographic  maps together with plate tectonic (Scotese, 2014e), 
+paleolithological (Boucot et al., 2013),  paleoceanographic (Scotese, 2014b; Scotese and Moore, 2014a,b), 
+and paleoclimatic  reconstructions (Scotese et al., 2014; Scotese and Moore, 2010, 2014)
 </dc:description>
 <dc:publisher>empty</dc:publisher>
 <dc:contributor>Chris Scotese</dc:contributor>
