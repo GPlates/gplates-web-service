@@ -69,4 +69,3 @@ def get_model_dictionary(MODEL_STORE):
 
     return MODEL_LIST
 
-

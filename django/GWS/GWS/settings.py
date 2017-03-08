@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'topology',
     'earth',
     'doc',
+    'info',
 ]
 
 MIDDLEWARE_CLASSES = [
