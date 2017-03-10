@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'earth',
     'doc',
     'info',
+    'paleomap',
 ]
 
 MIDDLEWARE_CLASSES = [
