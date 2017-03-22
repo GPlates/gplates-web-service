@@ -4,6 +4,6 @@ import views, animation
 
 urlpatterns = [
     url(r'^$', views.create),
-    url(r'^animation/?$', animation.generate),
+#    url(r'^animation/?$', animation.generate),
 ]
 
