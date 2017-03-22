@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<metadata
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:dc="http://purl.org/dc/elements/1.1/">
+<dc:title>Domeier and Torsvik (2014) GPlates Reconstruction</dc:title>
+<dc:creator>Matthew Domeier</dc:creator>
+<dc:subject>empty</dc:subject>
+<dc:description> The Domeier and Torsvik reconstruction is a global, fully topological reconstruction 
+	of late Paleozoic plate tectonics. The files available within the web service are provided in the
+	supplementary dataset to the original article. The rotation file is constructed to easily switch between
+	a paleomagnetic reference frame (anchor plate = 1), or a mantle reference frame incorporating a correction
+	for True Polar Wander (anchor plate = 0).
+</dc:description>
+<dc:publisher>empty</dc:publisher>
+<dc:contributor>Matthew Domeier</dc:contributor>
+<dc:date>empty</dc:date>
+<dc:type>empty</dc:type>
+<dc:format>GPlates-compatible file formats</dc:format>
+<dc:identifier>DOI:10.1016/j.gsf.2014.01.002</dc:identifier>
+<dc:source>Domeier, M. and Torsvik, T.H., 2014. Plate tectonics in the late Paleozoic. Geoscience Frontiers, 
+	v5, 303-350. http://dx.doi.org/10.1016/j.gsf.2014.01.002</dc:source>
+<dc:language>empty</dc:language>
+<dc:relation>empty</dc:relation>
+<dc:coverage>Global | 250-410 Ma</dc:coverage>
+<dc:rights>empty</dc:rights>
+
+</metadata>
