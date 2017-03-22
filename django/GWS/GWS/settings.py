@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'topology',
     'earth',
     'doc',
+    'info',
+    'paleomap',
 ]
 
 MIDDLEWARE_CLASSES = [

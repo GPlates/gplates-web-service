@@ -29,4 +29,6 @@ urlpatterns = [
     url(r'^rotation/', include('rotation.urls')),
     url(r'^reconstruct_file/', include('reconstruct_file.urls')),
     url(r'^earth/', include('earth.urls')),
+    url(r'^list/', include('info.urls')),
+    url(r'^map/', include('paleomap.urls')),
 ]
