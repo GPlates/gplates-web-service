@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseServerError, HttpResponseNotAllowed
 from django.conf import settings
 
-import urllib, base64, StringIO 
+import urllib, base64, StringIO, os 
 
 import matplotlib
 matplotlib.use('Agg')
@@ -20,11 +20,24 @@ import pygplates
 from utils.get_model import get_reconstruction_model_dict
 
 def create(request):
+	shp_path = settings.MODEL_STORE_DIR+'/'+settings.MODEL_DEFAULT+'/coastlines_low_res/Seton_etal_ESR2012_Coastlines_2012.shp'
+	input_rotation_filename = settings.MODEL_STORE_DIR+'/'+settings.MODEL_DEFAULT+ '/Seton_etal_ESR2012_2012.1.rot'
+	output_coastlines_filename = '/tmp/coastlines.gmt'
+	pygplates.reconstruct(shp_path,input_rotation_filename,output_coastlines_filename,100)
+	proj = '-JX20c/10c'
+	print os.getcwd()
+	os.system('gmt psxy -Rd %s -W0.25p,grey10 -K -m /tmp/coastlines.gmt -V > /tmp/test.ps' % (proj))
+	os.system('gmt psclip /usr/src/clip.txt -Rd %s -O -V  >> /tmp/test.ps' % (proj))
+	os.system('cd /tmp && gmt psconvert /tmp/test.ps -A -E240 -Tj -P')
+	
+	return HttpResponse('OK')
+
+def create_1(request):
     try:
         time = request.GET.get('time', 140)
         m = Basemap(projection='robin',lon_0=0.0,resolution='c')
         m.drawparallels(np.arange(-90.,91.,15.), labels=[True,True,False,False], color='black', fontsize=9, dashes=[1,0.1], linewidth=0.2)
-        m.drawmeridians(np.arange(-180.,181.,30.), labels=[False,False,False,True], color='black', fontsize=9, dashes=[1,0.1], linewidth=0)
+        m.drawmeridians(np.arange(-180.,181.,30.), labels=[False,False,False,True], color='black', fontsize=9, dashes=[1,0.1], linewidth=0.1)
         m.drawmeridians(np.arange(-180.,181.,15.), labels=[False,False,False,0], color='black', fontsize=6, dashes=[1,0.1], linewidth=0.2)
         
         fig = plt.gcf()

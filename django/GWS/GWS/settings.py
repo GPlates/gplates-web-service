@@ -32,7 +32,7 @@ SECRET_KEY = 'hlvkcbt=tuzf-irms8$xfxlqp$1^&&y)ll9t)g_g5ir1bgh1!u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 #if empty, there is no access control.
 ACCESS_CONTROL_URL = 'https://portal.gplates.org/access_control/'
