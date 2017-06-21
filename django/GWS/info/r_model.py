@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseServerError, HttpResponseNotAllowed
+from django.http import (HttpResponse, 
+    HttpResponseRedirect, HttpResponseBadRequest, 
+    HttpResponseServerError, HttpResponseNotAllowed,
+    JsonResponse)
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
@@ -38,3 +41,11 @@ def list_models(request):
             content_type='application/json')
     response['Access-Control-Allow-Origin'] = '*'
     return response
+
+def list_model_layers(request):
+    model_name = request.GET.get('model',settings.MODEL_DEFAULT)
+    response =  JsonResponse(
+            get_reconstruction_model_dict(model_name))
+
+    response['Access-Control-Allow-Origin'] = '*'
+    return response 

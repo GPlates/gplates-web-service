@@ -28,8 +28,11 @@ RUN apt-get install -y libqwt-dev
 RUN apt-get install -y libxrender-dev libice-dev libsm-dev libfreetype6-dev libfontconfig1-dev
 
 RUN apt-get install -y python-mpltoolkits.basemap
+RUN apt-get install -y ghostscript
+RUN apt-get install -y ffmpeg
 
 RUN dpkg -i /usr/src/docker/pygplates_2.0_amd64.deb
+RUN cp /usr/lib/pygplates/revision12/pygplates.so /usr/lib/python2.7/dist-packages/
 
 # Add Tini
 ENV TINI_VERSION v0.9.0
