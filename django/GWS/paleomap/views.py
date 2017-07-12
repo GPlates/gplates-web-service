@@ -25,7 +25,7 @@ import pygplates
 
 from utils.get_model import get_reconstruction_model_dict
 
-TMP_DIR='/gws/gplates-web/tmp'
+TMP_DIR='/tmp/gws'
 
 def create(request):
     time = request.GET.get('time', 140) 

@@ -55,9 +55,31 @@ def reconstruct_points(request):
     anchor_plate_id = request.GET.get('pid', 0)
     time = request.GET.get('time', None)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
+  
+    timef=0.0
+    if not time:
+        return HttpResponseBadRequest('The "time" parameter cannot be empty.')
+    else:
+        try:
+            timef = float(time)
+        except:
+            return HttpResponseBadRequest('The "time" parameter is invalid ({0}).'.format(time))
+
+    try:
+        anchor_plate_id = int(anchor_plate_id)
+    except:
+        return HttpResponseBadRequest('The "pid" parameter is invalid ({0}).'.format(anchor_plate_id))
 
     model_dict = get_reconstruction_model_dict(model)
 
+    if not model_dict:
+        return HttpResponseBadRequest('The "model" cannot be recognized ({0}).'.format(model))
+
+    if 'fc' in request.GET:
+        return_feature_collection = True
+    else:
+        return_feature_collection = False
+        
     rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
@@ -68,11 +90,15 @@ def reconstruct_points(request):
     if points:
         ps = points.split(',')
         if len(ps)%2==0:
-            for lat,lon in zip(ps[1::2], ps[0::2]):
-                point_feature = pygplates.Feature()
-                point_feature.set_geometry(pygplates.PointOnSphere(float(lat),float(lon)))
-                point_features.append(point_feature)
-    
+            try:
+                for lat,lon in zip(ps[1::2], ps[0::2]):
+                    point_feature = pygplates.Feature()
+                    point_feature.set_geometry(pygplates.PointOnSphere(float(lat),float(lon)))
+                    point_features.append(point_feature)
+            except pygplates.InvalidLatLonError as e:
+                return HttpResponseBadRequest('Invalid longitude or latitude ({0}).'.format(e)) 
+        else:
+            return HttpResponseBadRequest('The longitude and latitude should come in pairs ({0}).'.format(points)) 
     # assign plate-ids to points using static polygons
     assigned_point_features = pygplates.partition_into_plates(
         static_polygons_filename,
@@ -82,24 +108,49 @@ def reconstruct_points(request):
             pygplates.PartitionProperty.reconstruction_plate_id,
             pygplates.PartitionProperty.valid_time_period])
 
+    ids=[]
+    valid_periods=[]
+    for f in assigned_point_features:
+        ids.append(f.get_feature_id().get_string())
+        valid_periods.append(f.get_valid_time())
+
     # reconstruct the points
     assigned_point_feature_collection = pygplates.FeatureCollection(assigned_point_features)
     reconstructed_feature_geometries = []
     pygplates.reconstruct(assigned_point_feature_collection,
         rotation_model, 
         reconstructed_feature_geometries, 
-        float(time),
+        timef,
         anchor_plate_id=anchor_plate_id)
-    
-    # prepare the response to be returned
-    ret='{"type":"Multipoint","coordinates":['
+
+    coords=len(ids)*[[]]
     for g in reconstructed_feature_geometries:
-        ret+='[{0:5.2f},{1:5.2f}],'.format(
-            g.get_reconstructed_geometry().to_lat_lon()[1],
-            g.get_reconstructed_geometry().to_lat_lon()[0])
+        coords[ids.index(g.get_feature().get_feature_id().get_string())]=(
+            [g.get_reconstructed_geometry().to_lat_lon()[1],
+            g.get_reconstructed_geometry().to_lat_lon()[0]])
+
+    # prepare the response to be returned
+    if not return_feature_collection:
+        ret='{"type":"MultiPoint","coordinates":['
+
+        for c in coords:
+            if c:
+                ret+='[{0:5.2f},{1:5.2f}],'.format(c[0],c[1])
+
+    else:
+        ret='{"type":"FeatureCollection","features":['
+        for c,p in zip(coords,valid_periods):
+            ret+='{"type":"Feature","geometry":'
+            if c:
+                print c
+                ret+='{'+'"type":"Point","coordinates":[{0:5.2f},{1:5.2f}]'.format(c[0],c[1])+'},'
+            else:
+                ret+='null,'
+            ret+='"properties":{'+'"valid_time":[{0},"{1}"]'.format(p[0],p[1])+'}},'
+
     ret=ret[0:-1]
     ret+=']}'
-    
+
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/
     response = HttpResponse(ret, content_type='application/json')

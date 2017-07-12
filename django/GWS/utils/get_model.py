@@ -60,7 +60,8 @@ def get_reconstruction_model_dict(MODEL_NAME):
                       'StaticPolygons':'PlatePolygons.shp'}
 
     else:
-        model_dict = 'Error: Model Not Listed'
+        #model_dict = 'Error: Model Not Listed'
+        model_dict = None
 
     return model_dict
 

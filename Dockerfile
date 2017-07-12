@@ -34,6 +34,9 @@ RUN apt-get install -y ffmpeg
 RUN dpkg -i /usr/src/docker/pygplates_2.0_amd64.deb
 RUN cp /usr/lib/pygplates/revision12/pygplates.so /usr/lib/python2.7/dist-packages/
 
+RUN mkdir /tmp/gws
+RUN chown www-data /tmp/gws
+
 # Add Tini
 ENV TINI_VERSION v0.9.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
