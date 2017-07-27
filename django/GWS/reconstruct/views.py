@@ -28,6 +28,8 @@ def pretty_floats(obj):
         return map(pretty_floats, obj)             
     return obj
 
+
+@csrf_exempt
 def reconstruct_points(request):
     """
     http GET request to reconstruct points
@@ -50,12 +52,22 @@ def reconstruct_points(request):
 
     json list of long,lat reconstructed coordinates
     """
+    if request.method == 'POST':
+        params = request.POST
+    elif request.method == 'GET':
+        params = request.GET
+    else:
+        return HttpResponseBadRequest('Unrecognized request type')
 
-    points = request.GET.get('points', None)
-    anchor_plate_id = request.GET.get('pid', 0)
-    time = request.GET.get('time', None)
-    model = request.GET.get('model',settings.MODEL_DEFAULT)
-  
+    points = params.get('points', None)
+    anchor_plate_id = params.get('pid', 0)
+    time = params.get('time', None)
+    model = params.get('model',settings.MODEL_DEFAULT)
+    if 'fc' in params:
+        return_feature_collection = True
+    else:
+        return_feature_collection = False
+
     timef=0.0
     if not time:
         return HttpResponseBadRequest('The "time" parameter cannot be empty.')
@@ -73,13 +85,8 @@ def reconstruct_points(request):
     model_dict = get_reconstruction_model_dict(model)
 
     if not model_dict:
-        return HttpResponseBadRequest('The "model" cannot be recognized ({0}).'.format(model))
+        return HttpResponseBadRequest('The "model" ({0}) cannot be recognized.'.format(model))
 
-    if 'fc' in request.GET:
-        return_feature_collection = True
-    else:
-        return_feature_collection = False
-        
     rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
@@ -98,7 +105,10 @@ def reconstruct_points(request):
             except pygplates.InvalidLatLonError as e:
                 return HttpResponseBadRequest('Invalid longitude or latitude ({0}).'.format(e)) 
         else:
-            return HttpResponseBadRequest('The longitude and latitude should come in pairs ({0}).'.format(points)) 
+            return HttpResponseBadRequest('The longitude and latitude should come in pairs ({0}).'.format(points))
+    else:
+        return HttpResponseBadRequest('The "points" parameter is missing.')
+ 
     # assign plate-ids to points using static polygons
     assigned_point_features = pygplates.partition_into_plates(
         static_polygons_filename,
@@ -156,6 +166,7 @@ def reconstruct_points(request):
     response = HttpResponse(ret, content_type='application/json')
     
     #TODO: 
+    #The "*" makes the service wide open to anyone. We should implement access control when time comes. 
     response['Access-Control-Allow-Origin'] = '*'
     return response
 
@@ -381,45 +392,76 @@ def html_model_list(request):
         } 
     )
 
+
 @csrf_exempt
 def reconstruct_feature_collection(request):
     if request.method == 'POST':
-        return HttpResponse('POST method is not accepted for now.')
+        params = request.POST
+    elif request.method == 'GET':
+        params = request.GET
+    else:
+        return HttpResponseBadRequest('Unrecognized request type')
 
-    anchor_plate_id = request.GET.get('pid', 0)
-    time = request.GET.get('geologicage', 140)
-    output_format = request.GET.get('output', 'geojson')
-    id_field = request.GET.get('idfield',None)
-    fc_str = request.GET.get('feature_collection')
-    model = str(request.GET.get('model',settings.MODEL_DEFAULT))
+    anchor_plate_id = params.get('pid', 0)
+
+    if 'time' in params:
+        time = params['time']
+    elif 'geologicage' in params:
+        time = params['geologicage']
+    else:
+        time = 140 #default reconstruction age
+
+    output_format = params.get('output', 'geojson')
+    fc_str = params.get('feature_collection')
+    model = str(params.get('model',settings.MODEL_DEFAULT))
     
-    fc = json.loads(fc_str)
+    if 'keep_properties' in params:
+        keep_properties = True
+    else:
+        keep_properties = False
 
-    print 'unique identifier field is %s' % id_field
+    try:
+        timef = float(time)
+    except:
+        return HttpResponseBadRequest('The "time" parameter is invalid ({0}).'.format(time))
 
+    try:
+        anchor_plate_id = int(anchor_plate_id)
+    except:
+        return HttpResponseBadRequest('The "pid" parameter is invalid ({0}).'.format(anchor_plate_id))
+ 
     # Convert geojson input to gplates feature collection
     features=[]
-    for f in fc['features']:
-        geom = f['geometry']
-        feature = pygplates.Feature()
-        if geom['type'] == 'Point':
-            feature.set_geometry(pygplates.PointOnSphere(
-                float(geom['coordinates'][1]),
-                float(geom['coordinates'][0])))
-        if geom['type'] == 'LineString':
-            feature.set_geometry(
-                pygplates.PolylineOnSphere([(point[1],point[0]) for point in geom['coordinates']]))
-        if geom['type'] == 'Polygon':
-            feature.set_geometry(
-                pygplates.PolygonOnSphere([(point[1],point[0]) for point in geom['coordinates'][0]]))
-        if geom['type'] == 'MultiPoint':
-             feature.set_geometry(
-                pygplates.MultiPointOnSphere([(point[1],point[0]) for point in geom['coordinates']]))
-        if id_field is not None:
-            feature.set_shapefile_attribute('id',f['properties']['id'][0][0])
-        features.append(feature)
+    try:
+        fc = json.loads(fc_str)#load the input feature collection
+        for f in fc['features']:
+            geom = f['geometry']
+            feature = pygplates.Feature()
+            if geom['type'] == 'Point':
+                feature.set_geometry(pygplates.PointOnSphere(
+                    float(geom['coordinates'][1]),
+                    float(geom['coordinates'][0])))
+            if geom['type'] == 'LineString':
+                feature.set_geometry(
+                    pygplates.PolylineOnSphere([(point[1],point[0]) for point in geom['coordinates']]))
+            if geom['type'] == 'Polygon':
+                feature.set_geometry(
+                    pygplates.PolygonOnSphere([(point[1],point[0]) for point in geom['coordinates'][0]]))
+            if geom['type'] == 'MultiPoint':
+                 feature.set_geometry(
+                    pygplates.MultiPointOnSphere([(point[1],point[0]) for point in geom['coordinates']]))
+            
+            if keep_properties and 'properties' in f:
+                for pk in f['properties']:            
+                    feature.set_shapefile_attribute(str(pk),f['properties'][pk])
+            
+            features.append(feature)
+    except:
+        return HttpResponseBadRequest('Invalid input feature collection')
 
     model_dict = get_reconstruction_model_dict(model)
+    if not model_dict:
+        return HttpResponseBadRequest('The "model" ({0}) cannot be recognized.'.format(model))
 
     rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
@@ -438,7 +480,7 @@ def reconstruct_feature_collection(request):
     pygplates.reconstruct(assigned_features, 
         rotation_model, 
         reconstructed_geometries, 
-        float(time), 
+        timef, 
         anchor_plate_id=anchor_plate_id)
 
     # convert feature collection back to geojson
@@ -462,11 +504,12 @@ def reconstruct_feature_collection(request):
             feature["geometry"]["type"] = 'Polygon'
             feature["geometry"]["coordinates"] = [[[lon,lat] for lat, lon in geom.to_lat_lon_list()]]
         else:
-            raise 'Unrecognized Geometry Type.'
+            return HttpResponseServerError('Unsupported Geometry Type.')
 
         feature["properties"] = {}
-        if id_field is not None:
-            feature["properties"]["id"] = g.get_feature().get_shapefile_attribute('id')
+        if keep_properties:
+            for pk in g.get_feature().get_shapefile_attributes():
+                feature["properties"][pk] = g.get_feature().get_shapefile_attribute(pk)
 
         data["features"].append(feature)
 
