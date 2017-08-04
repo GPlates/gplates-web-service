@@ -195,7 +195,8 @@ def get_coastline_polygons(request):
     anchor_plate_id = request.GET.get('pid', 0)
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
-    
+    central_meridian = request.GET.get('central_meridian', 0)   
+ 
     model_dict = get_reconstruction_model_dict(model)
     model_string = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['RotationFile']))
 
@@ -209,11 +210,16 @@ def get_coastline_polygons(request):
         reconstructed_polygons,
         float(time),
         anchor_plate_id=anchor_plate_id)
-    
-    data = wrap_reconstructed_polygons(reconstructed_polygons,0.)
+  
+    new_reconstructed_polygons=[] 
+    for p in reconstructed_polygons:
+        if p.get_reconstructed_geometry().get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
+            new_reconstructed_polygons.append(p)
+        else:
+            print 'invalid p'
+    data = wrap_reconstructed_polygons(new_reconstructed_polygons,0.)
 
     ret = json.dumps(pretty_floats(data))
-  
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/ 
     response = HttpResponse(ret, content_type='application/json')
@@ -452,8 +458,11 @@ def reconstruct_feature_collection(request):
                     pygplates.MultiPointOnSphere([(point[1],point[0]) for point in geom['coordinates']]))
             
             if keep_properties and 'properties' in f:
-                for pk in f['properties']:            
-                    feature.set_shapefile_attribute(str(pk),f['properties'][pk])
+                for pk in f['properties']:           
+                    p = f['properties'][pk] 
+                    if isinstance(p, unicode):
+                        p=str(p) 
+                    feature.set_shapefile_attribute(str(pk),p)
             
             features.append(feature)
     except:
@@ -510,7 +519,7 @@ def reconstruct_feature_collection(request):
         if keep_properties:
             for pk in g.get_feature().get_shapefile_attributes():
                 feature["properties"][pk] = g.get_feature().get_shapefile_attribute(pk)
-
+        print feature["properties"]
         data["features"].append(feature)
 
     ret = json.dumps(pretty_floats(data))
@@ -588,38 +597,82 @@ def get_coastline_polygons_low(request):
     ps.print_stats(20)
     print s.getvalue()
     '''
+    '''
     pygplates.reconstruct(
         feature_collection,
         rotation_model,
         reconstructed_polygons,
         float(time))
+    '''
+    if True:
+        print 'reconstruct file'
+        anchor_plate_id = request.GET.get('pid', 0)
+        time = request.GET.get('time', 0)
+        model = request.GET.get('model',settings.MODEL_DEFAULT)
+        
+        model_dict = get_reconstruction_model_dict(model)
+        model_string = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['RotationFile']))
 
-    #return HttpResponse('OK')
+        rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+            (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
+
+        reconstructed_polygons = []
+        pygplates.reconstruct(
+            str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['Coastlines'])), 
+            rotation_model, 
+            reconstructed_polygons,
+            float(time),
+            anchor_plate_id=anchor_plate_id)
+
+ 
+    wrap=True
+    
+    polygons=[]
+    central_meridian = 0
+   
+    if wrap:
+        wrapped_polygons=[]
+        date_line_wrapper = pygplates.DateLineWrapper(central_meridian)
+        for p in reconstructed_polygons:
+            wrapped_polygons += date_line_wrapper.wrap(p.get_reconstructed_geometry(),2.0)
+        for p in wrapped_polygons:
+            lats=[i.get_latitude() for i in p.get_exterior_points()]
+            lons=[i.get_longitude() for i in p.get_exterior_points()]
+            if pygplates.PolygonOnSphere(zip(lats+lats[:1],lons+lons[:1])).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
+                #pass
+                polygons.append((lons,lats))
+            else:
+                polygons.append((lons[::-1],lats[::-1]))
+    else:
+        for p in reconstructed_polygons:
+            lats, lons = zip( *p.get_reconstructed_geometry().to_lat_lon_list())
+            polygons.append((list(lons),list(lats)))
+
     data = {"type": "FeatureCollection"}
     data["features"] = []
-    for p in reconstructed_polygons:
+    for p in polygons:
         feature = {"type": "Feature"}
         feature["geometry"] = {}
         feature["geometry"]["type"] = "Polygon"
 
         #make sure the coordinates are valid.
-        lats, lons = zip( *p.get_reconstructed_geometry().to_lat_lon_list())
-        lats = list(lats)
-        lons = list(lons)
+        lats=p[1]
+        lons=p[0]
         #print lats, lons
+        #some map plotting program(such as leaflet) does not like points on the map boundary,
+        #for example the longitude 180 and -180.
+        #So, move the points slightly inwards.
+        for idx, x in enumerate(lons):
+            if x<central_meridian-179.99:
+                lons[idx] = central_meridian-179.99
+            elif x>central_meridian+179.99:
+                lons[idx] = central_meridian+179.99
         for idx, x in enumerate(lats):
             if x<-89.99:
                 lats[idx] = -89.99
-            if x>89.99:
+            elif x>89.99:
                 lats[idx] = 89.99
-
-        for idx, x in enumerate(lons):
-            if x<-179.99:
-                lons[idx] = -179.99
-            if x>179.99:
-                lons[idx] = 179.99
-
-        feature["geometry"]["coordinates"] = [zip(lons,lats)]
+        feature["geometry"]["coordinates"] = [zip(lons+lons[:1],lats+lats[:1])]
 
         data["features"].append(feature)
     ret = json.dumps(pretty_floats(data))
@@ -628,3 +681,15 @@ def get_coastline_polygons_low(request):
     response['Access-Control-Allow-Origin'] = '*'
     return response
 
+def check_polygon_orientation(lons, lats):
+    lats = lats+lats[:1]
+    lons = lons+lons[:1]
+    length = len(lats)
+    last_lon=lons[0]
+    last_lat=lats[0]
+    result=0
+    for i in range(1,length):
+        result+=(lons[i]-last_lon)*(lats[i]+last_lat)
+        last_lon=lons[i]
+        last_lat=lats[i]
+    return result
