@@ -195,10 +195,20 @@ def get_coastline_polygons(request):
     anchor_plate_id = request.GET.get('pid', 0)
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
-    central_meridian = request.GET.get('central_meridian', 0)   
- 
+    wrap = False
+    central_meridian = 0
+    if 'central_meridian' in request.GET:
+        try:
+            central_meridian = float(request.GET['central_meridian'])   
+            wrap = True
+        except:
+            print 'Invalid central meridian.'        
+
+    avoid_map_boundary = False
+    if 'avoid_map_boundary' in request.GET:
+        avoid_map_boundary = True
+
     model_dict = get_reconstruction_model_dict(model)
-    model_string = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['RotationFile']))
 
     rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
@@ -210,20 +220,61 @@ def get_coastline_polygons(request):
         reconstructed_polygons,
         float(time),
         anchor_plate_id=anchor_plate_id)
-  
-    new_reconstructed_polygons=[] 
-    for p in reconstructed_polygons:
-        if p.get_reconstructed_geometry().get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
-            new_reconstructed_polygons.append(p)
-        else:
-            print 'invalid p'
-    data = wrap_reconstructed_polygons(new_reconstructed_polygons,0.)
+
+    polygons=[]
+    if wrap:
+        wrapped_polygons=[]
+        date_line_wrapper = pygplates.DateLineWrapper(central_meridian)
+        for p in reconstructed_polygons:
+            wrapped_polygons += date_line_wrapper.wrap(p.get_reconstructed_geometry(),2.0)
+        for p in wrapped_polygons:
+            lats=[i.get_latitude() for i in p.get_exterior_points()]
+            lons=[i.get_longitude() for i in p.get_exterior_points()]
+            if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
+                polygons.append((lons,lats))
+            else:
+                polygons.append((lons[::-1],lats[::-1]))
+    else:
+        for p in reconstructed_polygons:
+            lats, lons = zip( *p.get_reconstructed_geometry().to_lat_lon_list())
+            lats = list(lats)
+            lons = list(lons)
+            if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
+                polygons.append((lons,lats))
+            else:
+                polygons.append((lons[::-1],lats[::-1]))
+
+    data = {"type": "FeatureCollection"}
+    data["features"] = []
+    for p in polygons:
+        feature = {"type": "Feature"}
+        feature["geometry"] = {}
+        feature["geometry"]["type"] = "Polygon"
+
+        #make sure the coordinates are valid.
+        lats=p[1]
+        lons=p[0]
+        #print lats, lons
+        #some map plotting program(such as leaflet) does not like points on the map boundary,
+        #for example the longitude 180 and -180.
+        #So, move the points slightly inwards.
+        if avoid_map_boundary:
+            for idx, x in enumerate(lons):
+                if x<central_meridian-179.99:
+                    lons[idx] = central_meridian-179.99
+                elif x>central_meridian+179.99:
+                    lons[idx] = central_meridian+179.99
+            for idx, x in enumerate(lats):
+                if x<-89.99:
+                    lats[idx] = -89.99
+                elif x>89.99:
+                    lats[idx] = 89.99
+        
+        feature["geometry"]["coordinates"] = [zip(lons+lons[:1],lats+lats[:1])]
+        data["features"].append(feature)
 
     ret = json.dumps(pretty_floats(data))
-    #add header for CORS
-    #http://www.html5rocks.com/en/tutorials/cors/ 
     response = HttpResponse(ret, content_type='application/json')
-    
     #TODO:
     response['Access-Control-Allow-Origin'] = '*'
     return response
@@ -532,155 +583,12 @@ def reconstruct_feature_collection(request):
     return response
 
 
-#put below code here temporarily.
-#some of the coastline polygons have holes inside them.
-#it must be addressed somehow.
-import cProfile , pstats, ast, StringIO
-
 #@request_access
 def get_coastline_polygons_low(request):
-    """
-    http GET request to retrieve reconstructed low resolution coastlines polygons
+    return get_coastline_polygons(request)
 
-    TEMPORARY IMPLEMENTATION
-    """
-    #pr = cProfile.Profile()
-    #pr.enable()
-
-    time = request.GET.get('time', 0)
-    features = []
-    '''
-    polygons = CoastlinePolygons.objects.all()
-    #polygons = StaticPolygons.objects.all()
-
-    for p in polygons:
-        polygon_feature = pygplates.Feature()
-        polygon_feature.set_geometry(
-            pygplates.PolygonOnSphere([(lat,lon) for lon, lat in p.geom[0][0]]))
-        polygon_feature.set_reconstruction_plate_id(int(p.plateid1))
-        features.append(polygon_feature)
-    '''
-    shp_path = settings.MODEL_STORE_DIR+'/'+settings.MODEL_DEFAULT+'/coastlines_low_res/Seton_etal_ESR2012_Coastlines_2012.shp'
-
-
-    import shapefile
-    sf = shapefile.Reader(shp_path)
-    for record in sf.shapeRecords():
-        if record.shape.shapeType != 5:
-            continue
-        for idx in range(len(record.shape.parts)):
-            start_idx = record.shape.parts[idx]
-            end_idx = len(record.shape.points)
-            if idx < (len(record.shape.parts) -1):
-                end_idx = record.shape.parts[idx+1]
-            polygon_feature = pygplates.Feature()
-            points = record.shape.points[start_idx:end_idx]
-            polygon_feature.set_geometry(
-                pygplates.PolygonOnSphere([(lat,lon) for lon, lat in points]))
-            polygon_feature.set_reconstruction_plate_id(int(record.record[0]))
-            features.append(polygon_feature)
-            break
-
-    feature_collection = pygplates.FeatureCollection(features)
-    reconstructed_polygons = []
-    
-    model_dict = get_reconstruction_model_dict(settings.MODEL_DEFAULT)
-    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,settings.MODEL_DEFAULT,rot_file)) for rot_file in model_dict['RotationFile']])
-
-
-    '''
-    pr.disable()
-    s = StringIO.StringIO()
-    sortby = 'cumulative'
-    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-    ps.print_stats(20)
-    print s.getvalue()
-    '''
-    '''
-    pygplates.reconstruct(
-        feature_collection,
-        rotation_model,
-        reconstructed_polygons,
-        float(time))
-    '''
-    if True:
-        print 'reconstruct file'
-        anchor_plate_id = request.GET.get('pid', 0)
-        time = request.GET.get('time', 0)
-        model = request.GET.get('model',settings.MODEL_DEFAULT)
-        
-        model_dict = get_reconstruction_model_dict(model)
-        model_string = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['RotationFile']))
-
-        rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
-            (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
-
-        reconstructed_polygons = []
-        pygplates.reconstruct(
-            str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['Coastlines'])), 
-            rotation_model, 
-            reconstructed_polygons,
-            float(time),
-            anchor_plate_id=anchor_plate_id)
-
- 
-    wrap=True
-    
-    polygons=[]
-    central_meridian = 0
-   
-    if wrap:
-        wrapped_polygons=[]
-        date_line_wrapper = pygplates.DateLineWrapper(central_meridian)
-        for p in reconstructed_polygons:
-            wrapped_polygons += date_line_wrapper.wrap(p.get_reconstructed_geometry(),2.0)
-        for p in wrapped_polygons:
-            lats=[i.get_latitude() for i in p.get_exterior_points()]
-            lons=[i.get_longitude() for i in p.get_exterior_points()]
-            if pygplates.PolygonOnSphere(zip(lats+lats[:1],lons+lons[:1])).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
-                #pass
-                polygons.append((lons,lats))
-            else:
-                polygons.append((lons[::-1],lats[::-1]))
-    else:
-        for p in reconstructed_polygons:
-            lats, lons = zip( *p.get_reconstructed_geometry().to_lat_lon_list())
-            polygons.append((list(lons),list(lats)))
-
-    data = {"type": "FeatureCollection"}
-    data["features"] = []
-    for p in polygons:
-        feature = {"type": "Feature"}
-        feature["geometry"] = {}
-        feature["geometry"]["type"] = "Polygon"
-
-        #make sure the coordinates are valid.
-        lats=p[1]
-        lons=p[0]
-        #print lats, lons
-        #some map plotting program(such as leaflet) does not like points on the map boundary,
-        #for example the longitude 180 and -180.
-        #So, move the points slightly inwards.
-        for idx, x in enumerate(lons):
-            if x<central_meridian-179.99:
-                lons[idx] = central_meridian-179.99
-            elif x>central_meridian+179.99:
-                lons[idx] = central_meridian+179.99
-        for idx, x in enumerate(lats):
-            if x<-89.99:
-                lats[idx] = -89.99
-            elif x>89.99:
-                lats[idx] = 89.99
-        feature["geometry"]["coordinates"] = [zip(lons+lons[:1],lats+lats[:1])]
-
-        data["features"].append(feature)
-    ret = json.dumps(pretty_floats(data))
-    response = HttpResponse(ret, content_type='application/json')
-    #TODO:
-    response['Access-Control-Allow-Origin'] = '*'
-    return response
-
+#negative -- counter-clockwise
+#positive -- clockwise
 def check_polygon_orientation(lons, lats):
     lats = lats+lats[:1]
     lons = lons+lons[:1]
