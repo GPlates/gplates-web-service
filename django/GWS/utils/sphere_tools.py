@@ -82,8 +82,12 @@ def create_tree_for_spherical_data(inputLats, inputLons, inputVals, n=16):
     return tree
 
 
-def sampleOnSphere(inputLats, inputLons, inputVals, othetas, ophis, tree=None, n=16):
-    
+def sampleOnSphere(inputLats, inputLons, inputVals, othetas, ophis, tree=None, n=16, k=1, distance_upper_bound=np.inf):
+
+    # if distance_upper_bound specified, assume that it is specified in degrees, convert to radians
+    if not np.isnan(distance_upper_bound):
+        distance_upper_bound = np.radians(distance_upper_bound)
+
     if (tree is None):
         tree = create_tree_for_spherical_data(inputLats, inputLons, inputVals)
     
@@ -91,7 +95,7 @@ def sampleOnSphere(inputLats, inputLons, inputVals, othetas, ophis, tree=None, n
     ophis   = np.radians(ophis)
     oxyzs=rtp2xyz(np.ones(np.shape(othetas)), othetas, ophis)
 
-    d,l = tree.query(oxyzs)
+    d,l = tree.query(oxyzs, k=k, distance_upper_bound=distance_upper_bound)
 
     return d,l
 
