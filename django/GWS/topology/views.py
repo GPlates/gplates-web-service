@@ -53,6 +53,7 @@ def get_plate_polygons(request):
 
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
+    wrap_to_dateline = request.GET.get('wrap_to_dateline',True)
 
     model_dict = get_reconstruction_model_dict(model)    
 
@@ -82,7 +83,11 @@ def get_plate_polygons(request):
     for polygon in resolved_polygons:
         resolved_features.append(polygon.get_resolved_feature())
 
-    data = wrap_polygons(resolved_features,0.)
+    if wrap_to_dateline == 'False':
+        data = wrap_polygons(resolved_features,lon0=None)
+    else:
+        print wrap_to_dateline
+        data = wrap_polygons(resolved_features,lon0=None)
     
     ret = json.dumps(pretty_floats(data))
    

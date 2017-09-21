@@ -7,14 +7,17 @@ import pygplates
 
 def wrap_polylines(polylines,lon0=0,tesselate_degrees=1):
     
-    wrapper = pygplates.DateLineWrapper(lon0)
-    
     data = {"type": "FeatureCollection"}
     data["features"] = [] 
     for polyline in polylines:
 
-        split_geometry = wrapper.wrap(polyline.get_geometry(),tesselate_degrees)
-        for geometry in split_geometry:
+        if lon0 is not None:
+            wrapper = pygplates.DateLineWrapper(lon0)
+            geometries = wrapper.wrap(polyline.get_geometry(),tesselate_degrees)
+        else:
+            geometries = polyline.get_geometries()
+
+        for geometry in geometries:
             feature = {"type": "Feature"}
             feature["geometry"] = {}
             feature["geometry"]["type"] = "MultiLineString"
@@ -28,55 +31,97 @@ def wrap_polylines(polylines,lon0=0,tesselate_degrees=1):
 
 def wrap_polygons(polygons,lon0=0,tesselate_degrees=1):
     
-    wrapper = pygplates.DateLineWrapper(lon0)
-    
     data = {"type": "FeatureCollection"}
-    data["features"] = [] 
+    data["features"] = []
+
     for polygon in polygons:
-        split_geometry = wrapper.wrap(polygon.get_geometry(),tesselate_degrees)
-        for geometry in split_geometry:
-            feature = {"type": "Feature"}
-            feature["geometry"] = {}
-            feature["geometry"]["type"] = "Polygon"
-            point_list = []
-            for point in geometry.get_exterior_points():
-                point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
-            feature["geometry"]["coordinates"] = [point_list]
-            data["features"].append(feature)
+
+        if lon0 is not None:
+            wrapper = pygplates.DateLineWrapper(lon0)
+            geometries = wrapper.wrap(polygon.get_geometry(),tesselate_degrees)
+            for geometry in geometries:
+                feature = {"type": "Feature"}
+                feature["geometry"] = {}
+                feature["geometry"]["type"] = "Polygon"
+                point_list = []
+                for point in geometry.get_exterior_points():
+                    point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
+                feature["geometry"]["coordinates"] = [point_list]
+                data["features"].append(feature)
+
+        else:
+            for geometry in polygon.get_geometries():
+                print polygon.get_reconstruction_plate_id()
+                feature = {"type": "Feature"}
+                feature["geometry"] = {}
+                feature["geometry"]["type"] = "Polygon"
+                point_list = []
+                for point in geometry.get_points():
+                    point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
+                print geometry.get_orientation()
+                if geometry.get_orientation() == pygplates.PolygonOnSphere.Orientation.counter_clockwise:
+                    point_list.reverse()
+                feature["geometry"]["coordinates"] = [point_list]
+                data["features"].append(feature)
     
     return data
 
 def wrap_reconstructed_polygons(reconstructed_polygons,lon0=0,tesselate_degrees=1):
-    
-    wrapper = pygplates.DateLineWrapper(lon0)
-    
+        
     data = {"type": "FeatureCollection"}
     data["features"] = [] 
     for reconstructed_polygon in reconstructed_polygons:
-        split_geometry = wrapper.wrap(reconstructed_polygon.get_reconstructed_geometry(),tesselate_degrees)
-        for geometry in split_geometry:
+        rev=False
+        print reconstructed_polygon.get_reconstructed_geometry().get_orientation()
+        if reconstructed_polygon.get_reconstructed_geometry().get_orientation() == pygplates.PolygonOnSphere.Orientation.counter_clockwise:
+            print 'hello'
+            rev = True
+
+        if lon0 is not None:
+            wrapper = pygplates.DateLineWrapper(lon0)
+            geometries = wrapper.wrap(reconstructed_polygon.get_reconstructed_geometry(),tesselate_degrees)
+
+            for geometry in geometries:
+                feature = {"type": "Feature"}
+                feature["geometry"] = {}
+                feature["geometry"]["type"] = "Polygon"
+                point_list = []
+                for point in geometry.get_exterior_points():
+                    point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
+                if rev:
+                    point_list.reverse()
+                feature["geometry"]["coordinates"] = [point_list]
+                data["features"].append(feature)
+
+        else:
+            geometry = reconstructed_polygon.get_reconstructed_geometry()
             feature = {"type": "Feature"}
             feature["geometry"] = {}
             feature["geometry"]["type"] = "Polygon"
             point_list = []
-            for point in geometry.get_exterior_points():
+            for point in geometry.get_points():
                 point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
+            if rev:
+                point_list.reverse()
             feature["geometry"]["coordinates"] = [point_list]
             data["features"].append(feature)
     
     return data
 
 def wrap_plate_boundaries(shared_boundary_sections,lon0=0,tesselate_degrees=1):
-    
-    wrapper = pygplates.DateLineWrapper(lon0)
-    
+        
     data = {"type": "FeatureCollection"}
     data["features"] = [] 
     for shared_boundary_section in shared_boundary_sections:
         for shared_sub_segment in shared_boundary_section.get_shared_sub_segments():
 
-            split_geometry = wrapper.wrap(shared_sub_segment.get_geometry(),tesselate_degrees)
-            for geometry in split_geometry:
+            if lon0 is not None:
+                wrapper = pygplates.DateLineWrapper(lon0)
+                geometries = wrapper.wrap(shared_sub_segment.get_geometry(),tesselate_degrees)
+            else:
+                geometries = shared_sub_segment.get_geometries()
+
+            for geometry in geometries:
                 feature = {"type": "Feature"}
                 feature["geometry"] = {}
                 feature["geometry"]["type"] = "MultiLineString"
