@@ -12,7 +12,7 @@ def wrap_polylines(polylines,lon0=0,tesselate_degrees=1):
     for polyline in polylines:
 
         if lon0 is not None:
-            wrapper = pygplates.DateLineWrapper(lon0)
+            wrapper = pygplates.DateLineWrapper(central_meridian)
             geometries = wrapper.wrap(polyline.get_geometry(),tesselate_degrees)
         else:
             geometries = polyline.get_geometries()
@@ -29,42 +29,66 @@ def wrap_polylines(polylines,lon0=0,tesselate_degrees=1):
  
     return data
 
-def wrap_polygons(polygons,lon0=0,tesselate_degrees=1):
+def wrap_resolved_polygons(resolved_polygons,
+                           wrap=False,
+                           central_meridian=0,
+                           avoid_map_boundary=False,
+                           tesselate_degrees=2):
     
+    polygons=[]
+    if wrap:
+        wrapped_polygons=[]
+        date_line_wrapper = pygplates.DateLineWrapper(central_meridian)
+        for p in resolved_polygons:
+            wrapped_polygons += date_line_wrapper.wrap(p.get_geometry(),tesselate_degrees)
+        for p in wrapped_polygons:
+            lats=[i.get_latitude() for i in p.get_exterior_points()]
+            lons=[i.get_longitude() for i in p.get_exterior_points()]
+            if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
+                polygons.append((lons,lats))
+            else:
+                polygons.append((lons[::-1],lats[::-1]))
+    else:
+        for p in resolved_polygons:
+            lats, lons = zip( *p.get_geometry().to_lat_lon_list())
+            lats = list(lats)
+            lons = list(lons)
+            if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
+                polygons.append((lons,lats))
+            else:
+                polygons.append((lons[::-1],lats[::-1]))
+
     data = {"type": "FeatureCollection"}
     data["features"] = []
+    for p in polygons:
+        feature = {"type": "Feature"}
+        feature["geometry"] = {}
+        feature["geometry"]["type"] = "Polygon"
 
-    for polygon in polygons:
-
-        if lon0 is not None:
-            wrapper = pygplates.DateLineWrapper(lon0)
-            geometries = wrapper.wrap(polygon.get_geometry(),tesselate_degrees)
-            for geometry in geometries:
-                feature = {"type": "Feature"}
-                feature["geometry"] = {}
-                feature["geometry"]["type"] = "Polygon"
-                point_list = []
-                for point in geometry.get_exterior_points():
-                    point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
-                feature["geometry"]["coordinates"] = [point_list]
-                data["features"].append(feature)
-
-        else:
-            for geometry in polygon.get_geometries():
-                print polygon.get_reconstruction_plate_id()
-                feature = {"type": "Feature"}
-                feature["geometry"] = {}
-                feature["geometry"]["type"] = "Polygon"
-                point_list = []
-                for point in geometry.get_points():
-                    point_list.append((point.to_lat_lon()[1],point.to_lat_lon()[0]))
-                print geometry.get_orientation()
-                if geometry.get_orientation() == pygplates.PolygonOnSphere.Orientation.counter_clockwise:
-                    point_list.reverse()
-                feature["geometry"]["coordinates"] = [point_list]
-                data["features"].append(feature)
+        #make sure the coordinates are valid.
+        lats=p[1]
+        lons=p[0]
+        #print lats, lons
+        #some map plotting program(such as leaflet) does not like points on the map boundary,
+        #for example the longitude 180 and -180.
+        #So, move the points slightly inwards.
+        if avoid_map_boundary:
+            for idx, x in enumerate(lons):
+                if x<central_meridian-179.99:
+                    lons[idx] = central_meridian-179.99
+                elif x>central_meridian+179.99:
+                    lons[idx] = central_meridian+179.99
+            for idx, x in enumerate(lats):
+                if x<-89.99:
+                    lats[idx] = -89.99
+                elif x>89.99:
+                    lats[idx] = 89.99
+        
+        feature["geometry"]["coordinates"] = [zip(lons+lons[:1],lats+lats[:1])]
+        data["features"].append(feature)
     
     return data
+
 
 def wrap_reconstructed_polygons(reconstructed_polygons,lon0=0,tesselate_degrees=1):
         
@@ -134,3 +158,65 @@ def wrap_plate_boundaries(shared_boundary_sections,lon0=0,tesselate_degrees=1):
                 data["features"].append(feature)
     
     return data
+
+
+def process_reconstructed_polygons(reconstructed_polygons,
+                                   wrap=False,
+                                   central_meridian=0,
+                                   avoid_map_boundary=False,
+                                   tesselate_degrees=2):
+
+    polygons=[]
+    if wrap:
+        wrapped_polygons=[]
+        date_line_wrapper = pygplates.DateLineWrapper(central_meridian)
+        for p in reconstructed_polygons:
+            wrapped_polygons += date_line_wrapper.wrap(p.get_reconstructed_geometry(),tesselate_degrees)
+        for p in wrapped_polygons:
+            lats=[i.get_latitude() for i in p.get_exterior_points()]
+            lons=[i.get_longitude() for i in p.get_exterior_points()]
+            if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
+                polygons.append((lons,lats))
+            else:
+                polygons.append((lons[::-1],lats[::-1]))
+    else:
+        for p in reconstructed_polygons:
+            lats, lons = zip( *p.get_reconstructed_geometry().to_lat_lon_list())
+            lats = list(lats)
+            lons = list(lons)
+            if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
+                polygons.append((lons,lats))
+            else:
+                polygons.append((lons[::-1],lats[::-1]))
+
+    data = {"type": "FeatureCollection"}
+    data["features"] = []
+    for p in polygons:
+        feature = {"type": "Feature"}
+        feature["geometry"] = {}
+        feature["geometry"]["type"] = "Polygon"
+
+        #make sure the coordinates are valid.
+        lats=p[1]
+        lons=p[0]
+        #print lats, lons
+        #some map plotting program(such as leaflet) does not like points on the map boundary,
+        #for example the longitude 180 and -180.
+        #So, move the points slightly inwards.
+        if avoid_map_boundary:
+            for idx, x in enumerate(lons):
+                if x<central_meridian-179.99:
+                    lons[idx] = central_meridian-179.99
+                elif x>central_meridian+179.99:
+                    lons[idx] = central_meridian+179.99
+            for idx, x in enumerate(lats):
+                if x<-89.99:
+                    lats[idx] = -89.99
+                elif x>89.99:
+                    lats[idx] = 89.99
+        
+        feature["geometry"]["coordinates"] = [zip(lons+lons[:1],lats+lats[:1])]
+        data["features"].append(feature)
+
+    return data
+

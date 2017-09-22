@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 #from get_model import get_reconstruction_model_dict
 from utils.get_model import get_reconstruction_model_dict
-from utils.wrapping_tools import wrap_reconstructed_polygons
+from utils.wrapping_tools import wrap_reconstructed_polygons,process_reconstructed_polygons
 from utils.access_control import request_access
 
 import sys, json
@@ -195,7 +195,8 @@ def get_coastline_polygons(request):
     anchor_plate_id = request.GET.get('pid', 0)
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
-    wrap = False
+
+    wrap = True
     central_meridian = 0
     if 'central_meridian' in request.GET:
         try:
@@ -221,63 +222,17 @@ def get_coastline_polygons(request):
         float(time),
         anchor_plate_id=anchor_plate_id)
 
-    polygons=[]
-    if wrap:
-        wrapped_polygons=[]
-        date_line_wrapper = pygplates.DateLineWrapper(central_meridian)
-        for p in reconstructed_polygons:
-            wrapped_polygons += date_line_wrapper.wrap(p.get_reconstructed_geometry(),2.0)
-        for p in wrapped_polygons:
-            lats=[i.get_latitude() for i in p.get_exterior_points()]
-            lons=[i.get_longitude() for i in p.get_exterior_points()]
-            if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
-                polygons.append((lons,lats))
-            else:
-                polygons.append((lons[::-1],lats[::-1]))
-    else:
-        for p in reconstructed_polygons:
-            lats, lons = zip( *p.get_reconstructed_geometry().to_lat_lon_list())
-            lats = list(lats)
-            lons = list(lons)
-            if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
-                polygons.append((lons,lats))
-            else:
-                polygons.append((lons[::-1],lats[::-1]))
-
-    data = {"type": "FeatureCollection"}
-    data["features"] = []
-    for p in polygons:
-        feature = {"type": "Feature"}
-        feature["geometry"] = {}
-        feature["geometry"]["type"] = "Polygon"
-
-        #make sure the coordinates are valid.
-        lats=p[1]
-        lons=p[0]
-        #print lats, lons
-        #some map plotting program(such as leaflet) does not like points on the map boundary,
-        #for example the longitude 180 and -180.
-        #So, move the points slightly inwards.
-        if avoid_map_boundary:
-            for idx, x in enumerate(lons):
-                if x<central_meridian-179.99:
-                    lons[idx] = central_meridian-179.99
-                elif x>central_meridian+179.99:
-                    lons[idx] = central_meridian+179.99
-            for idx, x in enumerate(lats):
-                if x<-89.99:
-                    lats[idx] = -89.99
-                elif x>89.99:
-                    lats[idx] = 89.99
-        
-        feature["geometry"]["coordinates"] = [zip(lons+lons[:1],lats+lats[:1])]
-        data["features"].append(feature)
+    data = process_reconstructed_polygons(reconstructed_polygons,
+                                          wrap,
+                                          central_meridian,
+                                          avoid_map_boundary)
 
     ret = json.dumps(pretty_floats(data))
     response = HttpResponse(ret, content_type='application/json')
     #TODO:
     response['Access-Control-Allow-Origin'] = '*'
     return response
+
 
 def get_static_polygons(request):
     """
@@ -304,6 +259,19 @@ def get_static_polygons(request):
     time = request.GET.get('time', 0)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
 
+    wrap = True
+    central_meridian = 0
+    if 'central_meridian' in request.GET:
+        try:
+            central_meridian = float(request.GET['central_meridian'])   
+            wrap = True
+        except:
+            print 'Invalid central meridian.'        
+
+    avoid_map_boundary = False
+    if 'avoid_map_boundary' in request.GET:
+        avoid_map_boundary = True
+
     model_dict = get_reconstruction_model_dict(model)
     
     rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
@@ -317,7 +285,10 @@ def get_static_polygons(request):
         float(time),
         anchor_plate_id=anchor_plate_id)
     
-    data = wrap_reconstructed_polygons(reconstructed_polygons,0.)
+    data = process_reconstructed_polygons(reconstructed_polygons,
+                                          wrap,
+                                          central_meridian,
+                                          avoid_map_boundary)
     
     ret = json.dumps(pretty_floats(data))
 

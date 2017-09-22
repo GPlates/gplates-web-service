@@ -6,7 +6,7 @@ from django.conf import settings
 import sys, json
 
 from utils.get_model import get_reconstruction_model_dict
-from utils.wrapping_tools import wrap_polygons, wrap_plate_boundaries
+from utils.wrapping_tools import wrap_resolved_polygons, wrap_plate_boundaries
 
 import pygplates
 
@@ -83,11 +83,7 @@ def get_plate_polygons(request):
     for polygon in resolved_polygons:
         resolved_features.append(polygon.get_resolved_feature())
 
-    if wrap_to_dateline == 'False':
-        data = wrap_polygons(resolved_features,lon0=None)
-    else:
-        print wrap_to_dateline
-        data = wrap_polygons(resolved_features,lon0=None)
+    data = wrap_resolved_polygons(resolved_features,wrap=wrap_to_dateline)
     
     ret = json.dumps(pretty_floats(data))
    
