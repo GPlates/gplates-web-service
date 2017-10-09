@@ -423,6 +423,7 @@ def html_model_list(request):
 
 @csrf_exempt
 def reconstruct_feature_collection(request):
+
     if request.method == 'POST':
         params = request.POST
     elif request.method == 'GET':
@@ -487,7 +488,8 @@ def reconstruct_feature_collection(request):
                     feature.set_shapefile_attribute(str(pk),p)
             
             features.append(feature)
-    except:
+    except Exception as e:
+        #print e
         return HttpResponseBadRequest('Invalid input feature collection')
 
     model_dict = get_reconstruction_model_dict(model)
@@ -541,7 +543,7 @@ def reconstruct_feature_collection(request):
         if keep_properties:
             for pk in g.get_feature().get_shapefile_attributes():
                 feature["properties"][pk] = g.get_feature().get_shapefile_attribute(pk)
-        print feature["properties"]
+        #print feature["properties"]
         data["features"].append(feature)
 
     ret = json.dumps(pretty_floats(data))
