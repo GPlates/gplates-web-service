@@ -325,7 +325,7 @@ def motion_path(request):
     """
     seedpoints = request.GET.get('seedpoints', None)
     times = request.GET.get('timespec', '0,100,10')
-    time = request.GET.get('time', 0)
+    reconstruction_time = request.GET.get('time', 0)
     RelativePlate = request.GET.get('fixplate', 0)
     MovingPlate = request.GET.get('movplate', None)
     model = request.GET.get('model',settings.MODEL_DEFAULT)
@@ -360,7 +360,7 @@ def motion_path(request):
             reconstruction_plate_id = int(MovingPlate))
 
     # Create the shape of the motion path
-    reconstruction_time = 0
+    #reconstruction_time = 0
     reconstructed_motion_paths = []
     pygplates.reconstruct(
             motion_path_feature, rotation_model, reconstructed_motion_paths, reconstruction_time,
