@@ -13,6 +13,7 @@ import pygplates
 from utils.get_model import get_reconstruction_model_dict
 from utils.create_gpml import create_gpml_crustal_thickness
 from utils.sphere_tools import random_points_on_sphere,sampleOnSphere,healpix_mesh
+from utils.fileio import write_json_reconstructed_point_features
 
 
 @csrf_exempt
@@ -87,18 +88,8 @@ def paleolithology(request):
         float(time),
         anchor_plate_id=anchor_plate_id)
 
-
-    ret='{"type":"FeatureCollection","features":['
-    for point in reconstructed_paleolithology_points:
-        coords = [point.get_reconstructed_geometry().to_lat_lon()[1],
-                  point.get_reconstructed_geometry().to_lat_lon()[0]]
-        ret+='{"type":"Feature","geometry":'
-        ret+='{'+'"type":"Point","coordinates":[[{0:5.8f},{1:5.8f}]]'.format(coords[0],coords[1])+'},'
-        lithology_string = '"Lithology":[%s]' % point.get_feature().get_shapefile_attribute('LithCode')
-        ret+='"properties":{'+lithology_string+'}},'
-
-    ret=ret[0:-1]
-    ret+=']}'
+    ret = write_json_reconstructed_point_features(reconstructed_paleolithology_points,
+                                                  attributes=[('LithCode','string'),('Period','string')])
 
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/
