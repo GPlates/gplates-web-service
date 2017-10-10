@@ -1,17 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.template import RequestContext
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseServerError, HttpResponseNotAllowed
 from django.conf import settings
-from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 from StringIO import StringIO
 
 # Create your views here.
 
 import numpy as np
+import pygplates
 from utils.get_model import get_reconstruction_model_dict
 from utils.create_gpml import create_gpml_crustal_thickness
 from utils.sphere_tools import random_points_on_sphere,sampleOnSphere,healpix_mesh
 
 
+@csrf_exempt
 def litho1(request):
 
     mode = request.GET.get('mode', 'random_points')
@@ -51,7 +55,7 @@ def litho1(request):
 
     return response
 
-
+@csrf_exempt
 def paleolithology(request):
 
     anchor_plate_id = request.GET.get('pid', 0)
@@ -63,7 +67,7 @@ def paleolithology(request):
     rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
-    paleolithology_datafile = '%s/boucot_paleolithology_combined.shp' % settings.EARTH_STORE_DIR
+    paleolithology_datafile = '%s/boucot_paleolithology_combined.shp' % settings.PALEO_STORE_DIR
 
     static_polygons_filename = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons']))
 
@@ -71,9 +75,7 @@ def paleolithology(request):
         static_polygons_filename,
         rotation_model,
         paleolithology_datafile,
-        properties_to_copy = [
-            pygplates.PartitionProperty.reconstruction_plate_id,
-            pygplates.PartitionProperty.valid_time_period],
+        properties_to_copy = [pygplates.PartitionProperty.reconstruction_plate_id],
         partition_method = pygplates.PartitionMethod.most_overlapping_plate
     )
 
@@ -85,21 +87,15 @@ def paleolithology(request):
         float(time),
         anchor_plate_id=anchor_plate_id)
 
-    coords=len(ids)*[[]]
-    for g in reconstructed_paleolithology_points:
-        coords[ids.index(g.get_feature().get_feature_id().get_string())]=(
-            [g.get_reconstructed_geometry().to_lat_lon()[1],
-            g.get_reconstructed_geometry().to_lat_lon()[0]])
 
     ret='{"type":"FeatureCollection","features":['
-    for c,p in zip(coords,valid_periods):
+    for point in reconstructed_paleolithology_points:
+        coords = [point.get_reconstructed_geometry().to_lat_lon()[1],
+                  point.get_reconstructed_geometry().to_lat_lon()[0]]
         ret+='{"type":"Feature","geometry":'
-        if c:
-            print c
-            ret+='{'+'"type":"Point","coordinates":[{0:5.2f},{1:5.2f}]'.format(c[0],c[1])+'},'
-        else:
-            ret+='null,'
-        ret+='"properties":{'+'"valid_time":[{0},"{1}"]'.format(p[0],p[1])+'}},'
+        ret+='{'+'"type":"Point","coordinates":[[{0:5.8f},{1:5.8f}]]'.format(coords[0],coords[1])+'},'
+        lithology_string = '"Lithology":[%s]' % point.get_feature().get_shapefile_attribute('LithCode')
+        ret+='"properties":{'+lithology_string+'}},'
 
     ret=ret[0:-1]
     ret+=']}'
