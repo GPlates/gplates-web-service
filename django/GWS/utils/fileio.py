@@ -18,6 +18,9 @@ def write_json_reconstructed_point_features(reconstructed_points,attributes=None
                 ret+=attribute_string
             ret=ret[0:-1]
             ret+='}},'
+        else:
+            ret=ret[0:-1]
+            ret+='},'
 
     ret=ret[0:-1]
     ret+=']}'
