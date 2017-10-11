@@ -5,7 +5,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 #from get_model import get_reconstruction_model_dict
-from utils.get_model import get_reconstruction_model_dict
+from utils.get_model import get_reconstruction_model_dict,is_time_valid_model
 from utils.wrapping_tools import wrap_reconstructed_polygons,process_reconstructed_polygons
 from utils.access_control import request_access
 
@@ -211,7 +211,7 @@ def get_coastline_polygons(request):
 
     model_dict = get_reconstruction_model_dict(model)
 
-    if float(time)>model_dict['ValidTimeRange'][0] or float(time)<model_dict['ValidTimeRange'][1]:
+    if not is_time_valid_model(model_dict,time):
         return HttpResponseBadRequest('Requested time %s not available for model %s' % (time,model))
 
     rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
