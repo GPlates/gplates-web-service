@@ -211,6 +211,9 @@ def get_coastline_polygons(request):
 
     model_dict = get_reconstruction_model_dict(model)
 
+    if float(time)>model_dict['ValidTimeRange'][0] or float(time)<model_dict['ValidTimeRange'][1]:
+        return HttpResponseBadRequest('Requested time %s not available for model %s' % (time,model))
+
     rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 

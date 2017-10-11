@@ -7,34 +7,40 @@ def get_reconstruction_model_dict(MODEL_NAME):
         model_dict = {'RotationFile':['Seton_etal_ESR2012_2012.1.rot'],
                       'Coastlines':'coastlines_low_res/Seton_etal_ESR2012_Coastlines_2012.shp',
                       'StaticPolygons':'Seton_etal_ESR2012_StaticPolygons_2012.1.gpmlz',
-                      'PlatePolygons':'Seton_etal_ESR2012_PP_2012.1.gpmlz'}
+                      'PlatePolygons':'Seton_etal_ESR2012_PP_2012.1.gpmlz',
+                      'ValidTimeRange':[200.,0.]}
 
     elif MODEL_NAME=='MULLER2016':
         model_dict = {'RotationFile':['Global_EarthByte_230-0Ma_GK07_AREPS.rot'],
                       'Coastlines':'Global_EarthByte_230-0Ma_GK07_AREPS_Coastlines.gpmlz',
                       'StaticPolygons':'Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons_2015_v1.gpmlz',
                       'PlatePolygons':['Global_EarthByte_230-0Ma_GK07_AREPS_PlateBoundaries.gpmlz',
-                                       'Global_EarthByte_230-0Ma_GK07_AREPS_Topology_BuildingBlocks.gpmlz']}
+                                       'Global_EarthByte_230-0Ma_GK07_AREPS_Topology_BuildingBlocks.gpmlz'],
+                      'ValidTimeRange':[230.,0.]}
 
     elif MODEL_NAME=='PALEOMAP':
         model_dict = {'RotationFile':['PALEOMAP_PlateModel.rot'],
                       'Coastlines':'PALEOMAP_coastlines.gpmlz',
-                      'StaticPolygons':'PALEOMAP_PlatePolygons.gpmlz'}
+                      'StaticPolygons':'PALEOMAP_PlatePolygons.gpmlz',
+                      'ValidTimeRange':[750.,0.]}
 
     elif MODEL_NAME=='RODINIA2013':
         model_dict = {'RotationFile':['Li_Rodinia_v2013.rot'],
                       'Coastlines':'Li_Rodinia_v2013_Coastlines.gpmlz',
-                      'StaticPolygons':'Li_Rodinia_v2013_StaticPolygons.gpmlz'}
+                      'StaticPolygons':'Li_Rodinia_v2013_StaticPolygons.gpmlz',
+                      'ValidTimeRange':[1100.,530.]}
 
     elif MODEL_NAME=='GOLONKA':
         model_dict = {'RotationFile':['Phanerozoic_EarthByte.rot'],
                       'Coastlines':'Phanerozoic_EarthByte_Coastlines.gpmlz',
-                      'StaticPolygons':'Phanerozoic_EarthByte_ContinentalRegions.gpmlz'}
+                      'StaticPolygons':'Phanerozoic_EarthByte_ContinentalRegions.gpmlz',
+                      'ValidTimeRange':[540.,0.]}
 
     elif MODEL_NAME=='VH_VDM':
         model_dict = {'RotationFile':['vanHinsbergen_master.rot'],
                       'Coastlines':'Coastlines_Seton_etal_2012.gpmlz',
-                      'StaticPolygons':'Basis_Polygons_Seton_etal_2012.gpmlz'}
+                      'StaticPolygons':'Basis_Polygons_Seton_etal_2012.gpmlz',
+                      'ValidTimeRange':[200.,0.]}
 
     elif MODEL_NAME=='MATTHEWS2016':
         model_dict = {'RotationFile':['Global_EB_250-0Ma_GK07_Matthews_etal.rot',
@@ -43,7 +49,8 @@ def get_reconstruction_model_dict(MODEL_NAME):
                       'StaticPolygons':'PresentDay_StaticPlatePolygons_Matthews++.gpmlz',
                       'PlatePolygons':['Global_EarthByte_Mesozoic-Cenozoic_plate_boundaries_Matthews_etal.gpmlz',
                                        'Global_EarthByte_Paleozoic_plate_boundaries_Matthews_etal.gpmlz',
-                                       'TopologyBuildingBlocks_AREPS.gpmlz']}
+                                       'TopologyBuildingBlocks_AREPS.gpmlz'],
+                      'ValidTimeRange':[410.,0.]}
 
     elif MODEL_NAME=='DOMEIER2014':
         model_dict = {'RotationFile':['LP_TPW.rot'],
@@ -52,12 +59,14 @@ def get_reconstruction_model_dict(MODEL_NAME):
                       'PlatePolygons':['LP_ridge.gpml',
                                        'LP_subduction.gpml',
                                        'LP_transform.gpml',
-                                       'LP_topos.gpml']}
+                                       'LP_topos.gpml'],
+                      'ValidTimeRange':[410.,250.]}
 
     elif MODEL_NAME=='PEHRSSON2015':
         model_dict = {'RotationFile':['T_Rot_Model_Abs_25Ma_20131004.rot'],
                       'Coastlines':'PlatePolygons.shp',
-                      'StaticPolygons':'PlatePolygons.shp'}
+                      'StaticPolygons':'PlatePolygons.shp',
+                      'ValidTimeRange':[2100.,1275.]}
 
     else:
         #model_dict = 'Error: Model Not Listed'
