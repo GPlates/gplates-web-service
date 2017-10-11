@@ -93,3 +93,9 @@ def get_model_dictionary(MODEL_STORE):
 
     return MODEL_LIST
 
+
+def is_time_valid_model(model_dict,time):
+    return float(time)<=model_dict['ValidTimeRange'][0] and float(time)>=model_dict['ValidTimeRange'][1]
+
+
+
