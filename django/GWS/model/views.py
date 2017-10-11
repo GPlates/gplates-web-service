@@ -39,11 +39,7 @@ def get_model_layer(request):
         tmp = pygplates.FeatureCollection()
         for rot_file in model_dict['RotationFile']:
             tmp.add(pygplates.FeatureCollection(str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,rot_file))))
-        #rotation_model = str('%s/%s/%s' %
-        #    (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']]
 
-        #print rotation_model
-        #tmp = pygplates.FeatureCollection(rotation_model)
         tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename))
         f = StringIO(file('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename), "rb").read())
 
@@ -53,18 +49,25 @@ def get_model_layer(request):
         tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename))
         f = StringIO(file('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename), "rb").read())
 
-        #f = StringIO(file('%s' % target_feature_filename, "rb").read())
-    
     elif layer=='coastlines':
         target_feature_filename = '%s.gpmlz' % model
         tmp = pygplates.FeatureCollection(str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['Coastlines'])))
         tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename))
         f = StringIO(file('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename), "rb").read())
 
-        #f = StringIO(file('%s' % target_feature_filename, "rb").read())
-    
-    print target_feature_filename
+    elif layer=='plate_polygons':
+        target_feature_filename = '%s.gpmlz' % model
+        tmp = pygplates.FeatureCollection()
+        for gpmlfile in model_dict['PlatePolygons']:
+            tmp.add(pygplates.FeatureCollection(str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,gpmlfile))))
 
+        tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename))
+        f = StringIO(file('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename), "rb").read())
+
+    else:
+        return HttpResponseBadRequest('Unrecognised layer name: %s' % layer)
+    
+    
     response = HttpResponse(f, content_type = 'application/gpmlz')
     response['Content-Disposition'] = 'attachment; filename=%s' % target_feature_filename
 
