@@ -31,4 +31,5 @@ urlpatterns = [
     url(r'^earth/', include('earth.urls')),
     url(r'^list/', include('info.urls')),
     url(r'^map/', include('paleomap.urls')),
+    url(r'^model/', include('model.urls')),
 ]
