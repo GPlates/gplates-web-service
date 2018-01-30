@@ -68,6 +68,11 @@ def reconstruct_points(request):
     else:
         return_feature_collection = False
 
+    if 'return_null_points' in params:
+        return_null_points = True
+    else:
+        return_null_points = False
+
     timef=0.0
     if not time:
         return HttpResponseBadRequest('The "time" parameter cannot be empty.')
@@ -146,6 +151,8 @@ def reconstruct_points(request):
         for c in coords:
             if c:
                 ret+='[{0:5.2f},{1:5.2f}],'.format(c[0],c[1])
+            elif return_null_points:
+                ret+='null,'
 
     else:
         ret='{"type":"FeatureCollection","features":['
@@ -156,7 +163,17 @@ def reconstruct_points(request):
                 ret+='{'+'"type":"Point","coordinates":[{0:5.2f},{1:5.2f}]'.format(c[0],c[1])+'},'
             else:
                 ret+='null,'
-            ret+='"properties":{'+'"valid_time":[{0},"{1}"]'.format(p[0],p[1])+'}},'
+            
+            #write out begin and end time
+            if p[0] == pygplates.GeoTimeInstant.create_distant_past():
+                begin_time = '"distant past"'
+            else:
+                begin_time = p[0]
+            if p[1] == pygplates.GeoTimeInstant.create_distant_future():
+                end_time = '"distant future"'
+            else:
+                end_time=p[1]
+            ret+='"properties":{'+'"valid_time":[{0},{1}]'.format(begin_time,end_time)+'}},'
 
     ret=ret[0:-1]
     ret+=']}'
