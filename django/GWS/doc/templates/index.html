@@ -25,6 +25,7 @@
         <style>
             body {
                 position: relative;
+                background-image: url(/static/background.png)
             }
             .txt-box{
                 font-size:135%;
@@ -39,7 +40,7 @@
             }
 
             .ref-title{
-                color: brown;
+                //color: brown;
                 text-align: center;
             }
             .nav-sidebar>.active>a{
@@ -57,6 +58,7 @@
             }
 
             .demo-btn{
+		display: inline-block;
                 text-align: center;
                 margin: 20px 0px 20px 0px;
             }
@@ -66,6 +68,9 @@
     <body data-spy="scroll" data-target="#side-nav">
         <div class="container-fluid">
         <div class="container">
+
+	    <h2 style="text-align: center; color: royalblue;">GPlates Web Service</h2>
+
             <div class="row">
                 <div class="col-md-9">
                     <div id="recon-p" class="txt-box">
@@ -73,32 +78,26 @@
                         <strong>Description:</strong>
                         <p>Reconstruct the geographic locations from present day coordinates back to their paleo-positions.
                         Each location will be assigned a plate id and moved back in time using the chosen reconstruction model.</p>
-
-                        <strong>Endpoint:</strong>
-                        <p><code>https://gws.gplates.org/reconstruct/reconstruct_points</code></p>
-
-                        <strong>Parameters:</strong>
-                        <ul><li><strong>points</strong>
-                        <p>The present-day coordinates of locations in longitude and latitude separated by ','.</p></li>
-                        <li><strong>time</strong>
-                        <p>The geological age in million years(Ma) to which the coordinates will be reconstructed. 
-                        The valid input value depends on the chosen reconstruction model.</p></li>
-                        <li><strong>model</strong>
-                        <p>The reconstruction model name.</p></li></ul>
-                        
-                        <strong> Models:</strong>
-                        <ul><li>"default" -- The valid time range is between 0 and 440.</li></ul>
-
-                        <strong>Return:</strong>
-                        <p>Paleo-coordinates in GeoJson format.</p>
-                        <strong>Example:</strong>
-                        <p>The URL below reconstructs two locations((lon:95,lat:54)(lon:142,lat:-33)) back to 140 million years ago 
+			<strong>Example:</strong>
+                        <p>The URL below reconstructs two locations((lon:95,lat:54)(lon:142,lat:-33)) back to 140 million years ago
                         using the "default" reconstrution model.</p>
 
                         <p><a href="/reconstruct/reconstruct_points/?points=95,54,142,-33&amp;time=140" target="_blank">
                         <pre>https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&amp;time=140</pre></a></p>
 
-                        <p class="demo-btn"><a class="btn btn-info" role="button" href="https://portal.gplates.org/service/d3_demo/?view=points" target='_blank'>Try it in an interactive online map</a></p>
+			<div style="text-align:center;">
+                        <p class="demo-btn">
+			    <a class="btn btn-primary" role="button" 
+				href="https://portal.gplates.org/service/d3_demo/?view=points" target="_blank">
+				&laquo Interactive Map</a>
+			</p>                       
+
+			<p class="demo-btn">
+                        <a class="btn btn-info" role="button" 
+			 href="https://github.com/GPlates/gplates_web_service_doc/wiki/reconstruct#reconstructreconstruct_points" target="_blank">
+				API Reference &raquo </a>
+			</p>
+			</div><br>	
                     </div>
 
                     <div id="recon-fc" class="txt-box">
@@ -108,128 +107,50 @@
                             Each feature will be assigned a plate id and moved back in time using the given reconstruction model.
                             Reconstructed features will be returned in GeoJSON format.</p>
 
-                        <strong>Endpoint:</strong>
-                            <p><code>https://gws.gplates.org/reconstruct/reconstruct_feature_collection</code></p>
-
-                        <strong>Parameters:</strong>
-                            <ul><li><strong>feature_collection:</strong>
-                                <p>The feature collection in GeoJSON format.</p></li>
-                            <li><strong>geologicage:</strong>
-                                <p>The geological age in million years(Ma) to which the feature collection will be reconstructed.
-                                The valid input value depends on the chosen reconstruction model.</p></li>
-                            <li><strong>model:</strong>
-                                <p>The reconstruction model name.</p></li></ul>
-
-
-                            <strong>Models:</strong>
-                            <ul><li>"default" -- The valid time range is between between 0 and 440.</li></ul>
-                            <strong>Return:</strong>
-                            <ul><li>Feature collection in GeoJson format.</li></ul>
-
-                            <strong>Example:</strong>
+			   <strong>Example:</strong>
                             <p><a href="/reconstruct/reconstruct_feature_collection/?feature_collection={
                             &quot;type&quot;:&quot;FeatureCollection&quot;,&quot;features&quot;:[{&quot;type&quot;:&quot;Feature&quot;,
                             &quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:
                             [[[23,-20],[-9,35],[14,44],[23,-20]]]},&quot;properties&quot;:{}}]}&amp;geologicage=140&amp;model=SETON2012" target="_blank">
                             <pre>https://gws.gplates.org/reconstruct/reconstruct_feature_collection/?feature_collection={"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[23,-20],[-9,35],[14,44],[23,-20]]]},"properties":{}}]}&amp;geologicage=140&amp;model=SETON2012</pre></a></p>
 
-                            <p class="demo-btn"><a class="btn btn-info" role="button" href="https://portal.gplates.org/service/d3_demo/?view=feature_collection" target='_blank'>Try it in an interactive online map</a></p>
+			<div style="text-align:center;">
+                        <p class="demo-btn">
+                            <a class="btn btn-primary" role="button"
+                                href="https://portal.gplates.org/service/d3_demo/?view=feature_collection" target="_blank">
+                                &laquo Interactive Map</a>
+                        </p>
 
-                            <strong>Feature Collection Examples:</strong>
-        
-            <pre><strong>#Polygon</strong>
-        {
-            "type":"FeatureCollection",
-            "features":
-            [{
-                "type":"Feature",
-                "geometry":
-                {
-                    "type": "Polygon",
-                    "coordinates": [
-                        [ [23, -20.0], [-9.0, 35.0],[14.0, 44.0],[23, -20.0] ]
-                    ]
-                },
-                "properties":{}
-            }]
-        }</pre>
-            <pre><strong>#LineString</strong>
-        {
-            "type":"FeatureCollection",
-            "features":
-            [{
-                "type":"Feature",
-                "geometry":
-                {
-                    "type": "LineString",
-                    "coordinates": [
-                        [23, -20.0], [-9.0, 35.0] 
-                    ]
-                },
-                "properties":{}
-            }]
-        }</pre>
-        <pre><strong>#MultiPoint</strong>
-        {
-            "type":"FeatureCollection",
-            "features":
-            [{
-                "type":"Feature",
-                "geometry":
-                {
-                    "type": "MultiPoint",
-                    "coordinates": [
-                        [23, -20.0], [-9.0, 35.0],[14.0, 44.0] 
-                    ]
-                },
-                "properties":{}
-            }]
-        }</pre>
-
-            <pre><strong>#Point</strong>
-            {
-                "type":"FeatureCollection",
-                "features":
-                [{
-                    "type":"Feature",
-                    "geometry":
-                    {
-                        "type":"Point",
-                        "coordinates":[51.0, 38.0]
-                    },
-                    "properties":{}
-                }]
-            }</pre>
-        </div>
+                        <p class="demo-btn">
+                        <a class="btn btn-info" role="button"
+                         href="https://github.com/GPlates/gplates_web_service_doc/wiki/reconstruct#reconstructreconstruct_feature_collection" target="_blank">
+                                API Reference &raquo </a>
+                        </p>
+                        </div><br>
+                    </div>
 
                     <div class="txt-box" id="recon-cl">
                         <h3 class="ref-title">Reconstruct Coastlines</h3>
                         <strong>Description:</strong>
                             <p>Return the coastlines' paleo-coordinates.</p>
 
-                        <strong>Endpoint:</strong>
-                            <p><code>https://gws.gplates.org/reconstruct/coastlines</code></p>
-
-                        <strong>Parameters:</strong>
-                        <ul><li><strong>time</strong>
-                                <p>The geological age in million years(Ma). 
-                                The valid input value depends on the chosen reconstruction model.<p></li>
-                            <li><strong>model</strong>
-                                <p>The reconstruction model name(optional).</p></li></ul>
-                                
-                        <strong>Models:</strong>
-                        <ul> <li>"default" -- The valid time range is between 0 and 440.</li></ul>
-
-                        <strong>Return:</strong>
-                            <p>Feature collection in GeoJSON format.</p>
-
-                        <strong>Example:</strong>
-
+			<strong>Example:</strong>
                         <p><a href="/reconstruct/coastlines?time=140" target="_blank">
                         <pre>https://gws.gplates.org/reconstruct/coastlines?time=140</pre></a></p>
 
-                        <p class="demo-btn"><a class="btn btn-info" href="https://portal.gplates.org/service/d3_demo/" target='_blank'>
-                            Try it in an interactive online map</a></p>
+			<div style="text-align:center;">
+                        <p class="demo-btn">
+                            <a class="btn btn-primary" role="button"
+                                href="https://portal.gplates.org/service/d3_demo/" target="_blank">
+                                &laquo Interactive Map</a>
+                        </p>
+
+                        <p class="demo-btn">
+                        <a class="btn btn-info" role="button"
+                         href="https://github.com/GPlates/gplates_web_service_doc/wiki/reconstruct#reconstructcoastlines" target="_blank">
+                                API Reference &raquo </a>
+                        </p>
+                        </div><br>
                    </div>
                 </div >
 
