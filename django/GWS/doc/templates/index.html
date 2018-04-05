@@ -152,6 +152,31 @@
                         </p>
                         </div><br>
                    </div>
+
+	           <div class="txt-box" id="docker">
+                        <h3 class="ref-title">Run Reconstruction Service In A Docker Container</h3>
+        		<p>Running the GPlates Web Service locally inside a Docker container is especially important in the following scenarios:
+			    <ul>
+				<li>User's program requires short response time and low latency.</li> 
+				<li>User has a large volume of data to process and can provide much more computational power than GPlates server.</li> 
+			    	<li>User has concerns about sending their data to a remote server.</li>
+				<li>User cannot access internet service all the time or the internet service is very poor. </li>
+			    </ul>
+			</p><br>
+			<strong>The GPlates Web Service Docker container can be downloaded from Docker Hub.</strong>
+			<br><br>
+			<div style="text-align:center;">
+			    <a href="https://hub.docker.com/r/gplates/gws/" target="_blank">
+				<img src="/static/docker-gws.png" alt="Go to gplates/gws in Docker Hub" height="120px"></a>
+			<br><br>
+			<a href="https://hub.docker.com/r/gplates/gws/" target="_blank">Goto Docker Hub to check out gplates/gws</a>
+			<div>
+			<p>
+		            <br><br>
+			</p>           
+		   </div>
+	
+
                 </div >
 
                 <nav class="col-md-3" id="side-nav">
@@ -159,6 +184,7 @@
                     <li><a href="#recon-p">Calculate Paleo-geographic Coordinates</a></li>
                     <li><a href="#recon-fc">Reconstruct Feature Collection</a></li>
                     <li><a href="#recon-cl">Reconstruct Coastlines</a></li>
+		    <li><a href="#docker">Run Local Service</a></li>
                     <!--<li class="dropdown">
                       <a class="dropdown-toggle" data-toggle="dropdown" href="#">Section 4 <span class="caret"></span></a>
                       <ul class="dropdown-menu">
