@@ -28,21 +28,35 @@
                 background-image: url(/static/background.png)
             }
             .txt-box{
+		position: relative;
                 font-size:135%;
                 border-color: #ddd; 
                 border-width: 1px; 
                 border-radius: 4px 4px 0 0;
                 border-style: solid;
                 padding: 10px 40px 0px 40px;
-                background-color: #fafafa;
+                //background-color: #fafafa;
                 margin: 10px 0 40px 0;            
-                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 128, 0.19);
+                box-shadow: 2px -4px 8px 4px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 128, 0.19);
             }
+	    .txt-box .bg{
+		background-image: url(/static/background-2.png);
+    		background-size: cover;
+    		opacity: 0.4;
+		top: 0;
+  		left: 0;
+  		bottom: 0;
+  		right: 0;
+  		position: absolute;
+  		z-index: -1;   
+	    }
 
             .ref-title{
                 //color: brown;
                 text-align: center;
+		margin-bottom: 20px;
             }
+
             .nav-sidebar>.active>a{
                 padding-left: 18px;
                 font-weight: 700;
@@ -50,11 +64,13 @@
                 background-color: transparent;
                 border-left: 2px solid #563d7c;
             }
+
             .nav-sidebar>li>a{
                 padding:4px 20px;
             }
+
             .nav-sidebar{
-                margin-top:10px;
+                margin-top:70px;
             }
 
             .demo-btn{
@@ -62,6 +78,11 @@
                 text-align: center;
                 margin: 20px 0px 20px 0px;
             }
+	
+	    .title-text{
+		border-bottom: 2px solid darkgrey;
+    		padding: 0px 10px 5px 10px;
+	    }
         </style>
     </head>
 
@@ -69,12 +90,12 @@
         <div class="container-fluid">
         <div class="container">
 
-	    <h2 style="text-align: center; color: royalblue;">GPlates Web Service</h2>
-
             <div class="row">
                 <div class="col-md-9">
+		    <h2 style="text-align: center; color: #337ab7;">GPlates Web Service</h2>
                     <div id="recon-p" class="txt-box">
-                        <h3 class="ref-title">Calculate Paleo-geographic Coordinates</h3>
+                   	<div class="bg"></div>     
+			<h3 class="ref-title"><span class="title-text">Calculate Paleo-geographic Coordinates</span></h3>
                         <strong>Description:</strong>
                         <p>Reconstruct the geographic locations from present day coordinates back to their paleo-positions.
                         Each location will be assigned a plate id and moved back in time using the chosen reconstruction model.</p>
@@ -85,6 +106,11 @@
                         <p><a href="/reconstruct/reconstruct_points/?points=95,54,142,-33&amp;time=140" target="_blank">
                         <pre>https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&amp;time=140</pre></a></p>
 
+                        <div style="text-align:center;">
+                            <a href="https://portal.gplates.org/service/d3_demo/?view=points" target="_blank">
+                                <img src="/static/reconstruct-points.png" alt="Reconstruct Points Demo" height="320px"></a>
+			</div>
+			
 			<div style="text-align:center;">
                         <p class="demo-btn">
 			    <a class="btn btn-primary" role="button" 
@@ -101,7 +127,8 @@
                     </div>
 
                     <div id="recon-fc" class="txt-box">
-                        <h3 class="ref-title">Reconstruct Feature Collection</h3>
+                        <div class="bg"></div>
+			<h3 class="ref-title"><span class="title-text">Reconstruct Feature Collection</span></h3>
                         <strong>Description:</strong>
                             <p>Reconstruct feature collection in GeoJSON format back in time. 
                             Each feature will be assigned a plate id and moved back in time using the given reconstruction model.
@@ -113,6 +140,11 @@
                             &quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:
                             [[[23,-20],[-9,35],[14,44],[23,-20]]]},&quot;properties&quot;:{}}]}&amp;geologicage=140&amp;model=SETON2012" target="_blank">
                             <pre>https://gws.gplates.org/reconstruct/reconstruct_feature_collection/?feature_collection={"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[23,-20],[-9,35],[14,44],[23,-20]]]},"properties":{}}]}&amp;geologicage=140&amp;model=SETON2012</pre></a></p>
+
+			<div style="text-align:center;">
+                            <a href="https://portal.gplates.org/service/d3_demo/?view=feature_collection" target="_blank">
+                                <img src="/static/reconstruct-feature-collection.png" alt="Reconstruct Feature Collection Demo" height="320px"></a>
+                        </div>
 
 			<div style="text-align:center;">
                         <p class="demo-btn">
@@ -130,13 +162,19 @@
                     </div>
 
                     <div class="txt-box" id="recon-cl">
-                        <h3 class="ref-title">Reconstruct Coastlines</h3>
+			<div class="bg"></div>
+                        <h3 class="ref-title"><span class="title-text">Reconstruct Coastlines</span></h3>
                         <strong>Description:</strong>
-                            <p>Return the coastlines' paleo-coordinates.</p>
+                            <p>http GET request to retrieve reconstructed coastline polygons</p>
 
 			<strong>Example:</strong>
                         <p><a href="/reconstruct/coastlines?time=140" target="_blank">
                         <pre>https://gws.gplates.org/reconstruct/coastlines?time=140</pre></a></p>
+
+			<div style="text-align:center;">
+                            <a href="https://portal.gplates.org/service/d3_demo/" target="_blank">
+                                <img src="/static/reconstruct-coastlines.png" alt="Reconstruct Coastlines Demo" height="320px"></a>
+                        </div>
 
 			<div style="text-align:center;">
                         <p class="demo-btn">
@@ -154,8 +192,10 @@
                    </div>
 
 	           <div class="txt-box" id="docker">
-                        <h3 class="ref-title">Run Reconstruction Service In A Docker Container</h3>
-        		<p>Running the GPlates Web Service locally inside a Docker container is especially important in the following scenarios:
+			<div class="bg"></div>
+                        <h3 class="ref-title"><span class="title-text">Run Reconstruction Service In A Docker Container</span></h3>
+        		<p>The GPlates team has prepared a Docker container for users to run the service in their own computers. 
+			Running the GPlates Web Service locally inside a Docker container is especially important in the following scenarios:
 			    <ul>
 				<li>User's program requires short response time and low latency.</li> 
 				<li>User has a large volume of data to process and can provide much more computational power than GPlates server.</li> 
@@ -170,7 +210,7 @@
 				<img src="/static/docker-gws.png" alt="Go to gplates/gws in Docker Hub" height="120px"></a>
 			<br><br>
 			<a href="https://hub.docker.com/r/gplates/gws/" target="_blank">Goto Docker Hub to check out gplates/gws</a>
-			<div>
+			</div>
 			<p>
 		            <br><br>
 			</p>           
