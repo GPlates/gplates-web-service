@@ -96,6 +96,12 @@
                     <div id="recon-p" class="txt-box">
                    	<div class="bg"></div>     
 			<h3 class="ref-title"><span class="title-text">Calculate Paleo-geographic Coordinates</span></h3>
+
+			<div style="text-align:center;">
+                            <a href="https://portal.gplates.org/service/d3_demo/?view=points" target="_blank">
+                                <img src="/static/reconstruct-points.png" alt="Reconstruct Points Demo" height="320px"></a>
+                        </div>
+
                         <strong>Description:</strong>
                         <p>Reconstruct the geographic locations from present day coordinates back to their paleo-positions.
                         Each location will be assigned a plate id and moved back in time using the chosen reconstruction model.</p>
@@ -106,11 +112,6 @@
                         <p><a href="/reconstruct/reconstruct_points/?points=95,54,142,-33&amp;time=140" target="_blank">
                         <pre>https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&amp;time=140</pre></a></p>
 
-                        <div style="text-align:center;">
-                            <a href="https://portal.gplates.org/service/d3_demo/?view=points" target="_blank">
-                                <img src="/static/reconstruct-points.png" alt="Reconstruct Points Demo" height="320px"></a>
-			</div>
-			
 			<div style="text-align:center;">
                         <p class="demo-btn">
 			    <a class="btn btn-primary" role="button" 
@@ -129,7 +130,13 @@
                     <div id="recon-fc" class="txt-box">
                         <div class="bg"></div>
 			<h3 class="ref-title"><span class="title-text">Reconstruct Feature Collection</span></h3>
-                        <strong>Description:</strong>
+                        
+ 			<div style="text-align:center;">
+                            <a href="https://portal.gplates.org/service/d3_demo/?view=feature_collection" target="_blank">
+                                <img src="/static/reconstruct-feature-collection.png" alt="Reconstruct Feature Collection Demo" height="320px"></a>
+                        </div>
+
+			<strong>Description:</strong>
                             <p>Reconstruct feature collection in GeoJSON format back in time. 
                             Each feature will be assigned a plate id and moved back in time using the given reconstruction model.
                             Reconstructed features will be returned in GeoJSON format.</p>
@@ -140,11 +147,6 @@
                             &quot;geometry&quot;:{&quot;type&quot;:&quot;Polygon&quot;,&quot;coordinates&quot;:
                             [[[23,-20],[-9,35],[14,44],[23,-20]]]},&quot;properties&quot;:{}}]}&amp;geologicage=140&amp;model=SETON2012" target="_blank">
                             <pre>https://gws.gplates.org/reconstruct/reconstruct_feature_collection/?feature_collection={"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[23,-20],[-9,35],[14,44],[23,-20]]]},"properties":{}}]}&amp;geologicage=140&amp;model=SETON2012</pre></a></p>
-
-			<div style="text-align:center;">
-                            <a href="https://portal.gplates.org/service/d3_demo/?view=feature_collection" target="_blank">
-                                <img src="/static/reconstruct-feature-collection.png" alt="Reconstruct Feature Collection Demo" height="320px"></a>
-                        </div>
 
 			<div style="text-align:center;">
                         <p class="demo-btn">
@@ -164,17 +166,18 @@
                     <div class="txt-box" id="recon-cl">
 			<div class="bg"></div>
                         <h3 class="ref-title"><span class="title-text">Reconstruct Coastlines</span></h3>
-                        <strong>Description:</strong>
+                        
+ 			<div style="text-align:center;">
+                            <a href="https://portal.gplates.org/service/d3_demo/" target="_blank">
+                                <img src="/static/reconstruct-coastlines.png" alt="Reconstruct Coastlines Demo" height="320px"></a>
+                        </div>
+
+			<strong>Description:</strong>
                             <p>http GET request to retrieve reconstructed coastline polygons</p>
 
 			<strong>Example:</strong>
                         <p><a href="/reconstruct/coastlines?time=140" target="_blank">
                         <pre>https://gws.gplates.org/reconstruct/coastlines?time=140</pre></a></p>
-
-			<div style="text-align:center;">
-                            <a href="https://portal.gplates.org/service/d3_demo/" target="_blank">
-                                <img src="/static/reconstruct-coastlines.png" alt="Reconstruct Coastlines Demo" height="320px"></a>
-                        </div>
 
 			<div style="text-align:center;">
                         <p class="demo-btn">
@@ -224,7 +227,7 @@
                     <li><a href="#recon-p">Calculate Paleo-geographic Coordinates</a></li>
                     <li><a href="#recon-fc">Reconstruct Feature Collection</a></li>
                     <li><a href="#recon-cl">Reconstruct Coastlines</a></li>
-		    <li><a href="#docker">Run Local Service</a></li>
+		    <li><a href="#docker">Run Service Locally</a></li>
                     <!--<li class="dropdown">
                       <a class="dropdown-toggle" data-toggle="dropdown" href="#">Section 4 <span class="caret"></span></a>
                       <ul class="dropdown-menu">
