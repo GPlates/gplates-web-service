@@ -87,8 +87,8 @@
                             
                             #top-link-block.affix {
                                 position: fixed;
-                                bottom: 10px;
-                                right: 10px;
+                                bottom: 2px;
+                                right: 0px;
                             }
                             </style>
                             </head>
@@ -136,7 +136,7 @@
                                     
                                     <div id="recon-fc" class="txt-box">
                                     <div class="bg"></div>
-                                    <h3 class="ref-title"><span class="title-text">Reconstruct Feature Collection</span></h3>
+                                    <h3 class="ref-title"><span class="title-text">Reconstruct GeoJSON Feature Collection</span></h3>
                                     
                                     <div style="text-align:center;">
                                     <a href="https://portal.gplates.org/service/d3_demo/?view=feature_collection" target="_blank">
@@ -229,7 +229,7 @@
                         <div class="txt-box" id="contact">
                         <div class="bg"></div>
                         <h3 class="ref-title"><span class="title-text">
-                            Run Reconstruction Service In A Docker Container</span>
+                            EarthByte & GPlates</span>
                         </h3>
                         <p>The GPlates Web Service is created and maintained by EarthByte group at the University of Sydney.</p>
                         <p>
@@ -250,7 +250,7 @@
                     <nav class="col-md-3" id="side-nav">
                         <ul class="nav nav-sidebar" data-spy="affix">
                             <li><a href="#recon-p">Calculate Paleo-geographic Coordinates</a></li>
-                            <li><a href="#recon-fc">Reconstruct Feature Collection</a></li>
+                            <li><a href="#recon-fc">Reconstruct GeoJson Feature Collection</a></li>
                             <li><a href="#recon-cl">Reconstruct Coastlines</a></li>
                             <li><a href="#docker">Run Service Locally</a></li>
                             <li><a href="#contact">Contact Us</a></li>
@@ -269,7 +269,6 @@
         </div><!-- end of container-fluid -->
         <br><br><br>
         
-        <!-- child of the body tag -->
         <span id="top-link-block" class="hidden">
             <a href="#top" class="well well-sm" style="text-decoration:none;box-shadow:none;background:none;border:none;" onclick="$('html,body').animate({scrollTop:0},'slow');return false;">
                 <i class="glyphicon glyphicon-arrow-up"></i> Back to Top
@@ -281,8 +280,7 @@
         
         <script>
             if ( ($(window).height() + 100) < $(document).height() ) {
-                $('#top-link-block').removeClass('hidden').affix({
-                });
+                $('#top-link-block').removeClass('hidden').affix({offset:{top:100}});
             }
         </script>
         
