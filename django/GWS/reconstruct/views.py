@@ -383,7 +383,7 @@ def motion_path(request):
     #reconstruction_time = 0
     reconstructed_motion_paths = []
     pygplates.reconstruct(
-            motion_path_feature, rotation_model, reconstructed_motion_paths, reconstruction_time,
+            motion_path_feature, rotation_model, reconstructed_motion_paths, float(reconstruction_time),
             reconstruct_type=pygplates.ReconstructType.motion_path)
 
     data = {"type": "FeatureCollection"}
