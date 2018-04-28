@@ -5,7 +5,7 @@
 
 
 import requests, json
-SERVER_URL = 'http://172.16.180.52:18000/'
+SERVER_URL = 'http://localhost:80/'
 proxies = {'http':''}
 
 

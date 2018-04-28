@@ -37,6 +37,9 @@ RUN cp /usr/lib/pygplates/revision12/pygplates.so /usr/lib/python2.7/dist-packag
 RUN mkdir /tmp/gws
 RUN chown www-data /tmp/gws
 
+RUN mkdir /var/www/html/static
+RUN cp /usr/src/django/GWS/static/* /var/www/html/static
+
 # Add Tini
 ENV TINI_VERSION v0.9.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
