@@ -40,7 +40,7 @@ def get_model_layer(request):
         for rot_file in model_dict['RotationFile']:
             tmp.add(pygplates.FeatureCollection(str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,rot_file))))
 
-        tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename))
+        tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename.encode("utf8","ignore")))
         f = StringIO(file('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename), "rb").read())
 
     elif layer=='static_polygons':
