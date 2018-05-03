@@ -46,13 +46,13 @@ def get_model_layer(request):
     elif layer=='static_polygons':
         target_feature_filename = '%s.gpmlz' % model
         tmp = pygplates.FeatureCollection(str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons'])))
-        tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename))
+        tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename.encode("utf8","ignore")))
         f = StringIO(file('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename), "rb").read())
 
     elif layer=='coastlines':
         target_feature_filename = '%s.gpmlz' % model
         tmp = pygplates.FeatureCollection(str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['Coastlines'])))
-        tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename))
+        tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename.encode("utf8","ignore")))
         f = StringIO(file('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename), "rb").read())
 
     elif layer=='plate_polygons':
@@ -61,7 +61,7 @@ def get_model_layer(request):
         for gpmlfile in model_dict['PlatePolygons']:
             tmp.add(pygplates.FeatureCollection(str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,gpmlfile))))
 
-        tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename))
+        tmp.write('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename.encode("utf8","ignore")))
         f = StringIO(file('%s/%s' % (settings.MEDIA_ROOT,target_feature_filename), "rb").read())
 
     else:
