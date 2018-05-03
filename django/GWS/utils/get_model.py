@@ -8,7 +8,7 @@ def get_reconstruction_model_dict(MODEL_NAME):
         model_dict = {'RotationFile':['Seton_etal_ESR2012_2012.1.rot'],
                       'Coastlines':'coastlines_low_res/Seton_etal_ESR2012_Coastlines_2012.shp',
                       'StaticPolygons':'Seton_etal_ESR2012_StaticPolygons_2012.1.gpmlz',
-                      'PlatePolygons':'Seton_etal_ESR2012_PP_2012.1.gpmlz',
+                      'PlatePolygons':['Seton_etal_ESR2012_PP_2012.1.gpmlz'],
                       'ValidTimeRange':[200.,0.]}
 
     elif MODEL_NAME=='MULLER2016':

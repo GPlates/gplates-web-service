@@ -13,10 +13,6 @@ python/.ipynb_checkpoints/Untitled-checkpoint.ipynb
 
 python/.ipynb_checkpoints/request-motion-path-checkpoint.ipynb
 
-django/GWS/DATA/tmp/tmp.gpmlz
-
-django/GWS/DATA/tmp/tmp.rot
-
 python/output.gpmlz
 
 python/output.gpml
@@ -37,8 +33,4 @@ python/.ipynb_checkpoints/request-plate-velocities-checkpoint.ipynb
 
 python/.ipynb_checkpoints/gwstools-examples-checkpoint.ipynb
 
-django/GWS/DATA/tmp/reconstruct_to_birth_time.gpmlz
 
-django/GWS/DATA/tmp/MULLER2016.gpmlz
-
-django/GWS/DATA/tmp/MULLER2016.rot
