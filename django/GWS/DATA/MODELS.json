@@ -1,0 +1,109 @@
+{
+    "DOMEIER2014": {
+        "PlatePolygons": [
+            "LP_ridge.gpml", 
+            "LP_subduction.gpml", 
+            "LP_transform.gpml", 
+            "LP_topos.gpml"
+        ], 
+        "RotationFile": [
+            "LP_TPW.rot"
+        ], 
+        "Coastlines": "LP_land.shp", 
+        "ValidTimeRange": [
+            410.0, 
+            250.0
+        ], 
+        "StaticPolygons": "LP_land.shp"
+    }, 
+    "MULLER2016": {
+        "PlatePolygons": [
+            "Global_EarthByte_230-0Ma_GK07_AREPS_PlateBoundaries.gpmlz", 
+            "Global_EarthByte_230-0Ma_GK07_AREPS_Topology_BuildingBlocks.gpmlz"
+        ], 
+        "RotationFile": [
+            "Global_EarthByte_230-0Ma_GK07_AREPS.rot"
+        ], 
+        "Coastlines": "Global_EarthByte_230-0Ma_GK07_AREPS_Coastlines.gpmlz", 
+        "ValidTimeRange": [
+            230.0, 
+            0.0
+        ], 
+        "StaticPolygons": "Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons_2015_v1.gpmlz"
+    }, 
+    "PALEOMAP": {
+        "RotationFile": [
+            "PALEOMAP_PlateModel.rot"
+        ], 
+        "Coastlines": "PALEOMAP_coastlines.gpmlz", 
+        "ValidTimeRange": [
+            750.0, 
+            0.0
+        ], 
+        "StaticPolygons": "PALEOMAP_PlatePolygons.gpmlz"
+    }, 
+    "MATTHEWS2016": {
+        "PlatePolygons": [
+            "Global_EarthByte_Mesozoic-Cenozoic_plate_boundaries_Matthews_etal.gpmlz", 
+            "Global_EarthByte_Paleozoic_plate_boundaries_Matthews_etal.gpmlz", 
+            "TopologyBuildingBlocks_AREPS.gpmlz"
+        ], 
+        "RotationFile": [
+            "Global_EB_250-0Ma_GK07_Matthews_etal.rot", 
+            "Global_EB_410-250Ma_GK07_Matthews_etal.rot"
+        ], 
+        "Coastlines": "Global_coastlines_2015_v1_low_res.gpmlz", 
+        "ValidTimeRange": [
+            410.0, 
+            0.0
+        ], 
+        "StaticPolygons": "PresentDay_StaticPlatePolygons_Matthews++.gpmlz"
+    }, 
+    "GOLONKA": {
+        "RotationFile": [
+            "Phanerozoic_EarthByte.rot"
+        ], 
+        "Coastlines": "Phanerozoic_EarthByte_Coastlines.gpmlz", 
+        "ValidTimeRange": [
+            540.0, 
+            0.0
+        ], 
+        "StaticPolygons": "Phanerozoic_EarthByte_ContinentalRegions.gpmlz"
+    }, 
+    "SETON2012": {
+        "PlatePolygons": [
+            "Seton_etal_ESR2012_PP_2012.1.gpmlz"
+        ], 
+        "RotationFile": [
+            "Seton_etal_ESR2012_2012.1.rot"
+        ], 
+        "Coastlines": "coastlines_low_res/Seton_etal_ESR2012_Coastlines_2012.shp", 
+        "ValidTimeRange": [
+            200.0, 
+            0.0
+        ], 
+        "StaticPolygons": "Seton_etal_ESR2012_StaticPolygons_2012.1.gpmlz"
+    }, 
+    "PEHRSSON2015": {
+        "RotationFile": [
+            "T_Rot_Model_Abs_25Ma_20131004.rot"
+        ], 
+        "Coastlines": "PlatePolygons.shp", 
+        "ValidTimeRange": [
+            2100.0, 
+            1275.0
+        ], 
+        "StaticPolygons": "PlatePolygons.shp"
+    }, 
+    "RODINIA2013": {
+        "RotationFile": [
+            "Li_Rodinia_v2013.rot"
+        ], 
+        "Coastlines": "Li_Rodinia_v2013_Coastlines.gpmlz", 
+        "ValidTimeRange": [
+            1100.0, 
+            530.0
+        ], 
+        "StaticPolygons": "Li_Rodinia_v2013_StaticPolygons.gpmlz"
+    }
+}
