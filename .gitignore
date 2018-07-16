@@ -34,3 +34,6 @@ python/.ipynb_checkpoints/request-plate-velocities-checkpoint.ipynb
 python/.ipynb_checkpoints/gwstools-examples-checkpoint.ipynb
 
 django/GWS/DATA/tmp/*
+django/.DS_Store
+django/GWS/.DS_Store
+django/GWS/DATA/.DS_Store
