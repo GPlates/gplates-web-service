@@ -11,6 +11,7 @@ RUN pip install --upgrade pip
 RUN pip install django==1.11 mod_wsgi numpy pandas scipy healpy requests netCDF4 pyshp
 
 ADD . /usr/src/
+RUN chmod o+w /usr/src/django/GWS/DATA/tmp
 RUN chmod +x /usr/src/docker/startup.sh
 RUN rm /etc/apache2/sites-enabled/000-default.conf
 RUN cp /usr/src/docker/gws.conf /etc/apache2/sites-enabled/
