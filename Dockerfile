@@ -8,7 +8,7 @@ RUN apt-get update
 RUN apt-get install -y python python-pip apache2 apache2-dev libapache2-mod-wsgi 
 RUN apt-get install -y gmt gmt-dcw gmt-gshhg
 RUN pip install --upgrade pip
-RUN pip install django==1.11 mod_wsgi numpy pandas scipy healpy requests netCDF4 pyshp
+RUN pip install django==1.11 mod_wsgi numpy pandas scipy healpy requests netCDF4 pyshp psycopg2
 
 ADD . /usr/src/
 RUN chmod o+w /usr/src/django/GWS/DATA/tmp

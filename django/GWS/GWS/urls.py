@@ -32,4 +32,5 @@ urlpatterns = [
     url(r'^list/', include('info.urls')),
     url(r'^map/', include('paleomap.urls')),
     url(r'^model/', include('model.urls')),
+    url(r'^raster/', include('raster.urls')),
 ]
