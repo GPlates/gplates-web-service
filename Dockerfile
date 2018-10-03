@@ -6,15 +6,10 @@ FROM ubuntu:16.04
 RUN apt-get update
 RUN apt-get update
 RUN apt-get install -y python python-pip apache2 apache2-dev libapache2-mod-wsgi 
-RUN apt-get install -y gmt gmt-dcw gmt-gshhg
+RUN apt-get install -y gmt gmt-dcw gmt-gshhg libpq-dev
 RUN pip install --upgrade pip
-RUN pip install django==1.11 mod_wsgi numpy pandas scipy healpy requests netCDF4 pyshp psycopg2
-
-ADD . /usr/src/
-RUN chmod o+w /usr/src/django/GWS/DATA/tmp
-RUN chmod +x /usr/src/docker/startup.sh
-RUN rm /etc/apache2/sites-enabled/000-default.conf
-RUN cp /usr/src/docker/gws.conf /etc/apache2/sites-enabled/
+RUN pip install django==1.11 mod_wsgi numpy pandas scipy healpy requests netCDF4 pyshp
+RUN pip install --no-binary :all: psycopg2
 
 # install dependencies for pygplates
 RUN apt-get update
@@ -32,6 +27,12 @@ RUN apt-get install -y python-mpltoolkits.basemap
 RUN apt-get install -y ghostscript
 RUN apt-get install -y ffmpeg
 
+ADD . /usr/src/
+RUN chmod o+w /usr/src/django/GWS/DATA/tmp
+RUN chmod +x /usr/src/docker/startup.sh
+RUN rm /etc/apache2/sites-enabled/000-default.conf
+RUN cp /usr/src/docker/gws.conf /etc/apache2/sites-enabled/
+
 RUN dpkg -i /usr/src/docker/pygplates_2.0_amd64.deb
 RUN cp /usr/lib/pygplates/revision12/pygplates.so /usr/lib/python2.7/dist-packages/
 
@@ -41,6 +42,10 @@ RUN chown www-data /tmp/gws
 RUN mkdir /var/www/html/static
 RUN cp /usr/src/django/GWS/static/* /var/www/html/static
 
+RUN apt-get -y purge python-openssl
+RUN apt-get -y  autoremove
+RUN pip install --upgrade pyopenssl
+
 # Add Tini
 ENV TINI_VERSION v0.9.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
@@ -48,6 +53,8 @@ RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 CMD ["/usr/src/docker/startup.sh"]
 
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 EXPOSE 80
 
