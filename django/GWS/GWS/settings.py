@@ -30,7 +30,7 @@ MEDIA_ROOT = '%s/DATA/tmp/' % BASE_DIR
 SECRET_KEY = 'hlvkcbt=tuzf-irms8$xfxlqp$1^&&y)ll9t)g_g5ir1bgh1!u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
