@@ -29,7 +29,11 @@ def query(request):
         )
         row = cursor.fetchone()
         if row:
-            return HttpResponse(row[1])
+            response = HttpResponse(row[1])
+            #TODO: 
+            #The "*" makes the service wide open to anyone. We should implement access control when time comes. 
+            response['Access-Control-Allow-Origin'] = '*'
+            return response
         else:
             return HttpResponseServerError('Failed to query raster.')
     return HttpResponse("some incredible thing just happened!!!") 
