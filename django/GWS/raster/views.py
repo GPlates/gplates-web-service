@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseServerError, HttpResponseBadRequest
 from django.db import connection
 
-import logging, traceback
+import logging, traceback, math
 logger = logging.getLogger('dev')
 
 def query(request):
@@ -28,8 +28,15 @@ def query(request):
             WHERE ST_Intersects(rast, ST_SetSRID(ST_MakePoint({0},{1}),4326))'''.format(lon, lat, raster_name)
         )
         row = cursor.fetchone()
+        
         if row:
-            response = HttpResponse(row[1])
+            ret = row[1]
+            if math.isnan(ret) or ret < 0:        
+                ret = 'nan'
+            else:
+                ret = '%.2f' % ret 
+            
+            response = HttpResponse(ret)
             #TODO: 
             #The "*" makes the service wide open to anyone. We should implement access control when time comes. 
             response['Access-Control-Allow-Origin'] = '*'
