@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, HttpResponseServerError, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest, \
+HttpResponseServerError, HttpResponseNotAllowed
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
@@ -13,7 +14,6 @@ import sys, json
 
 import pygplates
 import numpy as np
-
 
 class PrettyFloat(float):
     def __repr__(self):
@@ -63,15 +63,10 @@ def reconstruct_points(request):
     anchor_plate_id = params.get('pid', 0)
     time = params.get('time', None)
     model = params.get('model',settings.MODEL_DEFAULT)
-    if 'fc' in params:
-        return_feature_collection = True
-    else:
-        return_feature_collection = False
 
-    if 'return_null_points' in params:
-        return_null_points = True
-    else:
-        return_null_points = False
+    return_null_points = True if 'return_null_points' in params else False
+    return_feature_collection = True if 'fc' in params else False
+    is_reverse = True if 'reverse' in params else False
 
     timef=0.0
     if not time:
@@ -115,34 +110,59 @@ def reconstruct_points(request):
         return HttpResponseBadRequest('The "points" parameter is missing.')
  
     # assign plate-ids to points using static polygons
+    partition_time = timef if is_reverse else 0.
+
+    #LOOK HERE !!!!
+    #it seems when the partition_time is not 0
+    #the returned assigned_point_features contains reverse reconstructed present-day geometries.
+    #so, when doing reverse reconstruct, do not reverse reconstruct again later.  
     assigned_point_features = pygplates.partition_into_plates(
         static_polygons_filename,
         rotation_model,
         point_features,
         properties_to_copy = [
             pygplates.PartitionProperty.reconstruction_plate_id,
-            pygplates.PartitionProperty.valid_time_period])
+            pygplates.PartitionProperty.valid_time_period],
+        reconstruction_time = partition_time
+        )
 
     ids=[]
     valid_periods=[]
     for f in assigned_point_features:
+        #print(f.get_reconstruction_plate_id())
         ids.append(f.get_feature_id().get_string())
         valid_periods.append(f.get_valid_time())
-
+   
     # reconstruct the points
     assigned_point_feature_collection = pygplates.FeatureCollection(assigned_point_features)
     reconstructed_feature_geometries = []
-    pygplates.reconstruct(assigned_point_feature_collection,
-        rotation_model, 
-        reconstructed_feature_geometries, 
-        timef,
-        anchor_plate_id=anchor_plate_id)
+    if False:
+        pygplates.reverse_reconstruct(
+            assigned_point_feature_collection,
+            rotation_model,
+            timef,
+            anchor_plate_id=anchor_plate_id)
+    if not is_reverse:
+        pygplates.reconstruct(
+            assigned_point_feature_collection,
+            rotation_model, 
+            reconstructed_feature_geometries, 
+            timef,
+            anchor_plate_id=anchor_plate_id)
 
     coords=len(ids)*[[]]
-    for g in reconstructed_feature_geometries:
-        coords[ids.index(g.get_feature().get_feature_id().get_string())]=(
-            [g.get_reconstructed_geometry().to_lat_lon()[1],
-            g.get_reconstructed_geometry().to_lat_lon()[0]])
+    if is_reverse:
+        for g in assigned_point_feature_collection:
+            #print(type(g))
+            coords[ids.index(g.get_feature_id().get_string())]=(
+                [g.get_geometry().to_lat_lon()[1],
+                g.get_geometry().to_lat_lon()[0]])
+    else:
+        for g in reconstructed_feature_geometries:
+            #print(type(g))
+            coords[ids.index(g.get_feature().get_feature_id().get_string())]=(
+                [g.get_reconstructed_geometry().to_lat_lon()[1],
+                g.get_reconstructed_geometry().to_lat_lon()[0]])
 
     # prepare the response to be returned
     if not return_feature_collection:
