@@ -136,12 +136,14 @@ def reconstruct_points(request):
     # reconstruct the points
     assigned_point_feature_collection = pygplates.FeatureCollection(assigned_point_features)
     reconstructed_feature_geometries = []
+    '''
     if False:
         pygplates.reverse_reconstruct(
             assigned_point_feature_collection,
             rotation_model,
             timef,
             anchor_plate_id=anchor_plate_id)
+    '''
     if not is_reverse:
         pygplates.reconstruct(
             assigned_point_feature_collection,
