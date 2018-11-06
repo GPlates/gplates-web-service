@@ -10,7 +10,7 @@ from utils.get_model import get_reconstruction_model_dict,is_time_valid_model
 from utils.wrapping_tools import wrap_reconstructed_polygons,process_reconstructed_polygons
 from utils.access_control import request_access
 
-import sys, json
+import os, sys, json
 
 import pygplates
 import numpy as np
@@ -616,3 +616,61 @@ def check_polygon_orientation(lons, lats):
         last_lon=lons[i]
         last_lat=lats[i]
     return result
+
+#
+#
+#
+@csrf_exempt
+def reconstruct_files(request):
+    if not request.method == "POST":
+        return HttpResponseBadRequest('expecting post requests!')
+
+    try:
+        print(request.FILES)
+        if not len(request.FILES.items()):
+            return HttpResponseBadRequest("No File Received")
+
+        if not os.path.isdir(settings.MEDIA_ROOT + "/rftmp"):
+            os.makedirs(settings.MEDIA_ROOT + "/rftmp" )
+
+        reconstructable_files = []
+        
+        for key, f in request.FILES.items():
+            print(f.name)
+            (name,ext) = os.path.splitext(f.name)
+            if ext in ['.shp', '.gpml','.gpmlz']:
+                reconstructable_files.append(f.name)
+            with open(settings.MEDIA_ROOT + "/rftmp/" + f.name, 'wb+') as fp:
+                for chunk in f.chunks():
+                    fp.write(chunk)
+
+        '''
+        rotation_model = pygplates.RotationModel('%s/tmp.rot' % settings.MEDIA_ROOT)
+        features = pygplates.FeatureCollection('%s/tmp.gpmlz' % settings.MEDIA_ROOT)
+
+        reconstructed_features = reconstruct_to_birth_time(features,rotation_model)
+
+        tmp = pygplates.FeatureCollection(reconstructed_features)
+        tmp.write('%s/%s' % (settings.MEDIA_ROOT,filename))
+
+        f = StringIO(file('%s/%s' % (settings.MEDIA_ROOT,filename), "rb").read())
+
+        response = HttpResponse(f, content_type = 'application/gpmlz')
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        '''
+        clear_folder(settings.MEDIA_ROOT + "/rftmp" )
+        return  HttpResponse(reconstructable_files)
+    except:
+        clear_folder(settings.MEDIA_ROOT + "/rftmp" )
+        err = traceback.format_exc()
+        logger.error(err)
+        return HttpResponseBadRequest(err)
+
+def clear_folder(path):
+    for f in os.listdir(path):
+        file_path = os.path.join(path, f)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print(e)
