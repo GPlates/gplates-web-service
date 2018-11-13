@@ -664,18 +664,18 @@ def reconstruct_files(request):
             features = pygplates.partition_into_plates(
                 static_polygons_filename,        
                 rotation_model,
-                settings.MEDIA_ROOT + "/rftmp/" + f,
+                (settings.MEDIA_ROOT + "/rftmp/" + f).encode("utf-8"),
                 partition_method = pygplates.PartitionMethod.most_overlapping_plate)
 
             feature_collection = pygplates.FeatureCollection(features)
-            feature_collection.write(settings.MEDIA_ROOT + "/rftmp/" + f+'.partitioned.gpml')
+            feature_collection.write((settings.MEDIA_ROOT + "/rftmp/" + f+'.partitioned.gpml').encode("utf-8"))
 
             if not os.path.isdir(settings.MEDIA_ROOT + "/rftmp/dst/"):
                 os.makedirs(settings.MEDIA_ROOT + "/rftmp/dst/" )
 
-            pygplates.reconstruct(settings.MEDIA_ROOT + "/rftmp/" + f+'.partitioned.gpml', 
+            pygplates.reconstruct((settings.MEDIA_ROOT + "/rftmp/" + f+'.partitioned.gpml').encode("utf-8"), 
                                   rotation_model, 
-                                  (settings.MEDIA_ROOT + "/rftmp/dst/" + f + '_' + model + '_' + str(time) + 'Ma').replace('.','_') + '.shp', 
+                                  ((settings.MEDIA_ROOT + "/rftmp/dst/" + f + '_' + model + '_' + str(time) + 'Ma').replace('.','_') + '.shp').encode("utf-8"), 
                                   float(time))
 
         s = StringIO.StringIO()
