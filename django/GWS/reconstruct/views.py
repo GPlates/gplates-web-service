@@ -10,7 +10,8 @@ from utils.get_model import get_reconstruction_model_dict,is_time_valid_model
 from utils.wrapping_tools import wrap_reconstructed_polygons,process_reconstructed_polygons
 from utils.access_control import request_access
 
-import os, sys, json
+import os, sys, json, traceback
+import zipfile, StringIO
 
 import pygplates
 import numpy as np
@@ -624,7 +625,6 @@ def check_polygon_orientation(lons, lats):
 def reconstruct_files(request):
     if not request.method == "POST":
         return HttpResponseBadRequest('expecting post requests!')
-
     try:
         print(request.FILES)
         if not len(request.FILES.items()):
@@ -635,35 +635,71 @@ def reconstruct_files(request):
 
         reconstructable_files = []
         
-        for key, f in request.FILES.items():
-            print(f.name)
-            (name,ext) = os.path.splitext(f.name)
-            if ext in ['.shp', '.gpml','.gpmlz']:
-                reconstructable_files.append(f.name)
-            with open(settings.MEDIA_ROOT + "/rftmp/" + f.name, 'wb+') as fp:
-                for chunk in f.chunks():
-                    fp.write(chunk)
+        for fs in request.FILES.lists():
+            for f in fs[1]:
+                print(f.name)
+                (name,ext) = os.path.splitext(f.name)
+                if ext in ['.shp', '.gpml','.gpmlz']:
+                    reconstructable_files.append(f.name)
+                with open(settings.MEDIA_ROOT + "/rftmp/" + f.name, 'wb+') as fp:
+                    for chunk in f.chunks():
+                        fp.write(chunk)
 
-        '''
-        rotation_model = pygplates.RotationModel('%s/tmp.rot' % settings.MEDIA_ROOT)
-        features = pygplates.FeatureCollection('%s/tmp.gpmlz' % settings.MEDIA_ROOT)
+        time = request.POST.get('time', None)
+        model = request.POST.get('model',settings.MODEL_DEFAULT)
+        print(model)
 
-        reconstructed_features = reconstruct_to_birth_time(features,rotation_model)
+        model_dict = get_reconstruction_model_dict(model)
 
-        tmp = pygplates.FeatureCollection(reconstructed_features)
-        tmp.write('%s/%s' % (settings.MEDIA_ROOT,filename))
+        if not model_dict:
+            return HttpResponseBadRequest('The "model" ({0}) cannot be recognized.'.format(model))
+        
+        rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
+            (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
-        f = StringIO(file('%s/%s' % (settings.MEDIA_ROOT,filename), "rb").read())
+        static_polygons_filename = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons']))
 
-        response = HttpResponse(f, content_type = 'application/gpmlz')
-        response['Content-Disposition'] = 'attachment; filename=%s' % filename
-        '''
+        for f in reconstructable_files:
+            #print(f)
+            features = pygplates.partition_into_plates(
+                static_polygons_filename,        
+                rotation_model,
+                settings.MEDIA_ROOT + "/rftmp/" + f,
+                partition_method = pygplates.PartitionMethod.most_overlapping_plate)
+
+            feature_collection = pygplates.FeatureCollection(features)
+            feature_collection.write(settings.MEDIA_ROOT + "/rftmp/" + f+'.partitioned.gpml')
+
+            if not os.path.isdir(settings.MEDIA_ROOT + "/rftmp/dst/"):
+                os.makedirs(settings.MEDIA_ROOT + "/rftmp/dst/" )
+
+            pygplates.reconstruct(settings.MEDIA_ROOT + "/rftmp/" + f+'.partitioned.gpml', 
+                                  rotation_model, 
+                                  (settings.MEDIA_ROOT + "/rftmp/dst/" + f + '_' + model + '_' + str(time) + 'Ma').replace('.','_') + '.shp', 
+                                  float(time))
+
+        s = StringIO.StringIO()
+        zf = zipfile.ZipFile(s, "w")
+
+        #settings.MEDIA_ROOT + '/rftmp/dst/reconstructed_files.zip', 'w', zipfile.ZIP_DEFLATED)
+        for r, d, files in os.walk(settings.MEDIA_ROOT + "/rftmp/dst/"):
+            for f in files:
+                zf.write(os.path.join(r, f), 'reconstructed_files/'+f)
+        zf.close()
+        #f = StringIO(file(settings.MEDIA_ROOT + '/rftmp/dst/reconstructed_files.zip', "rb").read())
+
+        response = HttpResponse(s.getvalue(), content_type = 'application/x-zip-compressed')
+        response['Content-Disposition'] = 'attachment; filename=reconstructed_files.zip'
+        
         clear_folder(settings.MEDIA_ROOT + "/rftmp" )
-        return  HttpResponse(reconstructable_files)
+        clear_folder(settings.MEDIA_ROOT + "/rftmp/dst")
+        return response
     except:
         clear_folder(settings.MEDIA_ROOT + "/rftmp" )
+        clear_folder(settings.MEDIA_ROOT + "/rftmp/dst")
+        traceback.print_stack()
+        traceback.print_exc(file=sys.stdout)
         err = traceback.format_exc()
-        logger.error(err)
         return HttpResponseBadRequest(err)
 
 def clear_folder(path):

@@ -9,5 +9,7 @@ files = {
     'file_5': open('Brune_etal_Polygons.sbn', 'rb'),
     'file_6': open('Brune_etal_Polygons.dbf', 'rb')
     }
-r = requests.post(url, files=files)
-print(r.text)
+
+data = {'time': 10}
+r = requests.post(url, files=files, data = data)
+open('result.zip', 'wb').write(r.content)
