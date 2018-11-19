@@ -417,10 +417,11 @@ def motion_path(request):
             Dist.append(segment.get_arc_length()*pygplates.Earth.mean_radius_in_kms)
         feature = {"type": "Feature"}
         feature["geometry"] = {}
-        feature["geometry"]["type"] = "Polyline"
+        feature["geometry"]["type"] = "LineString"
         #### NOTE CODE TO FLIP COORDINATES TO 
-        feature["geometry"]["coordinates"] = [[(lon,lat) for lat,lon in reconstructed_motion_path.get_motion_path().to_lat_lon_list()]]
+        feature["geometry"]["coordinates"] = [(lon,lat) for lat,lon in reconstructed_motion_path.get_motion_path().to_lat_lon_list()]
         feature["geometry"]["distance"] = Dist
+        feature["properties"] = {}
         data["features"].append(feature)
 
     ret = json.dumps(pretty_floats(data))
