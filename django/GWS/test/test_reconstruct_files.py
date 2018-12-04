@@ -1,6 +1,7 @@
 import requests
 
-url = 'http://172.16.180.52:18000/reconstruct/reconstruct_files'
+#url = 'http://172.16.180.52:18000/reconstruct/reconstruct_files'
+url = 'https://gws.gplates.org/reconstruct/reconstruct_files'
 files = {
     'file_1': open('Brune_etal_Polygons.shx', 'rb'),
     'file_2': open('Brune_etal_Polygons.sbx', 'rb'),
