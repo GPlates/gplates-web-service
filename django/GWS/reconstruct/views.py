@@ -666,7 +666,10 @@ def reconstruct_files(request):
                 static_polygons_filename,        
                 rotation_model,
                 (settings.MEDIA_ROOT + "/rftmp/" + f).encode("utf-8"),
-                partition_method = pygplates.PartitionMethod.most_overlapping_plate)
+                partition_method = pygplates.PartitionMethod.most_overlapping_plate,
+                properties_to_copy = [pygplates.PartitionProperty.reconstruction_plate_id, 
+                                      pygplates.PartitionProperty.valid_time_period]
+            )
 
             feature_collection = pygplates.FeatureCollection(features)
             feature_collection.write((settings.MEDIA_ROOT + "/rftmp/" + f+'.partitioned.gpml').encode("utf-8"))
@@ -684,6 +687,8 @@ def reconstruct_files(request):
 
         #settings.MEDIA_ROOT + '/rftmp/dst/reconstructed_files.zip', 'w', zipfile.ZIP_DEFLATED)
         for r, d, files in os.walk(settings.MEDIA_ROOT + "/rftmp/dst/"):
+            if not files:
+                return HttpResponseServerError('No output files have been created!') 
             for f in files:
                 zf.write(os.path.join(r, f), 'reconstructed_files/'+f)
         zf.close()
@@ -692,8 +697,8 @@ def reconstruct_files(request):
         response = HttpResponse(s.getvalue(), content_type = 'application/x-zip-compressed')
         response['Content-Disposition'] = 'attachment; filename=reconstructed_files.zip'
         
-        clear_folder(settings.MEDIA_ROOT + "/rftmp" )
-        clear_folder(settings.MEDIA_ROOT + "/rftmp/dst")
+        #clear_folder(settings.MEDIA_ROOT + "/rftmp" )
+        #clear_folder(settings.MEDIA_ROOT + "/rftmp/dst")
         return response
     except:
         clear_folder(settings.MEDIA_ROOT + "/rftmp" )
