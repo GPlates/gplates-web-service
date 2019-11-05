@@ -94,6 +94,7 @@ def reconstruct_points(request):
     static_polygons_filename = str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['StaticPolygons']))
 
     # create point features from input coordinates
+    p_index=0
     point_features = []
     if points:
         ps = points.split(',')
@@ -102,7 +103,9 @@ def reconstruct_points(request):
                 for lat,lon in zip(ps[1::2], ps[0::2]):
                     point_feature = pygplates.Feature()
                     point_feature.set_geometry(pygplates.PointOnSphere(float(lat),float(lon)))
+                    point_feature.set_name(str(p_index))
                     point_features.append(point_feature)
+                    p_index += 1
             except pygplates.InvalidLatLonError as e:
                 return HttpResponseBadRequest('Invalid longitude or latitude ({0}).'.format(e)) 
         else:
@@ -127,24 +130,9 @@ def reconstruct_points(request):
         reconstruction_time = partition_time
         )
 
-    ids=[]
-    valid_periods=[]
-    for f in assigned_point_features:
-        #print(f.get_reconstruction_plate_id())
-        ids.append(f.get_feature_id().get_string())
-        valid_periods.append(f.get_valid_time())
-   
     # reconstruct the points
     assigned_point_feature_collection = pygplates.FeatureCollection(assigned_point_features)
     reconstructed_feature_geometries = []
-    '''
-    if False:
-        pygplates.reverse_reconstruct(
-            assigned_point_feature_collection,
-            rotation_model,
-            timef,
-            anchor_plate_id=anchor_plate_id)
-    '''
     if not is_reverse:
         pygplates.reconstruct(
             assigned_point_feature_collection,
@@ -153,51 +141,66 @@ def reconstruct_points(request):
             timef,
             anchor_plate_id=anchor_plate_id)
 
-    coords=len(ids)*[[]]
-    if is_reverse:
-        for g in assigned_point_feature_collection:
-            #print(type(g))
-            coords[ids.index(g.get_feature_id().get_string())]=(
-                [g.get_geometry().to_lat_lon()[1],
-                g.get_geometry().to_lat_lon()[0]])
-    else:
-        for g in reconstructed_feature_geometries:
-            #print(type(g))
-            coords[ids.index(g.get_feature().get_feature_id().get_string())]=(
-                [g.get_reconstructed_geometry().to_lat_lon()[1],
-                g.get_reconstructed_geometry().to_lat_lon()[0]])
-
+    rfgs = p_index*[None]
+    for rfg in reconstructed_feature_geometries:
+        rfgs[int(rfg.get_feature().get_name())] = rfg
+    
+    assigned_fc = p_index*[None]
+    for f in assigned_point_feature_collection:
+        assigned_fc[int(f.get_name())] = f
+    
     # prepare the response to be returned
     if not return_feature_collection:
         ret='{"type":"MultiPoint","coordinates":['
+        for idx in range(p_index):
+            lon = None
+            lat = None
+            if not is_reverse and rfgs[idx]:
+                lon = rfgs[idx].get_reconstructed_geometry().to_lat_lon()[1]
+                lat = rfgs[idx].get_reconstructed_geometry().to_lat_lon()[0]
+            elif is_reverse and assigned_fc[idx]:
+                lon = assigned_fc[idx].get_geometry().to_lat_lon()[1]
+                lat = assigned_fc[idx].get_geometry().to_lat_lon()[0]
 
-        for c in coords:
-            if c:
-                ret+='[{0:5.2f},{1:5.2f}],'.format(c[0],c[1])
+            if lon is not None and lat is not None:
+                ret+='[{0:5.2f},{1:5.2f}],'.format(lon, lat)
             elif return_null_points:
                 ret+='null,'
 
     else:
         ret='{"type":"FeatureCollection","features":['
-        for c,p in zip(coords,valid_periods):
+        for idx in range(p_index):
+            lon = None
+            lat = None
+            begin_time = None
+            end_time = None
+            if not is_reverse and rfgs[idx]:
+                lon = rfgs[idx].get_reconstructed_geometry().to_lat_lon()[1]
+                lat = rfgs[idx].get_reconstructed_geometry().to_lat_lon()[0]
+            elif is_reverse and assigned_fc[idx]:
+                lon = assigned_fc[idx].get_geometry().to_lat_lon()[1]
+                lat = assigned_fc[idx].get_geometry().to_lat_lon()[0]
+
+            if assigned_fc[idx]:
+                valid_time = assigned_fc[idx].get_valid_time(None)
+                if valid_time:
+                    begin_time, end_time = valid_time
+
             ret+='{"type":"Feature","geometry":'
-            if c:
-                print c
-                ret+='{'+'"type":"Point","coordinates":[{0:5.2f},{1:5.2f}]'.format(c[0],c[1])+'},'
+            if lon is not None and lat is not None:
+                ret+='{'+'"type":"Point","coordinates":[{0:5.2f},{1:5.2f}]'.format(lon, lat)+'},'
             else:
                 ret+='null,'
+            if begin_time is not None and end_time is not None:
+                #write out begin and end time
+                if begin_time == pygplates.GeoTimeInstant.create_distant_past():
+                    begin_time = '"distant past"'
+                if end_time == pygplates.GeoTimeInstant.create_distant_future():
+                    end_time = '"distant future"'
+                ret+='"properties":{'+'"valid_time":[{0},{1}]'.format(begin_time,end_time)+'}},'
+            else:
+                ret+='"properties":{}'+'},'
             
-            #write out begin and end time
-            if p[0] == pygplates.GeoTimeInstant.create_distant_past():
-                begin_time = '"distant past"'
-            else:
-                begin_time = p[0]
-            if p[1] == pygplates.GeoTimeInstant.create_distant_future():
-                end_time = '"distant future"'
-            else:
-                end_time=p[1]
-            ret+='"properties":{'+'"valid_time":[{0},{1}]'.format(begin_time,end_time)+'}},'
-
     ret=ret[0:-1]
     ret+=']}'
 
