@@ -174,8 +174,12 @@ def process_reconstructed_polygons(reconstructed_polygons,
         for p in reconstructed_polygons:
             wrapped_polygons += date_line_wrapper.wrap(p.get_reconstructed_geometry(),tesselate_degrees)
         for p in wrapped_polygons:
-            lats=[i.get_latitude() for i in p.get_exterior_points()]
-            lons=[i.get_longitude() for i in p.get_exterior_points()]
+            if isinstance(p, pygplates.DateLineWrapper.LatLonPolyline):
+                lats=[i.get_latitude() for i in p.get_points()]
+                lons=[i.get_longitude() for i in p.get_points()]
+            else:
+                lats=[i.get_latitude() for i in p.get_exterior_points()]
+                lons=[i.get_longitude() for i in p.get_exterior_points()]
             if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
                 polygons.append((lons,lats))
             else:
