@@ -1,7 +1,8 @@
 import pygplates
 from create_gpml import create_gpml_healpix_mesh
 
-def get_velocities(rotation_model,topology_features,time,velocity_domain_features=None,delta_time=1,velocity_type='MagAzim'):
+def get_velocities(rotation_model,topology_features,time,velocity_domain_features=None,
+        delta_time=1,velocity_type='MagAzim',topology_flag=False):
 
     if velocity_domain_features is None:
         velocity_domain_features = create_gpml_healpix_mesh(32,feature_type='MeshNode')
@@ -12,7 +13,10 @@ def get_velocities(rotation_model,topology_features,time,velocity_domain_feature
     plate_ids = []
 
     # Partition our velocity domain features into our topological plate polygons at the current 'time'.
-    plate_partitioner = pygplates.PlatePartitioner(topology_features, rotation_model, time)
+    if topology_flag:
+        plate_partitioner = pygplates.PlatePartitioner(topology_features, rotation_model)
+    else:
+        plate_partitioner = pygplates.PlatePartitioner(topology_features, rotation_model, time)
 
     for velocity_domain_feature in velocity_domain_features:
 
