@@ -27,9 +27,9 @@ def pretty_floats(obj):
     if isinstance(obj, float):
         return PrettyFloat(obj)
     elif isinstance(obj, dict):
-        return dict((k, pretty_floats(v)) for k, v in obj.items())
+        return dict((k, pretty_floats(v)) for k, v in list(obj.items()))
     elif isinstance(obj, (list, tuple)):
-        return map(pretty_floats, obj)             
+        return list(map(pretty_floats, obj))             
     return obj
 
 
@@ -77,7 +77,7 @@ def reconstruction_tree_map(request):
     uniq = list(set(tree_list))
 
     # Print a list of unique plate-pairs....
-    print uniq
+    print(uniq)
 
     rsp = []
     pygplates.reconstruct(static_polygons_filename,rotation_model,rsp,float(time))

@@ -11,7 +11,7 @@ from utils.wrapping_tools import wrap_reconstructed_polygons,process_reconstruct
 from utils.access_control import request_access
 
 import os, sys, json, traceback
-import zipfile, StringIO
+import zipfile, io
 
 import pygplates
 import numpy as np
@@ -24,9 +24,9 @@ def pretty_floats(obj):
     if isinstance(obj, float):
         return PrettyFloat(obj)
     elif isinstance(obj, dict):
-        return dict((k, pretty_floats(v)) for k, v in obj.items())
+        return dict((k, pretty_floats(v)) for k, v in list(obj.items()))
     elif isinstance(obj, (list, tuple)):
-        return map(pretty_floats, obj)             
+        return list(map(pretty_floats, obj))             
     return obj
 
 
@@ -246,7 +246,7 @@ def get_coastline_polygons(request):
             central_meridian = float(request.GET['central_meridian'])   
             wrap = True
         except:
-            print 'Invalid central meridian.'        
+            print('Invalid central meridian.')        
 
     avoid_map_boundary = False
     if 'avoid_map_boundary' in request.GET:
@@ -312,7 +312,7 @@ def get_static_polygons(request):
             central_meridian = float(request.GET['central_meridian'])   
             wrap = True
         except:
-            print 'Invalid central meridian.'        
+            print('Invalid central meridian.')        
 
     avoid_map_boundary = False
     if 'avoid_map_boundary' in request.GET:
@@ -530,7 +530,7 @@ def reconstruct_feature_collection(request):
             if keep_properties and 'properties' in f:
                 for pk in f['properties']:           
                     p = f['properties'][pk] 
-                    if isinstance(p, unicode):
+                    if isinstance(p, str):
                         p=str(p) 
                     feature.set_shapefile_attribute(str(pk),p)
             
@@ -630,8 +630,8 @@ def reconstruct_files(request):
     if not request.method == "POST":
         return HttpResponseBadRequest('expecting post requests!')
     try:
-        print(request.FILES)
-        if not len(request.FILES.items()):
+        print((request.FILES))
+        if not len(list(request.FILES.items())):
             return HttpResponseBadRequest("No File Received")
 
         if not os.path.isdir(settings.MEDIA_ROOT + "/rftmp"):
@@ -641,7 +641,7 @@ def reconstruct_files(request):
         
         for fs in request.FILES.lists():
             for f in fs[1]:
-                print(f.name)
+                print((f.name))
                 (name,ext) = os.path.splitext(f.name)
                 if ext in ['.shp', '.gpml','.gpmlz']:
                     reconstructable_files.append(f.name)
@@ -685,7 +685,7 @@ def reconstruct_files(request):
                                   ((settings.MEDIA_ROOT + "/rftmp/dst/" + f + '_' + model + '_' + str(time) + 'Ma').replace('.','_') + '.shp').encode("utf-8"), 
                                   float(time))
 
-        s = StringIO.StringIO()
+        s = io.StringIO()
         zf = zipfile.ZipFile(s, "w")
 
         #settings.MEDIA_ROOT + '/rftmp/dst/reconstructed_files.zip', 'w', zipfile.ZIP_DEFLATED)

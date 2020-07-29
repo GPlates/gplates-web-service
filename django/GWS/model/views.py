@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 # Create your views here.
 
-from StringIO import StringIO
+from io import StringIO
 import numpy as np
 import pygplates
 from utils.get_model import get_reconstruction_model_dict

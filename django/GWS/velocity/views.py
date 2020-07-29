@@ -28,9 +28,9 @@ def pretty_floats(obj):
     if isinstance(obj, float):
         return PrettyFloat(obj)
     elif isinstance(obj, dict):
-        return dict((k, pretty_floats(v)) for k, v in obj.items())
+        return dict((k, pretty_floats(v)) for k, v in list(obj.items()))
     elif isinstance(obj, (list, tuple)):
-        return map(pretty_floats, obj)             
+        return list(map(pretty_floats, obj))             
     return obj
 
 
