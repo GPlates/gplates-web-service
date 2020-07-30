@@ -68,10 +68,10 @@ def create_gmt(model, time, proj, anchor_plate_id, tmp_dir,cnt=0,fmt='png'):
     shp_path = settings.MODEL_STORE_DIR+model+'/'+data['Coastlines']
     input_rotation_filename = []
     for f in data['RotationFile']:
-        input_rotation_filename.append((settings.MODEL_STORE_DIR+model+ '/'+f).encode('utf-8','ignore'))
+        input_rotation_filename.append((settings.MODEL_STORE_DIR+model+ '/'+f))
     output_coastlines_filename = tmp_dir+'/coastlines.gmt'
     pygplates.reconstruct(
-        shp_path.encode('utf-8','ignore'),
+        shp_path,
         input_rotation_filename,
         output_coastlines_filename,
         int(time),

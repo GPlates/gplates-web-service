@@ -1,7 +1,6 @@
 from functools import wraps
 
 from django.http import HttpResponse, HttpResponseForbidden
-from django.utils.decorators import available_attrs
 from django.conf import settings
 
 import requests
@@ -12,7 +11,7 @@ def request_access(function=None, url=settings.ACCESS_CONTROL_URL):
     """
     url = 'http://130.56.249.211:7777/access_control/request_access/'
     def request_access_decorator(func):
-        @wraps(func, assigned=available_attrs(func))
+        @wraps(func)
         def function_wrapper(request, *args, **kwargs):
             origin = request.META.get('HTTP_ORIGIN', None)
 
