@@ -26,9 +26,9 @@ def pretty_floats(obj):
     if isinstance(obj, float):
         return PrettyFloat(obj)
     elif isinstance(obj, dict):
-        return dict((k, pretty_floats(v)) for k, v in obj.items())
+        return dict((k, pretty_floats(v)) for k, v in list(obj.items()))
     elif isinstance(obj, (list, tuple)):
-        return map(pretty_floats, obj)             
+        return list(map(pretty_floats, obj))             
     return obj
 
 
@@ -143,7 +143,7 @@ def get_topological_boundaries(request):
         shared_boundary_sections)
     
     data = wrap_plate_boundaries(shared_boundary_sections,0.)
-    print 'here'
+    print('here')
     ret = json.dumps(pretty_floats(data))
    
     response = HttpResponse(ret, content_type='application/json')

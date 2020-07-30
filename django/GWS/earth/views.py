@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadReque
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
-from StringIO import StringIO
+from io import StringIO
 
 # Create your views here.
 
@@ -80,7 +80,7 @@ def paleolithology(request):
         if point.get_valid_time()[0]>float(time) and point.get_valid_time()[1]<=float(time):
             valid_points.append(point)
 
-    print valid_points
+    print(valid_points)
 
     assigned_features = pygplates.partition_into_plates(
         static_polygons_filename,
