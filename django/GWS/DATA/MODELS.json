@@ -59,6 +59,21 @@
         ], 
         "StaticPolygons": "PresentDay_StaticPlatePolygons_Matthews++.gpmlz"
     }, 
+    "MATTHEWS2016V2": {
+        "PlatePolygons": [
+            "Matthews_etal_GPC_2016_Paleozoic_PlateTopologies.gpmlz",
+            "Matthews_etal_GPC_2016_MesozoicCenozoic_PlateTopologies.gpmlz",
+        ],
+        "RotationFile": [
+            "Matthews_etal_GPC_2016_410-0Ma_GK07.rot"
+        ],
+        "Coastlines": "Matthews_etal_GPC_2016_Coastlines.gpmlz",
+        "ValidTimeRange": [
+            410.0,
+            0.0
+        ],
+        "StaticPolygons": "Muller_etal_AREPS_2016_StaticPolygons.gpmlz"
+    },
     "GOLONKA": {
         "RotationFile": [
             "Phanerozoic_EarthByte.rot"

@@ -52,6 +52,18 @@ def get_reconstruction_model_dict(MODEL_NAME):
                                        'Global_EarthByte_Paleozoic_plate_boundaries_Matthews_etal.gpmlz',
                                        'TopologyBuildingBlocks_AREPS.gpmlz'],
                       'ValidTimeRange':[410.,0.]}
+    elif MODEL_NAME=='MATTHEWS2016V2':
+        model_dict = {
+            "PlatePolygons": [
+                    "Matthews_etal_GPC_2016_Paleozoic_PlateTopologies.gpmlz",
+                    "Matthews_etal_GPC_2016_MesozoicCenozoic_PlateTopologies.gpmlz"],
+            "RotationFile": [
+                    "Matthews_etal_GPC_2016_410-0Ma_GK07.rot"],
+            "Coastlines": "Matthews_etal_GPC_2016_Coastlines.gpmlz",
+            "ValidTimeRange": [
+                    410.0,
+                    0.0],
+            "StaticPolygons": "Muller_etal_AREPS_2016_StaticPolygons.gpmlz"}
 
     elif MODEL_NAME=='DOMEIER2014':
         model_dict = {'RotationFile':['LP_TPW.rot'],
@@ -84,7 +96,7 @@ def get_model_name_list(MODEL_STORE,include_hidden=True):
     if include_hidden:
         MODEL_LIST = [o for o in os.listdir(MODEL_STORE) if os.path.isdir(os.path.join(MODEL_STORE,o))]
     else:
-        MODEL_LIST = ['SETON2012','MULLER2016','PALEOMAP','GOLONKA','RODINIA2013','DOMEIER2014','MATTHEWS2016']
+        MODEL_LIST = ['SETON2012','MULLER2016','PALEOMAP','GOLONKA','RODINIA2013','DOMEIER2014','MATTHEWS2016', 'MATTHEWS2016V2']
 
     return MODEL_LIST
 
