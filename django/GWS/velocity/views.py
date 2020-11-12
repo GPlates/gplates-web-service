@@ -28,9 +28,9 @@ def pretty_floats(obj):
     if isinstance(obj, float):
         return PrettyFloat(obj)
     elif isinstance(obj, dict):
-        return dict((k, pretty_floats(v)) for k, v in obj.items())
+        return dict((k, pretty_floats(v)) for k, v in list(obj.items()))
     elif isinstance(obj, (list, tuple)):
-        return map(pretty_floats, obj)             
+        return list(map(pretty_floats, obj))             
     return obj
 
 
@@ -71,20 +71,23 @@ def velocity_within_topological_boundaries(request):
     rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
         (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
 
-    topology_features = pygplates.FeatureCollection(str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,model_dict['PlatePolygons'])))
+    topology_features= []
+    pygplates.resolve_topologies([str('%s/%s/%s' %
+        (settings.MODEL_STORE_DIR,model,pp)) for pp in model_dict['PlatePolygons']], 
+        rotation_model, topology_features, reconstruction_time=float(time))
+    #print(topology_features)
 
     if domain_type=='longLatGrid':
         domain_features = create_gpml_regular_long_lat_mesh(1.,feature_type='MeshNode')
         lat,lon,vel1,vel2,plate_ids = get_velocities(rotation_model,topology_features,float(time),
                                                      velocity_domain_features=domain_features,
-                                                     velocity_type=velocity_type)
+                                                     velocity_type=velocity_type, topology_flag=True)
 
     elif domain_type=='healpix':
         domain_features = create_gpml_healpix_mesh(32,feature_type='MeshNode')
         lat,lon,vel1,vel2,plate_ids = get_velocities(rotation_model,topology_features,float(time),
                                                      velocity_domain_features=domain_features,
-                                                     velocity_type=velocity_type)
+                                                     velocity_type=velocity_type, topology_flag=True)
     
     # prepare the response to be returned
     ret='{"coordinates":['

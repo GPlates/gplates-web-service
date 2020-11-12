@@ -6,7 +6,7 @@ from django.http import (HttpResponse, HttpResponseRedirect,
 
 from django.conf import settings
 
-import urllib, base64, StringIO, os, string, random
+import urllib.request, urllib.parse, urllib.error, base64, io, os, string, random
 from datetime import datetime
 import subprocess
 
@@ -53,7 +53,7 @@ def create(request):
     else:
         if animation:
             cnt = 0
-            for t in xrange(20,-1,-2):
+            for t in range(20,-1,-2):
                 create_gmt(model, t, proj, anchor_plate_id, tmp_dir, cnt)
                 cnt+=1
             subprocess.call('/usr/bin/ffmpeg -r 3 -i {0}/img-%4d.png {0}/movie.mp4'.format(tmp_dir),shell=True)
@@ -68,10 +68,10 @@ def create_gmt(model, time, proj, anchor_plate_id, tmp_dir,cnt=0,fmt='png'):
     shp_path = settings.MODEL_STORE_DIR+model+'/'+data['Coastlines']
     input_rotation_filename = []
     for f in data['RotationFile']:
-        input_rotation_filename.append((settings.MODEL_STORE_DIR+model+ '/'+f).encode('utf-8','ignore'))
+        input_rotation_filename.append((settings.MODEL_STORE_DIR+model+ '/'+f))
     output_coastlines_filename = tmp_dir+'/coastlines.gmt'
     pygplates.reconstruct(
-        shp_path.encode('utf-8','ignore'),
+        shp_path,
         input_rotation_filename,
         output_coastlines_filename,
         int(time),
@@ -93,7 +93,7 @@ def create_gmt(model, time, proj, anchor_plate_id, tmp_dir,cnt=0,fmt='png'):
     try:
         with open(tmp_dir+'/{0}.png'.format(file_base_name), "rb") as image_file:
             if fmt == 'base64':
-                response = HttpResponse('data:image/png;base64,' + urllib.quote(base64.b64encode(image_file.read())))
+                response = HttpResponse('data:image/png;base64,' + urllib.parse.quote(base64.b64encode(image_file.read())))
             else:
                 response = HttpResponse(image_file.read(),content_type='image/png')
             response['Access-Control-Allow-Origin'] = '*'
@@ -112,7 +112,7 @@ def create_matplotlib(model, time, proj, anchor_plate_id):
         
         fig = plt.gcf()
         fig.set_size_inches(16,8)
-        imgdata = StringIO.StringIO()
+        imgdata = io.StringIO()
 
         plt.title('{0} Ma'.format(time), fontsize=25)
         polygons = reconstruct_coastlines(time)    
@@ -127,7 +127,7 @@ def create_matplotlib(model, time, proj, anchor_plate_id):
  
         return HttpResponse(imgdata.buf, content_type="image/jpeg")
     except Exception as e:
-        print str(e)
+        print(str(e))
         red = Image.new('RGBA', (512, 512), (255,0,0,0))
         response = HttpResponse(content_type="image/jpeg")
         red.save(response, "JPEG")

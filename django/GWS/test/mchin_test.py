@@ -25,7 +25,7 @@ r = requests.post(SERVER_URL+'reconstruct/reconstruct_points/',data=data,verify=
 #print json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
 
 r = requests.get(SERVER_URL+'reconstruct/reconstruct_points/', params=data, verify=False, proxies=proxies)
-print json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+print(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
 #print r.text
 
 
@@ -67,7 +67,7 @@ data= {
    
 }
 
-print data
+print(data)
 
 r = requests.get(SERVER_URL+'reconstruct/reconstruct_feature_collection/', params=data, verify=False, proxies=proxies)
 #print json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
@@ -77,7 +77,7 @@ r = requests.get(SERVER_URL+'reconstruct/reconstruct_feature_collection/', param
 #print json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
 
 r = requests.post(SERVER_URL+'reconstruct/reconstruct_feature_collection/', data=data, verify=False, proxies=proxies)
-print r.text
+print(r.text)
 #print json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
 
 
@@ -87,9 +87,9 @@ print r.text
 r = requests.get('http://paleobiodb.org/data1.1/occs/list.json?limit=all&interval_id=3001&show=coords,attr,loc,prot,time,strat,stratext,lith,lithext,geo,rem,ent,entname,crmod&showsource',
                  proxies=proxies)
 
-print r.status_code
-print r.headers['content-type']
-print r.encoding
+print(r.status_code)
+print(r.headers['content-type'])
+print(r.encoding)
 
 pbdb = json.loads(r.text)
 
@@ -99,7 +99,7 @@ for record in pbdb['records']:
     lons.append(record['lng'])
     lats.append(record['lat'])
 
-print pbdb
+print(pbdb)
 
 
 # In[4]:
@@ -133,5 +133,5 @@ pts = json.loads(r.text)
 
 for feature in pts['features']:
     coords = feature['geometry']['coordinates']
-    print coords
+    print(coords)
 

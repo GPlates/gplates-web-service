@@ -1,10 +1,10 @@
 import pygplates
 import numpy as np
-from sphere_tools import healpix_mesh
+from .sphere_tools import healpix_mesh
 
 def create_gpml_crustal_thickness(longitude_array,latitude_array,thickness,filename=None):
 
-    multi_point = pygplates.MultiPointOnSphere(zip(latitude_array,longitude_array))
+    multi_point = pygplates.MultiPointOnSphere(list(zip(latitude_array,longitude_array)))
     
     scalar_coverages = {
         pygplates.ScalarType.create_gpml('CrustalThickness'): thickness}
@@ -25,7 +25,7 @@ def create_gpml_velocity_feature(longitude_array,latitude_array,filename=None,fe
 # function to make a velocity mesh nodes at an arbitrary set of points defined in Lat
 # Long and Lat are assumed to be 1d arrays. 
 
-    multi_point = pygplates.MultiPointOnSphere(zip(latitude_array,longitude_array))
+    multi_point = pygplates.MultiPointOnSphere(list(zip(latitude_array,longitude_array)))
 
     # Create a feature containing the multipoint feature. 
     # optionally, define as 'MeshNode' type, so that GPlates will recognise it as a velocity layer

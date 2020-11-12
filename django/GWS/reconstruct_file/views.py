@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadReque
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
-from StringIO import StringIO
+from io import StringIO
 
 from utils.get_model import get_reconstruction_model_dict
 from utils.reconstruct_tools import reconstruct_to_birth_time
@@ -33,9 +33,9 @@ def pretty_floats(obj):
     if isinstance(obj, float):
         return PrettyFloat(obj)
     elif isinstance(obj, dict):
-        return dict((k, pretty_floats(v)) for k, v in obj.items())
+        return dict((k, pretty_floats(v)) for k, v in list(obj.items()))
     elif isinstance(obj, (list, tuple)):
-        return map(pretty_floats, obj)             
+        return list(map(pretty_floats, obj))             
     return obj
 
 

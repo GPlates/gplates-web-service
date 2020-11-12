@@ -1,5 +1,5 @@
 # gplates-web
-repository for demoing gplates web services with different languages
+repository for demoing gplates web services with different programming languages
 
 
 ## Contents
@@ -8,7 +8,7 @@ repository for demoing gplates web services with different languages
 
 - examples of accessing the service from different languages (R,matlab,bash/GMT,python) have now been moved to https://github.com/siwill22/gws-examples
 
-## Notes on django setup
+## Notes on django setup (ignore this if you have no idea what this is about)
 Some instructions to set up your own django server and make an app like the one in this repo
 
 - Install django

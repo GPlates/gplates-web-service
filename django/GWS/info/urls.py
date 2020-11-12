@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-import r_model
+from . import r_model
 
 urlpatterns = [
     url(r'^model_names/?$', r_model.list_model_names),

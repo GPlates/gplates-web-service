@@ -45,16 +45,16 @@ def wrap_resolved_polygons(resolved_polygons,
         for p in wrapped_polygons:
             lats=[i.get_latitude() for i in p.get_exterior_points()]
             lons=[i.get_longitude() for i in p.get_exterior_points()]
-            if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
+            if pygplates.PolygonOnSphere(list(zip(lats,lons))).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
                 polygons.append((lons,lats))
             else:
                 polygons.append((lons[::-1],lats[::-1]))
     else:
         for p in resolved_polygons:
-            lats, lons = zip( *p.get_geometry().to_lat_lon_list())
+            lats, lons = list(zip( *p.get_geometry().to_lat_lon_list()))
             lats = list(lats)
             lons = list(lons)
-            if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
+            if pygplates.PolygonOnSphere(list(zip(lats,lons))).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
                 polygons.append((lons,lats))
             else:
                 polygons.append((lons[::-1],lats[::-1]))
@@ -85,7 +85,7 @@ def wrap_resolved_polygons(resolved_polygons,
                 elif x>89.99:
                     lats[idx] = 89.99
         
-        feature["geometry"]["coordinates"] = [zip(lons+lons[:1],lats+lats[:1])]
+        feature["geometry"]["coordinates"] = [list(zip(lons+lons[:1],lats+lats[:1]))]
         data["features"].append(feature)
     
     return data
@@ -97,9 +97,9 @@ def wrap_reconstructed_polygons(reconstructed_polygons,lon0=0,tesselate_degrees=
     data["features"] = [] 
     for reconstructed_polygon in reconstructed_polygons:
         rev=False
-        print reconstructed_polygon.get_reconstructed_geometry().get_orientation()
+        print(reconstructed_polygon.get_reconstructed_geometry().get_orientation())
         if reconstructed_polygon.get_reconstructed_geometry().get_orientation() == pygplates.PolygonOnSphere.Orientation.counter_clockwise:
-            print 'hello'
+            print('hello')
             rev = True
 
         if lon0 is not None:
@@ -186,10 +186,10 @@ def process_reconstructed_polygons(reconstructed_polygons,
                 polygons.append((lons[::-1],lats[::-1]))
     else:
         for p in reconstructed_polygons:
-            lats, lons = zip( *p.get_reconstructed_geometry().to_lat_lon_list())
+            lats, lons = list(zip( *p.get_reconstructed_geometry().to_lat_lon_list()))
             lats = list(lats)
             lons = list(lons)
-            if pygplates.PolygonOnSphere(zip(lats,lons)).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
+            if pygplates.PolygonOnSphere(list(zip(lats,lons))).get_orientation() == pygplates.PolygonOnSphere.Orientation.clockwise:
                 polygons.append((lons,lats))
             else:
                 polygons.append((lons[::-1],lats[::-1]))
@@ -220,7 +220,7 @@ def process_reconstructed_polygons(reconstructed_polygons,
                 elif x>89.99:
                     lats[idx] = 89.99
         
-        feature["geometry"]["coordinates"] = [zip(lons+lons[:1],lats+lats[:1])]
+        feature["geometry"]["coordinates"] = [list(zip(lons+lons[:1],lats+lats[:1]))]
         data["features"].append(feature)
 
     return data

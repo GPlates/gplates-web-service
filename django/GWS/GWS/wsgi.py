@@ -12,7 +12,7 @@ import os , sys
 from django.core.wsgi import get_wsgi_application
 
 paths = [
-            '/usr/lib/pygplates/revision12/',
+            '/usr/lib/pygplates/revision28',            
              os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         ]
 for path in paths:
