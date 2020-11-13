@@ -59,7 +59,26 @@
         ], 
         "StaticPolygons": "PresentDay_StaticPlatePolygons_Matthews++.gpmlz"
     }, 
-    "MATTHEWS2016V2": {
+
+    "MATTHEWS2016_mantle_ref": {
+        "PlatePolygons": [
+            "Global_EarthByte_Mesozoic-Cenozoic_plate_boundaries_Matthews_etal.gpmlz",
+            "Global_EarthByte_Paleozoic_plate_boundaries_Matthews_etal.gpmlz",
+            "TopologyBuildingBlocks_AREPS.gpmlz"
+        ],
+        "RotationFile": [
+            "Global_EB_250-0Ma_GK07_Matthews_etal.rot",
+            "Global_EB_410-250Ma_GK07_Matthews_etal.rot"
+        ],
+        "Coastlines": "Global_coastlines_2015_v1_low_res.gpmlz",
+        "ValidTimeRange": [
+            410.0,
+            0.0
+        ],
+        "StaticPolygons": "PresentDay_StaticPlatePolygons_Matthews++.gpmlz"
+    },
+
+    "MATTHEWS2016_pmag_ref": {
         "PlatePolygons": [
             "Matthews_etal_GPC_2016_Paleozoic_PlateTopologies.gpmlz",
             "Matthews_etal_GPC_2016_MesozoicCenozoic_PlateTopologies.gpmlz",

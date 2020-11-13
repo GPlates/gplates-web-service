@@ -24,9 +24,10 @@ def list_models(request):
     ret = []
     namespaces = {'dc': 'http://purl.org/dc/elements/1.1/'}
     for name in get_model_name_list(settings.MODEL_STORE_DIR,include_hidden=False):
+        print(name)
         meta_file = settings.MODEL_STORE_DIR +'/'+name+'/'+name+'_metadata.xml'
         if os.path.isfile(meta_file):
-            with open(meta_file, 'r') as fp:
+            with open(meta_file, 'r', encoding="utf-8") as fp:
                 data = fp.read()
                 root = ET.fromstring(data)
                 title = root.find('dc:title', namespaces)
