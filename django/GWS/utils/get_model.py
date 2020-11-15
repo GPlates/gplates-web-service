@@ -43,7 +43,7 @@ def get_reconstruction_model_dict(MODEL_NAME):
                       'StaticPolygons':'Basis_Polygons_Seton_etal_2012.gpmlz',
                       'ValidTimeRange':[200.,0.]}
 
-    elif MODEL_NAME in ['MATTHEWS2016', 'MATTHEWS2016_mantle_ref']:
+    elif MODEL_NAME == 'MATTHEWS2016':
         model_dict = {'RotationFile':['Global_EB_250-0Ma_GK07_Matthews_etal.rot',
                                       'Global_EB_410-250Ma_GK07_Matthews_etal.rot'],
                       'Coastlines':'Global_coastlines_2015_v1_low_res.gpmlz',
@@ -52,13 +52,27 @@ def get_reconstruction_model_dict(MODEL_NAME):
                                        'Global_EarthByte_Paleozoic_plate_boundaries_Matthews_etal.gpmlz',
                                        'TopologyBuildingBlocks_AREPS.gpmlz'],
                       'ValidTimeRange':[410.,0.]}
-    elif MODEL_NAME == 'MATTHEWS2016_pmag_ref':
+
+    elif MODEL_NAME == 'MATTHEWS2016_mantle_ref':
         model_dict = {
             "PlatePolygons": [
                     "Matthews_etal_GPC_2016_Paleozoic_PlateTopologies.gpmlz",
                     "Matthews_etal_GPC_2016_MesozoicCenozoic_PlateTopologies.gpmlz"],
             "RotationFile": [
                     "Matthews_etal_GPC_2016_410-0Ma_GK07.rot"],
+            "Coastlines": "Matthews_etal_GPC_2016_Coastlines.gpmlz",
+            "ValidTimeRange": [
+                    410.0,
+                    0.0],
+            "StaticPolygons": "Muller_etal_AREPS_2016_StaticPolygons.gpmlz"}
+
+    elif MODEL_NAME == 'MATTHEWS2016_pmag_ref':
+        model_dict = {
+            "PlatePolygons": [
+                    "Matthews_etal_GPC_2016_Paleozoic_PlateTopologies_PMAG.gpmlz",
+                    "Matthews_etal_GPC_2016_MesozoicCenozoic_PlateTopologies_PMAG.gpmlz"],
+            "RotationFile": [
+                    "Matthews_etal_GPC_2016_410-0Ma_GK07_PMAG.rot"],
             "Coastlines": "Matthews_etal_GPC_2016_Coastlines.gpmlz",
             "ValidTimeRange": [
                     410.0,
