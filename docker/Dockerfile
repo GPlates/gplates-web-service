@@ -1,5 +1,8 @@
 #
-# (in root folder ) docker build -f docker/Dockerfile -t gplates/gws .
+# to build this docker container image
+# step 1: git clone https://github.com/GPlates/gplates-web-service.git
+# step 2: go into folder gplates-web-service
+# step 3: docker build -f docker/Dockerfile -t gplates/gws .
 #
 
 FROM ubuntu:20.04
@@ -41,6 +44,8 @@ RUN pip3 install --upgrade pyopenssl
 #basemap should be replaced with cartopy
 RUN pip3 uninstall -y matplotlib 
 
+ADD . /gws
+
 # Add Tini
 ENV TINI_VERSION v0.9.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
@@ -55,6 +60,7 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /tmp/gws
 RUN chown www-data /tmp/gws
+RUN chown www-data /var/www
 
 EXPOSE 80
 

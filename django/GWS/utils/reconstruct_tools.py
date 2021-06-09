@@ -7,7 +7,7 @@ def reconstruct_to_birth_time(features,rotation_model,ReconstructTime='BeginTime
     for feature in features:
 
         # NB valid_time is a tuple, we take the first value since this is the 'birth' time of the LIP
-        if ReconstructTime is 'MidTime':
+        if ReconstructTime == 'MidTime':
             time = (feature.get_valid_time()[0]+feature.get_valid_time()[1])/2.
         else:
             time = feature.get_valid_time()[0]
