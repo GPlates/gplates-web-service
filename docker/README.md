@@ -9,7 +9,9 @@
 
 #### Update the docker image
 
-`docker build -t gplates/gws .`
+Go to the root directory of this repository and run 
+
+`docker build -f docker/Dockerfile -t gplates/gws .`
 
 #### Run docker container in production env
 
