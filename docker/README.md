@@ -4,7 +4,7 @@
 
 * Inside the virtual machine: `cd /gws/django/GWS && python3 manage.py runserver 0.0.0.0:80`
 
-* The dev server is at http://localhost:18000)
+* The dev server is at http://localhost:18000. **IMPORTANT: Make sure the BEDUG is set to True in settings.py**
 
 
 #### Update the docker image

@@ -116,6 +116,9 @@ def reconstruct_points(request):
     # assign plate-ids to points using static polygons
     partition_time = timef if is_reverse else 0.
 
+    #from time import time
+    #start = time()
+
     #LOOK HERE !!!!
     #it seems when the partition_time is not 0
     #the returned assigned_point_features contains reverse reconstructed present-day geometries.
@@ -129,6 +132,9 @@ def reconstruct_points(request):
             pygplates.PartitionProperty.valid_time_period],
         reconstruction_time = partition_time
         )
+    
+    #end=time()
+    #print(f'It took {end - start} seconds!')
 
     # reconstruct the points
     assigned_point_feature_collection = pygplates.FeatureCollection(assigned_point_features)
@@ -139,7 +145,7 @@ def reconstruct_points(request):
             rotation_model, 
             reconstructed_feature_geometries, 
             timef,
-            anchor_plate_id=anchor_plate_id)
+            anchor_plate_id=anchor_plate_id)  
 
     rfgs = p_index*[None]
     for rfg in reconstructed_feature_geometries:
