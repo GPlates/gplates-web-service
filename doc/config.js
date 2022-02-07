@@ -6,7 +6,7 @@ const config = {
     trailingSlash: false,
   },
   header: {
-    logo: 'https://www.gplates.org/static/414ecd6de023f40b06d3749161135550/newlogo.svg',
+    logo: 'https://raw.githubusercontent.com/GPlates/gplates-web-service/master/doc/src/gplates-log.svg',
     logoLink: 'https://gws.gplates.org',
     title:
       `<a href='https://gws.gplates.org/'>GPlates Web Service</a>`,
@@ -41,10 +41,10 @@ const config = {
 		      </div>
 		    </a>
 		  </li>`,
-    links: [{ text: '', link: '' }],
+    links: [{ text: 'AuScope', link: 'https://www.auscope.org.au/' }],
     search: {
-      enabled: false,
-      indexName: '',
+      enabled: true,
+      indexName: 'test-search',
       algoliaAppId: process.env.GATSBY_ALGOLIA_APP_ID,
       algoliaSearchKey: process.env.GATSBY_ALGOLIA_SEARCH_KEY,
       algoliaAdminKey: process.env.ALGOLIA_ADMIN_KEY,
@@ -58,18 +58,22 @@ const config = {
     collapsedNav: [
       '/codeblock', // add trailing slash if enabled above
     ],
-    links: [{ text: 'GPlates', link: 'https://gws.gplates.org' }],
+    links: [
+      { text: 'GPlates', link: 'https://www.gplates.org' }, 
+      { text: 'EarthByte', link: 'https://www.earthbyte.org' },
+      { text: 'GPlates Portal', link: 'https://portal.gplates.org' }
+    ],
     frontline: false,
     ignoreIndex: true,
     title:
-      "<a href='https://gws.gplates.org/'>graphql </a><div class='greenCircle'></div><a href='https://gws.gplates.org/'>react</a>",
+      "<a href='https://www.gplates.org/'>GPlates </a><div class='greenCircle'></div><a href='https://gws.gplates.org/'>Web Service</a>",
   },
   siteMetadata: {
     title: 'GPlates Web Service',
     description: 'GPlates Web Service Documentation  ',
     ogImage: null,
-    docsLocation: 'https://github.com/GPlates/gplates-web-service',
-    favicon: 'https://www.gplates.org/static/414ecd6de023f40b06d3749161135550/newlogo.svg',
+    docsLocation: 'https://github.com/GPlates/gplates-web-service/blob/master/doc/content',
+    favicon: 'https://raw.githubusercontent.com/GPlates/gplates-web-service/master/doc/src/gplates-log.svg',
   },
   pwa: {
     enabled: false, // disabling this will also remove the existing service worker.
