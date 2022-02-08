@@ -1,0 +1,31 @@
+---
+title: "Reconstruct Static Plate Polygons"
+metaTitle: "Reconstruct Static Plate Polygons"
+metaDescription: "http request to retrieve reconstructed static plate polygons"
+---
+
+## Reconstruct Static Plate Polygons
+
+http GET request to retrieve reconstructed static plate polygons
+
+**Endpoint:**
+    
+    https://gws.gplates.org/reconstruct/static_polygons
+    
+**Parameters:**
+
+*anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
+
+*time* : time for reconstruction [required]
+
+*model* : name for reconstruction model [defaults to default model from web service settings]
+
+**Returns:**
+
+GeoJSON data containing reconstructed static plate polygons.
+
+**Examples:**
+
+**E1:**
+
+[https://gws.gplates.org/reconstruct/static_polygons/?time=100](https://gws.gplates.org/reconstruct/static_polygons/?time=100)

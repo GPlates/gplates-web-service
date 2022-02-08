@@ -52,11 +52,18 @@ const config = {
   },
   sidebar: {
     forcedNavOrder: [
-      '/introduction', // add trailing slash if enabled above
-      '/codeblock',
+      '/reconstruction', // add trailing slash if enabled above
+      '/reconstruction-models',
+      '/topology',
+      '/raster-query',
+      '/velocity',
+      '/examples',
+      '/using-docker'
     ],
     collapsedNav: [
-      '/codeblock', // add trailing slash if enabled above
+      '/topology', // add trailing slash if enabled above
+      '/velocity', // add trailing slash if enabled above
+      '/examples',
     ],
     links: [
       { text: 'GPlates', link: 'https://www.gplates.org' }, 
@@ -66,7 +73,7 @@ const config = {
     frontline: false,
     ignoreIndex: true,
     title:
-      "<a href='https://www.gplates.org/'>GPlates </a><div class='greenCircle'></div><a href='https://gws.gplates.org/'>Web Service</a>",
+      "<a href='https://www.gplates.org/'>GPlates </a><div class='greenCircle'></div><a href='/'>Web Service Doc</a>",
   },
   siteMetadata: {
     title: 'GPlates Web Service',

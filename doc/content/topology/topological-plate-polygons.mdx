@@ -1,0 +1,23 @@
+---
+title: "Topological Plate Polygons"
+metaTitle: "Topological Plate Polygons"
+metaDescription: "Topological Plate Polygons"
+---
+
+## topology/plate_polygons
+
+http GET request to retrieve reconstructed topological plate polygons
+
+**usage**
+    
+    <http-address-to-gws>/topology/plate_polygons/time=*reconstruction_time*&model=*reconstruction_model*
+    
+**parameters:**
+
+*time* : time for reconstruction [default=0]
+
+*model* : name for reconstruction model [defaults to default model from web service settings]
+
+**returns:**
+
+json containing reconstructed plate polygon features
