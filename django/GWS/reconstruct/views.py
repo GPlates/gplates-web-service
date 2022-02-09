@@ -135,8 +135,8 @@ def reconstruct_points(request):
     partition_time = timef if is_reverse else 0.
 
     if not pids_str and not pid_str: #if user has provided plate id(s), do not partition(slow)
-        from time import time
-        start = time()
+        #from time import time
+        #start = time()
 
         #LOOK HERE !!!!
         #it seems when the partition_time is not 0
@@ -152,8 +152,8 @@ def reconstruct_points(request):
             reconstruction_time = partition_time
             )
         
-        end=time()
-        print(f'It took {end - start} seconds!')
+        #end=time()
+        #print(f'It took {end - start} seconds!')
     else:
         assigned_point_features = point_features
 
@@ -192,7 +192,9 @@ def reconstruct_points(request):
             if lon is not None and lat is not None:
                 ret+='[{0:5.2f},{1:5.2f}],'.format(lon, lat)
             elif return_null_points:
-                ret+='null,'
+                ret+='null,' #return null for invalid coordinates
+            else:
+                ret+='[{0:5.2f},{1:5.2f}],'.format(999.99, 999.99) #use 999.99 to indicate invalid coordinates
 
     else:
         ret='{"type":"FeatureCollection","features":['

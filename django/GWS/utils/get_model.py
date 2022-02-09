@@ -1,9 +1,15 @@
-import os
+import os, json
 from django.conf import settings
 
 def get_reconstruction_model_dict(MODEL_NAME):
-    # Model registry - really should not be in here, TODO move to separate registry file
-
+    # Model registry 
+    with open(f'{settings.BASE_DIR}/DATA/MODELS.json') as f:
+        models = json.load(f)
+        if MODEL_NAME in models:
+            return models[MODEL_NAME]
+        else:
+            return None
+    '''
     if MODEL_NAME=='SETON2012':
         model_dict = {'RotationFile':['Seton_etal_ESR2012_2012.1.rot'],
                       'Coastlines':'coastlines_low_res/Seton_etal_ESR2012_Coastlines_2012.shp',
@@ -94,12 +100,36 @@ def get_reconstruction_model_dict(MODEL_NAME):
                       'Coastlines':'PlatePolygons.shp',
                       'StaticPolygons':'PlatePolygons.shp',
                       'ValidTimeRange':[2100.,1275.]}
-
+    elif MODEL_NAME=="MERDITH2021": 
+        model_dict = {
+            "RotationFile": [
+                "1000_0_rotfile_Merdith_et_al.rot"
+            ], 
+            "Coastlines": "shapes_coastlines_Merdith_et_al.gpmlz", 
+            "ValidTimeRange": [
+                1000.0, 
+                0.0
+            ], 
+            "StaticPolygons": "shapes_static_polygons_Merdith_et_al.gpmlz"
+        }
+    elif MODEL_NAME=="MULLER2019_YOUNG2019_CAO2020": 
+        model_dict = {
+            "RotationFile": [
+                "Muller2019-Young2019-Cao2020.rot"
+            ], 
+            "Coastlines": "Global_EarthByte_GPlates_PresentDay_Coastlines.gpmlz", 
+            "ValidTimeRange": [
+                1100.0, 
+                0.0
+            ], 
+            "StaticPolygons": "Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons.gpmlz"
+        }
     else:
         #model_dict = 'Error: Model Not Listed'
         model_dict = None
 
     return model_dict
+    '''
 
 
 def get_model_name_list(MODEL_STORE,include_hidden=True):
@@ -108,12 +138,11 @@ def get_model_name_list(MODEL_STORE,include_hidden=True):
     # models is returned. Otherwise, assume every directory within the model store is a valid model
 
     if include_hidden:
-        MODEL_LIST = [o for o in os.listdir(MODEL_STORE) if os.path.isdir(os.path.join(MODEL_STORE,o))]
+        return [o for o in os.listdir(MODEL_STORE) if os.path.isdir(os.path.join(MODEL_STORE,o))]
     else:
-        MODEL_LIST = ['SETON2012','MULLER2016','PALEOMAP','GOLONKA','RODINIA2013',
-            'DOMEIER2014','MATTHEWS2016_mantle_ref', 'MATTHEWS2016', 'MATTHEWS2016_pmag_ref']
-
-    return MODEL_LIST
+        with open(f'{settings.BASE_DIR}/DATA/MODELS.json') as f:
+            models = json.load(f)
+            return models.keys()
 
 
 def get_model_dictionary(MODEL_STORE):

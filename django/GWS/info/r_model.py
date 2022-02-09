@@ -37,9 +37,13 @@ def list_models(request):
                 tmp['title'] = title.text
                 tmp['desc'] = desc.text
                 ret.append(tmp)
-    response = HttpResponse(
-            json.dumps(ret),
-            content_type='application/json')
+        else:
+            tmp = {}
+            tmp['name'] = name
+            tmp['title'] = name
+            tmp['desc'] = name
+            ret.append(tmp)
+    response = HttpResponse(json.dumps(ret),content_type='application/json')
     response['Access-Control-Allow-Origin'] = '*'
     return response
 

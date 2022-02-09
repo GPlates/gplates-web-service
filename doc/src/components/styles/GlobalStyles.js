@@ -722,7 +722,7 @@ export const baseStyles = css`
   }
 
   .paragraph {
-    margin: 16px 0px 32px;
+    margin: 16px 0px 16px;
     line-height: 1.625;
   }
 
