@@ -1,0 +1,412 @@
+1101 180.0  -60.26 -141.36  -56.0  000 ! Laurentia
+1101 200.0  -61.66 -148.66  -63.2  000 ! Laurentia
+1101 210.0  -59.08 -145.87  -66.56  000 ! Laurentia
+1101 220.0  -57.46 -143.16  -65.9  000 ! Laurentia
+1101 240.0  -51.86 -134.66  -59.9  000 ! Laurentia
+1101 260.0  -43.26 -127.16  -61.1  000 ! Laurentia
+1101 280.0   40.46   55.94   62.37  000 ! Laurentia
+1101 300.0   38.44   65.16   62.53  000 ! Laurentia
+1101 340.0   28.43   54.46   63.43  000 ! Laurentia
+1101 360.0   25.15   53.36   73.97  000 ! Laurentia
+1101 400.0   30.68   47.06  108.32  000 ! Laurentia
+1101 400.0  -19.0   -6.4   94.0  000 ! Mitchell+12 absol paleolong, Laurentia
+1101 410.0  -22.0   -3.4   93.0  000 ! Mitchell+12 absol paleolong, Laurentia
+1101 420.0  -34.0    8.0   90.0  000 ! Mitchell+12 absol paleolong, Laurentia
+1101 430.0  -35.0   11.0   92.0  000 ! Mitchell+12 absol paleolong, Laurentia
+1101 440.0  -35.0   13.0   94.0  000 ! Mitchell+12 absol paleolong, Laurentia
+1101 450.0  -37.0   18.0   98.0  000 ! Mitchell+12 absol paleolong, Laurentia
+1101 460.0  -37.0   22.0  103.0  000 ! Mitchell+12 absol paleolong, Laurentia
+1101 470.0  -38.0   23.0  104.0  000 ! Mitchell+12 absol paleolong, Laurentia
+1101 480.0  -39.0   26.0  106.0  000 ! Mitchell+12 absol paleolong, Laurentia
+1101 490.0  -40.0   34.0  115.0  000 ! Mitchell+12 absol paleolong, Laurentia
+1101 500.0  -36.0   31.0  116.0  000 ! Mitchell+12 absol paleolong, Laurentia
+1101 515.0   35.51 -156.17 -122.94  000 ! 2012 June CLEANUP, Laurentia
+1101 520.0   35.01 -157.53 -123.49  000 ! 2012 June CLEANUP, Laurentia
+1101 540.0   26.72 -170.01 -127.51  000 ! 2012 June CLEANUP, Laurentia
+1101 560.0   15.47 -174.3 -132.56  000 ! 2012 June CLEANUP, Laurentia
+1101 570.0    8.29 -167.49 -137.68  000 ! 2012 June CLEANUP, Laurentia
+999 615.0   36.29 -160.44 -135.42  000 ! 2012 June CLEANUP, Laurentia (removed May 2014 due to collisiion between North China and Sibera, ASM)
+1101 630.0   32.71 -157.56 -144.78  000 ! Laurentia
+1101 718.0   47.68  150.75 -196.55  000 ! 2012 June CLEANUP, Laurentia
+1101 720.0   47.74  148.71 -198.6  000 ! 2012 June CLEANUP, Laurentia
+1101 750.0   47.49  147.58 -183.74  000 ! 2012 June CLEANUP, Laurentia
+1101 755.0   46.83  146.57 -182.27  000 ! 2012 June CLEANUP, Laurentia
+1101 780.0   43.28  139.28 -178.91  000 ! 2012 June CLEANUP, Laurentia
+1101 810.0   41.5 -168.0 -244.89  000 ! Laurentia
+1101 825.0   48.7 -171.5 -225.1  000 ! Laurentia
+1101 850.0   36.4  176.0 -203.9  000 ! Laurentia
+1101 900.0   37.73  160.5 -163.44  000 ! Laurentia
+1101 940.0   29.68  161.7 -149.96  000 ! Laurentia
+1101 1000.0   24.21  175.25 -150.19  000 ! Laurentia
+1101 1015.0   22.66  178.44 -150.49  000 ! Laurentia
+1101 1050.0   43.54  179.56 -168.63  000 ! Laurentia
+1101 1065.0   52.22 -179.73 -176.99  000 ! Laurentia
+1101 1100.0   64.47 -167.3 -175.54  000 ! Laurentia
+1103  0.0   90.0    0.0    0.0  1101 ! Greenland
+1103 30.0   90.0    0.0    0.0  1101 ! Torsvik et al., 2000, Greenland
+1103 35.0   16.91   -9.2   -0.34  1101 ! Torsvik et al., 2000, Greenland
+1103 40.0   41.19  -27.37   -1.29  1101 ! Torsvik et al., 2000, Greenland
+1103 45.0   59.59  -63.48   -2.23  1101 ! Torsvik et al., 2000, Greenland
+1103 50.0   52.74  109.26   -3.16  1101 ! Torsvik et al., 2000, Greenland
+1103 55.0   28.64  130.93   -3.24  1101 ! Torsvik et al., 2000, Greenland
+1103 60.0   30.0  137.81   -3.97  1101 ! Torsvik et al., 2000, Greenland
+1103 65.0   42.71  137.16   -5.25  1101 ! Torsvik et al., 2000, Greenland
+1103 70.0   53.93  135.59   -6.67  1101 ! Torsvik et al., 2000, Greenland
+1103 75.0   58.13  131.88   -8.21  1101 ! Torsvik et al., 2000, Greenland
+1103 80.0   62.19  127.19   -9.76  1101 ! Torsvik et al., 2000, Greenland
+1103 85.0   65.46  122.1  -11.15  1101 ! Torsvik et al., 2000, Greenland
+1103 90.0   66.28  120.26  -11.9  1101 ! Torsvik et al., 2000, Greenland
+1103 95.0   66.71  119.37  -12.38  1101 ! Torsvik et al., 2000, Greenland
+1103 100.0   66.89  119.17  -12.68  1101 ! Torsvik et al., 2000, Greenland
+1103 105.0   67.08  118.96  -12.99  1101 ! Torsvik et al., 2000, Greenland
+1103 110.0   67.24  118.78  -13.29  1101 ! Torsvik et al., 2000, Greenland
+1103 115.0   67.4  118.6  -13.59  1101 ! Torsvik et al., 2000, Greenland
+1103 120.0   67.59  118.05  -13.86  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 125.0   67.82  116.95  -14.08  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 130.0   68.04  115.82  -14.3  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 135.0   68.25  114.67  -14.52  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 140.0   68.45  113.51  -14.74  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 145.0   68.65  112.32  -14.96  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 150.0   68.84  111.11  -15.18  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 155.0   69.02  109.88  -15.4  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 160.0   69.19  108.63  -15.62  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 165.0   69.35  107.36  -15.84  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 170.0   69.5  106.08  -16.06  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 175.0   69.64  104.77  -16.28  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 180.0   69.77  103.45  -16.5  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 185.0   69.89  102.12  -16.72  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 190.0   70.01  100.77  -16.94  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 195.0   70.11  -99.4  -17.16  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 200.0   70.2  -98.02  -17.38  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 205.0   70.28  -96.63  -17.6  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 210.0   70.35  -95.23  -17.82  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 214.0   70.4  -94.1  -18.0  1101 ! Torsvik et al., 2000, MOD 1, Greenland
+1103 245.0   70.4  -94.1  -18.0  1101 ! Greenland
+1103 245.0   70.4  -94.1  -18.0  1101 ! Greenland
+1103 515.0   70.4  -94.1  -18.0  1101 ! Greenland
+1103 580.0   70.4  -94.1  -18.0  1101 ! Greenland
+1103 615.0   70.4  -94.1  -18.0  1101 ! Greenland
+1103 755.0   70.4  -94.1  -18.0  1101 ! Greenland
+1103 1020.0   70.4  -94.1  -18.0  1101 ! Greenland
+1103 1100.0   70.4  -94.1  -18.0  1101 ! Greenland
+1104  0.0   90.0    0.0    0.0  1101 ! North Alaska
+1104 115.0   90.0    0.0    0.0  1101 ! North Alaska
+1104 130.0   69.0 -137.2  -82.0  1101 ! North Alaska, Lawver et al. 1990
+1104 245.0   69.0 -137.2  -82.0  1101 ! North Alaska
+1104 245.0   69.0 -137.2  -82.0  1101 ! North Alaska
+1104 440.0   69.0 -137.2  -82.0  1101 ! North Alaska
+1104 460.0   69.0 -137.2  -82.0  1101 ! North Alaska
+1104 1490.0   69.0 -137.2  -82.0  1101 ! North Alaska
+1107 245.0  -69.79  101.72    5.98  1101 ! Baffin Island
+1107 750.0  -69.79  101.72    5.98  1101 ! Baffin Island
+1107 1100.0  -69.79  101.72    5.98  1101 ! Baffin Island
+2201 500.0   53.0  -35.0   51.0  714 ! 2012 June CLEANUP, Amazonia
+2201 530.0   53.0  -35.0   51.0  714 ! 2012 June CLEANUP, Amazonia
+2201 530.0   53.0  -35.0   51.0  714 ! 2012 June CLEANUP, Amazonia
+2201 540.0   53.0  -35.0   51.0  714 ! 2012 June CLEANUP, Amazonia
+2201 540.0  -16.28  -35.92  -79.21  1101 ! 2012 June CLEANUP, Amazonia
+2201 570.0  -18.85   -4.42  -80.66  1101 ! 2012 June CLEANUP, Amazonia
+2201 615.0    6.69  -47.19  -96.46  1101 ! 2012 June CLEANUP, Amazonia
+2201 700.0   11.97  -47.01 -110.66  1101 ! 2012 June CLEANUP, Amazonia
+2201 990.0   11.97  -47.01 -110.66  1101 ! Amazonia
+2201 1000.0   12.19  -47.6 -108.19  1101 ! Amazonia
+2201 1050.0    6.01  -50.02  -85.26  1101 ! Amazonia
+2201 1100.0    3.5  -55.72  -83.47  1101 ! Amazonia
+2201 1200.0    3.5  -55.72  -83.47  1101 ! Amazonia
+2202 530.0   90.0    0.0    0.0  2203 ! ?Pampia?
+2202 1100.0   90.0    0.0    0.0  2203 ! ?Pampia?
+2203  0.0   46.8  -30.6   55.0  7701 ! 2012 June CLEANUP, Rio de La Plata
+2203 540.0   46.8  -30.6   55.0  7701 ! 2012 June CLEANUP, Rio de La Plata
+2203 580.0   46.8  -30.6   55.0  7701 ! 2012 June CLEANUP(Rapalini), Rio de La Plata
+2203 640.0   46.8  -30.6   55.0  7701 ! 2012 July, Rio de La Plata
+2203 720.0   33.66  -15.88   58.83  7701 ! Rio de La Plata
+2203 720.0   10.42  -47.47 -104.96  1101 ! Rio de La Plata
+2203 1100.0   10.42  -47.47 -104.96  1101 ! Rio de La Plata
+2204 530.0   46.8  -30.6   55.9  7701 ! SF To Congo McE+03, Sao Francisco
+2204 2000.0   46.8  -30.6   55.9  7701 ! SF To Congo McE+03, Sao Francisco
+2205 530.0   90.0    0.0    0.0  2203 ! Parana Panema
+2205 1100.0   90.0    0.0    0.0  2203 ! Parana Panema
+2206 530.0   53.0  -35.0   51.0  714 ! 2012 June CLEANUP, ?Borborema?
+2206 540.0   53.0  -35.0   51.0  714 ! 2012 June CLEANUP, ?Borborema?
+2206 540.0   90.0    0.0    0.0  2204 ! ?Borborema?
+2206 640.0   90.0    0.0    0.0  2204 ! 2012 June CLEANUP, Borborema?
+2206 640.0   18.09   41.09  115.91  000 ! 2012 June CLEANUP, Borborema?
+2206 720.0   -8.36   14.48  117.4  000 ! 2012 June CLEANUP, Borborema?
+2206 725.0    8.06 -164.41 -118.09  000 ! 2012 June CLEANUP, Borborema?
+2206 1100.0    8.06 -164.41 -118.09  000 ! 2012 June CLEANUP, Borborema?, extended backwards, May 2014, ASM
+3301 280.0   88.0   27.0  -38.0  1101 ! Baltica, Eurasia
+3301 390.0   88.0   27.0  -38.0  1101 ! Baltica, Eurasia
+3301 400.0   88.0   27.0  -38.0  1101 ! Baltica, Eurasia
+3301 420.0   74.11  -58.2  -46.84  1101 ! Baltica, Eurasia
+3301 440.0   72.24  -69.47  -49.59  1101 ! Baltica, Eurasia
+3301 450.0   39.12  -67.04  -46.46  1101 ! Baltica, Eurasia
+3301 460.0   40.76  -13.15  -94.41  1101 ! Baltica, Eurasia
+3301 480.0   39.08   -7.52  -99.54  1101 ! Baltica, Eurasia
+3301 500.0   24.6  -18.26  -44.44  1101 ! Baltica, Eurasia
+3301 530.0   51.05   -7.96  -97.35  1101 ! 2012 June CLEANUP, !Baltica, Eurasia
+3301 535.0   54.73  -20.01  -75.33  1101 ! 2012 June CLEANUP, !Baltica, Eurasia
+3301 540.0   49.29  -13.96  -80.98  1101 ! 2012 June CLEANUP, !Baltica, Eurasia
+3301 560.0   25.56  -52.64  -30.96  1101 ! 2012 June CLEANUP, !Baltica, Eurasia
+3301 570.0   39.11  131.46   19.47  1101 ! 2012 June CLEANUP, !Baltica, Eurasia
+3301 580.0   20.75   89.02   18.93  1101 ! 2012 June CLEANUP, !Baltica, Eurasia
+3301 615.0   75.8  -95.82  -59.16  1101 ! Baltica, Eurasia
+3301 755.0   75.8  -95.82  -59.16  1101 ! Baltica, Eurasia
+3301 940.0   75.8  -95.82  -59.16  1101 ! Baltica, Eurasia
+3301 1020.0   75.8  -95.82  -59.16  1101 ! Baltica, Eurasia
+3301 1050.0   62.28 -115.28  -41.53  1101 ! Baltica, Eurasia
+3301 1100.0   56.12 -107.78  -44.22  1101 ! Baltica, Eurasia
+3302  0.0   90.0    0.0    0.0  3305 ! Svalbard
+3302 320.0   90.0    0.0    0.0  3305 ! Svalbard
+3302 320.0   62.61  117.01  -16.76  1103 ! Svalbard
+3302 400.0   62.61  117.01  -16.76  1103 ! Svalbard
+3302 400.0   62.61  117.01  -16.76  910 ! Svalbard
+3302 410.0   39.3  121.06  -14.26  910 ! Svalbard
+3302 600.0   39.3  121.06  -14.26  910 ! Svalbard
+3302 1100.0   39.3  121.06  -14.26  910 ! Svalbard
+3305  0.0   90.0    0.0    0.0  301 ! West Svalbard
+3305 90.0   90.0    0.0    0.0  301 ! West Svalbard
+3305 90.0   66.63  149.92  -20.2  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 95.0   68.68  150.35  -21.27  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 100.0   72.03  150.55  -22.78  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 105.0   75.39  150.84  -24.29  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 110.0   75.64  151.41  -24.57  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 115.0   75.89  152.01  -24.85  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 120.0   76.2  152.35  -25.09  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 125.0   76.57  152.24  -25.28  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 130.0   76.95  152.14  -25.46  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 135.0   77.33  152.02  -25.65  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 140.0   77.71  151.9  -25.83  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 145.0   78.08  151.77  -26.02  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 150.0   78.46  151.63  -26.21  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 155.0   78.84  151.49  -26.39  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 160.0   79.22  151.33  -26.58  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 165.0   79.59  151.16  -26.76  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 170.0   79.97  150.98  -26.95  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 175.0   80.35  150.79  -27.13  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 180.0   80.73  150.58  -27.32  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 185.0   81.1  150.35  -27.51  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 190.0   81.48  150.11  -27.69  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 195.0   81.86  149.84  -27.88  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 200.0   82.23  149.54  -28.06  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 205.0   82.61  149.21  -28.25  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 210.0   82.98  148.85  -28.44  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 214.0   83.29  148.54  -28.59  1101 ! EUR-NAM Torsvik et al., 2000, MOD 1, West Svalbard
+3305 245.0   83.29  148.54  -28.59  1101 ! West Svalbard
+3305 245.0   83.29  148.54  -28.59  1101 ! West Svalbard
+3305 280.0   83.29  148.54  -28.59  1101 ! West Svalbard
+3305 360.0   83.29  148.54  -28.59  1101 ! West Svalbard
+3305 377.0   83.29  148.54  -28.59  1101 ! West Svalbard
+3305 400.0   83.29  148.54  -28.59  1101 ! West Svalbard
+3305 400.0   83.29  148.54  -28.59  1101 ! West Svalbard
+3305 410.0   87.22  -42.33  -43.64  1101 ! West Svalbard
+3305 410.0   80.13   91.22  -27.07  910 ! West Svalbard
+3305 420.0   77.21   70.98  -27.1  910 ! West Svalbard
+999 430.0   77.21   70.98  -27.1  910 ! West Svalbard
+3305 440.0   77.21   70.98  -27.1  910 ! West Svalbard
+3305 600.0   77.21   70.98  -27.1  910 ! West Svalbard
+3305 650.0   77.21   70.98  -27.1  910 ! West Svalbard
+3305 1000.0   77.21   70.98  -27.1  910 ! West Svalbard
+3305 1100.0   77.21   70.98  -27.1  910 ! West Svalbard
+4404 100.0   90.0    0.0    0.0  301 ! Siberia
+4404 214.0   90.0    0.0    0.0  301 ! Siberia
+4404 214.0   90.0    0.0    0.0  3301 ! Siberia
+4404 280.0   90.0    0.0    0.0  3301 ! Siberia
+4404 280.0   88.0   27.0   38.0  1101 ! Siberia
+4404 300.0   70.85  -86.4  -28.08  1101 ! Siberia
+4404 320.0   47.82  -80.73  -28.01  1101 ! Siberia
+4404 340.0   10.26  127.11   42.21  1101 ! Siberia
+4404 360.0   41.69  107.67   47.32  1101 ! Siberia
+4404 400.0   12.37  -73.89  -51.07  1101 ! Siberia
+4404 430.0   10.69   94.18   64.36  1101 ! Siberia
+4404 450.0   22.5  103.64   49.69  1101 ! Siberia
+4404 455.0   16.29  110.18   46.51  1101 ! Siberia
+4404 460.0    5.85   94.46   51.47  1101 ! Siberia
+4404 480.0   19.78   91.21   53.95  1101 ! Siberia
+4404 500.0   27.68   88.76   44.76  1101 ! Siberia
+4404 510.0   25.29   73.86   40.61  1101 ! Siberia
+4404 530.0   -0.14   67.28   39.86  1101 ! Siberia
+4404 540.0   56.64  127.11  178.21  1101 ! 2010 Dec, Siberia
+4404 580.0   63.48  118.92  144.62  1101 ! 2010 Dec, Siberia
+4404 635.0   71.71  116.57  129.93  1101 ! 2010 Dec, Siberia
+4404 720.0   71.71  116.57  129.93  1101 ! 2010 Dec, Siberia
+4404 745.0   68.56  133.53  146.95  1101 ! Siberia
+4404 800.0   68.56  133.53  146.95  1101 ! Siberia
+4404 1000.0   68.56  133.53  146.95  1101 ! Siberia
+4404 1100.0   68.56  133.53  146.95  1101 ! Siberia
+5501 530.0   14.0 -168.0   66.0  8801 ! 2012 June CLEANUP, India
+5501 540.0   14.02 -168.26   65.86  8801 ! 2012 June CLEANUP, India
+5501 615.0   13.56  176.04   66.66  8801 ! 2012 June CLEANUP, India
+5501 630.0    9.41  175.0   66.46  8801 ! 2012 June CLEANUP, India
+5501 630.0   13.42 -157.37  140.61  1101 ! 2012 June CLEANUP, India
+5501 720.0   43.6  170.22  142.67  1101 ! 2012 June CLEANUP, India
+5501 750.0   45.67  155.01  140.29  1101 ! 2010 Nov. 1070 and 750 Ma pole match, India
+5501 750.0  -23.55   56.3  -39.34  8802 ! 2010 Nov. 1070 and 750 Ma pole match, India
+5501 900.0  -23.55   56.3  -39.34  8802 ! 2010 Nov. 1070 and 750 Ma pole match, India
+5501 900.0   16.8328  176.43   46.1411  8801 ! Calculated and inserted crossover, May 2014, ASM
+5501 950.0    6.45  177.13   84.11  8801 ! India
+5501 1050.0    7.71 -166.56   49.61  8801 ! India
+5501 1050.0   14.9711  164.176  -42.3156  000 ! India
+5501 1060.0   56.07  128.88  -76.88  000 ! India
+5501 1100.0   50.47  151.38  -97.38  000 ! India
+5502 530.0    9.8   82.9  -24.29  5501 ! Sri Lanka
+5502 1100.0    9.8   82.9  -24.29  5501 ! Sri Lanka
+5503 530.0   55.21   -3.58   -5.21  7701 ! Afif Abas
+5503 630.0   55.21   -3.58   -5.21  7701 ! Afif Abas
+5503 750.0    9.02 -175.29   -3.68  7701 ! Afif Abas
+5503 1100.0    9.02 -175.29   -3.68  7701 ! Afif Abas, Extended backwards, May 2014, ASM
+5504 530.0    2.79 -140.58   -8.35  7701 ! Azania
+5504 570.0    3.02  125.5    0.1  7701 ! Azania
+5504 630.0    3.02  125.5    0.1  7701 ! Azania
+5504 750.0   28.76    1.16    7.35  7701 ! Azania
+5504 1100.0   28.76    1.16    7.35  7701 ! Azania, Extended backwards, May 2014, ASM
+6602  0.0   90.0    0.0    0.0  301 ! North China
+6602 130.0   90.0    0.0    0.0  301 ! North China
+6602 130.0    0.41   47.12   29.07  000 ! North China
+6602 160.0    9.0  112.97   13.39  000 ! North China
+6602 190.0    0.16  -49.57   -6.59  000 ! North China
+6602 225.0    1.87   84.43  -51.23  000 ! North China
+6602 248.0  -49.56 -104.37   44.34  000 ! North China
+6602 260.0   49.66   61.41  -66.97  000 ! North China
+6602 280.0   49.66   61.41  -66.97  000 ! North China
+6602 300.0   49.66   61.41  -66.97  000 ! North China
+6602 320.0   31.89  -82.37   46.75  714 ! North China
+6602 346.2   35.18 -117.89   46.01  714 ! North China
+6602 390.0   16.32 -169.64   60.5  714 ! North China
+6602 420.0    2.32   -7.06  -88.52  714 ! North China
+6602 480.0    1.25  161.02   48.19  714 ! North China
+6602 540.0   36.44  150.75  166.23  000 ! 2010 Nov, North China
+6602 580.0   26.57  175.87  208.29  000 ! 2010 Dec, North China
+6602 600.0   20.9 -175.2  218.03  000 ! North China
+6602 635.0    6.84 -165.6  215.66  000 ! 2010 Nov., North China
+6602 635.0   60.271  175.468  -96.7  4404 ! 2010 Nov. Crossover recalculated, May 2014, ASM, North	 China
+6602 680.0   42.54  175.1  -87.94  4404 ! 2010 Dec, North China
+6602 720.0   47.65  176.69  -91.54  4404 ! 2010 Dec, North China
+6602 720.0   26.6148   89.4957   70.0057  1101 ! Crossover inserted May 2014, ASM, North China
+6602 730.0   39.0   87.01   74.0  1101 ! North China
+6602 1200.0   39.0   87.01   74.0  1101 ! North China
+6603  0.0   90.0    0.0    0.0  6602 ! South China
+6603 170.0   90.0    0.0    0.0  6602 ! South China
+6603 190.0   34.59  125.82   18.64  6602 ! South China
+6603 225.0   33.2  125.52   44.38  6602 ! South China
+6603 248.0   31.81  128.43   66.31  6602 ! South China
+6603 260.0   33.96  129.31   72.88  6602 ! South China
+6603 280.0   33.96  129.31   72.88  6602 ! South China
+6603 320.0   33.96  129.31   72.88  6602 ! South China
+6603 420.0    3.93  128.0   49.23  714 ! South China
+6603 480.0   37.09   65.97  -22.84  714 ! South China
+6603 500.0    1.93   73.05  -54.69  714 ! South China
+6603 515.0    3.23  -76.13 -126.78  000 ! 2012 Bai's mid0Cambrian pole, South China
+6603 540.0  -12.37   94.91   84.51  000 ! 2012 Lin J's Cambrian pole, South China
+6603 540.0   -8.56 -112.52  -56.49  5501 ! 2012 June CLEANUP (ref:India), South China
+6603 590.0   10.75 -130.81  -44.32  5501 ! 2012 June CLEANUP (ref:India), South China
+6603 590.0  -18.31   93.95   84.17  000 ! 2012 Doushantuo pole, South China
+6603 615.0   -0.06   70.16   60.93  000 ! 2012 June CLEANUP, South China
+6603 635.0   15.38   74.29   89.51  000 ! 2012 limit of Nantuo pole, South China
+6603 650.0   33.85   77.19   88.85  000 ! 2012 June CLEANUP, South China
+6603 665.0   40.72  107.23  114.4  000 ! 2012 Sept, South China
+6603 680.0   43.65  124.73  144.69  000 ! 2012 Sept, South China
+6603 720.0   25.86  108.66   77.58  000 ! 2012 June CLEANUP, South China
+6603 730.0   17.69  108.62   56.6  000 ! 2012 June CLEANUP, South China
+6603 750.0   -2.97  139.11   23.36  000 ! 2012 June CLEANUP, South China
+6603 750.0   45.3  160.51  198.33  1101 ! 2010 Nov missing-linktighterfit_final, South China
+6603 900.0   45.3  160.51  198.33  1101 ! 2010 Nov missing-linktighterfit_final, South China
+6604 180.0   90.0    0.0    0.0  301 ! Tarim
+6604 280.0   90.0    0.0    0.0  301 ! Tarim
+6604 280.0   90.0    0.0    0.0  402 ! Tarim
+6604 300.0   33.75   88.4   48.55  402 ! Tarim
+6604 324.2   32.19   83.8  112.52  402 ! Tarim
+6604 324.2   42.36   75.4  100.47  6602 ! Tarim
+6604 340.0   51.7   84.3  162.79  6602 ! Tarim
+6604 365.0   55.67   94.9  168.62  6602 ! Tarim
+6604 365.0   36.53  115.62  176.45  714 ! Tarim
+6604 400.0   47.5   70.07  209.29  714 ! Tarim
+6604 450.0   33.62   78.69  110.42  714 ! Tarim
+6604 480.0   30.6   88.3  142.77  714 ! Tarim
+6604 505.0   22.78   95.0  162.07  714 ! Tarim
+6604 515.0  -15.22   40.87  313.33  714 ! Tarim
+6604 540.0   40.81  150.45   79.77  8801 ! 2012 May using the 600 Ma pole, Tarim
+6604 950.0   40.81  150.45   79.77  8801 ! 2012 May using the 600 Ma pole, Tarim
+6604 1100.0   40.81  150.45   79.77  8801 ! Extended backwards, May 2014, ASM
+7701 530.0    9.3    5.7   -7.8  714 ! 2012 June CLEANUP, Congo
+7701 540.0    9.3    5.7   -7.8  714 ! 2012 June CLEANUP, Congo
+7701 540.0    3.12   74.85   72.31  000 ! 2012 June CLEANUP, Congo
+7701 570.0   -7.32   40.48   30.29  000 ! 2012 June CLEANUP, Congo
+7701 600.0   12.43   78.66   78.95  000 ! 2012 June CLEANUP, Congo
+7701 615.0   15.01   76.24   90.06  000 ! 2012 June CLEANUP, Congo
+7701 630.0   19.21   71.93  101.75  000 ! 2012 June CLEANUP, Congo
+7701 640.0   19.46   72.92  103.93  000 ! 2012 June CLEANUP, Congo
+7701 700.0   -3.8   48.91  105.45  000 ! 2012 June CLEANUP, Congo
+7701 720.0  -10.54   38.96  117.86  000 ! 2012 June CLEANUP, Congo
+7701 750.0    7.17   64.1   77.31  000 !,	! Congo
+7701 750.0    9.11  148.71 -165.01  1101 !,	! Congo
+7701 800.0    9.11  148.71 -165.01  1101 !,	! Congo
+7701 1000.0    9.11  148.71 -165.01  1101 !,	! Congo
+7701 1000.0   52.84  112.71   73.64  000 !,	! Congo
+7701 1050.0    0.23   63.75   65.9  000 !,	! Congo
+7701 1100.0   12.3   64.2   83.57  000 !,	! Congo
+7702 530.0   90.0    0.0    0.0  7701 ! Kalahari
+7702 540.0   90.0    0.0    0.0  7701 ! Kalahari
+7702 720.0  -33.12   27.42   -3.71  7701 ! 2012 June CLEANUP, Kalahari
+7702 720.0   -5.7324  149.326  156.017  1101 ! 2012 June CLEANUP, Kalahari
+7702 750.0   13.71  -33.54 -160.7  1101 ! Kalahari
+7702 790.0   13.71  -33.54 -160.7  1101 ! 2012 June CLEANUP (Gannak.), Kalahari
+7702 980.0   13.71  -33.54 -160.7  1101 ! Kalahari
+7702 1030.0   13.71  -33.54 -160.7  1101 ! Kalahari
+7702 1030.0   21.5   69.48  108.21  000 ! Kalahari
+7702 1073.0   -2.37 -122.35 -149.21  000 ! Kalahari
+7702 1100.0  -12.0   56.39  172.4  000 ! Kalahari
+7705  0.0   90.0    0.0    0.0  7701 ! Sahara - fixed to Congo
+7705 1100.0   90.0    0.0    0.0  7701 ! Sahara
+7706  0.0   90.0    0.0    0.0  7701 ! Bayuda fixed to Congo
+7706 1100.0   90.0    0.0    0.0  7701 ! Bayuda fixed to Congo
+7707 530.0   21.27   23.71   57.72  5501 ! Madagascar
+7707 1100.0   21.27   23.71   57.72  5501 ! Madagascar
+7714 530.0   90.0    0.0    0.0  998 ! 2012 June CLEANUP, Northwest Africa
+7714 540.0   90.0    0.0    0.0  998 ! 2012 June CLEANUP, Northwest Africa
+7714 540.0    9.3    5.7    7.8  7701 ! 2012 June CLEANUP, Northwest Africa
+7714 580.0    9.3    5.7    7.8  7701 ! 2012 June CLEANUP, Northwest Africa
+7714 580.0   -0.4   55.47   48.14  000 ! 2012 June CLEANUP, Northwest Africa
+7714 615.0   -1.42   73.96  113.42  000 ! 2012 June CLEANUP, Northwest Africa
+7714 615.0  -25.5859  165.142  106.525  1101 ! 2012 June CLEANUP, Northwest Africa
+7714 750.0  -24.42  157.76  120.4  1101 ! 2012 June CLEANUP, Northwest Africa
+7714 1015.0  -24.96  157.07  114.36  1101 ! Inserted to prevent collision between WA and Congo, May 2014 ASM
+7714 1100.0  -22.04  150.33  103.48  1101 ! 2012 June CLEANUP, Northwest Africa
+8801 530.0  -37.22   74.26   70.88  000 ! 2012 June CLEANUP, Australia
+8801 540.0  -44.12   54.48   55.99  000 ! 2012 June CLEANUP, Australia
+8801 550.0   17.62  -92.89  -73.56  000 ! 2010 Nov, Australia
+8801 550.0   90.0    0.0    0.0  8802 ! April 2010 fit_40 degrees to SA, Australia
+8801 650.0  -20.0  135.0  -40.0  8802 ! April 2010 fit_40 degrees to SA, Australia
+8801 1000.0  -20.0  135.0  -40.0  8802 ! April 2010 fit_40 degrees to SA, Australia
+8801 1100.0  -20.0  135.0  -40.0  8802 ! April 2010 fit_40 degrees to SA, Australia
+8803  0.0   90.0    0.0    0.0  8801 ! Mawson
+8803 540.0   -8.32   42.34   28.53  8801 ! Mawson, Calculated interactively by GPlates, ASM, April 2014
+8803 1200.0   -8.32   42.34   28.53  8801 ! Mawson, fixed to Australia, ASM, April 2014
+9998803  0.0   90.0    0.0    0.0  000 ! Mawson (original 802 rotations from Li)
+9998803 530.0   16.86 -106.73  -90.73  000 ! Mawson (original 802 rotations from Li)
+9998803 550.0   18.48 -110.96  -86.74  000 ! Mawson (original 802 rotations from Li)
+9998803 600.0   22.53 -123.32  -78.43  000 ! Mawson (original 802 rotations from Li)
+9998803 630.0   24.72 -132.06  -74.84  000 ! Mawson (original 802 rotations from Li)
+9998803 720.0   13.7 -141.77  -74.86  000 ! Mawson (original 802 rotations from Li)
+9998803 750.0    9.72 -144.38  -75.78  000 ! Mawson (original 802 rotations from Li)
+9998803 780.0   23.15   24.83   90.32  000 ! Mawson (original 802 rotations from Li)
+9998803 825.0    0.94  -11.76  163.99  000 ! Mawson (original 802 rotations from Li)
+9998803 900.0    6.94   -1.14   88.67  000 ! Mawson (original 802 rotations from Li)
+9998803 1000.0   18.92  -22.81  103.99  000 ! Mawson (original 802 rotations from Li)
+9998803 1050.0   12.62  156.39 -108.34  000 ! Mawson (original 802 rotations from Li)
+9998803 1100.0   37.81  170.15 -103.79  000 ! Mawson (original 802 rotations from Li)
+8802 540.0   21.3  179.52  -30.26  000 ! 2012 June CLEANUP ,Dronning Maud Land
+8802 550.0   17.62  -92.89  -73.56  000 ! 2010 Nov, Dronning Maud Land
+8802 570.0   20.78  -80.63  -93.44  000 ! 2012 June CLEANUP, Dronning Maud Land
+8802 580.0   27.46  -96.04  -81.35  000 ! 2010 Nov., Dronning Maud Land
+8802 615.0   40.62 -152.44  -56.76  000 ! 2012 June CLEANUP, Dronning Maud Land
+8802 635.0   31.03 -118.98  -67.98  000 ! 2010 Nov., Dronning Maud Land
+8802 680.0   38.22 -145.94  -78.51  000 ! 2012 June CLEANUP, Dronning Maud Land
+8802 720.0   40.77 -156.62  -87.33  000 ! 2012 June CLEANUP, Dronning Maud Land
+8802 720.0   20.44  158.65  131.2  1101 ! 2010 Nov 0.75-0.72 Ga missing-link fit, Dronning Maud Land
+8802 750.0   25.57  151.71  127.66  1101 ! 2010 Nov 0.75-0.72 Ga missing-link fit, Dronning Maud Land
+8802 900.0   25.57  151.71  127.66  1101 ! 2010 Nov 0.75-0.72 Ga missing-link fit, Dronning Maud Land
+8802 1100.0   25.57  151.71  127.66  1101 ! 2010 Nov 0.75-0.72 Ga missing-link fit, Dronning Maud Land, extended backwards, May 2014, ASM
+910  0.0   90.0    0.0    0.0  1103 !
+910 410.0   90.0    0.0    0.0  1103 !
+910 420.0   90.0    0.0    0.0  1103 !
+910 1100.0   90.0    0.0    0.0  1103 !
