@@ -22,11 +22,14 @@ http GET request to reconstruct points
 
 *model* : name for reconstruction model [defaults to default model from web service settings]
 
-*reverse* : the flag to control the direction of reconstruction. If this flag is in the url, the function will calculate the present-day coordinates of the given paleo-coordinates.
+*reverse* : the flag to control the direction of reconstruction. If this flag is in the url, 
+the function will calculate the present-day coordinates of the given paleo-coordinates.
 
 *fc* : feature collection. If this flag exists, the function will return a GeoJSON feature collection.
 
-*return_null_points* : If this flag exists, the function will return null points. The null points happen when the present-day location does not exist back in the given time. The return data will not be valid GeoJSON.
+*return_null_points* : If this flag exists, the function will return null points. 
+The null points happen when the present-day location does not exist back in the given time. 
+**Note**: The return data will **NOT** be in a valid GeoJSON format.
 
 **Returns:**
 
@@ -34,7 +37,9 @@ Reconstructed coordinates in GeoJSON format.
 
 **Examples:**
 
-**E1**: Reconstruct two coordinates((lon:95,lat:54)(lon:142,lat:-33)) back to 140 million years ago using the "SETON2012" reconstruction model. The function returns the reconstructed coordinates in the valid GeoJSON format. [Available Reconstruction Models](https://github.com/GPlates/gplates_web_service_doc/wiki/Reconstruction-Models) 
+**E1**: Reconstruct two coordinates((lon:95,lat:54)(lon:142,lat:-33)) back to 140 million years ago using the "SETON2012" reconstruction model. 
+The function returns the reconstructed coordinates in the valid GeoJSON format. 
+[Available Reconstruction Models](/reconstruction-models) 
 
 _URL_: [https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012)
 
@@ -52,8 +57,16 @@ _URL_: [https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54&tim
 
     Return: {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[84.99,59.26]},"properties":{"valid_time":[600.0,"distant future"]}}]}
 
-**E4**: Return null points. The null points happen when the present-day locations do not exist back in the given time. The return data will not be valid GeoJSON. 
+**E4**: Return null points. The null points happen when the present-day locations do not exist back in the given time. 
+The return data will **NOT** be in a valid GeoJSON format, although the it is valid JSON. 
 
 [https://gws.gplates.org/reconstruct/reconstruct_points/?points=-100,50,160,10,100,50&time=100&model=PALEOMAP&return_null_points](https://gws.gplates.org/reconstruct/reconstruct_points/?points=-100,50,160,10,100,50&time=100&model=PALEOMAP&return_null_points)
 
     Return: {"type":"MultiPoint","coordinates":[[-56.84,47.13],null,[89.38,52.58]]}
+
+**E5**: Return ***999.99*** for the invalid points. The invalid points happen when the present-day locations do not exist back in the given time. 
+The return data will be in a valid GeoJSON format. 
+
+https://gws.gplates.org/reconstruct/reconstruct_points/?points=-100,50,160,10,100,50&time=100&model=PALEOMAP
+
+    Return: {"type":"MultiPoint","coordinates":[[-56.84,47.13],[999.99,999.99],[89.38,52.58]]}
