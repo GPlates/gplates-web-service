@@ -1,0 +1,31 @@
+---
+title: "Static Polygons"
+metaTitle: "static polygons"
+metaDescription: "http request to retrieve plate velocities within static polygons"
+---
+
+## velocity/static_polygons
+
+http GET request to retrieve plate velocities within static polygons
+
+**usage**
+    
+    http-address-to-gws/velocity/static_polygons/time=*reconstruction_time*&model=*reconstruction_model*&velocity_type=*velocity_type*&domain_type=*domain_type*
+    
+**parameters:**
+
+*time* : time for reconstruction [default=0]
+
+*model* : name for reconstruction model [defaults to default model from web service settings]
+
+*velocity_type* : String specifying the type of velocity representation to return. Can be 'MagAzim' for 
+                  magnitude/azimuth, or 'east_north' for velocity components in east and north directions 
+                  [default='MagAzim']
+
+*domain_type* : String specifying the arrangement of domain points on which velocities are calculated. Can
+                be 'longLatGrid' for regular spacing in longitude/latitude, or 'healpix' for an equal area
+                distribution on the sphere [default='longLatGrid']
+
+**returns:**
+
+json containing velocity vector features

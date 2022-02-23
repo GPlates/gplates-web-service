@@ -1,10 +1,10 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^plate_boundaries/?$',views.get_topological_boundaries, name='plate_boundaries'),
-    url(r'^plate_polygons/?$',views.get_plate_polygons, name='plate_polygons')
+    re_path(r'^$', views.index, name='index'),
+    re_path(r'^plate_boundaries/?$',views.get_topological_boundaries, name='plate_boundaries'),
+    re_path(r'^plate_polygons/?$',views.get_plate_polygons, name='plate_polygons')
 ]
 

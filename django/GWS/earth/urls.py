@@ -1,10 +1,10 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from . import views
 
 urlpatterns = [
-    url(r'^litho1/?$',views.litho1, name='litho1'),
-    url(r'^paleolithology/?$',views.paleolithology, name='paleolithology'),
-    url(r'^paleomagnetism/?$',views.paleomagnetic_poles, name='paleomagnetism'),
+    re_path(r'^litho1/?$',views.litho1, name='litho1'),
+    re_path(r'^paleolithology/?$',views.paleolithology, name='paleolithology'),
+    re_path(r'^paleomagnetism/?$',views.paleomagnetic_poles, name='paleomagnetism'),
 ]
 

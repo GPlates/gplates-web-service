@@ -1,0 +1,90 @@
+---
+title: "Reconstruction Models"
+metaTitle: "Reconstruction Models"
+metaDescription: "the plate tectonic reconstruction models that are available within the gplates web service."
+---
+
+The list below describes the plate tectonic reconstruction models that are available within the **GPlates Web Service**.
+
+All models by default comprise a minimum of a rotation model and a set of static polygons. 
+The availability of other components varies between different models. 
+Models also vary in the range of geological time that they cover.
+
+The more information about a list of EarthByte global and regional plate motion models can be found 
+at https://www.earthbyte.org/category/resources/data-models/global-regional-plate-motion-models/. 
+Not all models have been included in this web service.
+
+The examples will get the reconstructed coordinates at 140Ma, except model RODINIA2013. 
+The example of RODINIA2013 model will get the reconstructed coordinates at 540Ma.
+
+A list of model names can be found at https://gws.gplates.org/list/model_names and you can 
+find the details about these models at https://gws.gplates.org/list/models.
+
+---
+### MERDITH2021
+   * Available Layers: [Coastlines | Static Plate Polygons]
+   * Timespan: [0 - 1000 Ma] 
+   * [More Info](https://www.earthbyte.org/webdav/ftp/Data_Collections/Merdith_etal_2021_ESR/)
+   * [Example](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MERDITH2021)
+
+---
+### MULLER2019
+   * Available Layers: [Coastlines | Static Plate Polygons]
+   * Timespan: [0 - 1100 Ma] 
+   * [More Info](https://www.earthbyte.org/muller-et-al-2019-deforming-plate-reconstruction-and-seafloor-age-grids-tectonics/)
+   * [Example](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2019)
+
+---
+### MULLER2016
+   * Available Layers: [Coastlines | Topological Plate Polygons]
+   * Timespan: [0 - 230 Ma]   
+   * [More Info](https://www.earthbyte.org/ocean-basin-evolution-and-global-scale-plate-reorganization-events-since-pangea-breakup/)
+   * [Example](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2016)
+
+---
+
+### MATTHEWS2016_mantle_ref
+   * Available Layers: [Coastlines | Topological Plate Polygons]
+   * Timespan: [0 - 410 Ma]  
+   * [More Info](https://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/)
+   * [Example](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MATTHEWS2016_mantle_ref)
+
+---
+###  MATTHEWS2016_pmag_ref
+   * Available Layers: [Coastlines | Topological Plate Polygons]
+   * Timespan: [0 - 410 Ma]  
+   * [More Info](https://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/)
+   * [Example](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MATTHEWS2016_pmag_ref)
+
+---
+### RODINIA2013
+   * Available Layers: [Coastlines]
+   * Timespan: [530 - 1100 Ma] 
+   * [More Info](https://www.sciencedirect.com/science/article/pii/S0301926807001635)
+   * [Example](https://gws.gplates.org/reconstruct/reconstruct_points/?points=23,-6,127,-21&time=540&model=RODINIA2013)
+   * Note: The example for RODINIA2013 will get reconstructed coordinates at 540Ma.
+
+---
+### SETON2012 (***default model***)
+   * Available Layers: [Coastlines | Topological Plate Polygons | Isochrons]
+   * Timespan: [0 - 200 Ma]  
+   * [More Info](https://www.earthbyte.org/global-continental-and-ocean-basin-reconstructions-since-200-ma/)
+   * [Example](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012)
+---
+
+### GOLONKA
+   * Available Layers: [Coastlines] 
+   * Timespan: [0 - 550 Ma]  
+   * [More Info](https://www.earthbyte.org/towards-community-driven-paleogeographic-reconstructions-integrating-open-access-paleogeographic-and-paleobiology-data-with-plate-tectonics/)
+   * [Example](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=GOLONKA)
+   * Note: The GOLONKA model currently won’t work for any present-day ocean point.
+
+---
+### PALEOMAP
+   * Available Layers: [Coastlines] 
+   * Timespan: [0 - 750 Ma]  
+   * [More Info](https://www.earthbyte.org/paleomap-paleoatlas-for-gplates/)
+   * [Example](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=PALEOMAP)
+
+
+

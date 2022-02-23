@@ -64,6 +64,9 @@ def reconstruct_points(request):
     anchor_plate_id = params.get('pid', 0)
     time = params.get('time', None)
     model = params.get('model',settings.MODEL_DEFAULT)
+    pids_str = params.get('pids', None)
+    #print(pids_str)
+    pid_str = params.get('pid', None)
 
     return_null_points = True if 'return_null_points' in params else False
     return_feature_collection = True if 'fc' in params else False
@@ -81,7 +84,7 @@ def reconstruct_points(request):
     try:
         anchor_plate_id = int(anchor_plate_id)
     except:
-        return HttpResponseBadRequest('The "pid" parameter is invalid ({0}).'.format(anchor_plate_id))
+        return HttpResponseBadRequest('The "anchor_plate_id" parameter is invalid ({0}).'.format(anchor_plate_id))
 
     model_dict = get_reconstruction_model_dict(model)
 
@@ -98,16 +101,31 @@ def reconstruct_points(request):
     point_features = []
     if points:
         ps = points.split(',')
-        if len(ps)%2==0:
+        ps_len = len(ps)
+        if ps_len%2==0:
             try:
-                for lat,lon in zip(ps[1::2], ps[0::2]):
+                if pids_str:
+                    pids=pids_str.split(',')
+                    if len(pids) != ps_len//2:
+                        return HttpResponseBadRequest('The number of plate ids must be the same with the number of points.')
+                else:
+                    if pid_str:
+                        pids=(ps_len//2)*[int(pid_str)]
+                    else:
+                        pids=(ps_len//2)*[None]
+
+                for lat,lon, pid_ in zip(ps[1::2], ps[0::2], pids):
                     point_feature = pygplates.Feature()
                     point_feature.set_geometry(pygplates.PointOnSphere(float(lat),float(lon)))
                     point_feature.set_name(str(p_index))
+                    if pid_:
+                        point_feature.set_reconstruction_plate_id(int(pid_))
                     point_features.append(point_feature)
                     p_index += 1
             except pygplates.InvalidLatLonError as e:
                 return HttpResponseBadRequest('Invalid longitude or latitude ({0}).'.format(e)) 
+            except ValueError as e:
+                return HttpResponseBadRequest('Invalid value ({0}).'.format(e)) 
         else:
             return HttpResponseBadRequest('The longitude and latitude should come in pairs ({0}).'.format(points))
     else:
@@ -116,19 +134,28 @@ def reconstruct_points(request):
     # assign plate-ids to points using static polygons
     partition_time = timef if is_reverse else 0.
 
-    #LOOK HERE !!!!
-    #it seems when the partition_time is not 0
-    #the returned assigned_point_features contains reverse reconstructed present-day geometries.
-    #so, when doing reverse reconstruct, do not reverse reconstruct again later.  
-    assigned_point_features = pygplates.partition_into_plates(
-        static_polygons_filename,
-        rotation_model,
-        point_features,
-        properties_to_copy = [
-            pygplates.PartitionProperty.reconstruction_plate_id,
-            pygplates.PartitionProperty.valid_time_period],
-        reconstruction_time = partition_time
-        )
+    if not pids_str and not pid_str: #if user has provided plate id(s), do not partition(slow)
+        #from time import time
+        #start = time()
+
+        #LOOK HERE !!!!
+        #it seems when the partition_time is not 0
+        #the returned assigned_point_features contains reverse reconstructed present-day geometries.
+        #so, when doing reverse reconstruct, do not reverse reconstruct again later.  
+        assigned_point_features = pygplates.partition_into_plates(
+            static_polygons_filename,
+            rotation_model,
+            point_features,
+            properties_to_copy = [
+                pygplates.PartitionProperty.reconstruction_plate_id,
+                pygplates.PartitionProperty.valid_time_period],
+            reconstruction_time = partition_time
+            )
+        
+        #end=time()
+        #print(f'It took {end - start} seconds!')
+    else:
+        assigned_point_features = point_features
 
     # reconstruct the points
     assigned_point_feature_collection = pygplates.FeatureCollection(assigned_point_features)
@@ -139,7 +166,7 @@ def reconstruct_points(request):
             rotation_model, 
             reconstructed_feature_geometries, 
             timef,
-            anchor_plate_id=anchor_plate_id)
+            anchor_plate_id=anchor_plate_id)  
 
     rfgs = p_index*[None]
     for rfg in reconstructed_feature_geometries:
@@ -165,7 +192,9 @@ def reconstruct_points(request):
             if lon is not None and lat is not None:
                 ret+='[{0:5.2f},{1:5.2f}],'.format(lon, lat)
             elif return_null_points:
-                ret+='null,'
+                ret+='null,' #return null for invalid coordinates
+            else:
+                ret+='[{0:5.2f},{1:5.2f}],'.format(999.99, 999.99) #use 999.99 to indicate invalid coordinates
 
     else:
         ret='{"type":"FeatureCollection","features":['

@@ -1,9 +1,9 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^reconstruction_tree_map/?$',views.reconstruction_tree_map, name='reconstruction_tree_map')
+    re_path(r'^$', views.index, name='index'),
+    re_path(r'^reconstruction_tree_map/?$',views.reconstruction_tree_map, name='reconstruction_tree_map')
 ]
 

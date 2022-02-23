@@ -1,8 +1,8 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from . import views
 
 urlpatterns = [
-    url(r'^query/?$',views.query, name='query_raster'),
+    re_path(r'^query/?$',views.query, name='query_raster'),
 ]
 

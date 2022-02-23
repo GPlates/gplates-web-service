@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<metadata
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:dc="http://purl.org/dc/elements/1.1/">
+<dc:title>Matthews et al (2016) GPlates Reconstruction</dc:title>
+<dc:creator>Kara Matthews</dc:creator>
+<dc:subject>empty</dc:subject>
+<dc:description>The Matthews et al. (2016) reconstruction model combines the 0-230 Ma reconstructions of Müller
+et al (2016) with the 410-250 Ma reconstructions of Domeier and Torsvik (2014) to produce a continuous model of
+plate motions, with topological plate boundaries, that spans the entire 0-410 Ma period.
+</dc:description>
+<dc:publisher>empty</dc:publisher>
+<dc:contributor>Kara Matthews</dc:contributor>
+<dc:date>empty</dc:date>
+<dc:type>empty</dc:type>
+<dc:format>GPlates-compatible file formats</dc:format>
+<dc:identifier>DOI:10.1016/j.gloplacha.2016.10.002</dc:identifier>
+<dc:source>Matthews, K.J., Maloney, K.T., Zahirovic, S., Williams, S.E., Seton, M., Müller, R.D., 2016.
+Global plate boundary evolution and kinematics since the late Paleozoic, Global and Planetary Change, 146, 226-250.
+</dc:source>
+<dc:language>empty</dc:language>
+<dc:relation>empty</dc:relation>
+<dc:coverage>Global | 0-410 Ma</dc:coverage>
+<dc:rights>empty</dc:rights>
+
+</metadata>
