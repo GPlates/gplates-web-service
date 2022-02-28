@@ -20,7 +20,7 @@ def query(request):
         logger.error(traceback.format_exc())
         return HttpResponseBadRequest('Bad raster query!')
 
-    lon = (lon + 360)%360   
+    #lon = (lon + 360)%360   
  
     try:
         with connection.cursor() as cursor:

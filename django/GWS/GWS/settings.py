@@ -27,7 +27,10 @@ MEDIA_ROOT = '%s/DATA/tmp/' % BASE_DIR
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'hlvkcbt=tuzf-irms8$xfxlqp$1^&&y)ll9t)g_g5ir1bgh1!u'
+# ************
+# SEE HERE!!! in your real settings.py, uncomment the SECRET_KEY line 
+# ************
+#SECRET_KEY = 'put your secret key here'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
