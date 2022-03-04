@@ -34,5 +34,11 @@ Test the database(on host computer): `psql -d gplates -h localhost -U gplates`
 
 - **Step 4**: import rasters with `psql -d gplates -f age_grid.sql`
 
+### Use user-defined docker network
+
+- `docker network create --driver bridge gws-net` (bridge is the default docker network)
+- Use `--network gws-net` parameter to start docker containers
+- In GWS server container, use `psql -d gplates -h gws-postgis -U gplates` to test DB
+
 
 Note: Add `postgis.gdal_enabled_drivers = 'ENABLE_ALL'` in postgres.conf to enable all GDAL driver(useful when export images from raster table)
