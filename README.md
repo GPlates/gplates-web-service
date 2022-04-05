@@ -27,7 +27,7 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 
 ## Use docker container for development
 
-* Go to the root directory of this repository and run  ``docker run -it --rm -v `pwd`:/gws -p 18000:80 gplates/gws /bin/bash``
+* Go to the root directory of this repository and run  ``docker run -it --rm -v `pwd`:/gws -p 18000:80 --network gws-net gplates/gws /bin/bash``
 
 * Inside the virtual machine: `cd /gws/django/GWS && python3 manage.py runserver 0.0.0.0:80`
 
@@ -59,7 +59,7 @@ If you start the docker container with "--network host", the localhost and 127.0
 
 ### Run in testing env
 
-Start the database(on host computer): ``docker run --rm -it --name gws-postgis -e POSTGRES_PASSWORD=mysecretpassword  -v /Users/mchin/workspaces/gws-db-data:/var/lib/postgresql/12/main -p 5432:5432 gplates/postgis``
+Start the database(on host computer): ``docker run --rm -it --name gws-postgis -e POSTGRES_PASSWORD=mysecretpassword  -v /Users/mchin/workspaces/gws-db-data:/var/lib/postgresql/12/main -p 5432:5432 --network gws-net gplates/postgis``
 
 Test the database(on host computer): `psql -d gplates -h localhost -U gplates`
 

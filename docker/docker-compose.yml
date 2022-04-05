@@ -1,0 +1,31 @@
+version: '3.9'
+
+#volumes:
+#   geoserver-data:
+#   geo-db-data:
+
+services:
+   gws-postgis:
+      image: gplates/postgis
+      volumes:
+        - /Users/mchin/workspaces/gws-db-data:/var/lib/postgresql/12/main
+      ports:
+        - 5432:5432
+      environment:
+        - POSTGRES_PASSWORD="this is not a real password! go away!"
+      restart: on-failure
+      healthcheck:
+        test: "exit 0"
+
+   geoserver:
+      image: gplates/gws
+      volumes:
+        - /Users/mchin/workspaces/gplates-web-service:/gws
+      ports:
+        - 18000:80
+      restart: on-failure
+      healthcheck:
+        test: curl --fail -s http://localhost:18000/ || exit 1
+        interval: 1m30s
+        timeout: 10s
+        retries: 3
