@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 
+from dotenv import load_dotenv
+load_dotenv()  # take environment variables from .env.
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -26,14 +29,22 @@ MEDIA_ROOT = '%s/DATA/tmp/' % BASE_DIR
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY WARNING: keep the secret key safe!
 # ************
-# SEE HERE!!! in your real settings.py, uncomment the SECRET_KEY line 
+# SEE HERE!!! best to put the SECRET_KEY in your .env file 
 # ************
-#SECRET_KEY = 'put your secret key here'
+SECRET_KEY = os.getenv('SECRET_KEY')
+# alternatively, put SECRET_KEY here, but do not submit the SECRET_KEY to code repository
+# SECRET_KEY = 'put your secret key here' # better not do this!!!
+if not SECRET_KEY:
+    raise Exception("SECRET_KEY not found!!! Check settings.py!!")
+   
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+if os.getenv('DEBUG')=='true':
+    DEBUG = True
+else:
+    DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -99,8 +110,15 @@ DATABASES = {
     'default': {
         #'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-    }
+        'NAME': os.getenv('DB_NAME'),                      # Database name. Or path to database file if using sqlite3.
+        'USER': os.getenv('DB_USER'),                      # Database username. Not used with sqlite3.
+        'HOST': os.getenv('DB_HOST'),                      # Database hostname
+        'PASSWORD' : os.getenv('DB_PASSWORD'),             # Database password for USER
+        'PORT': '5432',                      # Set to empty string for default. Not used with sqlite3.
+        }
+
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
