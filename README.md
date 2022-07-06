@@ -98,6 +98,22 @@ Test the database(on host computer): `psql -d gplates -h localhost -U gplates`
 - Use `--network gws-net` parameter to start docker containers
 - In GWS server container, use `psql -d gplates -h gws-postgis -U gplates` to test DB
 
+### Docker compose
+
+run postgis: `docker-compose run --rm --service-ports gws-postgis`
+
+run gws for debug `docker-compose run --rm --service-ports gws /bin/bash`
+
+create volume from local folder:
+
+`docker volume create --name gws-code --opt type=none --opt device=/Users/mchin/workspaces/gplates-web-service --opt o=bind`
+
+`docker volume create --name gws-code --opt type=none --opt device=/Users/mchin/workspaces/gplates-web-service --opt o=bind`
+
+`docker-compose up -d`
+
+`docker-compose down -d`
+
 Note: Add `postgis.gdal_enabled_drivers = 'ENABLE_ALL'` in postgres.conf to enable all GDAL driver(useful when export images from raster table)
 
 Note: Use `http://localhost:18000/raster/query?lon=99.50&lat=-40.24&raster_name=age_grid_geek_2007` to test raster table
