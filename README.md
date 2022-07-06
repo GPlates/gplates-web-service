@@ -47,14 +47,14 @@ Go to the root directory of this repository and run
 
 Go to the repository root directory, such as `/var/www/gplates-web-service`, and run
 
-`docker run -d -v `pwd`:/gws -p 18000:80 --restart always gplates/gws`
+`` docker run -d -v `pwd`:/gws -p 18000:80 --restart always gplates/gws ``
 
 The server is running at http://your-ip-address:18000. You may need to do some http requests redirection work.
 
 You can try "--network host" argument. The following command will start a server listening on the 80 port of the host computer.
 If you start the docker container with "--network host", the localhost and 127.0.0.1 inside docker container are pointing to the host computer.
 
-`docker run -d -v `pwd`:/gws --network host --restart always gplates/gws`
+`` docker run -d -v `pwd`:/gws --network host --restart always gplates/gws ``
 
 ## PostGIS Database and docker network
 

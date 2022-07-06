@@ -48,6 +48,7 @@ RUN pip3 install --upgrade pyopenssl
 RUN apt install -y gdal-bin libgdal-dev
 RUN pip3 install GDAL geoserver-rest
 RUN pip3 install python-dotenv
+RUN pip3 install tzdata
 
 ADD . /gws
 
@@ -58,7 +59,7 @@ RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 CMD ["/startup.sh"]
 
-ENV PYTHONPATH ${PYTHONPATH}:/usr/lib:/usr/lib/pygplates/revision36
+ENV PYTHONPATH ${PYTHONPATH}:/usr/lib
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

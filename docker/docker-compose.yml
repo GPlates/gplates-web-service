@@ -7,6 +7,8 @@ version: '3.9'
 services:
    gws-postgis:
       image: gplates/postgis
+      networks: 
+        - gws-net 
       volumes:
         - /Users/mchin/workspaces/gws-db-data:/var/lib/postgresql/12/main
       ports:
@@ -17,8 +19,10 @@ services:
       healthcheck:
         test: "exit 0"
 
-   geoserver:
+   gws:
       image: gplates/gws
+      networks: 
+        - gws-net
       volumes:
         - /Users/mchin/workspaces/gplates-web-service:/gws
       ports:
@@ -29,3 +33,7 @@ services:
         interval: 1m30s
         timeout: 10s
         retries: 3
+
+networks:
+  gws-net: {}
+

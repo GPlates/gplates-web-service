@@ -1,24 +1,18 @@
 node_modules
 
-python/.ipynb_checkpoints/reconstructions-as-a-service-checkpoint.ipynb
+*.DS_Store
 
-python/.ipynb_checkpoints/plate-boundaries-checkpoint.ipynb
+django/GWS/.env
+
+docker/tmp/
+
+python/.ipynb_checkpoints/
 
 matlab/cs.geojson
-
-python/.ipynb_checkpoints/plot-reconstruction-tree-checkpoint.ipynb
-
-python/.ipynb_checkpoints/plot-reconstruction-tree-checkpoint.ipynb
-
-python/.ipynb_checkpoints/Untitled-checkpoint.ipynb
-
-python/.ipynb_checkpoints/request-motion-path-checkpoint.ipynb
 
 python/output.gpmlz
 
 python/output.gpml
-
-python/.ipynb_checkpoints/post-file-examples-checkpoint.ipynb
 
 django/GWS/tree.gmt.gplates.xml
 
@@ -28,22 +22,5 @@ django/GWS/tree.gmt
 
 *.pyc
 
-python/.ipynb_checkpoints/request-plate-boundaries-checkpoint.ipynb
-
-python/.ipynb_checkpoints/request-plate-velocities-checkpoint.ipynb
-
-python/.ipynb_checkpoints/gwstools-examples-checkpoint.ipynb
-
 django/GWS/DATA/tmp/*
-django/.DS_Store
-django/GWS/.DS_Store
-django/GWS/DATA/.DS_Store
-django/.DS_Store
 
-.DS_Store
-django/.DS_Store
-django/GWS/.DS_Store
-django/GWS/DATA/.DS_Store
-django/GWS/DATA/MODELS/.DS_Store
-django/GWS/DATA/.DS_Store
-django/GWS/DATA/MODELS/.DS_Store

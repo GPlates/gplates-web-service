@@ -13,10 +13,11 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 
 from dotenv import load_dotenv
-load_dotenv()  # take environment variables from .env.
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) #call dirname() twice to get "../"
+
+load_dotenv(f'{BASE_DIR}/.env')  # take environment variables from .env.
 
 MODEL_STORE_DIR = '%s/DATA/MODELS/' % BASE_DIR
 EARTH_STORE_DIR = '%s/DATA/EARTH/' % BASE_DIR
