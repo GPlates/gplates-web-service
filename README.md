@@ -23,10 +23,10 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 
 - examples of accessing the service from different languages (R,matlab,bash/GMT,python) have now been moved to https://github.com/siwill22/gws-examples
 
-## 👍Docker
+## 🔥Docker
 
-click 👉[here](docker/README.md) to see details about using Docker in development and production environment.
+click 👉[here](docker/README.md)👈 to see details about using Docker in development and production environment.
 
-Note: Add `postgis.gdal_enabled_drivers = 'ENABLE_ALL'` in postgres.conf to enable all GDAL driver(useful when export images from raster table)
+## Contact
 
-Note: Use `http://localhost:18000/raster/query?lon=99.50&lat=-40.24&raster_name=age_grid_geek_2007` to test raster table
+📧[contact EarthByte](https://www.earthbyte.org/contact-us-3/)

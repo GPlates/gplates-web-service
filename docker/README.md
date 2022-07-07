@@ -89,6 +89,12 @@ create volume from local folder:
 
 `docker-compose down -d`
 
+## Helper scripts
+
 - `start-postgis.sh` start PostGIS server
 - `start-gws.sh` start GWS develop server
 - `test-dev-server.sh` test if the develop server has been started successfully
+
+Note: Add `postgis.gdal_enabled_drivers = 'ENABLE_ALL'` in postgres.conf to enable all GDAL driver(useful when export images from raster table)
+
+Note: Use `http://localhost:18000/raster/query?lon=99.50&lat=-40.24&raster_name=age_grid_geek_2007` to test raster table
