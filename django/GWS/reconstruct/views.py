@@ -9,26 +9,13 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from utils.get_model import get_reconstruction_model_dict,is_time_valid_model
 from utils.wrapping_tools import wrap_reconstructed_polygons,process_reconstructed_polygons
 from utils.access_control import request_access
+from utils.round_float import round_floats
 
 import os, sys, json, traceback
 import zipfile, io
 
 import pygplates
 import numpy as np
-
-class PrettyFloat(float):
-    def __repr__(self):
-        return '%.2f' % self
-
-def pretty_floats(obj):
-    if isinstance(obj, float):
-        return PrettyFloat(obj)
-    elif isinstance(obj, dict):
-        return dict((k, pretty_floats(v)) for k, v in list(obj.items()))
-    elif isinstance(obj, (list, tuple)):
-        return list(map(pretty_floats, obj))             
-    return obj
-
 
 @csrf_exempt
 def reconstruct_points(request):
@@ -243,70 +230,7 @@ def reconstruct_points(request):
     return response
 
 
-def get_coastline_polygons(request):
-    """
-    http GET request to retrieve reconstructed coastline polygons
 
-    **usage**
-    
-    <http-address-to-gws>/reconstruct/coastlines/plate_id=\ *anchor_plate_id*\&time=\ *reconstruction_time*\&model=\ *reconstruction_model*
-    
-    **parameters:**
-
-    *anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
-
-    *time* : time for reconstruction [required]
-
-    *model* : name for reconstruction model [defaults to default model from web service settings]
-
-    **returns:**
-
-    json containing reconstructed coastline features
-    """
-
-    anchor_plate_id = request.GET.get('pid', 0)
-    time = request.GET.get('time', 0)
-    model = request.GET.get('model',settings.MODEL_DEFAULT)
-
-    wrap = True
-    central_meridian = 0
-    if 'central_meridian' in request.GET:
-        try:
-            central_meridian = float(request.GET['central_meridian'])   
-            wrap = True
-        except:
-            print('Invalid central meridian.')        
-
-    avoid_map_boundary = False
-    if 'avoid_map_boundary' in request.GET:
-        avoid_map_boundary = True
-
-    model_dict = get_reconstruction_model_dict(model)
-
-    if not is_time_valid_model(model_dict,time):
-        return HttpResponseBadRequest('Requested time %s not available for model %s' % (time,model))
-
-    rotation_model = pygplates.RotationModel([str('%s/%s/%s' %
-        (settings.MODEL_STORE_DIR,model,rot_file)) for rot_file in model_dict['RotationFile']])
-
-    reconstructed_polygons = []
-    pygplates.reconstruct(
-        str('%s/%s/%s' % (settings.MODEL_STORE_DIR,model,model_dict['Coastlines'])), 
-        rotation_model, 
-        reconstructed_polygons,
-        float(time),
-        anchor_plate_id=anchor_plate_id)
-
-    data = process_reconstructed_polygons(reconstructed_polygons,
-                                          wrap,
-                                          central_meridian,
-                                          avoid_map_boundary)
-
-    ret = json.dumps(pretty_floats(data))
-    response = HttpResponse(ret, content_type='application/json')
-    #TODO:
-    response['Access-Control-Allow-Origin'] = '*'
-    return response
 
 
 def get_static_polygons(request):
@@ -327,7 +251,7 @@ def get_static_polygons(request):
 
     **returns:**
 
-    json containing reconstructed coastline features
+    json containing reconstructed static polygons features
     """
 
     anchor_plate_id = request.GET.get('pid', 0)
@@ -365,7 +289,7 @@ def get_static_polygons(request):
                                           central_meridian,
                                           avoid_map_boundary)
     
-    ret = json.dumps(pretty_floats(data))
+    ret = json.dumps(round_floats(data))
 
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/
@@ -456,7 +380,7 @@ def motion_path(request):
         feature["properties"] = {}
         data["features"].append(feature)
 
-    ret = json.dumps(pretty_floats(data))
+    ret = json.dumps(round_floats(data))
     
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/
@@ -468,12 +392,12 @@ def motion_path(request):
 
 def flowline(request):
     """
-    http GET request to retrieve reconstructed static polygons
+    http GET request to retrieve reconstructed flowline
     
     NOT YET IMPLEMENTED
     """
 
-    ret = json.dumps(pretty_floats(data))
+    ret = json.dumps(round_floats(data))
     
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/
@@ -622,7 +546,7 @@ def reconstruct_feature_collection(request):
         #print feature["properties"]
         data["features"].append(feature)
 
-    ret = json.dumps(pretty_floats(data))
+    ret = json.dumps(round_floats(data))
     
     #add header for CORS
     #http://www.html5rocks.com/en/tutorials/cors/
@@ -630,11 +554,6 @@ def reconstruct_feature_collection(request):
     #TODO:
     response['Access-Control-Allow-Origin'] = '*'
     return response
-
-
-#@request_access
-def get_coastline_polygons_low(request):
-    return get_coastline_polygons(request)
 
 #negative -- counter-clockwise
 #positive -- clockwise
@@ -650,7 +569,6 @@ def check_polygon_orientation(lons, lats):
         last_lon=lons[i]
         last_lat=lats[i]
     return result
-
 #
 #
 #

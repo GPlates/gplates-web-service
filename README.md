@@ -27,6 +27,10 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 
 click 👉[here](docker/README.md)👈 to see details about using Docker in development and production environment.
 
-## Contact
+## 📚Documentation
 
-📧[contact EarthByte](https://www.earthbyte.org/contact-us-3/)
+[Go to GWS documentation website](https://gwsdoc.gplates.org/)
+
+## 📮Contact
+
+[Contact EarthByte](https://www.earthbyte.org/contact-us-3/)
