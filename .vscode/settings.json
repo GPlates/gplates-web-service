@@ -1,0 +1,9 @@
+{
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "python.formatting.provider": "black",
+  "editor.defaultFormatter": "ms-python.python",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python"
+  }
+}
