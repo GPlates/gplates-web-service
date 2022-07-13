@@ -9,18 +9,14 @@ from utils import plot_geometries
 import json
 import pygplates
 
-# @request_access
-def get_coastline_polygons_low(request):
-    return get_coastline_polygons(request)
 
-
-def get_coastline_polygons(request):
+def get_static_polygons(request):
     """
-    http GET request to retrieve reconstructed coastline polygons
+    http GET request to retrieve reconstructed static polygons
 
     **usage**
 
-    <http-address-to-gws>/reconstruct/coastlines/plate_id=\ *anchor_plate_id*\&time=\ *reconstruction_time*\&model=\ *reconstruction_model*
+    <http-address-to-gws>/reconstruct/static_polygons/plate_id=\ *anchor_plate_id*\&time=\ *reconstruction_time*\&model=\ *reconstruction_model*
 
     **parameters:**
 
@@ -42,7 +38,7 @@ def get_coastline_polygons(request):
 
     **returns:**
 
-    json containing reconstructed coastline features
+    json/png containing reconstructed static polygons
     """
 
     anchor_plate_id = request.GET.get("pid", 0)
@@ -98,10 +94,9 @@ def get_coastline_polygons(request):
         ]
     )
 
-    # reconstruct the coastlines
     reconstructed_polygons = []
     pygplates.reconstruct(
-        f"{settings.MODEL_STORE_DIR}/{model}/{model_dict['Coastlines']}",
+        f"{settings.MODEL_STORE_DIR}/{model}/{model_dict['StaticPolygons']}",
         rotation_model,
         reconstructed_polygons,
         float(time),
