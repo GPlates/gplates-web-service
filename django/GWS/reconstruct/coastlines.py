@@ -2,7 +2,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.conf import settings
 
 from utils.get_model import get_reconstruction_model_dict, is_time_valid_model
-from utils.wrapping_tools import process_reconstructed_polygons
+from utils import wrapping_tools
 from utils.round_float import round_floats
 from utils import plot_geometries
 
@@ -38,6 +38,8 @@ def get_coastline_polygons(request):
 
     *alpha* : such as 1, 0.5, etc
 
+    *extent* : such as extent=-20,20,-20,20
+
     **returns:**
 
     json containing reconstructed coastline features
@@ -50,6 +52,16 @@ def get_coastline_polygons(request):
     edgecolor = request.GET.get("edgecolor", "black")
     facecolor = request.GET.get("facecolor", "none")
     alpha = request.GET.get("alpha", 0.5)
+    extent = request.GET.get("extent", None)
+
+    # parse the extent = [minx, maxx, miny, maxy]
+    if extent:
+        try:
+            tmp = extent.split(",")
+            extent = [float(tmp[0]), float(tmp[1]), float(tmp[2]), float(tmp[3])]
+        except:
+            extent = None
+            print("Invalid extent parameter!")
 
     wrap = True
     central_meridian = 0
@@ -88,6 +100,28 @@ def get_coastline_polygons(request):
         anchor_plate_id=anchor_plate_id,
     )
 
+    if extent:
+        # extent = [minx, maxx, miny, maxy]
+        extent_polygon = pygplates.PolygonOnSphere(
+            [
+                (extent[0], extent[2]),
+                (extent[0], extent[3]),
+                (extent[1], extent[3]),
+                (extent[1], extent[2]),
+            ]
+        )
+
+        reconstructed_polygons = filter(
+            lambda reconstructed_polygon: 0
+            == pygplates.GeometryOnSphere.distance(
+                extent_polygon,
+                reconstructed_polygon.get_reconstructed_geometry(),
+                geometry1_is_solid=True,
+                geometry2_is_solid=True,
+            ),
+            reconstructed_polygons,
+        )
+
     # wrap=False #for debug
 
     # plot and return the map
@@ -97,11 +131,16 @@ def get_coastline_polygons(request):
         else:
             date_line_wrapper = None
         imgdata = plot_geometries.plot_polygons(
-            reconstructed_polygons, edgecolor, facecolor, alpha, date_line_wrapper
+            reconstructed_polygons,
+            edgecolor,
+            facecolor,
+            alpha,
+            date_line_wrapper,
+            extent,
         )
         return HttpResponse(imgdata, content_type="image/png")
 
-    data = process_reconstructed_polygons(
+    data = wrapping_tools.get_json_from_reconstructed_polygons(
         reconstructed_polygons, wrap, central_meridian, avoid_map_boundary
     )
 
