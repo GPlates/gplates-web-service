@@ -48,7 +48,7 @@ RUN pip3 install --upgrade pyopenssl
 RUN apt install -y gdal-bin libgdal-dev
 RUN pip3 install GDAL geoserver-rest
 RUN pip3 install python-dotenv
-RUN pip3 install tzdata
+RUN pip3 install tzdata black
 
 ADD . /gws
 
