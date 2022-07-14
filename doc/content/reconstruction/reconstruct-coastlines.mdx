@@ -22,9 +22,19 @@ http GET request to retrieve reconstructed coastline polygons
 
 *model* : name for reconstruction model [defaults to default model from web service settings]
 
+*fmt* : if set this parameter to "png", this function will return a png image
+
+*facecolor* : such as "black", "blue", etc
+
+*edgecolor* : such as "black", "blue", etc
+
+*alpha* : such as 1, 0.5, etc
+
+*extent* : such as extent=-20,20,-20,20
+
 **Returns:**
 
-GeoJSON data containing reconstructed coastline features
+GeoJSON/PNG data containing reconstructed coastline features
 
 **Examples:**
 
@@ -37,3 +47,7 @@ See the result in an [interactive map](https://portal.gplates.org/service/d3_dem
 **&#128994; E2:** Return a png map <https://gws.gplates.org/reconstruct/coastlines/?&time=140&model=SETON2012&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5>
 
 ![coastline-lime](../images/coastline-lime.png)
+
+**&#128994; E3:** Return a png map within an extent <https://gws.gplates.org/reconstruct/coastlines/?&time=140&model=SETON2012&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5&extent=-50,50,-50,50>
+
+![coastlines-50-50-50-50](../images/coastlines-50-50-50-50.png)
