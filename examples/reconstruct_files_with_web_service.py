@@ -23,10 +23,16 @@ files = {
     "file_4": open(f"{data_folder}/Australia_Points.dbf", "rb"),
 }
 
-# You may compess the shapefiles into a zip file and use the line below
+# You may compress the shapefiles into a zip file and use the line below
 # files = {"file_1": open(f"{data_folder}/Australia_Points.zip", "rb")}
 
-data = {"time": 100}
+data = {
+    "time": 100,
+    "model": "MULLER2019",
+    # "assign_plate_id": 0, #set to 0, if your files already contains plate ids
+    "filename": "my-reconstructed-file",
+    "save_plate_id": 1,  # save the intermedia files with assigned plate ids
+}
 
 r = requests.post(url, files=files, data=data)
 print(r.reason)

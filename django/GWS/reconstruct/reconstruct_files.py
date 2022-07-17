@@ -39,9 +39,13 @@ def reconstruct(request):
             save_upload_files(request, tmp_dir)
 
             # get parameters from the http post request
-            time, model, assign_plate_id_flag, output_filename = get_request_parameters(
-                request
-            )
+            (
+                time,
+                model,
+                assign_plate_id_flag,
+                output_filename,
+                save_plate_id_flag,
+            ) = get_request_parameters(request)
 
             # find and unzip all zip files
             find_and_unzip_all_zip_files(tmp_dir)
@@ -87,20 +91,23 @@ def reconstruct(request):
                             pygplates.PartitionProperty.valid_time_period,
                         ],
                     )
-
+                    if save_plate_id_flag:
+                        pygplates.FeatureCollection(features).write(
+                            f"{output_path}/{os.path.basename(f)}-with-plate-ids.shp"
+                        )
                     feature_collection.add(features)
 
                 pygplates.reconstruct(
                     feature_collection,
                     rotation_model,
-                    f"{output_path}/{time}Ma.shp",
+                    f"{output_path}/reconstructed-{time}Ma.shp",
                     float(time),
                 )
             else:  # when assign_plate_id_flag = False, do not assign plate id, just reconstruct straightaway
                 pygplates.reconstruct(
                     reconstructable_files,
                     rotation_model,
-                    f"{output_path}/{time}Ma.shp",
+                    f"{output_path}/reconstructed-{time}Ma.shp",
                     float(time),
                 )
 
@@ -165,12 +172,17 @@ def get_request_parameters(request):
     model = request.POST.get("model", settings.MODEL_DEFAULT)
     out_fn = request.POST.get("filename", "reconstructed_files")
     assign_plate_id_flag = request.POST.get("assign_plate_id", True)
+    save_plate_id_flag = request.POST.get("save_plate_id", False)
     try:
         if 0 == int(assign_plate_id_flag):
             assign_plate_id_flag = False
+        if 1 == int(save_plate_id_flag):
+            save_plate_id_flag = True
     except:
-        pass  # do nothing, the default assign_plate_id_flag is True
-    return time, model, assign_plate_id_flag, out_fn
+        pass  # do nothing, use the default value
+    if save_plate_id_flag:
+        assign_plate_id_flag = True  # save_plate_id_flag overrides assign_plate_id_flag
+    return time, model, assign_plate_id_flag, out_fn, save_plate_id_flag
 
 
 # find and unzip all zip files
