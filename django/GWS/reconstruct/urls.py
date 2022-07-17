@@ -1,6 +1,6 @@
 from django.urls import re_path
 
-from . import views, get_polygons
+from . import reconstruct_files, get_polygons, views
 
 urlpatterns = [
     re_path(
@@ -12,7 +12,9 @@ urlpatterns = [
         name="reconstruct_feature_collection",
     ),
     re_path(
-        r"^reconstruct_files/?$", views.reconstruct_files, name="reconstruct_files"
+        r"^reconstruct_files/?$",
+        reconstruct_files.reconstruct,
+        name="reconstruct_files",
     ),
     re_path(r"^coastlines/?$", get_polygons.get_coastline_polygons, name="coastlines"),
     re_path(
