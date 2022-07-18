@@ -26,3 +26,5 @@ django/GWS/DATA/tmp/*
 
 examples/output/
 
+examples/.env
+

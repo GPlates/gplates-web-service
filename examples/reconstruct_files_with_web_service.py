@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 import requests
+from dotenv import load_dotenv
 
 url = "http://localhost:80/reconstruct/reconstruct_files"
 # url = "http://localhost:18000/reconstruct/reconstruct_files"
@@ -14,6 +15,8 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 # print(script_path)
 output_path = f"{script_path}/output"
 Path(output_path).mkdir(parents=True, exist_ok=True)
+
+load_dotenv(f"{script_path}/.env")  # take environment variables from .env.
 
 data_folder = f"{script_path}/data"
 files = {
@@ -28,10 +31,15 @@ files = {
 
 data = {
     "time": 100,
-    "model": "MULLER2019",
-    # "assign_plate_id": 0, #set to 0, if your files already contains plate ids
-    "filename": "my-reconstructed-file",
-    "save_plate_id": 1,  # save the intermedia files with assigned plate ids
+    # "model": "MULLER2019",
+    "assign_plate_id": 1,  # set to 0, if your files already contains plate ids. the save_plate_id parameter will override this parameter
+    "basename": "my-reconstructed-file",
+    "save_plate_id": 0,  # save the intermedia files with assigned plate ids. This parameter will be no effect if you choose to upload the result to geoserver.
+    # uncomment the following parameters to upload result file to geoserver
+    # "geosrv_url": os.getenv("GEOSRV_URL"),
+    # "geosrv_username": os.getenv("GEOSRV_USERNAME"),
+    # "geosrv_password": os.getenv("GEOSRV_PASSWORD"),
+    # "geosrv_workspace": "test-web-service-upload-workspace",
 }
 
 r = requests.post(url, files=files, data=data)

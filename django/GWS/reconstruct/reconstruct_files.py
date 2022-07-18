@@ -14,6 +14,7 @@ import pygplates
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
+from geo.Geoserver import Geoserver
 from utils.get_model import get_reconstruction_model_dict
 
 
@@ -43,9 +44,17 @@ def reconstruct(request):
                 time,
                 model,
                 assign_plate_id_flag,
-                output_filename,
+                output_basename,
                 save_plate_id_flag,
+                geosrv_url,
+                geosrv_username,
+                geosrv_password,
+                geosrv_workspace,
             ) = get_request_parameters(request)
+
+            upload_result_to_geoserver_flag = (
+                geosrv_url and geosrv_username and geosrv_password and geosrv_workspace
+            )
 
             # find and unzip all zip files
             find_and_unzip_all_zip_files(tmp_dir)
@@ -77,6 +86,7 @@ def reconstruct(request):
             output_path = f"{tmp_dir}/output/"
             Path(output_path).mkdir(parents=True, exist_ok=True)
 
+            # print(assign_plate_id_flag)
             if assign_plate_id_flag:  # assign plate id and then reconstruct
                 feature_collection = pygplates.FeatureCollection()
                 for f in reconstructable_files:
@@ -100,15 +110,28 @@ def reconstruct(request):
                 pygplates.reconstruct(
                     feature_collection,
                     rotation_model,
-                    f"{output_path}/reconstructed-{time}Ma.shp",
+                    f"{output_path}/{output_basename}.shp",
                     float(time),
                 )
             else:  # when assign_plate_id_flag = False, do not assign plate id, just reconstruct straightaway
                 pygplates.reconstruct(
                     reconstructable_files,
                     rotation_model,
-                    f"{output_path}/reconstructed-{time}Ma.shp",
+                    f"{output_path}/{output_basename}.shp",
                     float(time),
+                )
+
+            if upload_result_to_geoserver_flag:
+                upload_result_to_geoserver(
+                    geosrv_url,
+                    geosrv_username,
+                    geosrv_password,
+                    geosrv_workspace,
+                    output_path,
+                    output_basename,
+                )
+                return HttpResponse(
+                    f"{geosrv_url}/{geosrv_workspace}/{output_basename}"
                 )
 
             # print(os.listdir(output_path))
@@ -116,12 +139,8 @@ def reconstruct(request):
             with zipfile.ZipFile(s, "w") as zf:
                 for r, _, files in os.walk(output_path):
                     if not files:
-                        error_msg = (
-                            f"Error: No output files have been created!"
-                            + "You might need to add 'assign_plate_id=1' to your http request."
-                        )
-                        print(error_msg)
-                        return HttpResponseServerError(error_msg)
+                        raise NoOutputFileError
+
                     for f in files:
                         # print(os.path.join(r, f))
                         zf.write(
@@ -133,14 +152,21 @@ def reconstruct(request):
             )
             response[
                 "Content-Disposition"
-            ] = f"attachment; filename={output_filename}.zip"
+            ] = f"attachment; filename={output_basename}.zip"
 
             return response
+    except NoOutputFileError:
+        no_output_error_msg = (
+            f"Error: No output files have been created!"
+            + "You might need to add 'assign_plate_id=1' to your http request."
+        )
+        print(no_output_error_msg)
+        return HttpResponseBadRequest(no_output_error_msg)
     except:
         traceback.print_stack()
         traceback.print_exc(file=sys.stdout)
         err = traceback.format_exc()
-        return HttpResponseBadRequest(err)
+        return HttpResponseServerError(err)
 
 
 # unused function
@@ -159,8 +185,7 @@ def clear_folder(path):
 def save_upload_files(request, tmp_dir):
     for fs in request.FILES.lists():
         for f in fs[1]:
-            print((f.name))
-
+            # print((f.name))
             with open(f"{tmp_dir}/{f.name}", "wb+") as fp:
                 for chunk in f.chunks():
                     fp.write(chunk)
@@ -168,21 +193,42 @@ def save_upload_files(request, tmp_dir):
 
 # get parameters from the http post request
 def get_request_parameters(request):
-    time = request.POST.get("time", None)
+    time = request.POST.get("time", 0)
     model = request.POST.get("model", settings.MODEL_DEFAULT)
-    out_fn = request.POST.get("filename", "reconstructed_files")
+    out_fn = request.POST.get("basename", "reconstructed_files")
     assign_plate_id_flag = request.POST.get("assign_plate_id", True)
     save_plate_id_flag = request.POST.get("save_plate_id", False)
+    geosrv_url = request.POST.get("geosrv_url", None)
+    geosrv_username = request.POST.get("geosrv_username", None)
+    geosrv_password = request.POST.get("geosrv_password", None)
+    geosrv_workspace = request.POST.get("geosrv_workspace", None)
+
     try:
         if 0 == int(assign_plate_id_flag):
             assign_plate_id_flag = False
+        else:
+            assign_plate_id_flag = True
         if 1 == int(save_plate_id_flag):
             save_plate_id_flag = True
+        else:
+            save_plate_id_flag = False
     except:
         pass  # do nothing, use the default value
     if save_plate_id_flag:
         assign_plate_id_flag = True  # save_plate_id_flag overrides assign_plate_id_flag
-    return time, model, assign_plate_id_flag, out_fn, save_plate_id_flag
+    # print(save_plate_id_flag, "save_plate_id_flag")
+    output_basename = f"{out_fn}-{time}Ma"
+    return (
+        time,
+        model,
+        assign_plate_id_flag,
+        output_basename,
+        save_plate_id_flag,
+        geosrv_url,
+        geosrv_username,
+        geosrv_password,
+        geosrv_workspace,
+    )
 
 
 # find and unzip all zip files
@@ -191,3 +237,39 @@ def find_and_unzip_all_zip_files(tmp_dir):
     for zip_file in zip_files:
         with zipfile.ZipFile(zip_file, "r") as zip_ref:
             zip_ref.extractall(tmp_dir)
+
+
+def upload_result_to_geoserver(
+    geosrv_url,
+    geosrv_username,
+    geosrv_password,
+    geosrv_workspace,
+    output_path,
+    output_basename,
+):
+    shp_files = glob.glob(f"{output_path}/{output_basename}*")
+
+    if 0 == len(shp_files):
+        raise NoOutputFileError()
+
+    with zipfile.ZipFile(f"{output_path}/{output_basename}.zip", "w") as zf:
+        for fn in shp_files:
+            # print(fn)
+            # the second argument is the file path inside the zip archive.
+            zf.write(fn, os.path.basename(fn))
+
+    geo = Geoserver(geosrv_url, geosrv_username, geosrv_password)
+
+    r = geo.create_workspace(workspace=geosrv_workspace)
+    # print(r)
+    r = geo.create_shp_datastore(
+        path=f"{output_path}/{output_basename}.zip",  # make sure you have this zip file
+        store_name=output_basename,  # the shapefiles basename
+        workspace=geosrv_workspace,
+    )
+    # print(r)
+
+
+# Raised when pygplates failed to produce output files
+class NoOutputFileError(Exception):
+    pass
