@@ -1,6 +1,6 @@
 # GPlates Web Service
 
-The **GPlates Web Service** is a part of the on-going GPlates project funded by [AuScope](https://www.auscope.org.au/).
+The **🔥GPlates Web Service🔥** is a part of the on-going GPlates project funded by [AuScope](https://www.auscope.org.au/).
 The web service is built upon [pygplates](https://www.gplates.org/docs/pygplates/index.html).
 It allows users to utilize the pygplates functionalities without installing pygplates locally.
 Users can send HTTP requests to https://gws.gplates.org to get the reconstruction results back.
@@ -11,7 +11,7 @@ to enhance performance and data security.
 
 The GPlates Web Service is created and maintained by [EarthByte](https://www.earthbyte.org) group at the [University of Sydney](https://www.sydney.edu.au/).
 
-## Contents
+## 📂Contents
 
 - **django** -- folder contains source code files for backend services (using django framework).
 
@@ -19,11 +19,13 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 
 - **doc** -- documentation website. This doc website is built upon [gatsby-gitbook-starter](https://www.gatsbyjs.com/starters/hasura/gatsby-gitbook-starter/).
 
-- **python** -- frontend python code
+- **examples** -- some examples to show how to use this web service
+
+- **test** -- code for testing this web service
 
 - examples of accessing the service from different languages (R,matlab,bash/GMT,python) have now been moved to https://github.com/siwill22/gws-examples
 
-## 🔥Docker
+## 🐳Docker
 
 click 👉[here](docker/README.md)👈 to see details about using Docker in development and production environment.
 
@@ -34,3 +36,7 @@ click 👉[here](docker/README.md)👈 to see details about using Docker in deve
 ## 📮Contact
 
 [Contact EarthByte](https://www.earthbyte.org/contact-us-3/)
+
+## 📝License
+
+The GPlates Web Service is free software (also known as open-source software), licensed for distribution under the GNU [General Public License (GPL)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html), version 2.

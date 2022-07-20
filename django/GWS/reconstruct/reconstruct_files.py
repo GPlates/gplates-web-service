@@ -155,13 +155,9 @@ def reconstruct(request):
             ] = f"attachment; filename={output_basename}.zip"
 
             return response
-    except NoOutputFileError:
-        no_output_error_msg = (
-            f"Error: No output files have been created!"
-            + "You might need to add 'assign_plate_id=1' to your http request."
-        )
-        print(no_output_error_msg)
-        return HttpResponseBadRequest(no_output_error_msg)
+    except NoOutputFileError as e:
+        e.print_error()
+        return HttpResponseBadRequest(NoOutputFileError.error_msg)
     except:
         traceback.print_stack()
         traceback.print_exc(file=sys.stdout)
@@ -272,4 +268,10 @@ def upload_result_to_geoserver(
 
 # Raised when pygplates failed to produce output files
 class NoOutputFileError(Exception):
-    pass
+    error_msg = (
+        f"Error: No output files have been created! "
+        + "You might need to add 'assign_plate_id=1' to your http request."
+    )
+
+    def print_error(self):
+        print(self.error_msg)
