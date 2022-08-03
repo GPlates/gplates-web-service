@@ -35,8 +35,20 @@ click 👉[here](docker/README.md)👈 to see details about using Docker in deve
 
 ## 📮Contact
 
-[Contact EarthByte](https://www.earthbyte.org/contact-us-3/)
+👉 [Contact EarthByte](https://www.earthbyte.org/contact-us-3/)
 
 ## 📝License
 
 The GPlates Web Service is free software (also known as open-source software), licensed for distribution under the GNU [General Public License (GPL)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html), version 2.
+
+## Dev
+
+- ./docker/start-postgis.sh
+- ./docker/start-gws-dev.sh
+
+## Test
+
+- ./test/test-dev-server.sh
+- ./test/test-pro-server.sh
+- <http://localhost:18000/>
+
