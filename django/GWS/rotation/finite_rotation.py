@@ -15,7 +15,7 @@ from utils.get_model import get_reconstruction_model_dict
 from utils.round_float import round_floats
 
 #
-# return all the plate ids in the reconstruction tree
+# return all the plate ids in the reconstruction tree at given time
 #
 @csrf_exempt
 def get_plate_ids(request):
@@ -93,7 +93,7 @@ def get_rotation(request, return_quat=False):
     ret = {}
     for time in times:
         r_tree = rotation_model.get_reconstruction_tree(time)
-        ret[time] = {}
+        ret[str(time)] = {}
         for pid in pids:
             finite_rotation = r_tree.get_equivalent_total_rotation(pid)
             (
@@ -104,11 +104,11 @@ def get_rotation(request, return_quat=False):
 
             if return_quat:
                 axis = lat_lon_to_cart(math.radians(pole_lat), math.radians(pole_lon))
-                ret[time][pid] = axis_angle_to_quat(axis, math.radians(angle))
+                ret[str(time)][str(pid)] = axis_angle_to_quat(axis, math.radians(angle))
             else:
-                ret[time][pid] = [pole_lon, pole_lat, angle]
+                ret[str(time)][str(pid)] = [pole_lon, pole_lat, angle]
 
-    ret = json.dumps(round_floats(ret))
+    ret = json.dumps(ret)
 
     return HttpResponse(ret, content_type="application/json")
 
@@ -121,6 +121,11 @@ def get_request_parameters(params):
     pid_str = params.get("pids", "0")
     model = params.get("model", settings.MODEL_DEFAULT)
     try:
+        # make [10.5,20.6,30.5] or [701,201,301] work
+        time_str = "".join(c for c in time_str if c.isdecimal() or (c in [".", ","]))
+        pid_str = "".join(c for c in pid_str if c.isdecimal() or c == ",")
+        print(time_str)
+        print(pid_str)
         times = [float(t) for t in time_str.split(",")]
         pids = [int(p) for p in pid_str.split(",")]
     except:
