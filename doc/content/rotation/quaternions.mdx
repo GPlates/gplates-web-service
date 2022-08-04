@@ -1,16 +1,16 @@
 ---
-title: "Euler Pole And Angle"
-metaTitle: "Euler Pole And Angle"
-metaDescription: "Euler Pole And Angle."
+title: "Quaternions"
+metaTitle: "Quaternions"
+metaDescription: "Quaternions."
 ---
 
-## Euler Pole And Angle
+## Quaternions
 
-get the finite rotation as a tuple of pole longitude, pole latitude and angle (all in degrees) at given times for plate IDs.
+get the quaternions at given times for plate IDs.
 
 **Endpoint:**
 
-    https://gws.gplates.org/rotation/get_euler_pole_and_angle
+    https://gws.gplates.org/rotation/get_quaternions
 
 **Parameters:**
 
@@ -24,13 +24,13 @@ User can get a list of available model names at <https://gws.gplates.org/list/mo
 
 **Examples:** 
 
-**&#128994; E1:** get euler pole and rotation angle at 100Ma for plate id 701
+**&#128994; E1:** get quaternions at 100Ma for plate id 701
 
-<https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=100&pids=701>
+<https://gws.gplates.org/rotation/get_quaternions?times=100&pids=701>
 
-**&#128994; E2:** get euler pole and rotation angle at 100Ma for plate id 701
+**&#128994; E2:** get quaternions at 100Ma for plate id 701
 
-<https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100&pids=701,801,901>
+<https://gws.gplates.org/rotation/get_quaternions?times=10,50,100&pids=701,801,901>
 
 **&#128994; E3:** a Python example. the file can be found at <https://github.com/GPlates/gplates-web-service/blob/master/examples/get_rotation_with_web_service.py>
 
@@ -54,11 +54,11 @@ User can get a list of available model names at <https://gws.gplates.org/list/mo
 
     times = list(range(0, 101, 10))  # give a list of times
 
-    # get euler pole and angle for each time and plate ID
-    # if the plate id does not exist at the time, return identity rotation [0.0, 90.0, 0.0](not moving)
-    # data format [lon, lat, angle]
-    url = f"{SERVER_URL}/rotation/get_euler_pole_and_angle?times={times}&pids={random_pids}"
+    # get quaternions for each time and plate ID
+    # if the plate id does not exist at the time, return identity rotation [1.0, 0.0, 0.0, 0.0](not moving)
+    url = f"{SERVER_URL}/rotation/get_quaternions?times={times}&pids={random_pids}"
     # print(url)
     r = requests.get(url)
     ret = json.loads(r.text)
     print(json.dumps(ret, indent=4, sort_keys=True))
+

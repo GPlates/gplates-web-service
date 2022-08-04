@@ -54,6 +54,7 @@ const config = {
     forcedNavOrder: [
       '/reconstruction', // add trailing slash if enabled above
       '/reconstruction-models',
+      '/rotation',
       '/topology',
       '/raster-query',
       '/velocity',
@@ -64,6 +65,7 @@ const config = {
       '/topology', // add trailing slash if enabled above
       '/velocity', // add trailing slash if enabled above
       '/examples',
+      '/rotation',
     ],
     links: [
       { text: 'GPlates', link: 'https://www.gplates.org' }, 

@@ -1,0 +1,30 @@
+---
+title: "Get All Plate IDs"
+metaTitle: "Get All Plate IDs"
+metaDescription: "Get All Plate IDs."
+---
+
+## Get All Plate IDs
+
+get all the plate ids in the reconstruction tree at a given time
+
+**Endpoint:**
+
+    https://gws.gplates.org/rotation/get_plate_ids
+
+**Parameters:**
+
+*time* : time at which to get the plate IDs [required]
+
+*model* : name for reconstruction model [defaults to default model from web service settings]
+
+**Returns:**
+
+a list of plate IDs at the given time in the recontruction tree
+
+**Examples:** 
+
+**&#128994; E1:** get all the plate IDs in the reconstruction tree at 100Ma
+
+<https://gws.gplates.org/rotation/get_plate_ids?time=100>
+
