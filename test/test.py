@@ -66,12 +66,64 @@ else:
     raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
 # raster query
-data = {"lon": -70, "lat": 34, "raster_name": "age_grid_geek_2007"}
+data = {"lon": 99.50, "lat": -40.24, "raster_name": "age_grid_geek_2007"}
 r = requests.get(
     SERVER_URL + "/raster/query/", params=data, verify=False, proxies=proxies
 )
 if r.status_code == 200:
     print(r.text)
+else:
+    raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+# reconstruct feature collection
+fc = {
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [128, -17],
+                        [133, -18],
+                        [138, -19],
+                        [140, -23],
+                        [139, -27],
+                        [130, -27],
+                        [128, -24],
+                        [127, -21],
+                        [127, -17],
+                        [128, -17],
+                    ]
+                ],
+            },
+            "properties": {},
+        }
+    ],
+}
+data = {"feature_collection": json.dumps(fc), "time": 140}
+r = requests.get(
+    SERVER_URL + "/reconstruct/reconstruct_feature_collection/",
+    params=data,
+    verify=False,
+    proxies=proxies,
+)
+if r.status_code == 200:
+    print(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+else:
+    raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+# assign plate ids
+data = {"points": "-10,50,-30,-70,0,0"}
+r = requests.get(
+    SERVER_URL + "/reconstruct/assign_points_plate_ids",
+    params=data,
+    verify=False,
+    proxies=proxies,
+)
+if r.status_code == 200:
+    print(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
 else:
     raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 

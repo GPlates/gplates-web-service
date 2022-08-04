@@ -1,14 +1,23 @@
 from django.urls import re_path
 
-from . import reconstruct_files, get_polygons, views
+from . import (
+    get_polygons,
+    reconstruct_files,
+    reconstruct_points,
+    views,
+    reconstruct_feature_collection,
+    assign_plate_id,
+)
 
 urlpatterns = [
     re_path(
-        r"^reconstruct_points/?$", views.reconstruct_points, name="reconstruct_points"
+        r"^reconstruct_points/?$",
+        reconstruct_points.reconstruct,
+        name="reconstruct_points",
     ),
     re_path(
         r"^reconstruct_feature_collection/?$",
-        views.reconstruct_feature_collection,
+        reconstruct_feature_collection.reconstruct,
         name="reconstruct_feature_collection",
     ),
     re_path(
@@ -28,5 +37,10 @@ urlpatterns = [
         r"^coastlines_low/?$",
         get_polygons.get_coastline_polygons_low,
         name="coastlines_low",
+    ),
+    re_path(
+        r"^assign_points_plate_ids/?$",
+        assign_plate_id.get_points_pids,
+        name="assign_points_plate_ids",
     ),
 ]
