@@ -6,7 +6,7 @@ def round_floats(obj, decimals=4):
     if isinstance(obj, float):
         return round(obj, decimals)
     elif isinstance(obj, dict):
-        return dict((k, round_floats(v)) for k, v in list(obj.items()))
+        return dict((k, round_floats(v, decimals)) for k, v in list(obj.items()))
     elif isinstance(obj, (list, tuple)):
-        return list(map(round_floats, obj))
+        return [round_floats(x, decimals) for x in obj]
     return obj

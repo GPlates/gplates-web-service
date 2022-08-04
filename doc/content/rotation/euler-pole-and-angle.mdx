@@ -1,0 +1,32 @@
+---
+title: "Euler Pole And Angle"
+metaTitle: "Euler Pole And Angle"
+metaDescription: "Euler Pole And Angle."
+---
+
+## Euler Pole And Angle
+
+get the finite rotation as a tuple of pole longitude, pole latitude and angle (all in degrees) at given times for plate IDs.
+
+**Endpoint:**
+
+    https://gws.gplates.org/rotation/get_euler_pole_and_angle
+
+**Parameters:**
+
+*times* : a list of times, such as `times=10,20,30`. a single time can also be used, such as `times=100` [required]
+
+*model* : name for reconstruction model [defaults to default model from web service settings]. list model names <https://gws.gplates.org/list/model_names>
+
+*pids* : a list of plate ids
+    
+
+**Examples:**
+
+**&#128994; E1:** 
+
+<https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=100&pids=701>
+
+**&#128994; E2:**  
+
+<https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100&pids=701,801,901>
