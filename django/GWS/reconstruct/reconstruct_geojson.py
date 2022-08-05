@@ -2,10 +2,12 @@ import json
 
 import pygplates
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from utils.model_utils import get_reconstruction_model_dict
+from utils.geojson_io import load_geojson, save_reconstructed_geometries_geojson
+from utils.model_utils import get_rotation_model, get_static_polygons_filename
 from utils.round_float import round_floats
+
 
 #
 # reconstruct geojson feature collection
@@ -29,7 +31,7 @@ def reconstruct(request):
     else:
         time = 140  # default reconstruction age
 
-    output_format = params.get("output", "geojson")
+    # output_format = params.get("output", "geojson")
     fc_str = params.get("feature_collection")
     model = str(params.get("model", settings.MODEL_DEFAULT))
 
@@ -53,66 +55,15 @@ def reconstruct(request):
         )
 
     # Convert geojson input to gplates feature collection
-    features = []
-    try:
-        fc = json.loads(fc_str)  # load the input feature collection
-        for f in fc["features"]:
-            geom = f["geometry"]
-            feature = pygplates.Feature()
-            if geom["type"] == "Point":
-                feature.set_geometry(
-                    pygplates.PointOnSphere(
-                        float(geom["coordinates"][1]), float(geom["coordinates"][0])
-                    )
-                )
-            if geom["type"] == "LineString":
-                feature.set_geometry(
-                    pygplates.PolylineOnSphere(
-                        [(point[1], point[0]) for point in geom["coordinates"]]
-                    )
-                )
-            if geom["type"] == "Polygon":
-                feature.set_geometry(
-                    pygplates.PolygonOnSphere(
-                        [(point[1], point[0]) for point in geom["coordinates"][0]]
-                    )
-                )
-            if geom["type"] == "MultiPoint":
-                feature.set_geometry(
-                    pygplates.MultiPointOnSphere(
-                        [(point[1], point[0]) for point in geom["coordinates"]]
-                    )
-                )
+    feature_collection = load_geojson(fc_str, keep_properties)
 
-            if keep_properties and "properties" in f:
-                for pk in f["properties"]:
-                    p = f["properties"][pk]
-                    if isinstance(p, str):
-                        p = str(p)
-                    feature.set_shapefile_attribute(str(pk), p)
-
-            features.append(feature)
-    except Exception as e:
-        # print e
-        return HttpResponseBadRequest("Invalid input feature collection")
-
-    model_dict = get_reconstruction_model_dict(model)
-    if not model_dict:
-        return HttpResponseBadRequest(
-            'The "model" ({0}) cannot be recognized.'.format(model)
-        )
-
-    rotation_model = pygplates.RotationModel(
-        [
-            str("%s/%s/%s" % (settings.MODEL_STORE_DIR, model, rot_file))
-            for rot_file in model_dict["RotationFile"]
-        ]
-    )
+    rotation_model = get_rotation_model(model)
+    static_polygons_filename = get_static_polygons_filename(model)
 
     assigned_features = pygplates.partition_into_plates(
-        settings.MODEL_STORE_DIR + model + "/" + model_dict["StaticPolygons"],
+        static_polygons_filename,
         rotation_model,
-        features,
+        feature_collection,
         properties_to_copy=[
             pygplates.PartitionProperty.reconstruction_plate_id,
             pygplates.PartitionProperty.valid_time_period,
@@ -130,40 +81,9 @@ def reconstruct(request):
     )
 
     # convert feature collection back to geojson
-    data = {"type": "FeatureCollection"}
-    data["features"] = []
-    for g in reconstructed_geometries:
-        geom = g.get_reconstructed_geometry()
-        feature = {"type": "Feature"}
-        feature["geometry"] = {}
-        if isinstance(geom, pygplates.PointOnSphere):
-            feature["geometry"]["type"] = "Point"
-            p = geom.to_lat_lon_list()[0]
-            feature["geometry"]["coordinates"] = [p[1], p[0]]
-        elif isinstance(geom, pygplates.MultiPointOnSphere):
-            feature["geometry"]["type"] = "MultiPoint"
-            feature["geometry"]["coordinates"] = [
-                [lon, lat] for lat, lon in geom.to_lat_lon_list()
-            ]
-        elif isinstance(geom, pygplates.PolylineOnSphere):
-            feature["geometry"]["type"] = "LineString"
-            feature["geometry"]["coordinates"] = [
-                [lon, lat] for lat, lon in geom.to_lat_lon_list()
-            ]
-        elif isinstance(geom, pygplates.PolygonOnSphere):
-            feature["geometry"]["type"] = "Polygon"
-            feature["geometry"]["coordinates"] = [
-                [[lon, lat] for lat, lon in geom.to_lat_lon_list()]
-            ]
-        else:
-            return HttpResponseServerError("Unsupported Geometry Type.")
-
-        feature["properties"] = {}
-        if keep_properties:
-            for pk in g.get_feature().get_shapefile_attributes():
-                feature["properties"][pk] = g.get_feature().get_shapefile_attribute(pk)
-        # print feature["properties"]
-        data["features"].append(feature)
+    data = save_reconstructed_geometries_geojson(
+        reconstructed_geometries, keep_properties
+    )
 
     ret = json.dumps(round_floats(data))
 

@@ -7,6 +7,7 @@ from . import (
     reconstruct_points,
     views,
     assign_plate_id,
+    assign_shp_plate_id,
 )
 
 urlpatterns = [
@@ -47,5 +48,10 @@ urlpatterns = [
         r"^assign_geojson_plate_ids/?$",
         assign_plate_id.get_plate_ids_for_geojson,
         name="assign_geojson_plate_ids",
+    ),
+    re_path(
+        r"^assign_shp_plate_ids/?$",
+        assign_shp_plate_id.assign_plate_ids,
+        name="assign_shp_plate_ids",
     ),
 ]

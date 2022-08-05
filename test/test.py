@@ -1,8 +1,11 @@
 import json
+import logging
 import os
 
 import requests
 import urllib3
+
+logging.basicConfig(filename="test.log", level=logging.INFO)
 
 urllib3.disable_warnings()
 
@@ -15,6 +18,7 @@ else:
 
 proxies = {"http": ""}
 
+# test GET reconstructing points
 data = {"points": "95,54,142,-33", "time": 140}
 r = requests.get(
     SERVER_URL + "/reconstruct/reconstruct_points/",
@@ -23,10 +27,12 @@ r = requests.get(
     proxies=proxies,
 )
 if r.status_code == 200:
-    print(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! GET reconstruct points")
 else:
     raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
+# test POST reconstructing points
 r = requests.post(
     SERVER_URL + "/reconstruct/reconstruct_points/",
     data=data,
@@ -34,12 +40,14 @@ r = requests.post(
     proxies=proxies,
 )
 if r.status_code == 200:
-    print(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! POST reconstruct points")
 else:
     raise Exception(
         "FAILED: " + r.request.url + r.request.body + str(r.request.headers)
     )
 
+# test POST reconstructing points(return feature collection)
 data = {"points": "95,54,-117.26,32.7,142,-33", "time": 140, "fc": ""}
 r = requests.post(
     SERVER_URL + "/reconstruct/reconstruct_points/",
@@ -48,12 +56,14 @@ r = requests.post(
     proxies=proxies,
 )
 if r.status_code == 200:
-    print(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! POST reconstruct points(return feature collection)")
 else:
     raise Exception(
         "FAILED: " + r.request.url + r.request.body + str(r.request.headers)
     )
 
+# test GET reconstructing points(return feature collection)
 r = requests.get(
     SERVER_URL + "/reconstruct/reconstruct_points/",
     params=data,
@@ -61,21 +71,24 @@ r = requests.get(
     proxies=proxies,
 )
 if r.status_code == 200:
-    print(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! GET reconstruct points(return feature collection)")
 else:
     raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
-# raster query
+# test raster query
 data = {"lon": 99.50, "lat": -40.24, "raster_name": "age_grid_geek_2007"}
 r = requests.get(
     SERVER_URL + "/raster/query/", params=data, verify=False, proxies=proxies
 )
 if r.status_code == 200:
-    print(r.text)
+    logging.info(r.text)
+    print(f"PASSED! raster query ({r.text})")
 else:
     raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
-# reconstruct feature collection
+
+# test reconstruct feature collection
 fc = {
     "type": "FeatureCollection",
     "features": [
@@ -110,11 +123,13 @@ r = requests.get(
     proxies=proxies,
 )
 if r.status_code == 200:
-    print(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! test reconstruct feature collection")
 else:
     raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
-# assign plate ids for points
+
+# test assign plate ids for points
 data = {"points": "-10,50,-30,-70,0,0"}
 r = requests.get(
     SERVER_URL + "/reconstruct/assign_points_plate_ids",
@@ -123,11 +138,13 @@ r = requests.get(
     proxies=proxies,
 )
 if r.status_code == 200:
-    print(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! test assign plate ids for points")
 else:
     raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
-# assign plate ids for geojson data
+
+# test assign plate ids for geojson data
 data = {"feature_collection": json.dumps(fc)}
 r = requests.get(
     SERVER_URL + "/reconstruct/assign_geojson_plate_ids",
@@ -136,7 +153,8 @@ r = requests.get(
     proxies=proxies,
 )
 if r.status_code == 200:
-    print(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! test assign plate ids for geojson data")
 else:
     raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 

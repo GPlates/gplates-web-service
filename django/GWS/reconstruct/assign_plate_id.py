@@ -74,8 +74,18 @@ def get_points_pids(request):
         reconstruction_time=0.0,
     )
 
-    pids = [f.get_reconstruction_plate_id() for f in assigned_point_features]
+    assert len(point_features) == len(assigned_point_features)
+
+    pids_dict = dict(
+        (f.get_name(), f.get_reconstruction_plate_id()) for f in assigned_point_features
+    )
     # print(f.get_name() for f in assigned_point_features)
+
+    pids = []
+    for i in range(
+        0, len(assigned_point_features)
+    ):  # make sure the order of features is correct
+        pids.append(pids_dict[str(i)])
 
     ret = json.dumps(pids)
 
@@ -94,7 +104,6 @@ def get_points_pids(request):
 #
 @csrf_exempt
 def get_plate_ids_for_geojson(request):
-
     if request.method == "POST":
         params = request.POST
     elif request.method == "GET":
@@ -124,8 +133,18 @@ def get_plate_ids_for_geojson(request):
         partition_method=pygplates.PartitionMethod.most_overlapping_plate,
     )
 
-    pids = [f.get_reconstruction_plate_id() for f in assigned_features]
-    # print(f.get_name() for f in assigned_point_features)
+    assert len(feature_collection) == len(assigned_features)
+
+    pids_dict = dict(
+        (f.get_name(), f.get_reconstruction_plate_id()) for f in assigned_features
+    )
+    # print(f.get_name() for f in assigned_features)
+
+    pids = []
+    for i in range(
+        0, len(assigned_features)
+    ):  # make sure the order of features is correct
+        pids.append(pids_dict[str(i)])
 
     ret = json.dumps(pids)
 

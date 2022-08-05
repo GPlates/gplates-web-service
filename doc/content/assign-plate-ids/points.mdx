@@ -1,0 +1,25 @@
+---
+title: "Assign Plate IDs For Points"
+metaTitle: "Assign Plate IDs For Points"
+metaDescription: "Assign Plate IDs For Points."
+---
+
+## Assign Plate IDs For Points
+
+Assign plate IDs for points
+
+**Endpoint:**
+
+    https://gws.gplates.org/reconstruct/assign_points_plate_ids
+
+**Parameters:**
+
+*model* : name for reconstruction model [defaults to default model from web service settings]. 
+User can get a list of available model names at <https://gws.gplates.org/list/model_names>
+    
+
+**Examples:** 
+
+**&#128994; E1:** get plate ids for locations/points (-10,50) (-130,-70) (0,0)
+
+<https://gws.gplates.org/reconstruct/assign_points_plate_ids?points=-10,50,-130,-70,0,0>

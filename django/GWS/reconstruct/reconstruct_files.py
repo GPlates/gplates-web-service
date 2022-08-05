@@ -15,7 +15,12 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
 from geo.Geoserver import Geoserver
-from utils.model_utils import get_reconstruction_model_dict
+from utils.fileio import (
+    save_upload_files,
+    find_and_unzip_all_zip_files,
+    NoOutputFileError,
+)
+from utils.model_utils import get_rotation_model, get_static_polygons_filename
 
 
 #
@@ -65,22 +70,8 @@ def reconstruct(request):
             reconstructable_files += glob.glob(f"{tmp_dir}/**/*.gpmlz", recursive=True)
             # print(reconstructable_files)
 
-            model_dict = get_reconstruction_model_dict(model)
-            if not model_dict:
-                return HttpResponseBadRequest(
-                    f'The "model" ({model}) cannot be recognized.'
-                )
-
-            rotation_model = pygplates.RotationModel(
-                [
-                    f"{settings.MODEL_STORE_DIR}/{model}/{rot_file}"
-                    for rot_file in model_dict["RotationFile"]
-                ]
-            )
-
-            static_polygons_filename = (
-                f'{settings.MODEL_STORE_DIR}/{model}/{model_dict["StaticPolygons"]}'
-            )
+            rotation_model = get_rotation_model(model)
+            static_polygons_filename = get_static_polygons_filename(model)
 
             # create output folder
             output_path = f"{tmp_dir}/output/"
@@ -177,16 +168,6 @@ def clear_folder(path):
             print(e)
 
 
-# save the files into the temporary dir
-def save_upload_files(request, tmp_dir):
-    for fs in request.FILES.lists():
-        for f in fs[1]:
-            # print((f.name))
-            with open(f"{tmp_dir}/{f.name}", "wb+") as fp:
-                for chunk in f.chunks():
-                    fp.write(chunk)
-
-
 # get parameters from the http post request
 def get_request_parameters(request):
     time = request.POST.get("time", 0)
@@ -227,14 +208,6 @@ def get_request_parameters(request):
     )
 
 
-# find and unzip all zip files
-def find_and_unzip_all_zip_files(tmp_dir):
-    zip_files = glob.glob(f"{tmp_dir}/**/*.zip", recursive=True)
-    for zip_file in zip_files:
-        with zipfile.ZipFile(zip_file, "r") as zip_ref:
-            zip_ref.extractall(tmp_dir)
-
-
 def upload_result_to_geoserver(
     geosrv_url,
     geosrv_username,
@@ -264,14 +237,3 @@ def upload_result_to_geoserver(
         workspace=geosrv_workspace,
     )
     # print(r)
-
-
-# Raised when pygplates failed to produce output files
-class NoOutputFileError(Exception):
-    error_msg = (
-        f"Error: No output files have been created! "
-        + "You might need to add 'assign_plate_id=1' to your http request."
-    )
-
-    def print_error(self):
-        print(self.error_msg)

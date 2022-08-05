@@ -1,0 +1,59 @@
+---
+title: "Assign GeoJSON Plate IDs"
+metaTitle: "Assign GeoJSON Plate IDs"
+metaDescription: "Assign GeoJSON Plate IDs."
+---
+
+## Assign GeoJSON Plate IDs
+
+Assign plate IDS for GeoJSON data.
+
+**Endpoint:**
+
+    https://gws.gplates.org/reconstruct/assign_geojson_plate_ids
+
+**Parameters:**
+
+*model* : name for reconstruction model [defaults to default model from web service settings]. 
+User can get a list of available model names at <https://gws.gplates.org/list/model_names>
+    
+
+**Examples:** 
+
+**&#128994; E1:** assign plate ids for geojson data
+
+    import json, requests
+    fc = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [128, -17],
+                            [133, -18],
+                            [138, -19],
+                            [140, -23],
+                            [139, -27],
+                            [130, -27],
+                            [128, -24],
+                            [127, -21],
+                            [127, -17],
+                            [128, -17],
+                        ]
+                    ],
+                },
+                "properties": {},
+            }
+        ],
+    }
+    data = {"feature_collection": json.dumps(fc)}
+    r = requests.get(
+        SERVER_URL + "/reconstruct/assign_geojson_plate_ids",
+        params=data,
+        verify=False,
+        proxies=proxies,
+    )
+

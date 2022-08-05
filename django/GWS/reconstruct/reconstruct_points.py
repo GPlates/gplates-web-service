@@ -2,7 +2,7 @@ import pygplates
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from utils.model_utils import get_reconstruction_model_dict
+from utils.model_utils import get_rotation_model, get_static_polygons_filename
 
 
 @csrf_exempt
@@ -65,23 +65,8 @@ def reconstruct(request):
             'The "anchor_plate_id" parameter is invalid ({0}).'.format(anchor_plate_id)
         )
 
-    model_dict = get_reconstruction_model_dict(model)
-
-    if not model_dict:
-        return HttpResponseBadRequest(
-            'The "model" ({0}) cannot be recognized.'.format(model)
-        )
-
-    rotation_model = pygplates.RotationModel(
-        [
-            str("%s/%s/%s" % (settings.MODEL_STORE_DIR, model, rot_file))
-            for rot_file in model_dict["RotationFile"]
-        ]
-    )
-
-    static_polygons_filename = str(
-        "%s/%s/%s" % (settings.MODEL_STORE_DIR, model, model_dict["StaticPolygons"])
-    )
+    rotation_model = get_rotation_model(model)
+    static_polygons_filename = get_static_polygons_filename(model)
 
     # create point features from input coordinates
     p_index = 0
