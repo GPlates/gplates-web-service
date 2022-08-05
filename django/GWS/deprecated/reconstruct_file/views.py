@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 from io import StringIO
 
-from utils.get_model import get_reconstruction_model_dict
+from utils.model_utils import get_reconstruction_model_dict
 from utils.reconstruct_tools import reconstruct_to_birth_time
 from utils.kinematic_tools import subduction_parameters
 

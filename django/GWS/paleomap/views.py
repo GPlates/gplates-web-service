@@ -22,7 +22,7 @@ import numpy as np
 
 import pygplates
 
-from utils.get_model import get_reconstruction_model_dict
+from utils.model_utils import get_reconstruction_model_dict
 
 TMP_DIR='/tmp/gws'
 

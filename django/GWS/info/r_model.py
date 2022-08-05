@@ -7,7 +7,7 @@ from django.http import (HttpResponse,
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
-from utils.get_model import *
+from utils.model_utils import *
 
 import sys, json, os
 import xml.etree.ElementTree as ET

@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.conf import settings
 
-from utils.get_model import get_reconstruction_model_dict, is_time_valid_model
+from utils.model_utils import get_reconstruction_model_dict, is_time_valid_model
 from utils import wrapping_tools
 from utils.round_float import round_floats
 from utils import plot_geometries

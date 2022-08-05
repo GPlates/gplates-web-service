@@ -4,7 +4,7 @@ import numpy as np
 import pygplates
 from django.conf import settings
 from django.http import HttpResponse
-from utils.get_model import get_reconstruction_model_dict
+from utils.model_utils import get_reconstruction_model_dict
 from utils.round_float import round_floats
 from utils.wrapping_tools import wrap_polylines
 

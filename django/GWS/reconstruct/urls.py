@@ -3,9 +3,9 @@ from django.urls import re_path
 from . import (
     get_polygons,
     reconstruct_files,
+    reconstruct_geojson,
     reconstruct_points,
     views,
-    reconstruct_feature_collection,
     assign_plate_id,
 )
 
@@ -17,7 +17,7 @@ urlpatterns = [
     ),
     re_path(
         r"^reconstruct_feature_collection/?$",
-        reconstruct_feature_collection.reconstruct,
+        reconstruct_geojson.reconstruct,
         name="reconstruct_feature_collection",
     ),
     re_path(
@@ -42,5 +42,10 @@ urlpatterns = [
         r"^assign_points_plate_ids/?$",
         assign_plate_id.get_points_pids,
         name="assign_points_plate_ids",
+    ),
+    re_path(
+        r"^assign_geojson_plate_ids/?$",
+        assign_plate_id.get_plate_ids_for_geojson,
+        name="assign_geojson_plate_ids",
     ),
 ]

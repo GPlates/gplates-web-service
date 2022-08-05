@@ -10,7 +10,7 @@ from io import StringIO
 
 import numpy as np
 import pygplates
-from utils.get_model import get_reconstruction_model_dict
+from utils.model_utils import get_reconstruction_model_dict
 from utils.create_gpml import create_gpml_crustal_thickness
 from utils.sphere_tools import random_points_on_sphere,sampleOnSphere,healpix_mesh
 from utils.fileio import write_json_reconstructed_point_features

@@ -15,7 +15,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.views.decorators.csrf import csrf_exempt
 from geo.Geoserver import Geoserver
-from utils.get_model import get_reconstruction_model_dict
+from utils.model_utils import get_reconstruction_model_dict
 
 
 #

@@ -4,7 +4,11 @@ import pygplates
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from utils.get_model import get_reconstruction_model_dict
+from utils.model_utils import (
+    get_rotation_model,
+    get_static_polygons_filename,
+)
+from utils.geojson_io import load_geojson
 
 
 #
@@ -24,23 +28,8 @@ def get_points_pids(request):
     points = params.get("points", None)
     model = params.get("model", settings.MODEL_DEFAULT)
 
-    model_dict = get_reconstruction_model_dict(model)
-
-    if not model_dict:
-        return HttpResponseBadRequest(
-            'The "model" ({0}) cannot be recognized.'.format(model)
-        )
-
-    rotation_model = pygplates.RotationModel(
-        [
-            f"{settings.MODEL_STORE_DIR}/{model}/{rot_file}"
-            for rot_file in model_dict["RotationFile"]
-        ]
-    )
-
-    static_polygons_filename = (
-        f'{settings.MODEL_STORE_DIR}/{model}/{model_dict["StaticPolygons"]}'
-    )
+    rotation_model = get_rotation_model(model)
+    static_polygons_filename = get_static_polygons_filename(model)
 
     # create point features from input coordinates
     # filter out invalid characters
@@ -86,7 +75,7 @@ def get_points_pids(request):
     )
 
     pids = [f.get_reconstruction_plate_id() for f in assigned_point_features]
-    print(f.get_name() for f in assigned_point_features)
+    # print(f.get_name() for f in assigned_point_features)
 
     ret = json.dumps(pids)
 
@@ -96,5 +85,53 @@ def get_points_pids(request):
 
     # TODO:
     # The "*" makes the service wide open to anyone. We should implement access control when time comes.
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+
+#
+# reconstruct geojson features plate IDs
+#
+@csrf_exempt
+def get_plate_ids_for_geojson(request):
+
+    if request.method == "POST":
+        params = request.POST
+    elif request.method == "GET":
+        params = request.GET
+    else:
+        return HttpResponseBadRequest(
+            "Unrecognized request type. Only accept POST and GET requests."
+        )
+
+    fc_str = params.get("feature_collection")
+    model = str(params.get("model", settings.MODEL_DEFAULT))
+
+    # Convert geojson input to gplates feature collection
+    feature_collection = load_geojson(fc_str, False)
+
+    rotation_model = get_rotation_model(model)
+    static_polygons_filename = get_static_polygons_filename(model)
+
+    assigned_features = pygplates.partition_into_plates(
+        static_polygons_filename,
+        rotation_model,
+        feature_collection,
+        properties_to_copy=[
+            pygplates.PartitionProperty.reconstruction_plate_id,
+            pygplates.PartitionProperty.valid_time_period,
+        ],
+        partition_method=pygplates.PartitionMethod.most_overlapping_plate,
+    )
+
+    pids = [f.get_reconstruction_plate_id() for f in assigned_features]
+    # print(f.get_name() for f in assigned_point_features)
+
+    ret = json.dumps(pids)
+
+    # add header for CORS
+    # http://www.html5rocks.com/en/tutorials/cors/
+    response = HttpResponse(ret, content_type="application/json")
+    # TODO:
     response["Access-Control-Allow-Origin"] = "*"
     return response

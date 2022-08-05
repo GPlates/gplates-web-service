@@ -114,10 +114,23 @@ if r.status_code == 200:
 else:
     raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
-# assign plate ids
+# assign plate ids for points
 data = {"points": "-10,50,-30,-70,0,0"}
 r = requests.get(
     SERVER_URL + "/reconstruct/assign_points_plate_ids",
+    params=data,
+    verify=False,
+    proxies=proxies,
+)
+if r.status_code == 200:
+    print(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+else:
+    raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+# assign plate ids for geojson data
+data = {"feature_collection": json.dumps(fc)}
+r = requests.get(
+    SERVER_URL + "/reconstruct/assign_geojson_plate_ids",
     params=data,
     verify=False,
     proxies=proxies,

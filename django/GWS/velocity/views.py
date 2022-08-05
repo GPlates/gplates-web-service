@@ -6,7 +6,7 @@ from django.conf import settings
 import sys, json
 import numpy as np
 
-from utils.get_model import get_reconstruction_model_dict
+from utils.model_utils import get_reconstruction_model_dict
 from utils.velocity_tools import get_velocities
 from utils.create_gpml import create_gpml_regular_long_lat_mesh,create_gpml_healpix_mesh
 
