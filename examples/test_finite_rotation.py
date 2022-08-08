@@ -5,17 +5,24 @@
 # connect to gplates web service docker container
 # run it inside vs code
 import json
+import math
 import os
 import random
-import math
 
 import pygplates
 import requests
 
 import quaternions
 
-SERVER_URL = "http://localhost:80"
-# SERVER_URL = "https://gws.gplates.org"
+SERVER_URL = os.getenv("GWS_SERVER_URL")
+if not SERVER_URL:
+    SERVER_URL = "https://gws.gplates.org"
+    print(f"Using server URL in script {SERVER_URL}")
+else:
+    print(f"Using server URL in environment variable {SERVER_URL}")
+
+# SERVER_URL = "http://localhost:80"
+
 time = 100.0
 
 # get all the plate IDs in the reconstruction tree at 100Ma

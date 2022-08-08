@@ -158,6 +158,21 @@ if r.status_code == 200:
 else:
     raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
+
+# test motion path
+data = {"seedpoints": "0,0", "movplate": 701}
+r = requests.get(
+    SERVER_URL + "/reconstruct/motion_path",
+    params=data,
+    verify=False,
+    proxies=proxies,
+)
+if r.status_code == 200:
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! test motion path")
+else:
+    raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
 print("****************************")
 print("All tests have passed!!!")
 print("****************************")

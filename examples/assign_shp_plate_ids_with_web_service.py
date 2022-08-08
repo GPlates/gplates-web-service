@@ -5,18 +5,22 @@ import os
 from pathlib import Path
 
 import requests
-from dotenv import load_dotenv
 
-url = "http://localhost:80/reconstruct/assign_shp_plate_ids"
-# url = "http://localhost:18000/reconstruct/assign_shp_plate_ids"
-# url = 'https://gws.gplates.org/reconstruct/assign_shp_plate_ids'
+SERVER_URL = os.getenv("GWS_SERVER_URL")
+if not SERVER_URL:
+    SERVER_URL = "https://gws.gplates.org"
+    # SERVER_URL = "http://localhost:18000"
+    print(f"Using server URL in script {SERVER_URL}")
+else:
+    print(f"Using server URL in environment variable {SERVER_URL}")
+
+url = f"{SERVER_URL}/reconstruct/assign_shp_plate_ids"
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 # print(script_path)
 output_path = f"{script_path}/output"
 Path(output_path).mkdir(parents=True, exist_ok=True)
 
-load_dotenv(f"{script_path}/.env")  # take environment variables from .env.
 
 data_folder = f"{script_path}/data"
 files = {

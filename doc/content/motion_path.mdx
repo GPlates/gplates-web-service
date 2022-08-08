@@ -1,0 +1,38 @@
+---
+title: "Motion Path"
+metaTitle: "Motion Path"
+metaDescription: "Motion Path."
+---
+
+## Get Motion Path
+
+get reconstructed motion path features
+
+**Endpoint:**
+
+    https://gws.gplates.org/reconstruct/motion_path
+
+**Parameters:**
+
+*seedpoints* : integer value for reconstruction anchor plate id [required]
+
+*timespec* : specification for times for motion path construction, in format 'mintime,maxtime,increment' [defaults to '0,100,10']
+
+*time* : time for reconstruction [default=0]
+
+*fixplate* : integer plate id for fixed plate [default=0]
+
+*movplate* : integer plate id for moving plate [required]
+
+*model* : name for reconstruction model [defaults to default model from web service settings]. 
+User can get a list of available model names at <https://gws.gplates.org/list/model_names>
+
+**Returns:**
+
+json containing reconstructed motion path features
+
+**Examples:** 
+
+**&#128994; E1:** get motion path of (0,0) for plate id 701
+
+<https://gws.gplates.org/reconstruct/motion_path?seedpoints=0,0&movplate=701>

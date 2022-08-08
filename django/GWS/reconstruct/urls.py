@@ -8,6 +8,7 @@ from . import (
     views,
     assign_plate_id,
     assign_shp_plate_id,
+    motion_path,
 )
 
 urlpatterns = [
@@ -32,7 +33,7 @@ urlpatterns = [
         get_polygons.get_static_polygons,
         name="static_polygons",
     ),
-    re_path(r"^motion_path/?$", views.motion_path, name="motion_path"),
+    re_path(r"^motion_path/?$", motion_path.get_motion_path, name="motion_path"),
     re_path(r"^flowline/?$", views.flowline, name="flowline"),
     re_path(
         r"^coastlines_low/?$",

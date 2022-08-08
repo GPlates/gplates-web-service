@@ -55,7 +55,7 @@ const config = {
       '/reconstruction', // add trailing slash if enabled above
       '/reconstruction-models',
       '/rotation',
-      '/assign-plate-id',
+      '/assign-plate-ids',
       '/topology',
       '/raster-query',
       '/velocity',
@@ -66,7 +66,7 @@ const config = {
       '/topology', // add trailing slash if enabled above
       '/velocity', // add trailing slash if enabled above
       '/examples',
-      '/assign-plate-id',
+      '/assign-plate-ids',
     ],
     links: [
       { text: 'GPlates', link: 'https://www.gplates.org' }, 

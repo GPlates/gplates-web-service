@@ -20,4 +20,6 @@ curl --fail -s -o /dev/null "${GWS_SERVER_URL}/reconstruct/coastlines/?&time=140
 
 printf "PASSED! coastlines\n"
 
+python3 $(dirname "$0")/../examples/assign_shp_plate_ids_with_web_service.py
+
 python3 $(dirname "$0")/test.py

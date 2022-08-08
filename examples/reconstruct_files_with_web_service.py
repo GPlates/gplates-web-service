@@ -7,9 +7,15 @@ from pathlib import Path
 import requests
 from dotenv import load_dotenv
 
-url = "http://localhost:80/reconstruct/reconstruct_files"
-# url = "http://localhost:18000/reconstruct/reconstruct_files"
-# url = 'https://gws.gplates.org/reconstruct/reconstruct_files'
+SERVER_URL = os.getenv("GWS_SERVER_URL")
+if not SERVER_URL:
+    SERVER_URL = "https://gws.gplates.org"
+    # SERVER_URL = "http://localhost:18000"
+    print(f"Using server URL in script {SERVER_URL}")
+else:
+    print(f"Using server URL in environment variable {SERVER_URL}")
+
+url = f"{SERVER_URL}/reconstruct/reconstruct_files"
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 # print(script_path)
