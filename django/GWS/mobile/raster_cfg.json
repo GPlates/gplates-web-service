@@ -1,0 +1,68 @@
+{
+  "Geology": {
+    "title": "Geology",
+    "subTitle": "Present Day",
+    "icon": "images/geology-256x256.png",
+    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "layer": "gplates:cgmw_2010_3rd_ed_gplates_clipped_edge_ref",
+    "format": "image/jpeg",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  },
+  "Agegrid": {
+    "title": "Agegrid",
+    "subTitle": "410Ma-0Ma",
+    "icon": "images/agegrid-256x256.png",
+    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "layer": "gplates:agegrid",
+    "format": "image/jpeg",
+    "maximumLevel": 8,
+    "startTime": 410,
+    "endtime": 0
+  },
+  "Topography": {
+    "title": "Topography",
+    "subTitle": "Present Day",
+    "icon": "images/topography-256x256.png",
+    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "layer": "gplates:topography",
+    "format": "image/jpeg",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  },
+  "placeholder-1": {
+    "title": "placeholder-1",
+    "subTitle": "Present Day",
+    "icon": "images/topography-256x256.png",
+    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "layer": "gplates:agegrid",
+    "format": "image/jpeg",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  },
+  "placeholder-2": {
+    "title": "placeholder-2",
+    "subTitle": "Present Day",
+    "icon": "images/topography-256x256.png",
+    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "layer": "gplates:agegrid",
+    "format": "image/jpeg",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  },
+  "placeholder-3": {
+    "title": "placeholder-3",
+    "subTitle": "Present Day",
+    "icon": "images/topography-256x256.png",
+    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "layer": "gplates:agegrid",
+    "format": "image/jpeg",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  }
+}

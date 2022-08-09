@@ -27,7 +27,7 @@ urlpatterns = [
     re_path(r"^topology/", include("topology.urls")),
     re_path(r"^velocity/", include("velocity.urls")),
     re_path(r"^rotation/", include("rotation.urls")),
-    # re_path(r'^reconstruct_file/', include('reconstruct_file.urls')),
+    re_path(r"^mobile/", include("mobile.urls")),
     re_path(r"^earth/", include("earth.urls")),
     re_path(r"^list/", include("info.urls")),
     re_path(r"^map/", include("paleomap.urls")),
