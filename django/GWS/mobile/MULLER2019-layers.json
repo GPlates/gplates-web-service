@@ -1,0 +1,20 @@
+{
+  "coastlines": {
+    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "layer": "gplates:Matthews_etal_GPC_2016_Coastlines_Polyline",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  },
+  "static-polygons": {
+    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "layer": "gplates:Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons",
+    "format": "image/jpeg",
+    "style": "polygon-no-fill",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  }
+}

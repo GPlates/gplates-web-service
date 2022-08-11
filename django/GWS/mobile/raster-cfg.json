@@ -8,7 +8,8 @@
     "format": "image/jpeg",
     "maximumLevel": 8,
     "startTime": 0,
-    "endtime": 0
+    "endtime": 0,
+    "model": "MULLER2019"
   },
   "Agegrid": {
     "title": "Agegrid",
@@ -19,7 +20,8 @@
     "format": "image/jpeg",
     "maximumLevel": 8,
     "startTime": 410,
-    "endtime": 0
+    "endtime": 0,
+    "model": "SETON2012"
   },
   "Topography": {
     "title": "Topography",
@@ -30,7 +32,8 @@
     "format": "image/jpeg",
     "maximumLevel": 8,
     "startTime": 0,
-    "endtime": 0
+    "endtime": 0,
+    "model": "MERDITH2021"
   },
   "placeholder-1": {
     "title": "placeholder-1",
@@ -41,7 +44,8 @@
     "format": "image/jpeg",
     "maximumLevel": 8,
     "startTime": 0,
-    "endtime": 0
+    "endtime": 0,
+    "model": "MERDITH2021"
   },
   "placeholder-2": {
     "title": "placeholder-2",
@@ -52,7 +56,8 @@
     "format": "image/jpeg",
     "maximumLevel": 8,
     "startTime": 0,
-    "endtime": 0
+    "endtime": 0,
+    "model": "MERDITH2021"
   },
   "placeholder-3": {
     "title": "placeholder-3",
@@ -63,6 +68,7 @@
     "format": "image/jpeg",
     "maximumLevel": 8,
     "startTime": 0,
-    "endtime": 0
+    "endtime": 0,
+    "model": "MERDITH2021"
   }
 }
