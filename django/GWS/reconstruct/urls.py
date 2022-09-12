@@ -1,14 +1,15 @@
 from django.urls import re_path
 
 from . import (
+    assign_plate_id,
+    assign_shp_plate_id,
+    cities,
     get_polygons,
+    motion_path,
     reconstruct_files,
     reconstruct_geojson,
     reconstruct_points,
     views,
-    assign_plate_id,
-    assign_shp_plate_id,
-    motion_path,
 )
 
 urlpatterns = [
@@ -54,5 +55,10 @@ urlpatterns = [
         r"^assign_shp_plate_ids/?$",
         assign_shp_plate_id.assign_plate_ids,
         name="assign_shp_plate_ids",
+    ),
+    re_path(
+        r"^get_cities/?$",
+        cities.get_city_lon_lat_at_time,
+        name="get_city_lon_lat_at_time",
     ),
 ]
