@@ -1,8 +1,11 @@
+import json
+
 import pygplates
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from utils.model_utils import get_rotation_model, get_static_polygons_filename
+from utils.round_float import round_floats
 
 
 @csrf_exempt
@@ -164,7 +167,7 @@ def reconstruct(request):
 
     # prepare the response to be returned
     if not return_feature_collection:
-        ret = '{"type":"MultiPoint","coordinates":['
+        ret = {"type": "MultiPoint", "coordinates": []}
         for idx in range(p_index):
             lon = None
             lat = None
@@ -176,21 +179,22 @@ def reconstruct(request):
                 lat = assigned_fc[idx].get_geometry().to_lat_lon()[0]
 
             if lon is not None and lat is not None:
-                ret += "[{0:5.2f},{1:5.2f}],".format(lon, lat)
+                ret["coordinates"].append([lon, lat])
             elif return_null_points:
-                ret += "null,"  # return null for invalid coordinates
+                ret["coordinates"].append(None)  # return null for invalid coordinates
             else:
-                ret += "[{0:5.2f},{1:5.2f}],".format(
-                    999.99, 999.99
+                ret["coordinates"].append(
+                    [999.99, 999.99]
                 )  # use 999.99 to indicate invalid coordinates
 
     else:
-        ret = '{"type":"FeatureCollection","features":['
+        ret = {"type": "FeatureCollection", "features": []}
         for idx in range(p_index):
             lon = None
             lat = None
             begin_time = None
             end_time = None
+            pid = 0
             if not is_reverse and rfgs[idx]:
                 lon = rfgs[idx].get_reconstructed_geometry().to_lat_lon()[1]
                 lat = rfgs[idx].get_reconstructed_geometry().to_lat_lon()[0]
@@ -202,38 +206,32 @@ def reconstruct(request):
                 valid_time = assigned_fc[idx].get_valid_time(None)
                 if valid_time:
                     begin_time, end_time = valid_time
+                pid = assigned_fc[idx].get_reconstruction_plate_id()
 
-            ret += '{"type":"Feature","geometry":'
+            feat = {"type": "Feature", "geometry": {}}
             if lon is not None and lat is not None:
-                ret += (
-                    "{"
-                    + '"type":"Point","coordinates":[{0:5.2f},{1:5.2f}]'.format(
-                        lon, lat
-                    )
-                    + "},"
-                )
+                feat["geometry"] = {"type": "Point", "coordinates": [lon, lat]}
             else:
-                ret += "null,"
+                feat["geometry"] = None
             if begin_time is not None and end_time is not None:
                 # write out begin and end time
                 if begin_time == pygplates.GeoTimeInstant.create_distant_past():
-                    begin_time = '"distant past"'
+                    begin_time = "distant past"
                 if end_time == pygplates.GeoTimeInstant.create_distant_future():
-                    end_time = '"distant future"'
-                ret += (
-                    '"properties":{'
-                    + '"valid_time":[{0},{1}]'.format(begin_time, end_time)
-                    + "}},"
-                )
+                    end_time = "distant future"
+                feat["properties"] = {"valid_time": [begin_time, end_time]}
             else:
-                ret += '"properties":{}' + "},"
+                feat["properties"] = {}
 
-    ret = ret[0:-1]
-    ret += "]}"
+            feat["properties"]["pid"] = pid
+
+            ret["features"].append(feat)
 
     # add header for CORS
     # http://www.html5rocks.com/en/tutorials/cors/
-    response = HttpResponse(ret, content_type="application/json")
+    response = HttpResponse(
+        json.dumps(round_floats(ret)), content_type="application/json"
+    )
 
     # TODO:
     # The "*" makes the service wide open to anyone. We should implement access control when time comes.

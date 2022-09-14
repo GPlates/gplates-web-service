@@ -67,6 +67,7 @@ def get_quaternions(request):
 
 #
 # return the finite rotation
+# https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100&pids=701,801,901
 #
 def get_rotation(request, return_quat=False):
     if request.method == "POST":
@@ -90,11 +91,23 @@ def get_rotation(request, return_quat=False):
             for rot_file in model_dict["RotationFile"]
         ]
     )
+
     ret = {}
     for time in times:
         r_tree = rotation_model.get_reconstruction_tree(time)
         ret[str(time)] = {}
-        for pid in pids:
+
+        # if not pids are given, get all pids from reconstruction tree
+        if len(pids) == 0:
+            edges = r_tree.get_edges()
+            for edge in edges:
+                pids.append(edge.get_fixed_plate_id())
+                pids.append(edge.get_moving_plate_id())
+            pids_ = list(set(pids))
+        else:
+            pids_ = pids
+
+        for pid in pids_:
             finite_rotation = r_tree.get_equivalent_total_rotation(pid)
             (
                 pole_lat,
@@ -108,7 +121,7 @@ def get_rotation(request, return_quat=False):
             else:
                 ret[str(time)][str(pid)] = [pole_lon, pole_lat, angle]
 
-    ret = json.dumps(ret)
+    ret = json.dumps(round_floats(ret))
 
     return HttpResponse(ret, content_type="application/json")
 
@@ -118,16 +131,17 @@ def get_rotation(request, return_quat=False):
 #
 def get_request_parameters(params):
     time_str = params.get("times", "0")
-    pid_str = params.get("pids", "0")
+    pid_str = params.get("pids", None)
     model = params.get("model", settings.MODEL_DEFAULT)
     try:
         # make [10.5,20.6,30.5] or [701,201,301] work
         time_str = "".join(c for c in time_str if c.isdecimal() or (c in [".", ","]))
-        pid_str = "".join(c for c in pid_str if c.isdecimal() or c == ",")
-        print(time_str)
-        print(pid_str)
         times = [float(t) for t in time_str.split(",")]
-        pids = [int(p) for p in pid_str.split(",")]
+        if pid_str and pid_str is not None:
+            pid_str = "".join(c for c in pid_str if c.isdecimal() or c == ",")
+            pids = [int(p) for p in pid_str.split(",")]
+        else:
+            pids = []  # pid_str is None or empty
     except:
         raise InvalidParameters()
     return model, list(set(times)), list(set(pids))  # return unique times and pids
