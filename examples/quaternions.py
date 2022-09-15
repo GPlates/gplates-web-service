@@ -42,7 +42,7 @@ def axis_angle_to_quat(v, theta):
     return w, x, y, z
 
 
-def quat_to_axis_angle(quat):
+def quat_to_axis_angle(q):
     w, v = q[0], q[1:]
     theta = acos(w) * 2.0
     return normalize(v), theta
