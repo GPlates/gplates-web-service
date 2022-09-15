@@ -4,15 +4,14 @@
 import json
 import math
 
+import numpy as np
 import pygplates
 from django.conf import settings
-from django.http import (
-    HttpResponse,
-    HttpResponseBadRequest,
-)
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from utils.model_utils import get_reconstruction_model_dict
 from utils.round_float import round_floats
+
 
 #
 # return all the plate ids in the reconstruction tree at given time
@@ -79,6 +78,10 @@ def get_rotation(request, return_quat=False):
 
     model_name, times, pids = get_request_parameters(params)
 
+    # return results as {pid_1:[a list of rotation], pid_2:[a list of rotation]}
+    # not group the results by "time"
+    is_group_by_pid = True if "group_by_pid" in params else False
+
     model_dict = get_reconstruction_model_dict(model_name)
     if not model_dict:
         return HttpResponseBadRequest(
@@ -93,21 +96,23 @@ def get_rotation(request, return_quat=False):
     )
 
     ret = {}
-    for time in times:
+    ret_by_pids = {}
+    for idx, time in enumerate(times):
         r_tree = rotation_model.get_reconstruction_tree(time)
         ret[str(time)] = {}
 
-        # if not pids are given, get all pids from reconstruction tree
+        # if no pids are given, get all pids from reconstruction tree
         if len(pids) == 0:
             edges = r_tree.get_edges()
             for edge in edges:
-                pids.append(edge.get_fixed_plate_id())
                 pids.append(edge.get_moving_plate_id())
             pids_ = list(set(pids))
         else:
             pids_ = pids
 
         for pid in pids_:
+            if str(pid) not in ret_by_pids:
+                ret_by_pids[str(pid)] = [[0.0, 90.0, 0.0]] * len(times)
             finite_rotation = r_tree.get_equivalent_total_rotation(pid)
             (
                 pole_lat,
@@ -121,23 +126,46 @@ def get_rotation(request, return_quat=False):
             else:
                 ret[str(time)][str(pid)] = [pole_lon, pole_lat, angle]
 
-    ret = json.dumps(round_floats(ret))
+            if is_group_by_pid:
+                ret_by_pids[str(pid)][idx] = ret[str(time)][str(pid)]
 
-    return HttpResponse(ret, content_type="application/json")
+    if is_group_by_pid:
+        ret = json.dumps(round_floats(ret_by_pids))
+    else:
+        ret = json.dumps(round_floats(ret))
+
+    response = HttpResponse(ret, content_type="application/json")
+    # TODO:
+    # The "*" makes the service wide open to anyone. We should implement access control when time comes.
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 
 
 #
 # parse parameters from http request
 #
 def get_request_parameters(params):
-    time_str = params.get("times", "0")
+    time_str = params.get("times", None)
     pid_str = params.get("pids", None)
     model = params.get("model", settings.MODEL_DEFAULT)
+    start_str = params.get("start", None)
+    end_str = params.get("end", None)
+    step_str = params.get("step", 1)
     try:
-        # make [10.5,20.6,30.5] or [701,201,301] work
-        time_str = "".join(c for c in time_str if c.isdecimal() or (c in [".", ","]))
-        times = [float(t) for t in time_str.split(",")]
+        if time_str is not None:
+            # make [10.5,20.6,30.5] work
+            time_str = "".join(
+                c for c in time_str if c.isdecimal() or (c in [".", ","])
+            )
+            times = [float(t) for t in time_str.split(",")]
+        elif all([(start_str is not None), (end_str is not None)]):
+            times = np.arange(
+                float(start_str), float(end_str), float(step_str)
+            ).tolist()
+        else:
+            times = [0]
         if pid_str and pid_str is not None:
+            # make [701,201,301] work
             pid_str = "".join(c for c in pid_str if c.isdecimal() or c == ",")
             pids = [int(p) for p in pid_str.split(",")]
         else:

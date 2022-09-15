@@ -21,6 +21,13 @@ get the finite rotation as a tuple of pole longitude, pole latitude and angle (a
 *model* : name for reconstruction model [defaults to default model from web service settings]. 
 User can get a list of available model names at <https://gws.gplates.org/list/model_names>
     
+*group_by_pid* : group the results by plate IDs
+
+*start* : start age, such as "start=1"
+
+*end* : end age, such as "end=100"
+
+*step* : the size of step from start age to end age, such as "step=1"
 
 **Examples:** 
 
@@ -34,9 +41,13 @@ User can get a list of available model names at <https://gws.gplates.org/list/mo
 
 **&#128994; E3:** get euler pole and rotation angle at 100Ma for all plate ids
 
-<http://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100>
+<https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100>
 
-**&#128994; E4:** a Python example. the file can be found at <https://github.com/GPlates/gplates-web-service/blob/master/examples/get_rotation_with_web_service.py>
+**&#128994; E4:** get euler pole and rotation angle from 1Ma to 100Ma with step 2Ma; group the results by plate ids
+
+<https://gws.gplates.org/rotation/get_euler_pole_and_angle?start=1&end=100&step=2&pids=701,801,901&group_by_pid>
+
+**&#128994; E5:** a Python example. the file can be found at <https://github.com/GPlates/gplates-web-service/blob/master/examples/get_rotation_with_web_service.py>
 
     import json
     import random
