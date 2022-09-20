@@ -1,4 +1,19 @@
 {
+  "paleo-age-grid": {
+    "title": "Paleo-agegrid",
+    "subTitle": "0-230Ma",
+    "icon": "images/paleo-agegrid-256x256.png",
+    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "wmsUrl": "https://geosrv.earthbyte.org/geoserver/paleo-age-grids/wms",
+    "layerName": "paleo-age-grids:paleo-age-grid-{{time}}-Ma",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 230,
+    "endTime": 0,
+    "step": 1,
+    "model": "MERDITH2021"
+  },
   "Geology": {
     "title": "Geology",
     "subTitle": "Present Day",
@@ -11,7 +26,7 @@
     "maximumLevel": 8,
     "startTime": 0,
     "endTime": 0,
-    "model": "MULLER2019"
+    "step": 0
   },
   "Agegrid": {
     "title": "Agegrid",
@@ -25,7 +40,7 @@
     "maximumLevel": 8,
     "startTime": 0,
     "endTime": 0,
-    "model": "SETON2012"
+    "step": 0
   },
   "Topography": {
     "title": "Topography",
@@ -39,7 +54,7 @@
     "maximumLevel": 8,
     "startTime": 0,
     "endTime": 0,
-    "model": "MERDITH2021"
+    "step": 0
   },
   "paleo-topo": {
     "title": "Paleo-topography",
@@ -53,20 +68,7 @@
     "maximumLevel": 8,
     "startTime": 395,
     "endTime": 0,
-    "model": "MERDITH2021"
-  },
-  "paleo-age-grid": {
-    "title": "Paleo-agegrid",
-    "subTitle": "0-230Ma",
-    "icon": "images/paleo-agegrid-256x256.png",
-    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
-    "wmsUrl": "https://geosrv.earthbyte.org/geoserver/paleo-age-grids/wms",
-    "layerName": "paleo-age-grids:paleo-age-grid-{{time}}-Ma",
-    "format": "image/jpeg",
-    "style": "",
-    "maximumLevel": 8,
-    "startTime": 230,
-    "endTime": 0,
+    "step": 1,
     "model": "MERDITH2021"
   },
   "continental_polygons": {
@@ -81,6 +83,7 @@
     "maximumLevel": 8,
     "startTime": 410,
     "endTime": 0,
+    "step": 1,
     "model": "MERDITH2021"
   }
 }

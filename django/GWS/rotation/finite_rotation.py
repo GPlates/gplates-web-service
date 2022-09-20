@@ -71,6 +71,8 @@ def get_quaternions(request):
 def get_rotation(request, return_quat=False):
     if request.method == "POST":
         params = request.POST
+        if len(list(params.items())) == 0:
+            params = json.loads(request.body.decode("utf-8"))
     elif request.method == "GET":
         params = request.GET
     else:
