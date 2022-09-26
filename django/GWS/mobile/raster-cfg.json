@@ -12,7 +12,7 @@
     "startTime": 230,
     "endTime": 0,
     "step": 1,
-    "model": "MERDITH2021"
+    "model": "MULLER2019"
   },
   "Geology": {
     "title": "Geology",
@@ -84,6 +84,6 @@
     "startTime": 410,
     "endTime": 0,
     "step": 1,
-    "model": "MERDITH2021"
+    "model": "SETON2012"
   }
 }

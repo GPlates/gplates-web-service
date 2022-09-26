@@ -1,20 +1,24 @@
 {
   "coastlines": {
     "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
-    "layer": "gplates:Matthews_etal_GPC_2016_Coastlines_Polyline",
+    "wmsUrl": "https://geosrv.earthbyte.org/geoserver/muller2019-coastlines/wms",
+    "layer": "muller2019-coastlines:coastlines_{{time}}Ma",
     "format": "image/jpeg",
     "style": "",
     "maximumLevel": 8,
-    "startTime": 0,
-    "endtime": 0
+    "startTime": 230,
+    "endtime": 0,
+    "step": 1
   },
   "static-polygons": {
     "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "wmsUrl": "https://geosrv.earthbyte.org/geoserver/gplates/wms",
     "layer": "gplates:Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons",
     "format": "image/jpeg",
     "style": "polygon-no-fill",
     "maximumLevel": 8,
     "startTime": 0,
-    "endtime": 0
+    "endtime": 0,
+    "step": 1
   }
 }
