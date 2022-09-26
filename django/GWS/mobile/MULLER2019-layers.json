@@ -2,7 +2,7 @@
   "coastlines": {
     "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
     "wmsUrl": "https://geosrv.earthbyte.org/geoserver/muller2019-coastlines/wms",
-    "layer": "muller2019-coastlines:coastlines_{{time}}Ma",
+    "layerName": "muller2019-coastlines:coastlines_{{time}}Ma",
     "format": "image/jpeg",
     "style": "",
     "maximumLevel": 8,
@@ -13,7 +13,7 @@
   "static-polygons": {
     "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
     "wmsUrl": "https://geosrv.earthbyte.org/geoserver/gplates/wms",
-    "layer": "gplates:Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons",
+    "layerName": "gplates:Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons",
     "format": "image/jpeg",
     "style": "polygon-no-fill",
     "maximumLevel": 8,
