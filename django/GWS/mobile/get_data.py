@@ -24,3 +24,21 @@ def get_scotese_etal_2021_global_temp(reqeust):
     response = HttpResponse(json.dumps(data), content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
+
+#
+#
+def get_graphs(request):
+    with open(f"{script_path}/data/graphs.json", "r") as f:
+        response = HttpResponse(f, content_type="application/json; charset=utf8")
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
+
+
+#
+#
+def get_cities(request):
+    with open(f"{script_path}/data/cities.json", "r") as f:
+        response = HttpResponse(f, content_type="application/json; charset=utf8")
+        response["Access-Control-Allow-Origin"] = "*"
+        return response

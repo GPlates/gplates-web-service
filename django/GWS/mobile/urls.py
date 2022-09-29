@@ -12,4 +12,14 @@ urlpatterns = [
         get_data.get_scotese_etal_2021_global_temp,
         name="get_scotese_etal_2021_global_temp",
     ),
+    re_path(
+        r"^get_graphs/?$",
+        get_data.get_graphs,
+        name="get_graphs",
+    ),
+    re_path(
+        r"^get_cities/?$",
+        get_data.get_cities,
+        name="get_cities",
+    ),
 ]

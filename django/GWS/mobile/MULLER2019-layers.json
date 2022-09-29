@@ -15,7 +15,7 @@
     "wmsUrl": "https://geosrv.earthbyte.org/geoserver/MULLER2019/wms",
     "layerName": "MULLER2019:static-polygons-{{time}}-Ma",
     "format": "image/jpeg",
-    "style": "MULLER2019:polygon-no-fill-ex",
+    "style": "",
     "maximumLevel": 8,
     "startTime": 230,
     "endtime": 0,
