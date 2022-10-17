@@ -13,6 +13,11 @@ urlpatterns = [
         name="get_scotese_etal_2021_global_temp",
     ),
     re_path(
+        r"^get_scotese_etal_2021_deep_ocean_temp/?$",
+        get_data.get_scotese_etal_2021_deep_ocean_temp,
+        name="get_scotese_etal_2021_deep_ocean_temp",
+    ),
+    re_path(
         r"^get_graphs/?$",
         get_data.get_graphs,
         name="get_graphs",

@@ -10,7 +10,7 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 # get raster configurations as json
 #
 def get_rasters(request):
-    with open(f"{script_path}/raster-cfg.json", "r") as f:
+    with open(f"{script_path}/data/raster-cfg.json", "r") as f:
         data = json.load(f)
         for key in data:
             with open(f"{script_path}/{data[key]['icon']}", "rb") as image_file:

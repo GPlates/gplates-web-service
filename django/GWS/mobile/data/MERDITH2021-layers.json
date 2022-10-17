@@ -1,9 +1,10 @@
 {
-  "static-polygons": {
+  "coastlines": {
+    "displayName": "Coastlines",
     "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
-    "layerName": "gplates:Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons",
+    "layerName": "gplates:Matthews_etal_GPC_2016_Coastlines_Polyline",
     "format": "image/jpeg",
-    "style": "polygon-no-fill",
+    "style": "",
     "maximumLevel": 8,
     "startTime": 0,
     "endtime": 0

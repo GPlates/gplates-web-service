@@ -1,7 +1,8 @@
 {
   "coastlines": {
-    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
-    "wmsUrl": "https://geosrv.earthbyte.org/geoserver/MULLER2019/wms",
+    "displayName": "Coastlines",
+    "url": "https://geosrv.gplates.org/geoserver/gwc/service/wmts",
+    "wmsUrl": "https://geosrv.gplates.org/geoserver/MULLER2019/wms",
     "layerName": "MULLER2019:coastlines_{{time}}Ma",
     "format": "image/jpeg",
     "style": "",
@@ -11,8 +12,9 @@
     "step": 1
   },
   "static-polygons": {
-    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
-    "wmsUrl": "https://geosrv.earthbyte.org/geoserver/MULLER2019/wms",
+    "displayName": "Static Polygon",
+    "url": "https://geosrv.gplates.org/geoserver/gwc/service/wmts",
+    "wmsUrl": "https://geosrv.gplates.org/geoserver/MULLER2019/wms",
     "layerName": "MULLER2019:static-polygons-{{time}}-Ma",
     "format": "image/jpeg",
     "style": "",
