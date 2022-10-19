@@ -33,7 +33,7 @@ def get_points_pids(request):
 
     # create point features from input coordinates
     # filter out invalid characters
-    points = "".join(c for c in points if c.isdecimal() or (c in [".", ","]))
+    points = "".join(c for c in points if c.isdecimal() or (c in [".", ",", "-"]))
     p_index = 0
     point_features = []
     if points:
