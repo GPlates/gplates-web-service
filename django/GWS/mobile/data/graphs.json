@@ -1,6 +1,6 @@
 {
   "scotese 2021 Global Temperature": "https://gws.gplates.org/mobile/get_scotese_etal_2021_global_temp",
-  "scotese 2021 Deep Ocean Temperature": "http://localhost:18000/mobile/get_scotese_etal_2021_deep_ocean_temp",
+  "scotese 2021 Deep Ocean Temperature": "https://gws.gplates.org/mobile/get_scotese_etal_2021_deep_ocean_temp",
   "some data 2": "https://gws.gplates.org/mobile/get_scotese_etal_2021_global_temp",
   "some data 3": "https://gws.gplates.org/mobile/get_scotese_etal_2021_global_temp",
   "some data 4": "https://gws.gplates.org/mobile/get_scotese_etal_2021_global_temp"
