@@ -27,20 +27,6 @@
     "endTime": 0,
     "step": 0
   },
-  "Topography": {
-    "title": "Topography",
-    "subTitle": "Present Day",
-    "icon": "images/topography-256x256.png",
-    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
-    "wmsUrl": "https://geosrv.earthbyte.org/geoserver/gplates/wms",
-    "layerName": "gplates:topography",
-    "format": "image/jpeg",
-    "style": "",
-    "maximumLevel": 8,
-    "startTime": 0,
-    "endTime": 0,
-    "step": 0
-  },
   "paleo-age-grid": {
     "title": "Paleo-agegrid",
     "subTitle": "0-230Ma",
@@ -55,6 +41,20 @@
     "endTime": 0,
     "step": 1,
     "model": "MULLER2019"
+  },
+  "Topography": {
+    "title": "Topography",
+    "subTitle": "Present Day",
+    "icon": "images/topography-256x256.png",
+    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "wmsUrl": "https://geosrv.earthbyte.org/geoserver/gplates/wms",
+    "layerName": "gplates:topography",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endTime": 0,
+    "step": 0
   },
   "paleo-topo": {
     "title": "Paleo-topography",
