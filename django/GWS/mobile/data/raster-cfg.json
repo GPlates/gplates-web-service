@@ -56,6 +56,21 @@
     "endTime": 0,
     "step": 0
   },
+  "paleobathymetry": {
+    "title": "Paleo-bathymetry",
+    "subTitle": "0-250Ma",
+    "icon": "images/paleo-bathymetry-256x256.png",
+    "url": "https://geosrv.gplates.org/geoserver/gwc/service/wmts",
+    "wmsUrl": "https://geosrv.gplates.org/geoserver/NICKY/wms",
+    "layerName": "NICKY:paleobathymetry-{{time}}",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 250,
+    "endTime": 0,
+    "step": 1,
+    "model": "NICKY"
+  },
   "paleo-topo": {
     "title": "Paleo-topography",
     "subTitle": "0-395Ma",
