@@ -6,14 +6,14 @@
 003 1000.0   90.0    0.0    0.0  000 ! nan -12.8276    161.55    -43.0148  000
 005  0.0   90.0    0.0    0.0  000 !
 005 1000.0   90.0    0.0    0.0  000 !
-070  0.0   90.0    0.0    0.0  000 ! LGS-TPWC Longitudinal shift-TPW correction, no longitudinal shift
-070 70.0   90.0    0.0    0.0  000 ! LGS-TPWC Longitudinal shift-TPW correction, no longitudinal shift
-070 100.0   90.0    0.0  -10.0  000 ! LGS-TPWC Longitudinal shift-TPW correction, Muller et al. AREPS (in press), transitioning to 10 degree longitudinal shift
-070 230.0   90.0    0.0  -10.0  000 ! LGS-TPWC Longitudinal shift-TPW correction, Muller et al. AREPS (in press), 10 degree longitudinal shift
-070 240.0   90.0    0.0    0.0  000 ! LGS-TPWC Longitudinal shift-TPW correction, transitioning to no longitudinal shift
-070 240.0   90.0    0.0    0.0  000 ! LGS-TPWC Longitudinal shift-TPW correction, transitioning to no longitudinal shift
-070 1000.0   90.0    0.0    0.0  000 ! 	LGS-TPWC Longitudinal shift-TPW correction, no longitudinal shift
-070 1010.0   90.0    0.0    0.0  000 ! 	LGS-TPWC Longitudinal shift-TPW correction, no longitudinal shift
+070  0.0   90.0    0.0    0.0  000 ! LGS-TPWC Longitudinal shift
+070 70.0   90.0    0.0    0.0  000 ! LGS-TPWC Longitudinal shift
+070 100.0   90.0    0.0   0.0  000 ! LGS-TPWC Longitudinal shift
+070 230.0   90.0    0.0   0.0  000 ! LGS-TPWC Longitudinal shift
+070 240.0   90.0    0.0    0.0  000 ! LGS-TPWC Longitudinal shift
+070 240.0   90.0    0.0    0.0  000 ! LGS-TPWC Longitudinal shift
+070 1000.0   90.0    0.0    0.0  000 ! 	LGS-TPWC Longitudinal shift
+070 1010.0   90.0    0.0    0.0  000 ! 	LGS-TPWC Longitudinal shift
 101  0.0   90.0    0.0    0.0  714 ! NAM-NWA North America-Northwest Africa
 101 10.9   81.0   22.9    2.84  714 ! NAM-NWA @REF Mueller_1999 @DOI"10.1016/S1874-5997(99)80036-7"	@CHRONID"C5"
 101 20.1   80.6   24.5    5.53  714 ! NAM-NWA @REF Mueller_1999 @DOI"10.1016/S1874-5997(99)80036-7"	@CHRONID"C6"
