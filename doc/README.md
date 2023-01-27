@@ -1,8 +1,10 @@
-Run `gatsby develop` in this folder
+# How to update doc
 
-deployment: <https://app.netlify.com/sites/jolly-mclean-06aa7c/overview>
+- Run `nvm use 18`
+- Run `gatsby develop` in this folder
+- Edit the files
 
-nvm use 18
+☁ The GPlates Web Service doc is deployed at <https://app.netlify.com/sites/jolly-mclean-06aa7c/overview>.
 
 # gatsby-gitbook-starter
 
