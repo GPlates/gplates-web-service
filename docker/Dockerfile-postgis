@@ -1,4 +1,5 @@
 #
+# Check the password in create-gws-db.sql before building this docker image
 # docker build -f docker/Dockerfile-postgis -t gplates/postgis .
 #
 
