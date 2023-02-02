@@ -16,7 +16,7 @@ http://localhost/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&m
 
 ## Use docker container for development
 
-- create **gws-net** if haven't `docker network create --driver bridge gws-net`
+- Create **gws-net** if haven't `docker network create --driver bridge gws-net`
 
 - Go to the root directory of this repository and run `` docker run -it --rm -v `pwd`:/gws -p 18000:80 --network gws-net gplates/gws /bin/bash ``
 
