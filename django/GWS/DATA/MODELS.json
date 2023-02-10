@@ -5,7 +5,7 @@
     "ValidTimeRange": [1000.0, 0.0],
     "StaticPolygons": "shapes_static_polygons_Merdith_et_al.gpmlz"
   },
-  "DOMEIER2014": {
+  "HIDE_DOMEIER2014": {
     "PlatePolygons": [
       "LP_ridge.gpml",
       "LP_subduction.gpml",
@@ -33,7 +33,7 @@
     "ValidTimeRange": [750.0, 0.0],
     "StaticPolygons": "PALEOMAP_PlatePolygons.gpmlz"
   },
-  "MATTHEWS2016": {
+  "HIDE_MATTHEWS2016": {
     "PlatePolygons": [
       "Global_EarthByte_Mesozoic-Cenozoic_plate_boundaries_Matthews_etal.gpmlz",
       "Global_EarthByte_Paleozoic_plate_boundaries_Matthews_etal.gpmlz",
@@ -82,7 +82,7 @@
     "ValidTimeRange": [200.0, 0.0],
     "StaticPolygons": "Seton_etal_ESR2012_StaticPolygons_2012.1.gpmlz"
   },
-  "PEHRSSON2015": {
+  "HIDE_PEHRSSON2015": {
     "RotationFile": ["T_Rot_Model_Abs_25Ma_20131004.rot"],
     "Coastlines": "PlatePolygons.shp",
     "ValidTimeRange": [2100.0, 1275.0],
@@ -103,7 +103,7 @@
   "MULLER2019": {
     "RotationFile": ["Muller2019-Young2019-Cao2020.rot"],
     "Coastlines": "Global_EarthByte_GPlates_PresentDay_Coastlines.gpmlz",
-    "ValidTimeRange": [1100.0, 0.0],
+    "ValidTimeRange": [250.0, 0.0],
     "StaticPolygons": "Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons.gpmlz"
   }
 }

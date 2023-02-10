@@ -4,32 +4,81 @@ import pygplates
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view, schema, throttle_classes
+from rest_framework.throttling import AnonRateThrottle
+
+from utils.docstr_schema import DocstrSchema
 from utils.model_utils import get_rotation_model, get_static_polygons_filename
 from utils.round_float import round_floats
 
+"""
+http GET request to reconstruct points
+
+**usage**
+
+<http-address-to-gws>/reconstruct/reconstruct_points/points=\ *points*\&plate_id=\ *anchor_plate_id*\&time=\ *reconstruction_time*\&model=\ *reconstruction_model*
+
+**parameters:**
+
+*points* : list of points long,lat comma separated coordinates of points to be reconstructed [Required]
+
+*anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
+
+*time* : time for reconstruction [required]
+
+*model* : name for reconstruction model [defaults to default model from web service settings]
+
+**returns:**
+
+json list of long,lat reconstructed coordinates
+"""
+
 
 @csrf_exempt
+@api_view(["GET", "POST"])
+@throttle_classes([AnonRateThrottle])
+@schema(DocstrSchema())
 def reconstruct(request):
     """
-    http GET request to reconstruct points
+    get:
+      description: http GET request to reconstruct points
+      summary: reconstruct points
+      parameters:
+        - name: points
+          in: query
+          description: the coordinates of points
+          schema:
+            type: number
+        - name: time
+          in: query
+          description: paleo-time
+          schema:
+            type: number
 
-    **usage**
-
-    <http-address-to-gws>/reconstruct/reconstruct_points/points=\ *points*\&plate_id=\ *anchor_plate_id*\&time=\ *reconstruction_time*\&model=\ *reconstruction_model*
-
-    **parameters:**
-
-    *points* : list of points long,lat comma separated coordinates of points to be reconstructed [Required]
-
-    *anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
-
-    *time* : time for reconstruction [required]
-
-    *model* : name for reconstruction model [defaults to default model from web service settings]
-
-    **returns:**
-
-    json list of long,lat reconstructed coordinates
+      responses:
+        '200':
+          description: return reconstructed coordinates
+          content:
+            'application/json': {}
+    post:
+      description: basically the same as "get". allow user to send more points
+      summary: reconstruct points
+      parameters:
+        - name: points
+          in: query
+          description: the coordinates of points
+          schema:
+            type: number
+        - name: time
+          in: query
+          description: paleo-time
+          schema:
+            type: number
+      responses:
+        '200':
+          description: return reconstructed coordinates
+          content:
+            'application/json': {}
     """
     if request.method == "POST":
         params = request.POST

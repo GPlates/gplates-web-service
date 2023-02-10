@@ -16,7 +16,7 @@ RUN apt-get install -y python3 python3-pip
 RUN apt-get install -y apache2 apache2-dev libapache2-mod-wsgi-py3 
 RUN apt-get install -y gmt gmt-dcw gmt-gshhg libpq-dev libgeos-dev libproj-dev proj-data proj-bin 
 RUN pip3 install --upgrade pip
-RUN pip3 install django mod_wsgi numpy pandas scipy healpy requests netCDF4 pyshp psycopg2 
+RUN pip3 install django djangorestframework uritemplate mod_wsgi numpy pandas scipy healpy requests netCDF4 pyshp psycopg2 
 RUN pip3 install --use-deprecated=legacy-resolver cartopy
 #RUN pip3 install --no-binary :all: psycopg2
 

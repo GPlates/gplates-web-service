@@ -4,10 +4,11 @@ import os
 import pygplates
 from django.conf import settings
 
-#
-# return a dictionary of all available reconstruction models
-#
+
 def get_reconstruction_model_dict(MODEL_NAME):
+    """
+    return a dictionary of all available reconstruction models
+    """
     # Model registry
     with open(f"{settings.BASE_DIR}/DATA/MODELS.json") as f:
         models = json.load(f)
@@ -17,10 +18,10 @@ def get_reconstruction_model_dict(MODEL_NAME):
             return None
 
 
-#
-# return a rotation model given the model name
-#
 def get_rotation_model(model):
+    """
+    return a rotation model given the model name
+    """
     model_dict = get_reconstruction_model_dict(model)
 
     if not model_dict:
@@ -34,10 +35,10 @@ def get_rotation_model(model):
     )
 
 
-#
-# return static polygons filename
-#
 def get_static_polygons_filename(model):
+    """
+    return static polygons filename
+    """
     model_dict = get_reconstruction_model_dict(model)
 
     if not model_dict:
@@ -45,11 +46,12 @@ def get_static_polygons_filename(model):
     return f'{settings.MODEL_STORE_DIR}/{model}/{model_dict["StaticPolygons"]}'
 
 
-def get_model_name_list(MODEL_STORE, include_hidden=True):
-    # get a list of models from the model store.
-    # if 'include_hidden' is set to False, only the manually defined list of 'validated'
-    # models is returned. Otherwise, assume every directory within the model store is a valid model
-
+def get_model_name_list(MODEL_STORE, include_hidden=False):
+    """
+    get a list of models from the model store.
+    if 'include_hidden' is set to False, only the manually defined list of 'validated'
+    models is returned. Otherwise, assume every directory within the model store is a valid model
+    """
     if include_hidden:
         return [
             o
@@ -59,11 +61,16 @@ def get_model_name_list(MODEL_STORE, include_hidden=True):
     else:
         with open(f"{settings.BASE_DIR}/DATA/MODELS.json") as f:
             models = json.load(f)
-            return models.keys()
+            names = list(models.keys())
+            filtered = filter(lambda name: not name.startswith("HIDE_"), names)
+            return list(filtered)
 
 
 def is_time_valid_model(model_dict, time):
-    # returns True if the time is within the valid time of specified model
+    """
+    returns True if the time is within the valid time of specified model
+    """
+
     return (
         float(time) <= model_dict["ValidTimeRange"][0]
         and float(time) >= model_dict["ValidTimeRange"][1]
