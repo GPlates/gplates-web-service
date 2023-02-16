@@ -123,7 +123,7 @@ DATABASES = {
         "HOST": os.getenv("DB_HOST"),  # Database hostname
         "PASSWORD": os.getenv("DB_PASSWORD"),  # Database password for USER
         # Set to empty string for default. Not used with sqlite3.
-        "PORT": "5432",
+        "PORT": os.getenv("DB_PORT"),
     }
 }
 

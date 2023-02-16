@@ -17,7 +17,7 @@ services:
     volumes:
       - gws-db-data:/var/lib/postgresql/12/main
     ports:
-      - 5432:5432
+      - 5433:5432
     environment:
       - POSTGRES_PASSWORD="this is not a real password! go away!"
     restart: on-failure
@@ -35,7 +35,7 @@ services:
       - 18000:80
     restart: on-failure
     healthcheck:
-      test: curl --fail -s http://localhost:18000/ || exit 1
+      test: curl --fail -s http://localhost:18000/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness || exit 1
       interval: 1m30s
       timeout: 10s
       retries: 3
