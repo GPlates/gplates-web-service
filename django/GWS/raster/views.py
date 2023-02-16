@@ -3,13 +3,16 @@ import math
 import traceback
 
 from django.db import connection
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
-
+from django.http import (HttpResponse, HttpResponseBadRequest,
+                         HttpResponseServerError)
 
 logger = logging.getLogger("dev")
 
-#
+
 def query(request):
+    '''
+    Query raster value by lon, lat
+    '''
     try:
         lon = float(request.GET["lon"])
         lat = float(request.GET["lat"])

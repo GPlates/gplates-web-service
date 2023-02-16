@@ -65,7 +65,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.admindocs",
     "rest_framework",
-    #'rest_framework_swagger',
+    # 'rest_framework_swagger',
     "reconstruct",
     "rotation",
     "topology",
@@ -82,7 +82,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    #'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    # 'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -113,15 +113,17 @@ WSGI_APPLICATION = "GWS.wsgi.application"
 
 DATABASES = {
     "default": {
-        #'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         "ENGINE": "django.contrib.gis.db.backends.postgis",
         "NAME": os.getenv(
             "DB_NAME"
         ),  # Database name. Or path to database file if using sqlite3.
-        "USER": os.getenv("DB_USER"),  # Database username. Not used with sqlite3.
+        # Database username. Not used with sqlite3.
+        "USER": os.getenv("DB_USER"),
         "HOST": os.getenv("DB_HOST"),  # Database hostname
         "PASSWORD": os.getenv("DB_PASSWORD"),  # Database password for USER
-        "PORT": "5432",  # Set to empty string for default. Not used with sqlite3.
+        # Set to empty string for default. Not used with sqlite3.
+        "PORT": "5432",
     }
 }
 
@@ -173,5 +175,5 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {"anon": "10/minute", "user": "1000/day"},
+    "DEFAULT_THROTTLE_RATES": {"anon": "30/minute", "user": "1000/day"},
 }

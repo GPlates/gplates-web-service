@@ -20,7 +20,7 @@ Test the database(on host computer): `psql -d gplates -h localhost -U gplates`
 
 ### Import the sql file into DB
 
-`psql -d gplates -f age_grid.sql`
+`psql -d gplates -h localhost -U gplates -f crustal_thickness.sql`
 
 ### Keep the database data on host computer
 
@@ -32,7 +32,7 @@ Test the database(on host computer): `psql -d gplates -h localhost -U gplates`
 
 - **Step 3**: You also need to log into the container, `su postgres` and run `cd /workspace/ && ./init-db.sh`
 
-- **Step 4**: import rasters with `psql -d gplates -f age_grid.sql`
+- **Step 4**: import rasters with `psql -d gplates -h localhost -U gplates -f age_grid.sql`
 
 ### Use user-defined docker network
 
