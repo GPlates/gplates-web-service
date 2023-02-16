@@ -38,7 +38,7 @@ class TestBrowsableAPI(generics.GenericAPIView):
 
 
 @api_view(["GET", "POST"])
-@schema(DocstrSchema())
+@schema(None)
 def hello_world(request):
     """
     get:
