@@ -15,14 +15,14 @@ from shapely.geometry.polygon import Polygon
 def plot_polygons(polygons, edgecolor, facecolor, alpha, date_line_wrapper, extent):
     try:
         fig = plt.figure(figsize=(12, 8), dpi=300)
-        ax = plt.axes(projection=ccrs.PlateCarree())
+        ax = plt.axes(projection=ccrs.PlateCarree(),frameon=False)
         # ax.gridlines()
         if extent:
             ax.set_extent(extent)
         else:
             ax.set_global()
-        ax.background_patch.set_visible(False)  # Background
-        ax.outline_patch.set_visible(False)  # Borders
+        #ax.background_patch.set_visible(False)  # Background
+        #ax.outline_patch.set_visible(False)  # Borders
         imgdata = io.BytesIO()
 
         # wrap the polygons at date iine

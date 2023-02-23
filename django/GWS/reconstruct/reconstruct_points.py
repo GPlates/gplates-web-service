@@ -83,9 +83,15 @@ class ReconPointsSchema(AutoSchema):
         return operation
 
 
+if settings.THROTTLE:
+    throttle_class_list = [AnonRateThrottle]
+else:
+    throttle_class_list = []
+
+
 @csrf_exempt
 @api_view(["GET", "POST"])
-@throttle_classes([AnonRateThrottle])
+@throttle_classes(throttle_class_list)
 @schema(ReconPointsSchema())
 def reconstruct(request):
     """
@@ -146,7 +152,8 @@ def reconstruct(request):
         anchor_plate_id = int(anchor_plate_id)
     except:
         return HttpResponseBadRequest(
-            'The "anchor_plate_id" parameter is invalid ({0}).'.format(anchor_plate_id)
+            'The "anchor_plate_id" parameter is invalid ({0}).'.format(
+                anchor_plate_id)
         )
 
     rotation_model = get_rotation_model(model)
@@ -190,7 +197,8 @@ def reconstruct(request):
                 return HttpResponseBadRequest("Invalid value ({0}).".format(e))
         else:
             return HttpResponseBadRequest(
-                "The longitude and latitude should come in pairs ({0}).".format(points)
+                "The longitude and latitude should come in pairs ({0}).".format(
+                    points)
             )
     else:
         return HttpResponseBadRequest('The "points" parameter is missing.')
@@ -262,7 +270,8 @@ def reconstruct(request):
             if lon is not None and lat is not None:
                 ret["coordinates"].append([lon, lat])
             elif return_null_points:
-                ret["coordinates"].append(None)  # return null for invalid coordinates
+                # return null for invalid coordinates
+                ret["coordinates"].append(None)
             else:
                 ret["coordinates"].append(
                     [999.99, 999.99]

@@ -168,6 +168,12 @@ STATIC_URL = "/static/"
 STATIC_ROOT = "/var/www/html/static/"
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
+DEFAULT_THROTTLE_ANON_RATE = os.getenv(
+    "DEFAULT_THROTTLE_ANON_RATE") or "10000/second"
+
+DEFAULT_THROTTLE_USER_RATE = os.getenv(
+    "DEFAULT_THROTTLE_USER_RATE") or "10000/second"
+
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
@@ -175,5 +181,8 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {"anon": "30/minute", "user": "1000/day"},
+    "DEFAULT_THROTTLE_RATES": {"anon": DEFAULT_THROTTLE_ANON_RATE, "user": DEFAULT_THROTTLE_USER_RATE},
 }
+
+
+THROTTLE = os.getenv("THROTTLE") and os.getenv("THROTTLE").lower() == "true"

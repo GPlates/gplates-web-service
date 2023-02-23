@@ -18,7 +18,9 @@
 
 - Step 3: If the database data folder is empty, you need to log into the docker container and call **initdb** on the folder first.
 
-  `/usr/lib/postgresql/12/bin/initdb -D /var/lib/postgresql/data`
+  `/usr/lib/postgresql/12/bin/initdb -D /var/lib/postgresql/12/main`
+
+  You may need to run `chown -R postgres:postgres /var/lib/postgresql/12/main` before the above command.
 
 - Step 4: After "initdb", You also need to log into the container, `su postgres` and run `cd /workspace/ && ./init-db.sh`
 
