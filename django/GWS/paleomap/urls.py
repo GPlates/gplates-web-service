@@ -1,8 +1,7 @@
 from django.urls import re_path
 
-from . import views
+from . import apis
 
 urlpatterns = [
-    re_path(r'^$', views.create),
+    re_path(r'^get_cached_map$', apis.overlay_cached_layers),
 ]
-
