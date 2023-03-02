@@ -8,6 +8,7 @@ from PIL import Image
 def overlay_cached_layers(request):
     """
         return the overlay of prepared map layers
+        http://localhost:18000/map/get_cached_map?layers=agegrid,coastlines,topologies&model=MATTHEWS2016_mantle_ref
     """
     time = request.GET.get('time', 140)
     model = request.GET.get('model', settings.MODEL_DEFAULT)

@@ -1,15 +1,20 @@
 import json
 import os
 
+from django.conf import settings
 from django.http import HttpResponse
 
 script_path = os.path.dirname(os.path.realpath(__file__))
+data_path = f"{settings.BASE_DIR}/DATA/mobile-app/"
 
 #
 # get_scotese_etal_2021_global_temp
 #
+
+
 def get_scotese_etal_2021_global_temp(reqeust):
-    data = load_csv_data(f"{script_path}/data/scotese_etal_2021_global_temp_1my.txt")
+    data = load_csv_data(
+        f"{data_path}/scotese_etal_2021_global_temp_1my.txt")
     response = HttpResponse(json.dumps(data), content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
     return response
@@ -18,8 +23,9 @@ def get_scotese_etal_2021_global_temp(reqeust):
 #
 #
 def get_graphs(request):
-    with open(f"{script_path}/data/graphs.json", "r") as f:
-        response = HttpResponse(f, content_type="application/json; charset=utf8")
+    with open(f"{data_path}/graphs.json", "r") as f:
+        response = HttpResponse(
+            f, content_type="application/json; charset=utf8")
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
@@ -27,8 +33,9 @@ def get_graphs(request):
 #
 #
 def get_cities(request):
-    with open(f"{script_path}/data/cities.json", "r") as f:
-        response = HttpResponse(f, content_type="application/json; charset=utf8")
+    with open(f"{data_path}/cities.json", "r") as f:
+        response = HttpResponse(
+            f, content_type="application/json; charset=utf8")
         response["Access-Control-Allow-Origin"] = "*"
         return response
 
@@ -37,7 +44,8 @@ def get_cities(request):
 # get_scotese_etal_2021_global_temp
 #
 def get_scotese_etal_2021_deep_ocean_temp(reqeust):
-    data = load_csv_data(f"{script_path}/data/deep-ocean-temp-Scotese-2021.txt")
+    data = load_csv_data(
+        f"{data_path}/deep-ocean-temp-Scotese-2021.txt")
     response = HttpResponse(json.dumps(data), content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
     return response
