@@ -1,0 +1,26 @@
+{
+  "coastlines": {
+    "displayName": "Coastlines",
+    "url": "https://geosrv.gplates.org/geoserver/gwc/service/wmts",
+    "wmsUrl": "https://geosrv.gplates.org/geoserver/MULLER2019/wms",
+    "layerName": "MULLER2019:coastlines_{{time}}Ma",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 230,
+    "endtime": 0,
+    "step": 1
+  },
+  "static-polygons": {
+    "displayName": "Static Polygon",
+    "url": "https://geosrv.gplates.org/geoserver/gwc/service/wmts",
+    "wmsUrl": "https://geosrv.gplates.org/geoserver/MULLER2019/wms",
+    "layerName": "MULLER2019:static-polygons-{{time}}-Ma",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 230,
+    "endtime": 0,
+    "step": 1
+  }
+}
