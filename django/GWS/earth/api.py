@@ -4,8 +4,7 @@ import json
 import math
 
 
-from django.http import (HttpResponse, HttpResponseBadRequest,
-                         HttpResponseServerError)
+from django.http import (HttpResponse, HttpResponseBadRequest)
 
 
 def find_axis_and_angle(request):

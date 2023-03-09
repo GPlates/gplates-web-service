@@ -1,6 +1,6 @@
 from django.urls import re_path
 
-from . import finite_rotation, views
+from . import finite_rotation, views, api
 
 urlpatterns = [
     re_path(
@@ -22,5 +22,10 @@ urlpatterns = [
         r"^get_plate_ids/?$",
         finite_rotation.get_plate_ids,
         name="get_plate_ids",
+    ),
+    re_path(
+        r"^rotate/?$",
+        api.rotate,
+        name="rotate",
     ),
 ]

@@ -173,6 +173,63 @@ if r.status_code == 200:
 else:
     raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
+# test rotate
+data = {"point": "120,45", "axis": "20,-45", "angle": 20}
+r = requests.get(
+    SERVER_URL + "rotation/rotate",
+    params=data,
+    verify=False,
+    proxies=proxies,
+)
+if r.status_code == 200:
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! test rotate")
+else:
+    raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+# test find_axis_and_angle
+data = {"point_a": "120,45", "point_b": "20,-45"}
+r = requests.get(
+    SERVER_URL + "earth/find_axis_and_angle",
+    params=data,
+    verify=False,
+    proxies=proxies,
+)
+if r.status_code == 200:
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! test find_axis_and_angle")
+else:
+    raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+# test interp_two_locations
+data = {"point_a": "120,45", "point_b": "20,-45", "num": 10}
+r = requests.get(
+    SERVER_URL + "earth/interp_two_locations",
+    params=data,
+    verify=False,
+    proxies=proxies,
+)
+if r.status_code == 200:
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! test interp_two_locations")
+else:
+    raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+# test distance
+data = {"point_a": "120,45", "point_b": "20,-45"}
+r = requests.get(
+    SERVER_URL + "earth/distance",
+    params=data,
+    verify=False,
+    proxies=proxies,
+)
+if r.status_code == 200:
+    logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+    print("PASSED! test distance")
+else:
+    raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+
 print("****************************")
 print("All tests have passed!!!")
 print("****************************")
