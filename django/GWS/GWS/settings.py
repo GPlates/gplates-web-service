@@ -11,13 +11,15 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
-
+import sys
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
 )  # call dirname() twice to get "../"
+
+sys.path.append(f"{BASE_DIR}/lib")
 
 load_dotenv(f"{BASE_DIR}/.env")  # take environment variables from .env.
 
