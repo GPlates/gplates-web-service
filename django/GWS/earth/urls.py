@@ -3,6 +3,9 @@ from django.urls import re_path
 from . import views, api
 
 urlpatterns = [
+
+    re_path(r'^get_globe_mesh/?$', api.get_globe_mesh,
+            name='get_globe_mesh'),
     re_path(r'^find_axis_and_angle/?$', api.find_axis_and_angle,
             name='find_axis_and_angle'),
     re_path(r'^interp_two_locations/?$', api.interp_two_locations,

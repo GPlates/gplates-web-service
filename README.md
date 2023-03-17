@@ -33,6 +33,10 @@ click 👉[here](docker/README.md)👈 to see details about using Docker in deve
 
 [Go to GWS documentation website](https://gwsdoc.gplates.org/)
 
+The Swagger UI is at https://gws.gplates.org/swagger-ui/
+
+The OpenAPI schema is at https://gws.gplates.org/openapi
+
 ## 📮Contact
 
 👉 [Contact EarthByte](https://www.earthbyte.org/contact-us-3/)
