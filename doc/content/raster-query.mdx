@@ -4,13 +4,17 @@ metaTitle: "Raster Query"
 metaDescription: "Raster Query"
 ---
 
-The raster query function allows users to get data value at a given location on a raster.
+The raster query API allows users to get value(s) at given location(s) from a raster.
 
 ## raster/query
 
 **Usage Example**
     
-    https://gws.gplates.org/raster/query?lon=-70&lat=34&raster_name=age_grid
+    https://gws.gplates.org/raster/query?lon=90&lat=-20&raster_name=age_grid_geek_2007
+
+    https://gws.gplates.org/raster/query?lon=90&lat=-20&raster_name=age_grid_geek_2007&fmt=json
+
+    https://gws.gplates.org/raster/query?raster_name=age_grid_geek_2007&lons=120,150,40,92&lats=45,67,-89,-12
     
 **Parameters:**
 
@@ -18,19 +22,35 @@ The raster query function allows users to get data value at a given location on 
 
 *lat* : latitude [-90, 90]
 
+*lons* : a list of longitudes
+
+*lats* : a list of latitudes
+
 *raster_name* : one of the following names
+
+*fmt*: if set to "json", for the single location, this API will return the value in JSON format.
  
 * age_grid -- [numerical grid of seafloor age](https://www.earthbyte.org/gplates-2-1-software-and-data-sets/#present-day-agegrid)
 
 
 **Returns:**
 
-nan or the value at the given location
+nan or the values at the given locations.
 
+if "fmt=json" is given, for the single location, this API will return the value in JSON format.
+
+for multiple locations, always return in JSON format.
 
 **Examples:**
 
 https://github.com/GPlates/gplates_web_service_doc/blob/master/python/test_raster_query.py
+
+https://gws.gplates.org/raster/query?lon=90&lat=-20&raster_name=age_grid_geek_2007
+
+https://gws.gplates.org/raster/query?lon=90&lat=-20&raster_name=age_grid_geek_2007&fmt=json
+
+https://gws.gplates.org/raster/query?raster_name=age_grid_geek_2007&lons=120,150,40,92&lats=45,67,-89,-12
+    
 
 
 ---
