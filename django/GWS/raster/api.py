@@ -19,7 +19,7 @@ def query(request):
     http://localhost:18000/raster/query?raster_name=crustal_thickness&lons=120,50,40&lats=45,67,-89
 
     query multiple points from raster
-    the input points are like 
+    the input points are like
     lons: lon_0, lon_1,...,lon_n
     lats: lat_0, lat_1,...,lat_n
     '''
@@ -54,7 +54,7 @@ def query(request):
             with connection.cursor() as cursor:
                 cursor.execute(
                     """SELECT rid,ST_Value(rast, ST_SetSRID(ST_MakePoint({0},{1}),4326), false) AS val
-                    FROM public.{2}
+                    FROM raster.{2}
                     WHERE ST_Intersects(rast, ST_SetSRID(ST_MakePoint({0},{1}),4326))""".format(
                         lon, lat, raster_name
                     )
@@ -88,7 +88,7 @@ def query(request):
             query_str += f""")
             SELECT
                 x,y,ST_Value(rast, ST_SetSRID(ST_MakePoint(x, y), 4326)) AS value
-            FROM {raster_name} rs
+            FROM raster.{raster_name} rs
                 CROSS JOIN pairs
                 WHERE ST_Intersects(rs.rast,  ST_SetSRID(ST_MakePoint(x, y), 4326));
             """
@@ -112,6 +112,34 @@ def query(request):
         except:
             logger.error(traceback.format_exc())
             return HttpResponseServerError(f"Failed to query multiple locations from raster. {query_str}")
+    # TODO:
+    # The "*" makes the service wide open to anyone. We should implement access control when time comes.
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+
+def list_all_rasters(request):
+    '''
+    return all the raster names in DB
+    select table_name from information_schema.tables where table_schema='raster';
+    http://localhost:18000/raster/list
+    '''
+
+    try:
+        query_str = "  select table_name from information_schema.tables where table_schema='raster'; "
+
+        with connection.cursor() as cursor:
+            cursor.execute(query_str)
+            rows = cursor.fetchall()
+            print(rows)
+            ret = [i[0] for i in rows]
+            response = HttpResponse(ret)
+            response = HttpResponse(json.dumps(ret),
+                                    content_type='application/json')
+
+    except:
+        logger.error(traceback.format_exc())
+        return HttpResponseServerError(f"Failed to query raster names.")
     # TODO:
     # The "*" makes the service wide open to anyone. We should implement access control when time comes.
     response["Access-Control-Allow-Origin"] = "*"
