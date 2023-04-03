@@ -6,6 +6,15 @@
 
 ☁ The GPlates Web Service doc is deployed at <https://app.netlify.com/sites/jolly-mclean-06aa7c/overview>.
 
+# Deploy with Netlify Cli
+
+- npm install netlify-cli -g
+- netlify login
+- netlify link
+- netlify build
+- netlify deploy
+- netlify deploy --prod
+
 # gatsby-gitbook-starter
 
 Kick off your project with this starter to create a powerful/flexible docs/tutorial web apps.

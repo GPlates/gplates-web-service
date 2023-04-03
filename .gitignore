@@ -31,3 +31,6 @@ examples/output/
 
 examples/.env
 
+
+# Local Netlify folder
+.netlify
