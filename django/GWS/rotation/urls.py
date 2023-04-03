@@ -28,4 +28,9 @@ urlpatterns = [
         api.rotate,
         name="rotate",
     ),
+    re_path(
+        r"^get_rotation_map/?$",
+        api.get_rotation_map,
+        name="get_rotation_map",
+    ),
 ]

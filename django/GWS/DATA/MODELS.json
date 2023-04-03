@@ -64,7 +64,9 @@
       "Matthews_etal_GPC_2016_Paleozoic_PlateTopologies_PMAG.gpmlz",
       "Matthews_etal_GPC_2016_MesozoicCenozoic_PlateTopologies_PMAG.gpmlz"
     ],
-    "RotationFile": ["Matthews_etal_GPC_2016_410-0Ma_GK07_PMAG.rot"],
+    "RotationFile": [
+      "Matthews_etal_PMAG_PacificCorrected_fixed_crossovers.rot"
+    ],
     "Coastlines": "Matthews_etal_GPC_2016_Coastlines.gpmlz",
     "ValidTimeRange": [410.0, 0.0],
     "StaticPolygons": "Muller_etal_AREPS_2016_StaticPolygons.gpmlz"
