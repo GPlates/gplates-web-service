@@ -19,92 +19,228 @@ find the details about these models at https://gws.gplates.org/info/models.
 
 ---
 ### MULLER2022
-**A tectonic-rules-based mantle reference frame since 1 billion years ago**
+
+This model is based on MERDITH2021 for relative plate motions but uses a mantle reference frame 
+that orients the plates relative to the mantle using a set of geodynamic rules to exclude 
+geodynamically unreasonable plate motions. The difference between the paleomagnetic and mantle 
+reference frames grows cumulatively back in time – hence the two reconstructions (MERDITH2021 versus 
+MULLER2022) diverge progressively in the Paleozoic and Proterozoic both in terms of paleolatitude and 
+paleolongitude.
+
    * Available layers: [Coastlines | Static Plate Polygons]
+   
    * Timespan: [0 - 1000 Ma] 
+
    * More information:
+   
       - <https://se.copernicus.org/articles/13/1127/2022/>
       - <https://earthbyte.org/webdav/ftp/Data_Collections/Muller_etal_2022_SE/>
+
    * Examples:
+
       - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2022>
       - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MULLER2022>
       - <https://gws.gplates.org/reconstruct/static_polygons/?time=140&model=MULLER2022>
 
+   * Reference:
+
+   Müller, R. D., Flament, N., Cannon, J., Tetley, M. G., Williams, S. E., Cao, X., Bodur, Ö. F., Zahirovic, S., 
+   and Merdith, A.: A tectonic-rules-based mantle reference frame since 1 billion years ago – implications 
+   for supercontinent cycles and plate–mantle system evolution, Solid Earth, 13, 1127–1159, 
+   https://doi.org/10.5194/se-13-1127-2022, 2022.
+   
+   * Data:
+
+   https://earthbyte.org/webdav/ftp/Data_Collections/Muller_etal_2022_SE/
+
+
 ---
 ### MERDITH2021
-**Extending full-plate tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic**
+
+This plate model for the last 1000 Ma is based on a paleomagnetic reference frame. 
+In this model the longitudinal positions of the plates are unconstrained, due to the radial 
+symmetry of the Earth's magnetic field. It is broadly based on a modified combination of MULLER2016 
+for the last 230 Ma, the MATTHEWS2016_pmag_ref model for 250-410 Ma and a newly constructed model for
+ earlier times.
+
    * Available layers: [Coastlines | Static Plate Polygons]
+ 
    * Timespan: [0 - 1000 Ma] 
+ 
    * More information:
+ 
       - <https://www.sciencedirect.com/science/article/pii/S0012825220305237>
       - <http://www.earthbyte.org/webdav/ftp/Data_Collections/Merdith_etal_2021_ESR/>
+ 
    * Examples:
+ 
       - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MERDITH2021>
       - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MERDITH2021>
       - <https://gws.gplates.org/reconstruct/static_polygons/?time=140&model=MERDITH2021>
 
+   * Reference:
+   
+   Andrew S. Merdith, Simon E. Williams, Alan S. Collins, Michael G. Tetley, Jacob A. Mulder, Morgan L. Blades, Alexander Young,
+    Sheree E. Armistead, John Cannon, Sabin Zahirovic, R. Dietmar Müller, (2021). Extending full-plate 
+    tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic, Earth-Science Reviews, 
+    Volume 214, 2021, 103477, ISSN 0012-8252, https://doi.org/10.1016/j.earscirev.2020.103477.
+
+   * Data:
+   
+   http://www.earthbyte.org/webdav/ftp/Data_Collections/Merdith_etal_2021_ESR/
+
 ---
 ### MULLER2019
-**A Global Plate Model Including Lithospheric Deformation Along Major Rifts and Orogens Since the Triassic**
+
+This plate model for the last 250 Ma is based on a mantle reference frame, 
+ie it orients the plates relative to the mantle using a set of geodynamic rules to exclude 
+geodynamically unreasonable plate motions, which typically result from models based on paleomagnetic data. 
+The model also includes continental deformation both along major rift systems and collisional plate 
+boundary zones.
+
    * Available layers: [Coastlines | Static Plate Polygons]
+
    * Timespan: [0 - 250 Ma] 
+   
    * More information:
+   
       - <https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2018TC005462>
       - <http://www.earthbyte.org/muller-et-al-2019-deforming-plate-reconstruction-and-seafloor-age-grids-tectonics/>
+   
    * Examples:
+   
       - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2019>
       - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MULLER2019>
       - <https://gws.gplates.org/reconstruct/static_polygons/?time=140&model=MULLER2019>
 
+   * Reference:
+   
+      Müller, R. D., Zahirovic, S., Williams, S. E., Cannon, J., Seton, M., Bower, D. J., Tetley, M. G., Heine, C., Le Breton, E., Liu, S., Russell, S. H. J., Yang, T., Leonard, J., and Gurnis, M. (2019), 
+      A global plate model including lithospheric deformation along major rifts and orogens since the 
+      Triassic. Tectonics, vol. 38, https://doi.org/10.1029/2018TC005462.
+
+   * Data:
+
+      http://www.earthbyte.org/muller-et-al-2019-deforming-plate-reconstruction-and-seafloor-age-grids-tectonics/
+
 ---
 ### MULLER2016
-**Late Triassic to present-day global model (the Pacific correction has been applied)**
+
+This model represents an update of the SETON2012 model, both in terms of relative and absolute plate motions. 
+The absolute reference used is based on the same hotspot model for the last 100 Ma as used in SETON2012, 
+and a true-polar wander corrected paleomagnetic model for 230 to 100 Ma, with an added 10 deg longitudinal 
+correction for the time period from 100-230 Ma in an attempt to minimise geodynamically unreasonable 
+longitudinal plate motions, resulting in a modified mantle reference frame.
+
    * Available layers: [Coastlines | Topological Plate Polygons]
+
    * Timespan: [0 - 230 Ma]   
+
    * More information:
+
       - <https://www.researchgate.net/publication/284179323_Ocean_Basin_Evolution_and_Global-Scale_Plate_Reorganization_Events_Since_Pangea_Breakup>
       - <http://www.earthbyte.org/ocean-basin-evolution-and-global-scale-plate-reorganization-events-since-pangea-breakup/>
+
    * Examples:
+
       - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2016>
       - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MULLER2016>
       - <https://gws.gplates.org/topology/plate_polygons/?&time=140&model=MULLER2016>
 
----
+   * Reference:
+      
+      Müller, R.D., Seton, M., Zahirovic, S., Williams, S.E., Matthews, K.J., Wright, N.M., Shephard, G.E., Maloney, K.T., Barnett-Moore, N., Hosseinpour, M., Bower, D.J., Cannon, J., 2016, 
+      [Ocean basin evolution and global-scale plate reorganization events since Pangea breakup](https://www.researchgate.net/publication/284179323_Ocean_Basin_Evolution_and_Global-Scale_Plate_Reorganization_Events_Since_Pangea_Breakup): 
+      Annual Reviews of Earth and Planetary Sciences, Vol 44, 107-138
 
+   * Data:
+
+      http://www.earthbyte.org/ocean-basin-evolution-and-global-scale-plate-reorganization-events-since-pangea-breakup/
+
+
+---
 ### MATTHEWS2016_mantle_ref
-**Late Paleozoic to present-day global model(Mantle Reference Frame and the Pacific correction has been applied.)**
+
+This model is identical to MATTHEWS2016_pmag_ref in terms of relative plate models but uses a true 
+polar wander corrected paleomagnetic model, viewed as a proxy for a mantle reference frame model.
+
    * Available layers: [Coastlines | Topological Plate Polygons]
+
    * Timespan: [0 - 410 Ma]  
+
    * More information:
+
       - <https://www.researchgate.net/publication/308978755_Global_plate_boundary_evolution_and_kinematics_since_the_late_Paleozoic>
       - <http://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/>
+
    * Examples:
+
       - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MATTHEWS2016_mantle_ref>
       - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MATTHEWS2016_mantle_ref>
       - <https://gws.gplates.org/topology/plate_polygons/?time=140&model=MATTHEWS2016_mantle_ref>
 
+   * Reference:
+      
+      Matthews, K.J., Maloney, K.T., Zahirovic, S., Williams, S.E., Seton, M., and Müller, R.D. 2016, 
+      [Global plate boundary evolution and kinematics since the late Paleozoic](https://www.researchgate.net/publication/308978755_Global_plate_boundary_evolution_and_kinematics_since_the_late_Paleozoic) :
+       Global and Planetary Change, 
+      Vol 146, 226-250.
+
+   * Data:
+
+      http://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/
+
 ---
 ###  MATTHEWS2016_pmag_ref
-**Late Paleozoic to present-day global model(Paleomagnetic Reference Frame)**
+
+This plate model represents the first continuous late Paleozoic to present-day global plate model with evolving plate boundaries, 
+building on and extending two previously published models for the late Paleozoic (410–250 Ma) ([Domeier and Torsvik, 2014](https://www.sciencedirect.com/science/article/pii/S1674987114000061) )
+and the MULLER2016 model Mesozoic-Cenozoic (230–0 Ma). The model was designed for continuity during the 250–230 Ma transition period 
+between the two models, used an updated absolute reference frame of the Mesozoic-Cenozoic model and added a new Paleozoic 
+reconstruction for the Baltica-derived Alexander Terrane, now accreted to western North America. 
+
    * Available layers: [Coastlines | Topological Plate Polygons]
+
    * Timespan: [0 - 410 Ma]  
+
    * More information:
+
       - <https://www.researchgate.net/publication/308978755_Global_plate_boundary_evolution_and_kinematics_since_the_late_Paleozoic>
       - <http://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/>
+
    * Examples:
+
       - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MATTHEWS2016_pmag_ref>
       - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MATTHEWS2016_pmag_ref>
       - <https://gws.gplates.org/topology/plate_polygons/?time=140&model=MATTHEWS2016_pmag_ref>
 
+   * Reference:
+   
+      Matthews, K.J., Maloney, K.T., Zahirovic, S., Williams, S.E., Seton, M., and Müller, R.D. 2016, 
+      [Global plate boundary evolution and kinematics since the late Paleozoic](https://www.researchgate.net/publication/308978755_Global_plate_boundary_evolution_and_kinematics_since_the_late_Paleozoic) : 
+      Global and Planetary Change, Vol 146, 226-250.
+
+   * Data:
+
+      http://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/
+
+
 ---
 ### RODINIA2013
+
 **Rodinia model from Precambrian Research**
+
    * Available layers: [Coastlines]
+
    * Timespan: [530 - 1100 Ma] 
+
    * More information:
+
       - <https://www.sciencedirect.com/science/article/pii/S0301926807001635>
       - <http://www.earthbyte.org/webdav/ftp/Data_Collections/Li_etal_2008_RodiniaModel.zip>
+
    * Examples:
+
       - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=23,-6,127,-21&time=540&model=RODINIA2013>
       - <https://gws.gplates.org/reconstruct/coastlines/?time=540&model=RODINIA2013>
      
@@ -112,36 +248,70 @@ find the details about these models at https://gws.gplates.org/info/models.
 
 ---
 ### SETON2012 (***default model***)
-**Post-Pangea model from Earth-Science Reviews**
+
+This model represents the first global plate model with topological plate boundaries. 
+It is based on a hybrid reference frame hybrid absolute reference frame, based on a moving hotspot model for the last 100 Ma, 
+and a true-polar wander corrected paleomagnetic model for 200 to 100 Ma. This combination of absolute reference frames is 
+viewed as a proxy for a mantle reference frame model.
+
    * Available layers: [Coastlines | Topological Plate Polygons]
+
    * Timespan: [0 - 200 Ma]  
+   
    * More information:
+   
       - <https://www.earthbyte.org/global-continental-and-ocean-basin-reconstructions-since-200-ma/>
       - <https://www.researchgate.net/publication/235762480_Global_continental_and_ocean_basin_reconstructins_since_200_Ma>
+   
    * Examples:
+   
       - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012>
       - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=SETON2012>
       - <https://gws.gplates.org/topology/plate_polygons/?time=140&model=SETON2012>
----
+      
+   * Reference:
+   
+      Seton, M., Müller, R., Zahirovic, S., Gaina, C., Torsvik, T., Shephard, G., Talsma, A., Gurnis, M., Turner, M., Maus, S., and Chandler, M., 2012, 
+      [Global continental and ocean basin reconstructions since 200 Ma](https://www.researchgate.net/publication/235762480_Global_continental_and_ocean_basin_reconstructions_since_200_Ma):
+       Earth-Science Reviews, v. 113, no. 3-4, p. 212-270.
 
+   * Data:
+
+      http://www.earthbyte.org/global-continental-and-ocean-basin-reconstructions-since-200-ma/
+
+---
 ### GOLONKA
+
    * Available layers: [Coastlines] 
+
    * Timespan: [0 - 550 Ma]  
+   
    * More information:
+   
       - <https://www.earthbyte.org/towards-community-driven-paleogeographic-reconstructions-integrating-open-access-paleogeographic-and-paleobiology-data-with-plate-tectonics/>
+   
    * Examples:
+   
       - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=GOLONKA>
       - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=GOLONKA>
+   
    * Note: **The GOLONKA model currently does not work for any present-day ocean point.**
 
 ---
 ### PALEOMAP
+
 **Scotese (2016) PALEOMAP reconstructions**
+
    * Available layers: [Coastlines] 
+
    * Timespan: [0 - 1100 Ma]  
+
    * More information:
+
       - <https://www.earthbyte.org/paleomap-paleoatlas-for-gplates/>
+
    * Examples:
+
       - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=PALEOMAP>
       - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=PALEOMAP>
 
