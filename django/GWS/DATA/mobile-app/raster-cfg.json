@@ -108,7 +108,7 @@
     "icon": "images/paleo-agegrid-256x256.png",
     "url": "https://geosrv.gplates.org/geoserver/gwc/service/wmts",
     "wmsUrl": "https://geosrv.gplates.org/geoserver/MULLER2019/wms",
-    "paleoMapUrl": "http://localhost:18000/map/get_cached_map?layers=agegrid",
+    "paleoMapUrl": "https://gws.gplates.org/map/get_cached_map?layers=agegrid",
     "layerName": "MULLER2019:paleo-age-grid-{{time}}-Ma",
     "format": "image/jpeg",
     "style": "",

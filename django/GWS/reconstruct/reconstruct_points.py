@@ -35,7 +35,20 @@ class ReconPointsSchema(AutoSchema):
             {
                 "name": "points",
                 "in": "query",
-                "description": "list of points long,lat comma separated coordinates of points to be reconstructed [Required]",
+                "description": '''list of points long,lat comma separated coordinates of points 
+                    to be reconstructed [Required or use "lats" and "lons" parameters]''',
+                "schema": {"type": "number"},
+            },
+            {
+                "name": "lats",
+                "in": "query",
+                "description": '''list of latitudes of input points [Required or use "points" parameter]''',
+                "schema": {"type": "number"},
+            },
+            {
+                "name": "lons",
+                "in": "query",
+                "description": '''list of latitudes of input points [Required or use "points" parameter]''',
                 "schema": {"type": "number"},
             },
             {
@@ -55,11 +68,40 @@ class ReconPointsSchema(AutoSchema):
                 "in": "query",
                 "description": "name for reconstruction model [defaults to default model from web service settings]",
                 "schema": {"type": "string"},
+            }, {
+                "name": "pids",
+                "in": "query",
+                "description": "specify plate id for each point to improve performance",
+                "schema": {"type": "string"},
+            },
+            {
+                "name": "pid",
+                "in": "query",
+                "description": "specify plate id to improve performance. all points use the same plate id",
+                "schema": {"type": "number"},
+            },
+            {
+                "name": "return_null_points",
+                "in": "query",
+                "description": "use null to indicate invalid coordinates. otherwise, use [999.99, 999.99]",
+                "schema": {"type": "boolean"},
+            },
+            {
+                "name": "fc",
+                "in": "query",
+                "description": "flag to return geojson feature collection",
+                "schema": {"type": "boolean"},
+            },
+            {
+                "name": "reverse",
+                "in": "query",
+                "description": "reverse reconstruct paleo-coordinates to present-day coordinates",
+                "schema": {"type": "boolean"},
             },
         ]
         responses = {
             "200": {
-                "description": "return reconstructed coordinates",
+                "description": "reconstructed coordinates in json or geojson format",
                 "content": {"application/json": {}},
             }
         }
@@ -68,12 +110,15 @@ class ReconPointsSchema(AutoSchema):
             "responses": responses,
         }
         if method.lower() == "get":
-            my_operation["description"] = "http GET request to reconstruct points"
+            my_operation["description"] = '''http GET request to reconstruct points.  
+                For details and examples, go https://gwsdoc.gplates.org/reconstruction/reconstruct-points'''
             my_operation["summary"] = "GET method to reconstruct points"
         elif method.lower() == "post":
             my_operation[
                 "description"
-            ] = "http POST request to reconstruct points. Basically the same as 'GET' methon, only allow user to send more points"
+            ] = '''http POST request to reconstruct points. 
+                Basically the same as 'GET' methon, only allow user to send more points.
+                For details and examples, go https://gwsdoc.gplates.org/reconstruction/reconstruct-points'''
             my_operation["summary"] = "POST method to reconstruct points"
 
         else:
@@ -96,27 +141,6 @@ else:
 def reconstruct(request):
     """
     http request to reconstruct points
-
-    **usage**
-
-    <http-address-to-gws>/reconstruct/reconstruct_points/points=\ *points*\&plate_id=\ *anchor_plate_id*\&time=\ *reconstruction_time*\&model=\ *reconstruction_model*
-
-    **parameters:**
-
-    *points* : list of points long,lat comma separated coordinates of points to be reconstructed [Required]
-
-    *anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
-
-    *time* : time for reconstruction [required]
-
-    *model* : name for reconstruction model [defaults to default model from web service settings]
-
-    **returns:**
-
-    json list of long,lat reconstructed coordinates
-
-    For details and examples, go https://gwsdoc.gplates.org/reconstruction/reconstruct-points
-
     """
     if request.method == "POST":
         params = request.POST
@@ -125,36 +149,11 @@ def reconstruct(request):
     else:
         return HttpResponseBadRequest("Unrecognized request type")
 
-    points = params.get("points", None)
-    anchor_plate_id = params.get("pid", 0)
-    time = params.get("time", None)
     model = params.get("model", settings.MODEL_DEFAULT)
-    pids_str = params.get("pids", None)
-    # print(pids_str)
-    pid_str = params.get("pid", None)
 
     return_null_points = True if "return_null_points" in params else False
     return_feature_collection = True if "fc" in params else False
     is_reverse = True if "reverse" in params else False
-
-    timef = 0.0
-    if not time:
-        return HttpResponseBadRequest('The "time" parameter cannot be empty.')
-    else:
-        try:
-            timef = float(time)
-        except:
-            return HttpResponseBadRequest(
-                'The "time" parameter is invalid ({0}).'.format(time)
-            )
-
-    try:
-        anchor_plate_id = int(anchor_plate_id)
-    except:
-        return HttpResponseBadRequest(
-            'The "anchor_plate_id" parameter is invalid ({0}).'.format(
-                anchor_plate_id)
-        )
 
     rotation_model = get_rotation_model(model)
     static_polygons_filename = get_static_polygons_filename(model)
@@ -162,52 +161,35 @@ def reconstruct(request):
     # create point features from input coordinates
     p_index = 0
     point_features = []
-    if points:
-        ps = points.split(",")
-        ps_len = len(ps)
-        if ps_len % 2 == 0:
-            try:
-                if pids_str:
-                    pids = pids_str.split(",")
-                    if len(pids) != ps_len // 2:
-                        return HttpResponseBadRequest(
-                            "The number of plate ids must be the same with the number of points."
-                        )
-                else:
-                    if pid_str:
-                        pids = (ps_len // 2) * [int(pid_str)]
-                    else:
-                        pids = (ps_len // 2) * [None]
 
-                for lat, lon, pid_ in zip(ps[1::2], ps[0::2], pids):
-                    point_feature = pygplates.Feature()
-                    point_feature.set_geometry(
-                        pygplates.PointOnSphere(float(lat), float(lon))
-                    )
-                    point_feature.set_name(str(p_index))
-                    if pid_:
-                        point_feature.set_reconstruction_plate_id(int(pid_))
-                    point_features.append(point_feature)
-                    p_index += 1
-            except pygplates.InvalidLatLonError as e:
-                return HttpResponseBadRequest(
-                    "Invalid longitude or latitude ({0}).".format(e)
-                )
-            except ValueError as e:
-                return HttpResponseBadRequest("Invalid value ({0}).".format(e))
-        else:
-            return HttpResponseBadRequest(
-                "The longitude and latitude should come in pairs ({0}).".format(
-                    points)
+    try:
+        timef = get_time(params)
+        anchor_plate_id = get_anchor_plate_id(params)
+        lats, lons = get_lats_lons(params)
+        pids = get_pids(params, len(lats))
+
+        for lat, lon, pid in zip(lats, lons, pids):
+            point_feature = pygplates.Feature()
+            point_feature.set_geometry(
+                pygplates.PointOnSphere(lat, lon)
             )
-    else:
-        return HttpResponseBadRequest('The "points" parameter is missing.')
+            point_feature.set_name(str(p_index))
+            if pid:
+                point_feature.set_reconstruction_plate_id(pid)
+            point_features.append(point_feature)
+            p_index += 1
+    except pygplates.InvalidLatLonError as e:
+        return HttpResponseBadRequest(
+            "Invalid longitude or latitude ({0}).".format(e)
+        )
+    except Exception as e:
+        return HttpResponseBadRequest(str(e))
 
     # assign plate-ids to points using static polygons
     partition_time = timef if is_reverse else 0.0
 
     if (
-        not pids_str and not pid_str
+        all(id is None for id in pids)
     ):  # if user has provided plate id(s), do not partition(slow)
         # from time import time
         # start = time()
@@ -245,6 +227,15 @@ def reconstruct(request):
             timef,
             anchor_plate_id=anchor_plate_id,
         )
+    else:
+        # we still need reverse reconstruct if the points were not partitioned above
+        if not all(id is None for id in pids):
+            pygplates.reverse_reconstruct(
+                assigned_point_feature_collection,
+                rotation_model,
+                timef,
+                anchor_plate_id=anchor_plate_id,
+            )
 
     rfgs = p_index * [None]
     for rfg in reconstructed_feature_geometries:
@@ -327,3 +318,99 @@ def reconstruct(request):
     # The "*" makes the service wide open to anyone. We should implement access control when time comes.
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
+
+#
+#
+def get_lats_lons(params):
+    '''
+    return two lists, one is the lats and the other is lons
+    '''
+    points_str = params.get("points", None)
+    lats_str = params.get("lats", None)
+    lons_str = params.get("lons", None)
+    lats = []
+    lons = []
+    if points_str:
+        ps = points_str.split(",")
+        ps_len = len(ps)
+        if ps_len > 0 and ps_len % 2 == 0:
+            lats = ps[1::2]
+            lons = ps[0::2]
+        else:
+            raise Exception(
+                f"Invalid 'points' parameter. The longitude and latitude should come in pairs ({points_str})."
+            )
+    else:
+        if lats_str and lons_str:
+            lats = lats_str.split(",")
+            lons = lons_str.split(",")
+            if len(lats) != len(lons):
+                raise Exception(
+                    f"Invalid 'lats' and 'lons' parameter. ({lats_str}), ({lons_str})."
+                )
+    if lats and lons:
+        try:
+            lats = [float(i) for i in lats]
+            lons = [float(i) for i in lons]
+        except:
+            raise Exception(
+                f"Invalid coordinates. ({lats_str}), ({lons_str})."
+            )
+    return lats, lons
+
+
+def get_pids(params, count):
+    '''
+    return a list of plate IDs
+    '''
+    pids_str = params.get("pids", None)
+    pid_str = params.get("pid", None)
+    pids = []
+    try:
+        if pids_str:
+            pids = pids_str.split(",")
+            pids = [int(i) for i in pids]
+            if len(pids) != count:
+                raise Exception(
+                    "The number of plate ids must be the same with the number of points.")
+        else:
+            if pid_str:
+                pids = count * [int(pid_str)]
+            else:
+                pids = count * [None]
+    except ValueError as e:
+        raise Exception(f"Invalid plate ID value ({e}).")
+    return pids
+
+
+def get_time(params):
+    '''
+    get reconstruction time from http request
+    '''
+    time = params.get("time", None)
+    timef = 0.0
+    if not time:
+        raise Exception('The "time" parameter cannot be empty.')
+
+    try:
+        timef = float(time)
+    except:
+        raise Exception(
+            f'The "time" parameter is invalid ({time}).'
+        )
+    return timef
+
+
+def get_anchor_plate_id(params):
+    '''
+    get anchor plate id from http request
+    '''
+    anchor_plate_id = params.get("anchor_plate_id", 0)
+
+    try:
+        anchor_plate_id = int(anchor_plate_id)
+    except:
+        raise Exception(
+            f'The "anchor_plate_id" parameter is invalid ({anchor_plate_id}).'
+        )
