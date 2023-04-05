@@ -56,7 +56,7 @@ def get_rotation_map(request):
 
     rotation_data = []
     for rot_file in model_dict["RotationFile"]:
-        with open(f"{settings.MODEL_STORE_DIR}/{model_name}/{rot_file}", 'r') as fp:
+        with open(f"{settings.MODEL_STORE_DIR}/{model_name}/{rot_file}", 'r', encoding="utf-8") as fp:
             for line in fp:
                 items = line.split()
                 # print(items)
