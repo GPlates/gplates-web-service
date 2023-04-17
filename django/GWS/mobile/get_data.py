@@ -23,7 +23,7 @@ def get_scotese_etal_2021_global_temp(reqeust):
 #
 #
 def get_graphs(request):
-    with open(f"{data_path}/graphs.json", "r") as f:
+    with open(f"{data_path}/graphs.json", "r", encoding="utf-8") as f:
         response = HttpResponse(
             f, content_type="application/json; charset=utf8")
         response["Access-Control-Allow-Origin"] = "*"
@@ -33,7 +33,7 @@ def get_graphs(request):
 #
 #
 def get_cities(request):
-    with open(f"{data_path}/cities.json", "r") as f:
+    with open(f"{data_path}/cities.json", "r", encoding="utf-8") as f:
         response = HttpResponse(
             f, content_type="application/json; charset=utf8")
         response["Access-Control-Allow-Origin"] = "*"
@@ -53,7 +53,7 @@ def get_scotese_etal_2021_deep_ocean_temp(reqeust):
 
 def load_csv_data(filepath):
     data = {}
-    with open(filepath, "r") as file:
+    with open(filepath, "r", encoding="utf-8") as file:
         for line in file:
             parts = line.split()
             if (len(parts) != 2) or parts[0].startswith("#"):
