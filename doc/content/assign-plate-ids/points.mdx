@@ -17,9 +17,16 @@ Assign plate IDs for points
 *model* : name for reconstruction model [defaults to default model from web service settings]. 
 User can get a list of available model names at <https://gws.gplates.org/list/model_names>
     
+*with_valid_time*: if this flag is present in the url, the valid time will be returned as well.
 
 **Examples:** 
 
 **&#128994; E1:** get plate ids for locations/points (-10,50) (-130,-70) (0,0)
 
-<https://gws.gplates.org/reconstruct/assign_points_plate_ids?points=-10,50,-130,-70,0,0>
+- <https://gws.gplates.org/reconstruct/assign_points_plate_ids?points=-10,50,-130,-70,0,0>
+- <https://gws.gplates.org/reconstruct/assign_points_plate_ids?lons=-10,-130,0&lats=50,-70,0>
+
+**&#128994; E2:** get plate ids for locations/points (-10,50) (-130,-70) (0,0) with valid time
+
+- <https://gws.gplates.org/reconstruct/assign_points_plate_ids?points=-10,50,-130,-70,0,0&with_valid_time>
+- <https://gws.gplates.org/reconstruct/assign_points_plate_ids?lons=-10,-130,0&lats=50,-70,0&with_valid_time>

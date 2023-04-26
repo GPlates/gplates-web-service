@@ -11,8 +11,9 @@ from rest_framework.decorators import api_view, schema, throttle_classes
 from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.throttling import AnonRateThrottle
 
-from utils.model_utils import get_rotation_model, get_static_polygons_filename
+from utils.model_utils import get_rotation_model, get_static_polygons_filename, UnrecognizedModel
 from utils.round_float import round_floats
+from utils.get_lats_lons import get_lats_lons
 
 
 class ReconPointsSchema(AutoSchema):
@@ -155,8 +156,13 @@ def reconstruct(request):
     return_feature_collection = True if "fc" in params else False
     is_reverse = True if "reverse" in params else False
 
-    rotation_model = get_rotation_model(model)
-    static_polygons_filename = get_static_polygons_filename(model)
+    try:
+        rotation_model = get_rotation_model(model)
+        static_polygons_filename = get_static_polygons_filename(model)
+    except UnrecognizedModel as e:
+        return HttpResponseBadRequest(f'''Unrecognized Rotation Model: {model}.<br> 
+        Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
+        to find all available models.''')
 
     # create point features from input coordinates
     p_index = 0
@@ -227,6 +233,7 @@ def reconstruct(request):
             timef,
             anchor_plate_id=anchor_plate_id,
         )
+        print(f'anchor plate id: {anchor_plate_id}')
     else:
         # we still need reverse reconstruct if the points were not partitioned above
         if not all(id is None for id in pids):
@@ -320,46 +327,6 @@ def reconstruct(request):
     return response
 
 
-#
-#
-def get_lats_lons(params):
-    '''
-    return two lists, one is the lats and the other is lons
-    '''
-    points_str = params.get("points", None)
-    lats_str = params.get("lats", None)
-    lons_str = params.get("lons", None)
-    lats = []
-    lons = []
-    if points_str:
-        ps = points_str.split(",")
-        ps_len = len(ps)
-        if ps_len > 0 and ps_len % 2 == 0:
-            lats = ps[1::2]
-            lons = ps[0::2]
-        else:
-            raise Exception(
-                f"Invalid 'points' parameter. The longitude and latitude should come in pairs ({points_str})."
-            )
-    else:
-        if lats_str and lons_str:
-            lats = lats_str.split(",")
-            lons = lons_str.split(",")
-            if len(lats) != len(lons):
-                raise Exception(
-                    f"Invalid 'lats' and 'lons' parameter. ({lats_str}), ({lons_str})."
-                )
-    if lats and lons:
-        try:
-            lats = [float(i) for i in lats]
-            lons = [float(i) for i in lons]
-        except:
-            raise Exception(
-                f"Invalid coordinates. ({lats_str}), ({lons_str})."
-            )
-    return lats, lons
-
-
 def get_pids(params, count):
     '''
     return a list of plate IDs
@@ -409,7 +376,7 @@ def get_anchor_plate_id(params):
     anchor_plate_id = params.get("anchor_plate_id", 0)
 
     try:
-        anchor_plate_id = int(anchor_plate_id)
+        return int(anchor_plate_id)
     except:
         raise Exception(
             f'The "anchor_plate_id" parameter is invalid ({anchor_plate_id}).'

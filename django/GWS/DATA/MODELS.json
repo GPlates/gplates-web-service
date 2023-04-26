@@ -168,5 +168,25 @@
       0.0
     ],
     "StaticPolygons": "Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons.gpmlz"
+  },
+  "TorsvikCocks2017_mantle_anchor0": {
+    "RotationFile": [
+      "Torsvik_Cocks_HybridRotationFile.rot"
+    ],
+    "ValidTimeRange": [
+      1100.0,
+      0.0
+    ],
+    "StaticPolygons": "Torsvik_Cocks_2016_Terranes.gpmlz"
+  },
+  "TorsvikCocks2017_pmag_anchor1": {
+    "RotationFile": [
+      "Torsvik_Cocks_HybridRotationFile.rot"
+    ],
+    "ValidTimeRange": [
+      1100.0,
+      0.0
+    ],
+    "StaticPolygons": "Torsvik_Cocks_2016_Terranes.gpmlz"
   }
 }

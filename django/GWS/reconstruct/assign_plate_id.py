@@ -7,15 +7,19 @@ from django.views.decorators.csrf import csrf_exempt
 from utils.model_utils import (
     get_rotation_model,
     get_static_polygons_filename,
+    UnrecognizedModel
 )
 from utils.geojson_io import load_geojson
+from utils.get_lats_lons import get_lats_lons
 
 
-#
-# assign plate IDs to locations/points
-#
 @csrf_exempt
 def get_points_pids(request):
+    '''
+    assign plate IDs to locations/points
+    http://localhost:18000/reconstruct/assign_points_plate_ids?lons=-10,-130,0&lats=50,-70,0
+    http://localhost:18000/reconstruct/assign_points_plate_ids?points=-10,50,-130,-70,0,0&with_valid_time
+    '''
     if request.method == "POST":
         params = request.POST
     elif request.method == "GET":
@@ -27,40 +31,36 @@ def get_points_pids(request):
 
     points = params.get("points", None)
     model = params.get("model", settings.MODEL_DEFAULT)
+    with_valid_time = True if "with_valid_time" in params else False
 
-    rotation_model = get_rotation_model(model)
-    static_polygons_filename = get_static_polygons_filename(model)
+    try:
+        rotation_model = get_rotation_model(model)
+        static_polygons_filename = get_static_polygons_filename(model)
+    except UnrecognizedModel as e:
+        return HttpResponseBadRequest(f'''Unrecognized Rotation Model: {model}.<br>
+        Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a>
+        to find all available models.''')
 
     # create point features from input coordinates
-    # filter out invalid characters
-    points = "".join(c for c in points if c.isdecimal() or (c in [".", ",", "-"]))
     p_index = 0
     point_features = []
-    if points:
-        ps = points.split(",")
-        ps_len = len(ps)
-        if ps_len % 2 == 0:
-            try:
-                for lat, lon in zip(ps[1::2], ps[0::2]):
-                    point_feature = pygplates.Feature()
-                    point_feature.set_geometry(
-                        pygplates.PointOnSphere(float(lat), float(lon))
-                    )
-                    point_feature.set_name(str(p_index))
-                    point_features.append(point_feature)
-                    p_index += 1
-            except pygplates.InvalidLatLonError as e:
-                return HttpResponseBadRequest(
-                    "Invalid longitude or latitude ({0}).".format(e)
-                )
-            except ValueError as e:
-                return HttpResponseBadRequest("Invalid value ({0}).".format(e))
-        else:
-            return HttpResponseBadRequest(
-                "The longitude and latitude should come in pairs ({0}).".format(points)
+    lats, lons = get_lats_lons(params)
+
+    try:
+        for lat, lon in zip(lats, lons):
+            point_feature = pygplates.Feature()
+            point_feature.set_geometry(
+                pygplates.PointOnSphere(float(lat), float(lon))
             )
-    else:
-        return HttpResponseBadRequest('The "points" parameter is missing.')
+            point_feature.set_name(str(p_index))
+            point_features.append(point_feature)
+            p_index += 1
+    except pygplates.InvalidLatLonError as e:
+        return HttpResponseBadRequest(
+            "Invalid longitude or latitude ({0}).".format(e)
+        )
+    except ValueError as e:
+        return HttpResponseBadRequest("Invalid value ({0}).".format(e))
 
     # assign plate-ids to points using static polygons
     assigned_point_features = pygplates.partition_into_plates(
@@ -87,7 +87,29 @@ def get_points_pids(request):
     ):  # make sure the order of features is correct
         pids.append(pids_dict[str(i)])
 
-    ret = json.dumps(pids)
+    if with_valid_time:
+        pid_valid_time_list = []
+        valid_time_dict = dict(
+            (f.get_name(), f.get_valid_time(None)) for f in assigned_point_features
+        )
+
+        for i in range(0, len(assigned_point_features)):
+            pid = pids_dict[str(i)]
+            valid_time = valid_time_dict[str(i)]
+            if valid_time:
+                begin_time, end_time = valid_time
+            else:
+                begin_time = None
+                end_time = None
+            if begin_time == pygplates.GeoTimeInstant.create_distant_past():
+                begin_time = "distant past"
+            if end_time == pygplates.GeoTimeInstant.create_distant_future():
+                end_time = "distant future"
+            pid_valid_time_list.append(
+                {'pid': pid, 'valid_time': [begin_time, end_time]})
+        ret = json.dumps(pid_valid_time_list)
+    else:
+        ret = json.dumps(pids)
 
     # add header for CORS
     # http://www.html5rocks.com/en/tutorials/cors/
