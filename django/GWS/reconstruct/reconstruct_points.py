@@ -14,6 +14,7 @@ from rest_framework.throttling import AnonRateThrottle
 from utils.model_utils import get_rotation_model, get_static_polygons_filename, UnrecognizedModel
 from utils.round_float import round_floats
 from utils.get_lats_lons import get_lats_lons
+from utils.parameter_helper import get_anchor_plate_id, get_pids, get_time
 
 
 class ReconPointsSchema(AutoSchema):
@@ -155,6 +156,7 @@ def reconstruct(request):
     return_null_points = True if "return_null_points" in params else False
     return_feature_collection = True if "fc" in params else False
     is_reverse = True if "reverse" in params else False
+    ignore_valid_time = True if "ignore_valid_time" in params else False
 
     try:
         rotation_model = get_rotation_model(model)
@@ -194,11 +196,16 @@ def reconstruct(request):
     # assign plate-ids to points using static polygons
     partition_time = timef if is_reverse else 0.0
 
-    if (
-        all(id is None for id in pids)
-    ):  # if user has provided plate id(s), do not partition(slow)
+    # if user has provided plate id(s), do not partition(slow)
+    if (all(id is None for id in pids)):
         # from time import time
         # start = time()
+
+        properties_to_copy = [
+            pygplates.PartitionProperty.reconstruction_plate_id]
+        if not ignore_valid_time:
+            properties_to_copy.append(
+                pygplates.PartitionProperty.valid_time_period)
 
         # LOOK HERE !!!!
         # it seems when the partition_time is not 0
@@ -208,10 +215,7 @@ def reconstruct(request):
             static_polygons_filename,
             rotation_model,
             point_features,
-            properties_to_copy=[
-                pygplates.PartitionProperty.reconstruction_plate_id,
-                pygplates.PartitionProperty.valid_time_period,
-            ],
+            properties_to_copy=properties_to_copy,
             reconstruction_time=partition_time,
         )
 
@@ -325,59 +329,3 @@ def reconstruct(request):
     # The "*" makes the service wide open to anyone. We should implement access control when time comes.
     response["Access-Control-Allow-Origin"] = "*"
     return response
-
-
-def get_pids(params, count):
-    '''
-    return a list of plate IDs
-    '''
-    pids_str = params.get("pids", None)
-    pid_str = params.get("pid", None)
-    pids = []
-    try:
-        if pids_str:
-            pids = pids_str.split(",")
-            pids = [int(i) for i in pids]
-            if len(pids) != count:
-                raise Exception(
-                    "The number of plate ids must be the same with the number of points.")
-        else:
-            if pid_str:
-                pids = count * [int(pid_str)]
-            else:
-                pids = count * [None]
-    except ValueError as e:
-        raise Exception(f"Invalid plate ID value ({e}).")
-    return pids
-
-
-def get_time(params):
-    '''
-    get reconstruction time from http request
-    '''
-    time = params.get("time", None)
-    timef = 0.0
-    if not time:
-        raise Exception('The "time" parameter cannot be empty.')
-
-    try:
-        timef = float(time)
-    except:
-        raise Exception(
-            f'The "time" parameter is invalid ({time}).'
-        )
-    return timef
-
-
-def get_anchor_plate_id(params):
-    '''
-    get anchor plate id from http request
-    '''
-    anchor_plate_id = params.get("anchor_plate_id", 0)
-
-    try:
-        return int(anchor_plate_id)
-    except:
-        raise Exception(
-            f'The "anchor_plate_id" parameter is invalid ({anchor_plate_id}).'
-        )

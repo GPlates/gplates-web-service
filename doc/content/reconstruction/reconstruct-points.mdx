@@ -39,6 +39,9 @@ the function will calculate the present-day coordinates of the given paleo-coord
 The null points happen when the present-day location does not exist back in the given time. 
 **Note**: The return data will **NOT** be in a valid GeoJSON format.
 
+*ignore_valid_time* : if this flag presents itself, the reconstruction will ignore the "valid time" constraint and 
+will always return coordiates, even the coordiates do not make sense(out of valid time). **Use with caution**.
+
 **Returns:**
 
 Reconstructed coordinates in GeoJSON format.

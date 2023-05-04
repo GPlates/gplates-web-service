@@ -20,7 +20,7 @@ from utils.fileio import (
     find_and_unzip_all_zip_files,
     NoOutputFileError,
 )
-from utils.model_utils import get_rotation_model, get_static_polygons_filename
+from utils.model_utils import get_rotation_model, get_static_polygons_filename, UnrecognizedModel
 
 
 #
@@ -57,6 +57,8 @@ def reconstruct(request):
                 geosrv_workspace,
             ) = get_request_parameters(request)
 
+            ignore_valid_time = True if "ignore_valid_time" in request.POST else False
+
             upload_result_to_geoserver_flag = (
                 geosrv_url and geosrv_username and geosrv_password and geosrv_workspace
             )
@@ -65,13 +67,21 @@ def reconstruct(request):
             find_and_unzip_all_zip_files(tmp_dir)
 
             reconstructable_files = []
-            reconstructable_files = glob.glob(f"{tmp_dir}/**/*.shp", recursive=True)
-            reconstructable_files += glob.glob(f"{tmp_dir}/**/*.gpml", recursive=True)
-            reconstructable_files += glob.glob(f"{tmp_dir}/**/*.gpmlz", recursive=True)
+            reconstructable_files = glob.glob(
+                f"{tmp_dir}/**/*.shp", recursive=True)
+            reconstructable_files += glob.glob(
+                f"{tmp_dir}/**/*.gpml", recursive=True)
+            reconstructable_files += glob.glob(
+                f"{tmp_dir}/**/*.gpmlz", recursive=True)
             # print(reconstructable_files)
 
-            rotation_model = get_rotation_model(model)
-            static_polygons_filename = get_static_polygons_filename(model)
+            try:
+                rotation_model = get_rotation_model(model)
+                static_polygons_filename = get_static_polygons_filename(model)
+            except UnrecognizedModel as e:
+                return HttpResponseBadRequest(f'''Unrecognized Rotation Model: {model}.<br> 
+                    Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
+                    to find all available models.''')
 
             # create output folder
             output_path = f"{tmp_dir}/output/"
@@ -82,15 +92,18 @@ def reconstruct(request):
                 feature_collection = pygplates.FeatureCollection()
                 for f in reconstructable_files:
                     # print(f)
+                    properties_to_copy = [
+                        pygplates.PartitionProperty.reconstruction_plate_id]
+                    if not ignore_valid_time:
+                        properties_to_copy.append(
+                            pygplates.PartitionProperty.valid_time_period)
+
                     features = pygplates.partition_into_plates(
                         static_polygons_filename,
                         rotation_model,
                         f,
                         partition_method=pygplates.PartitionMethod.most_overlapping_plate,
-                        properties_to_copy=[
-                            pygplates.PartitionProperty.reconstruction_plate_id,
-                            pygplates.PartitionProperty.valid_time_period,
-                        ],
+                        properties_to_copy=properties_to_copy,
                     )
                     if save_plate_id_flag:
                         pygplates.FeatureCollection(features).write(
@@ -232,7 +245,8 @@ def upload_result_to_geoserver(
     r = geo.create_workspace(workspace=geosrv_workspace)
     # print(r)
     r = geo.create_shp_datastore(
-        path=f"{output_path}/{output_basename}.zip",  # make sure you have this zip file
+        # make sure you have this zip file
+        path=f"{output_path}/{output_basename}.zip",
         store_name=output_basename,  # the shapefiles basename
         workspace=geosrv_workspace,
     )
