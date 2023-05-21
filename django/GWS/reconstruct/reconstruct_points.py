@@ -11,7 +11,11 @@ from rest_framework.decorators import api_view, schema, throttle_classes
 from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.throttling import AnonRateThrottle
 
-from utils.model_utils import get_rotation_model, get_static_polygons_filename, UnrecognizedModel
+from utils.model_utils import (
+    get_rotation_model,
+    get_static_polygons_filename,
+    UnrecognizedModel,
+)
 from utils.round_float import round_floats
 from utils.get_lats_lons import get_lats_lons
 from utils.parameter_helper import get_anchor_plate_id, get_pids, get_time
@@ -37,20 +41,20 @@ class ReconPointsSchema(AutoSchema):
             {
                 "name": "points",
                 "in": "query",
-                "description": '''list of points long,lat comma separated coordinates of points 
-                    to be reconstructed [Required or use "lats" and "lons" parameters]''',
+                "description": """list of points long,lat comma separated coordinates of points 
+                    to be reconstructed [Required or use "lats" and "lons" parameters]""",
                 "schema": {"type": "number"},
             },
             {
                 "name": "lats",
                 "in": "query",
-                "description": '''list of latitudes of input points [Required or use "points" parameter]''',
+                "description": """list of latitudes of input points [Required or use "points" parameter]""",
                 "schema": {"type": "number"},
             },
             {
                 "name": "lons",
                 "in": "query",
-                "description": '''list of latitudes of input points [Required or use "points" parameter]''',
+                "description": """list of latitudes of input points [Required or use "points" parameter]""",
                 "schema": {"type": "number"},
             },
             {
@@ -70,7 +74,8 @@ class ReconPointsSchema(AutoSchema):
                 "in": "query",
                 "description": "name for reconstruction model [defaults to default model from web service settings]",
                 "schema": {"type": "string"},
-            }, {
+            },
+            {
                 "name": "pids",
                 "in": "query",
                 "description": "specify plate id for each point to improve performance",
@@ -100,6 +105,12 @@ class ReconPointsSchema(AutoSchema):
                 "description": "reverse reconstruct paleo-coordinates to present-day coordinates",
                 "schema": {"type": "boolean"},
             },
+            {
+                "name": "ignore_valid_time",
+                "in": "query",
+                "description": "if this flag presents, the reconstruction will ignore the valid time constraint",
+                "schema": {"type": "boolean"},
+            },
         ]
         responses = {
             "200": {
@@ -112,15 +123,17 @@ class ReconPointsSchema(AutoSchema):
             "responses": responses,
         }
         if method.lower() == "get":
-            my_operation["description"] = '''http GET request to reconstruct points.  
-                For details and examples, go https://gwsdoc.gplates.org/reconstruction/reconstruct-points'''
+            my_operation[
+                "description"
+            ] = """http GET request to reconstruct points.  
+                For details and examples, go https://gwsdoc.gplates.org/reconstruction/reconstruct-points"""
             my_operation["summary"] = "GET method to reconstruct points"
         elif method.lower() == "post":
             my_operation[
                 "description"
-            ] = '''http POST request to reconstruct points. 
+            ] = """http POST request to reconstruct points. 
                 Basically the same as 'GET' methon, only allow user to send more points.
-                For details and examples, go https://gwsdoc.gplates.org/reconstruction/reconstruct-points'''
+                For details and examples, go https://gwsdoc.gplates.org/reconstruction/reconstruct-points"""
             my_operation["summary"] = "POST method to reconstruct points"
 
         else:
@@ -141,9 +154,7 @@ else:
 @throttle_classes(throttle_class_list)
 @schema(ReconPointsSchema())
 def reconstruct(request):
-    """
-    http request to reconstruct points
-    """
+    """http request to reconstruct points"""
     if request.method == "POST":
         params = request.POST
     elif request.method == "GET":
@@ -162,9 +173,11 @@ def reconstruct(request):
         rotation_model = get_rotation_model(model)
         static_polygons_filename = get_static_polygons_filename(model)
     except UnrecognizedModel as e:
-        return HttpResponseBadRequest(f'''Unrecognized Rotation Model: {model}.<br> 
+        return HttpResponseBadRequest(
+            f"""Unrecognized Rotation Model: {model}.<br> 
         Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
-        to find all available models.''')
+        to find all available models."""
+        )
 
     # create point features from input coordinates
     p_index = 0
@@ -178,18 +191,14 @@ def reconstruct(request):
 
         for lat, lon, pid in zip(lats, lons, pids):
             point_feature = pygplates.Feature()
-            point_feature.set_geometry(
-                pygplates.PointOnSphere(lat, lon)
-            )
+            point_feature.set_geometry(pygplates.PointOnSphere(lat, lon))
             point_feature.set_name(str(p_index))
             if pid:
                 point_feature.set_reconstruction_plate_id(pid)
             point_features.append(point_feature)
             p_index += 1
     except pygplates.InvalidLatLonError as e:
-        return HttpResponseBadRequest(
-            "Invalid longitude or latitude ({0}).".format(e)
-        )
+        return HttpResponseBadRequest("Invalid longitude or latitude ({0}).".format(e))
     except Exception as e:
         return HttpResponseBadRequest(str(e))
 
@@ -197,15 +206,13 @@ def reconstruct(request):
     partition_time = timef if is_reverse else 0.0
 
     # if user has provided plate id(s), do not partition(slow)
-    if (all(id is None for id in pids)):
+    if all(id is None for id in pids):
         # from time import time
         # start = time()
 
-        properties_to_copy = [
-            pygplates.PartitionProperty.reconstruction_plate_id]
+        properties_to_copy = [pygplates.PartitionProperty.reconstruction_plate_id]
         if not ignore_valid_time:
-            properties_to_copy.append(
-                pygplates.PartitionProperty.valid_time_period)
+            properties_to_copy.append(pygplates.PartitionProperty.valid_time_period)
 
         # LOOK HERE !!!!
         # it seems when the partition_time is not 0
@@ -237,7 +244,7 @@ def reconstruct(request):
             timef,
             anchor_plate_id=anchor_plate_id,
         )
-        print(f'anchor plate id: {anchor_plate_id}')
+        print(f"anchor plate id: {anchor_plate_id}")
     else:
         # we still need reverse reconstruct if the points were not partitioned above
         if not all(id is None for id in pids):
