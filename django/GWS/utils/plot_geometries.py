@@ -9,20 +9,31 @@ from PIL import Image
 import cartopy.crs as ccrs
 from shapely.geometry.polygon import Polygon
 
-#
-#
-#
+
 def plot_polygons(polygons, edgecolor, facecolor, alpha, date_line_wrapper, extent):
+    """plot polygons with cartopy
+
+    :params polygons: polygons
+    :params edgecolor: edge color
+    :params facecolor: face color
+    :params alpha: alpha channel value
+    :params date_line_wrapper: date_line_wrapper object
+    :params extent: the extent of map
+
+    :returns: binary data for the map image
+    :rtype: bytes
+
+    """
     try:
         fig = plt.figure(figsize=(12, 8), dpi=300)
-        ax = plt.axes(projection=ccrs.PlateCarree(),frameon=False)
+        ax = plt.axes(projection=ccrs.PlateCarree(), frameon=False)
         # ax.gridlines()
         if extent:
-            ax.set_extent(extent)
+            ax.set_extent(extent, crs=ccrs.PlateCarree())
         else:
             ax.set_global()
-        #ax.background_patch.set_visible(False)  # Background
-        #ax.outline_patch.set_visible(False)  # Borders
+        # ax.background_patch.set_visible(False)  # Background
+        # ax.outline_patch.set_visible(False)  # Borders
         imgdata = io.BytesIO()
 
         # wrap the polygons at date iine

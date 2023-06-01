@@ -9,16 +9,17 @@ from utils import plot_geometries
 import json
 import pygplates
 
+
 # @request_access
 def get_coastline_polygons_low(request):
     return get_coastline_polygons(request)
 
 
-#
-# http GET request to retrieve reconstructed coastline polygons
-# see this link for how to use https://gwsdoc.gplates.org/reconstruction/reconstruct-coastlines
-#
 def get_coastline_polygons(request):
+    """http GET request to retrieve reconstructed coastline polygons
+    see this link for how to use https://gwsdoc.gplates.org/reconstruction/reconstruct-coastlines
+
+    """
     return get_polygons(request, "Coastlines")
 
 
@@ -27,23 +28,28 @@ def get_coastline_polygons(request):
 # see this link for how to use https://gwsdoc.gplates.org/reconstruction/reconstruct-static-polygons
 #
 def get_static_polygons(request):
+    """http GET request to retrieve reconstructed static polygons
+    see this link for how to use https://gwsdoc.gplates.org/reconstruction/reconstruct-static-polygons
+
+    """
     return get_polygons(request, "StaticPolygons")
 
 
-#
-# return reconstructed polygons in JSON or PNG formt
-#
-# parameters:
-# anchor_plate_id : integer value for reconstruction anchor plate id [default=0]
-# time : time for reconstruction [required]
-# model : name for reconstruction model [defaults to default model from web service settings]
-# fmt : if set this parameter to "png", this function will return a png image
-# facecolor : such as "black", "blue", etc
-# edgecolor : such as "black", "blue", etc
-# alpha : such as 1, 0.5, etc
-# extent : such as extent=-20,20,-20,20
-#
 def get_polygons(request, polygon_name):
+    """return reconstructed polygons in JSON or PNG formt
+
+    :param anchor_plate_id : integer value for reconstruction anchor plate id [default=0]
+    :param  time : time for reconstruction [required]
+    :param  model : name for reconstruction model [defaults to default model from web service settings]
+    :param  fmt : if set this parameter to "png", this function will return a png image
+    :param  facecolor : such as "black", "blue", etc
+    :param  edgecolor : such as "black", "blue", etc
+    :param  alpha : such as 1, 0.5, etc
+    :param  extent : such as extent=-180,180,-90,90
+    :param central_meridian: central meridian
+    :param wrap: flag to indicate if wrap the polygons along dateline
+
+    """
     anchor_plate_id = request.GET.get("pid", 0)
     time = request.GET.get("time", 0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
@@ -108,26 +114,27 @@ def get_polygons(request, polygon_name):
     )
 
     if extent:
+        # filter the geometries with the bounding box
         # extent = [minx, maxx, miny, maxy]
-        extent_polygon = pygplates.PolygonOnSphere(
-            [
-                (extent[0], extent[2]),
-                (extent[0], extent[3]),
-                (extent[1], extent[3]),
-                (extent[1], extent[2]),
-            ]
-        )
-
-        reconstructed_polygons = filter(
-            lambda reconstructed_polygon: 0
-            == pygplates.GeometryOnSphere.distance(
-                extent_polygon,
-                reconstructed_polygon.get_reconstructed_geometry(),
-                geometry1_is_solid=True,
-                geometry2_is_solid=True,
-            ),
-            reconstructed_polygons,
-        )
+        tmp = []
+        for polygon in reconstructed_polygons:
+            all_points = polygon.get_reconstructed_geometry().to_lat_lon_list()
+            lats = [p[0] for p in all_points]
+            lons = [p[0] for p in all_points]
+            max_lat = max(lats)
+            min_lat = min(lats)
+            max_lon = max(lons)
+            min_lon = min(lons)
+            if (
+                max_lon < extent[0]
+                or min_lon > extent[1]
+                or max_lat < extent[2]
+                or min_lat > extent[3]
+            ):
+                continue
+            else:
+                tmp.append(polygon)
+        reconstructed_polygons = tmp
 
     # wrap=False #for debug
 
