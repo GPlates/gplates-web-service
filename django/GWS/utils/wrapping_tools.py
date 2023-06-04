@@ -6,11 +6,9 @@ import pygplates
 
 
 def wrap_polylines(polylines, lon0=0, central_meridian=0.0, tesselate_degrees=1):
-
     data = {"type": "FeatureCollection"}
     data["features"] = []
     for polyline in polylines:
-
         if lon0 is not None:
             wrapper = pygplates.DateLineWrapper(central_meridian)
             geometries = wrapper.wrap(polyline.get_geometry(), tesselate_degrees)
@@ -37,7 +35,6 @@ def wrap_resolved_polygons(
     avoid_map_boundary=False,
     tesselate_degrees=2,
 ):
-
     polygons = []
     if wrap:
         wrapped_polygons = []
@@ -104,7 +101,6 @@ def wrap_resolved_polygons(
 
 
 def wrap_reconstructed_polygons(reconstructed_polygons, lon0=0, tesselate_degrees=1):
-
     data = {"type": "FeatureCollection"}
     data["features"] = []
     for reconstructed_polygon in reconstructed_polygons:
@@ -152,12 +148,10 @@ def wrap_reconstructed_polygons(reconstructed_polygons, lon0=0, tesselate_degree
 
 
 def wrap_plate_boundaries(shared_boundary_sections, lon0=0, tesselate_degrees=1):
-
     data = {"type": "FeatureCollection"}
     data["features"] = []
     for shared_boundary_section in shared_boundary_sections:
         for shared_sub_segment in shared_boundary_section.get_shared_sub_segments():
-
             if lon0 is not None:
                 wrapper = pygplates.DateLineWrapper(lon0)
                 geometries = wrapper.wrap(
@@ -192,7 +186,16 @@ def get_json_from_reconstructed_polygons(
     avoid_map_boundary=False,
     tesselate_degrees=2,
 ):
+    """prepare reconstructed polygons in geojson format
 
+    :param reconstructed_polygons: reconstructed polygons
+    :param wrap: flag to indicate wrapping to dateline
+    :param central_meridian: central meridian
+    :param avoid_map_boundary: avoid map boundary
+    :param tesselate_degrees: tesselate degrees
+
+    """
+    print("wrapp", wrap)
     polygons = []
     if wrap:
         wrapped_polygons = []
@@ -202,12 +205,19 @@ def get_json_from_reconstructed_polygons(
                 p.get_reconstructed_geometry(), tesselate_degrees
             )
         for p in wrapped_polygons:
-            if isinstance(p, pygplates.DateLineWrapper.LatLonPolyline):
-                lats = [i.get_latitude() for i in p.get_points()]
-                lons = [i.get_longitude() for i in p.get_points()]
-            else:
-                lats = [i.get_latitude() for i in p.get_exterior_points()]
-                lons = [i.get_longitude() for i in p.get_exterior_points()]
+            # LOOK HERE!!!!!!
+            # https://www.gplates.org/docs/pygplates/generated/pygplates.datelinewrapper
+            # If central_meridian is non-zero then the dateline is essentially shifted
+            # such that the longitudes of the wrapped points lie in the range
+            # [central_meridian - 180, central_meridian + 180]. If central_meridian
+            # is zero then the output range becomes [-180, 180].
+
+            # what about interior points?
+            lats = [i.get_latitude() for i in p.get_exterior_points()]
+            lons = [
+                i.get_longitude() - central_meridian for i in p.get_exterior_points()
+            ]
+
             if (
                 pygplates.PolygonOnSphere(zip(lats, lons)).get_orientation()
                 == pygplates.PolygonOnSphere.Orientation.clockwise

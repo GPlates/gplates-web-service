@@ -58,15 +58,12 @@ def get_polygons(request, polygon_name):
     facecolor = request.GET.get("facecolor", "none")
     alpha = request.GET.get("alpha", 0.5)
     extent = request.GET.get("extent", None)
-    wrap = request.GET.get("wrap", True)
+    wrap_str = request.GET.get("wrap", "False")
 
-    try:
-        if 0 == int(wrap):
-            wrap = False
-        else:
-            wrap = True
-    except:
+    if wrap_str.lower() == "true":
         wrap = True
+    else:
+        wrap = False
 
     # parse the extent = [minx, maxx, miny, maxy]
     if extent:
@@ -136,30 +133,26 @@ def get_polygons(request, polygon_name):
                 tmp.append(polygon)
         reconstructed_polygons = tmp
 
-    # wrap=False #for debug
-
     # plot and return the map
     if return_format == "png":
-        # alway wrap when plotting map
-        date_line_wrapper = pygplates.DateLineWrapper(central_meridian)
-
         imgdata = plot_geometries.plot_polygons(
             reconstructed_polygons,
             edgecolor,
             facecolor,
             alpha,
-            date_line_wrapper,
-            extent,
+            extent=extent,
+            central_meridian=central_meridian,
         )
-        return HttpResponse(imgdata, content_type="image/png")
+        response = HttpResponse(imgdata, content_type="image/png")
+    else:
+        data = wrapping_tools.get_json_from_reconstructed_polygons(
+            reconstructed_polygons, wrap, central_meridian, avoid_map_boundary
+        )
 
-    data = wrapping_tools.get_json_from_reconstructed_polygons(
-        reconstructed_polygons, wrap, central_meridian, avoid_map_boundary
-    )
+        response = HttpResponse(
+            json.dumps(round_floats(data)), content_type="application/json"
+        )
 
-    ret = json.dumps(round_floats(data))
-
-    response = HttpResponse(ret, content_type="application/json")
     # TODO:
     response["Access-Control-Allow-Origin"] = "*"
     return response
