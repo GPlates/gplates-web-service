@@ -196,6 +196,7 @@ def get_json_from_reconstructed_polygons(
 
     """
     print("wrapp", wrap)
+    print(central_meridian)
     polygons = []
     if wrap:
         wrapped_polygons = []
@@ -214,9 +215,15 @@ def get_json_from_reconstructed_polygons(
 
             # what about interior points?
             lats = [i.get_latitude() for i in p.get_exterior_points()]
-            lons = [
-                i.get_longitude() - central_meridian for i in p.get_exterior_points()
-            ]
+            lons = []
+            # we move the geometries back to range [-180, 180]
+            for i in p.get_exterior_points():
+                lon = i.get_longitude()
+                if lon < -180:
+                    lon = 360 + lon
+                elif lon > 180:
+                    lon = 360 - lon
+                lons.append(lon)
 
             if (
                 pygplates.PolygonOnSphere(zip(lats, lons)).get_orientation()
@@ -228,10 +235,10 @@ def get_json_from_reconstructed_polygons(
     else:
         for p in reconstructed_polygons:
             lats, lons = list(zip(*p.get_reconstructed_geometry().to_lat_lon_list()))
-            lats = list(lats)
-            lons = list(lons)
+            # lats = list(lats)
+            # lons = list(lons)
             if (
-                pygplates.PolygonOnSphere(list(zip(lats, lons))).get_orientation()
+                pygplates.PolygonOnSphere(zip(lats, lons)).get_orientation()
                 == pygplates.PolygonOnSphere.Orientation.clockwise
             ):
                 polygons.append((lons, lats))
@@ -254,10 +261,10 @@ def get_json_from_reconstructed_polygons(
         # So, move the points slightly inwards.
         if avoid_map_boundary:
             for idx, x in enumerate(lons):
-                if x < central_meridian - 179.99:
-                    lons[idx] = central_meridian - 179.99
-                elif x > central_meridian + 179.99:
-                    lons[idx] = central_meridian + 179.99
+                if x < -179.99:
+                    lons[idx] = -179.99
+                elif x > 179.99:
+                    lons[idx] = 179.99
             for idx, x in enumerate(lats):
                 if x < -89.99:
                     lats[idx] = -89.99

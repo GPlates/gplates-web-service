@@ -58,12 +58,12 @@ def get_polygons(request, polygon_name):
     facecolor = request.GET.get("facecolor", "none")
     alpha = request.GET.get("alpha", 0.5)
     extent = request.GET.get("extent", None)
-    wrap_str = request.GET.get("wrap", "False")
+    wrap_str = request.GET.get("wrap", "true")
 
-    if wrap_str.lower() == "true":
-        wrap = True
-    else:
+    if wrap_str.lower() == "false":
         wrap = False
+    else:
+        wrap = True
 
     # parse the extent = [minx, maxx, miny, maxy]
     if extent:
