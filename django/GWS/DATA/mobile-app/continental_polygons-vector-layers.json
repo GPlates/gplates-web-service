@@ -1,7 +1,7 @@
 {
   "static-polygons": {
     "displayName": "Static Polygon",
-    "url": "https://geosrv.earthbyte.org/geoserver/gwc/service/wmts",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
     "layerName": "gplates:Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons",
     "format": "image/jpeg",
     "style": "polygon-no-fill",
