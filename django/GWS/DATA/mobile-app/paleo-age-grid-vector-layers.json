@@ -1,13 +1,13 @@
 {
   "coastlines": {
     "displayName": "Coastlines",
-    "url": "https://geosrv.gplates.org/geoserver/gwc/service/wmts",
-    "wmsUrl": "https://geosrv.gplates.org/geoserver/MULLER2019/wms",
-    "layerName": "MULLER2019:coastlines_{{time}}Ma",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019/wms",
+    "layerName": "MULLER2019YC:coastlines-{{time}}-Ma",
     "format": "image/jpeg",
     "style": "",
     "maximumLevel": 8,
-    "startTime": 230,
+    "startTime": 250,
     "endtime": 0,
     "step": 1
   },
