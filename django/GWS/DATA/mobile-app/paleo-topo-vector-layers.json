@@ -2,11 +2,49 @@
   "coastlines": {
     "displayName": "Coastlines",
     "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
-    "layerName": "gplates:Matthews_etal_GPC_2016_Coastlines_Polyline",
+    "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019YC/wms",
+    "layerName": "MULLER2019YC:coastlines-{{time}}-Ma",
     "format": "image/jpeg",
     "style": "",
     "maximumLevel": 8,
-    "startTime": 0,
-    "endtime": 0
+    "startTime": 250,
+    "endtime": 0,
+    "step": 1
+  },
+  "plate-boundary": {
+    "displayName": "Plate Boundary",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019YC/wms",
+    "layerName": "MULLER2019YC:plate-boundary-polygons-{{time}}-Ma",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 250,
+    "endtime": 0,
+    "step": 1
+  },
+  "subduction": {
+    "displayName": "Subduction Zone",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019YC/wms",
+    "layerName": "MULLER2019YC:subduction-polyline-{{time}}-Ma",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 250,
+    "endtime": 0,
+    "step": 1
+  },
+  "static-polygons": {
+    "displayName": "Static Polygon",
+    "url": "https://geosrv.gplates.org/geoserver/gwc/service/wmts",
+    "wmsUrl": "https://geosrv.gplates.org/geoserver/MULLER2019/wms",
+    "layerName": "MULLER2019:static-polygons-{{time}}-Ma",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 230,
+    "endtime": 0,
+    "step": 1
   }
 }

@@ -41,6 +41,20 @@
     "endTime": 0,
     "step": 0
   },
+  "CrustalThickness": {
+    "title": "Crustal Thickness",
+    "subTitle": "Present Day",
+    "icon": "images/crustal-thickness-256x256.png",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "wmsUrl": "http://130.56.247.213:8080/geoserver/gplates/wms",
+    "layerName": "gplates:crustal-thickness-gmt-surface-with-hillshade-GMT_haxby_ref",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endTime": 0,
+    "step": 0
+  },
   "paleo-age-grid": {
     "title": "Paleo-agegrid",
     "subTitle": "0-250Ma",
@@ -81,10 +95,10 @@
     "format": "image/jpeg",
     "style": "",
     "maximumLevel": 8,
-    "startTime": 395,
+    "startTime": 250,
     "endTime": 0,
     "step": 1,
-    "model": "MERDITH2021"
+    "model": "MULLER2019"
   },
   "BingMap": {
     "title": "Bing Map",
