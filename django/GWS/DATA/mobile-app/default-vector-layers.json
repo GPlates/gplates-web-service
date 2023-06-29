@@ -1,10 +1,50 @@
 {
-  "coastlines": {
+  "present-day-coastlines": {
     "displayName": "Coastlines",
     "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
-    "layerName": "gplates:Matthews_etal_GPC_2016_Coastlines_Polyline",
+    "layerName": "gplates:Global_EarthByte_GPlates_PresentDay_Coastlines",
     "format": "image/jpeg",
-    "style": "black-line",
+    "style": "present-day-coastlines-polygons",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  },
+  "present-day-static-polygons": {
+    "displayName": "Static Polygons",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "layerName": "gplates:Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons",
+    "format": "image/jpeg",
+    "style": "present-day-static-polygons",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  },
+  "present-day-subduction-zones": {
+    "displayName": "Subduction Zones",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "layerName": "gplates:present-day-subduction-zones",
+    "format": "image/jpeg",
+    "style": "present-day-subduction-zones",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  },
+  "present-day-plate-boundaries": {
+    "displayName": "Plate Boundaries",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "layerName": "gplates:present-day-plate-boundaries",
+    "format": "image/jpeg",
+    "style": "present-day-plate-boundaries",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  },
+  "present-day-continental-polygons": {
+    "displayName": "Continental Polygons",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "layerName": "gplates:Global_EarthByte_GPlates_PresentDay_ContinentalPolygons",
+    "format": "image/jpeg",
+    "style": "present-day-continental-polygons",
     "maximumLevel": 8,
     "startTime": 0,
     "endtime": 0
