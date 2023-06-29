@@ -48,5 +48,25 @@
     "maximumLevel": 8,
     "startTime": 0,
     "endtime": 0
+  },
+  "present-day-isochrons": {
+    "displayName": "Isochrons",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "layerName": "gplates:present-day-isochrons",
+    "format": "image/jpeg",
+    "style": "present-day-isochrons",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
+  },
+  "present-day-LIPs": {
+    "displayName": "LIPs",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "layerName": "gplates:Johansson_etal_2018_VolcanicProvinces_v2",
+    "format": "image/jpeg",
+    "style": "present-day-LIPs",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
   }
 }

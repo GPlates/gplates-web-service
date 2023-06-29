@@ -12,7 +12,7 @@
     "step": 1
   },
   "plate-boundary": {
-    "displayName": "Plate Boundary",
+    "displayName": "Plate Boundaries",
     "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
     "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019YC/wms",
     "layerName": "MULLER2019YC:plate-boundary-polygons-{{time}}-Ma",
@@ -24,7 +24,7 @@
     "step": 1
   },
   "subduction": {
-    "displayName": "Subduction Zone",
+    "displayName": "Subduction Zones",
     "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
     "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019YC/wms",
     "layerName": "MULLER2019YC:subduction-polyline-{{time}}-Ma",
@@ -36,7 +36,7 @@
     "step": 1
   },
   "static-polygons": {
-    "displayName": "Static Polygon",
+    "displayName": "Static Polygons",
     "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
     "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019YC/wms",
     "layerName": "MULLER2019YC:static-polygons-{{time}}-Ma",
