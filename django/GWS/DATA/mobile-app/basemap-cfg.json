@@ -115,6 +115,21 @@
     "step": 1,
     "model": "MULLER2019"
   },
+  "paleo-geology": {
+    "title": "Geology",
+    "subTitle": "0-250Ma",
+    "icon": "images/paleo-geology-256x256.png",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019YC/wms",
+    "layerName": "MULLER2019YC:geology-{{time}}-Ma",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 250,
+    "endTime": 0,
+    "step": 1,
+    "model": "MULLER2019"
+  },
   "BingMap": {
     "title": "Bing Map",
     "subTitle": "Present Day",

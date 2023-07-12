@@ -68,5 +68,15 @@
     "maximumLevel": 8,
     "startTime": 0,
     "endtime": 0
+  },
+  "present-day-seafloor-fabric": {
+    "displayName": "Seafloor Fabric",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "layerName": "gplates:seafloor-fabric",
+    "format": "image/jpeg",
+    "style": "present-day-seafloor-fabric",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
   }
 }
