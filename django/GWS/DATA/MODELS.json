@@ -3,7 +3,7 @@
     "RotationFile": [
       "1000_0_rotfile_Merdith_et_al_optimised.rot"
     ],
-    "Coastlines": "shapes_coastlines_Merdith_et_al.gpmlz",
+    "Coastlines": "shapes_coastlines_Merdith_et_al_v2.gpmlz",
     "ValidTimeRange": [
       1000.0,
       0.0
@@ -177,6 +177,7 @@
       1100.0,
       0.0
     ],
-    "StaticPolygons": "Torsvik_Cocks_2016_Terranes.gpmlz"
+    "StaticPolygons": "Torsvik_Cocks_2016_Terranes.gpmlz",
+    "Coastlines": "Torsvik_Cocks_2016_Terranes.gpmlz"
   }
 }
