@@ -104,6 +104,8 @@ create volume from local folder:
 
 `docker volume create --name gws-code --opt type=none --opt device=/Users/mchin/workspaces/gplates-web-service --opt o=bind`
 
+⚠ when copying DB data from other computer, log into PostGIS docker container and change the owner and permission accordingly. Otherwise the Postgres would not start.
+
 start and stop
 
 `docker-compose up -d`
