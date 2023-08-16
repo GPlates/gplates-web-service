@@ -4,6 +4,8 @@ import os
 import pygplates
 from django.conf import settings
 
+from plate_model_manager import PlateModel
+
 
 def get_reconstruction_model_dict(MODEL_NAME):
     """
@@ -19,9 +21,15 @@ def get_reconstruction_model_dict(MODEL_NAME):
 
 
 def get_rotation_model(model):
+    """return a rotation model given the model name
+
+    :param model: model name
+
+    :returns: a pygplates.RotationModel object
+
     """
-    return a rotation model given the model name
-    """
+    plate_model = PlateModel(model, data_dir=settings.MODEL_STORE_DIR, readonly=True)
+
     model_dict = get_reconstruction_model_dict(model)
 
     if not model_dict:
