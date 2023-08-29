@@ -1,8 +1,8 @@
 {
   "coastlines": {
     "displayName": "Coastlines",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
-    "wmsUrl": "http://geoserver.gplates.org:8080/geoserver/MULLER2019YC/wms",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019YC/wms",
     "layerName": "MULLER2019YC:coastlines-{{time}}-Ma",
     "format": "image/jpeg",
     "style": "",
@@ -13,8 +13,8 @@
   },
   "plate-boundary": {
     "displayName": "Plate Boundaries",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
-    "wmsUrl": "http://geoserver.gplates.org:8080/geoserver/MULLER2019YC/wms",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019YC/wms",
     "layerName": "MULLER2019YC:plate-boundary-polygons-{{time}}-Ma",
     "format": "image/jpeg",
     "style": "",
@@ -25,8 +25,8 @@
   },
   "subduction": {
     "displayName": "Subduction Zones",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
-    "wmsUrl": "http://geoserver.gplates.org:8080/geoserver/MULLER2019YC/wms",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019YC/wms",
     "layerName": "MULLER2019YC:subduction-polyline-{{time}}-Ma",
     "format": "image/jpeg",
     "style": "",
@@ -37,8 +37,8 @@
   },
   "static-polygons": {
     "displayName": "Static Polygons",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
-    "wmsUrl": "http://geoserver.gplates.org:8080/geoserver/MULLER2019YC/wms",
+    "url": "http://130.56.247.213:8080/geoserver/gwc/service/wmts",
+    "wmsUrl": "http://130.56.247.213:8080/geoserver/MULLER2019YC/wms",
     "layerName": "MULLER2019YC:static-polygons-{{time}}-Ma",
     "format": "image/jpeg",
     "style": "",
