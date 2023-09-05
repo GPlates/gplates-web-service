@@ -5,7 +5,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from utils.geojson_io import load_geojson, save_reconstructed_geometries_geojson
-from utils.model_utils import get_rotation_model, get_static_polygons_filename, UnrecognizedModel
+from utils.model_utils import get_rotation_model, get_static_polygons, UnrecognizedModel
 from utils.round_float import round_floats
 from utils.parameter_helper import get_anchor_plate_id, get_time
 
@@ -15,7 +15,6 @@ from utils.parameter_helper import get_anchor_plate_id, get_time
 #
 @csrf_exempt
 def reconstruct(request):
-
     if request.method == "POST":
         params = request.POST
     elif request.method == "GET":
@@ -41,20 +40,19 @@ def reconstruct(request):
 
     try:
         rotation_model = get_rotation_model(model)
-        static_polygons_filename = get_static_polygons_filename(model)
     except UnrecognizedModel as e:
-        return HttpResponseBadRequest(f'''Unrecognized Rotation Model: {model}.<br>
+        return HttpResponseBadRequest(
+            f"""Unrecognized Rotation Model: {model}.<br>
             Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a>
-            to find all available models.''')
+            to find all available models."""
+        )
 
-    properties_to_copy = [
-        pygplates.PartitionProperty.reconstruction_plate_id]
+    properties_to_copy = [pygplates.PartitionProperty.reconstruction_plate_id]
     if not ignore_valid_time:
-        properties_to_copy.append(
-            pygplates.PartitionProperty.valid_time_period)
+        properties_to_copy.append(pygplates.PartitionProperty.valid_time_period)
 
     assigned_features = pygplates.partition_into_plates(
-        static_polygons_filename,
+        get_static_polygons(model),
         rotation_model,
         feature_collection,
         properties_to_copy=properties_to_copy,

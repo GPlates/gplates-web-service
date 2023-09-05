@@ -80,6 +80,12 @@ class PlateModel:
         self.data_dir = new_dir
         self.model_dir = f"{self.data_dir}/{self.model_name}/"
 
+    def get_big_time(self):
+        return self.model["BigTime"]
+
+    def get_small_time(self):
+        return self.model["SmallTime"]
+
     def get_avail_layers(self):
         """get all available layers in this plate model"""
         if not self.model:
@@ -87,7 +93,7 @@ class PlateModel:
         return list(self.model["Layers"].keys())
 
     def get_rotation_model(self):
-        """return a pygplates.RotationModel object"""
+        """return a list of rotation files"""
         if not self.readonly:
             rotation_folder = self.download_layer_files("Rotations")
         else:

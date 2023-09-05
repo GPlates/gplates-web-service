@@ -13,7 +13,7 @@ from rest_framework.throttling import AnonRateThrottle
 
 from utils.model_utils import (
     get_rotation_model,
-    get_static_polygons_filename,
+    get_static_polygons,
     UnrecognizedModel,
 )
 from utils.round_float import round_floats
@@ -171,7 +171,6 @@ def reconstruct(request):
 
     try:
         rotation_model = get_rotation_model(model)
-        static_polygons_filename = get_static_polygons_filename(model)
     except UnrecognizedModel as e:
         return HttpResponseBadRequest(
             f"""Unrecognized Rotation Model: {model}.<br> 
@@ -219,7 +218,7 @@ def reconstruct(request):
         # the returned assigned_point_features contains reverse reconstructed present-day geometries.
         # so, when doing reverse reconstruct, do not reverse reconstruct again later.
         assigned_point_features = pygplates.partition_into_plates(
-            static_polygons_filename,
+            get_static_polygons(model),
             rotation_model,
             point_features,
             properties_to_copy=properties_to_copy,

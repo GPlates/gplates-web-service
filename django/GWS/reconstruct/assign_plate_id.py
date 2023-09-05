@@ -6,8 +6,8 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from utils.model_utils import (
     get_rotation_model,
-    get_static_polygons_filename,
-    UnrecognizedModel
+    get_static_polygons,
+    UnrecognizedModel,
 )
 from utils.geojson_io import load_geojson
 from utils.get_lats_lons import get_lats_lons
@@ -15,11 +15,11 @@ from utils.get_lats_lons import get_lats_lons
 
 @csrf_exempt
 def get_points_pids(request):
-    '''
+    """
     assign plate IDs to locations/points
     http://localhost:18000/reconstruct/assign_points_plate_ids?lons=-10,-130,0&lats=50,-70,0
     http://localhost:18000/reconstruct/assign_points_plate_ids?points=-10,50,-130,-70,0,0&with_valid_time
-    '''
+    """
     if request.method == "POST":
         params = request.POST
     elif request.method == "GET":
@@ -35,11 +35,12 @@ def get_points_pids(request):
 
     try:
         rotation_model = get_rotation_model(model)
-        static_polygons_filename = get_static_polygons_filename(model)
     except UnrecognizedModel as e:
-        return HttpResponseBadRequest(f'''Unrecognized Rotation Model: {model}.<br>
+        return HttpResponseBadRequest(
+            f"""Unrecognized Rotation Model: {model}.<br>
         Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a>
-        to find all available models.''')
+        to find all available models."""
+        )
 
     # create point features from input coordinates
     p_index = 0
@@ -49,22 +50,18 @@ def get_points_pids(request):
     try:
         for lat, lon in zip(lats, lons):
             point_feature = pygplates.Feature()
-            point_feature.set_geometry(
-                pygplates.PointOnSphere(float(lat), float(lon))
-            )
+            point_feature.set_geometry(pygplates.PointOnSphere(float(lat), float(lon)))
             point_feature.set_name(str(p_index))
             point_features.append(point_feature)
             p_index += 1
     except pygplates.InvalidLatLonError as e:
-        return HttpResponseBadRequest(
-            "Invalid longitude or latitude ({0}).".format(e)
-        )
+        return HttpResponseBadRequest("Invalid longitude or latitude ({0}).".format(e))
     except ValueError as e:
         return HttpResponseBadRequest("Invalid value ({0}).".format(e))
 
     # assign plate-ids to points using static polygons
     assigned_point_features = pygplates.partition_into_plates(
-        static_polygons_filename,
+        get_static_polygons(model),
         rotation_model,
         point_features,
         properties_to_copy=[
@@ -106,7 +103,8 @@ def get_points_pids(request):
             if end_time == pygplates.GeoTimeInstant.create_distant_future():
                 end_time = "distant future"
             pid_valid_time_list.append(
-                {'pid': pid, 'valid_time': [begin_time, end_time]})
+                {"pid": pid, "valid_time": [begin_time, end_time]}
+            )
         ret = json.dumps(pid_valid_time_list)
     else:
         ret = json.dumps(pids)
@@ -142,10 +140,9 @@ def get_plate_ids_for_geojson(request):
     feature_collection = load_geojson(fc_str, False)
 
     rotation_model = get_rotation_model(model)
-    static_polygons_filename = get_static_polygons_filename(model)
 
     assigned_features = pygplates.partition_into_plates(
-        static_polygons_filename,
+        get_static_polygons(model),
         rotation_model,
         feature_collection,
         properties_to_copy=[

@@ -3,7 +3,7 @@ import os
 
 import requests
 
-from . import plate_model
+from .plate_model import PlateModel
 
 
 class PlateModelManager:
@@ -56,7 +56,7 @@ class PlateModelManager:
         """
         model_name = model_name.lower()
         if model_name in self.models:
-            return plate_model.PlateModel(model_name, model_cfg=self.models[model_name])
+            return PlateModel(model_name, model_cfg=self.models[model_name])
         else:
             print(f"Model {model_name} is not available.")
             return None
@@ -77,4 +77,12 @@ class PlateModelManager:
 
     @staticmethod
     def get_default_repo_url():
-        return "https://www.earthbyte.org/webdav/ftp/plate-model-repo/models.json"
+        return "https://repo.gplates.org/webdav/pmm/models.json"
+
+    def download_all_models(self, data_dir="./"):
+        model_names = self.get_available_model_names()
+        for name in model_names:
+            print(f"download {name}")
+            model = self.get_model(name)
+            model.set_data_dir(data_dir)
+            model.download_all_layers()

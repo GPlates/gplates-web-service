@@ -5,8 +5,6 @@ from .plate_model_manager import PlateModelManager
 
 import argparse
 
-DEFAULT_REPO_URL = "https://www.earthbyte.org/webdav/ftp/plate-model-repo/models.json"
-
 
 class ArgParser(argparse.ArgumentParser):
     def error(self, message):
@@ -24,8 +22,9 @@ def main():
 
     ls_cmd.add_argument("-r", "--repository", type=str, dest="repository")
 
-    download_cmd.add_argument("-m", "--model", type=str, dest="model", required=True)
-    download_cmd.add_argument("-p", "--path", type=str, dest="path", default="./")
+    download_cmd.add_argument("model", type=str)
+    download_cmd.add_argument("path", type=str, nargs="?", default=os.getcwd())
+
     download_cmd.add_argument("-r", "--repository", type=str, dest="repository")
 
     if len(sys.argv) == 1:
@@ -36,19 +35,24 @@ def main():
 
     if args.command == "ls":
         if args.repository == None:
-            pm_manager = PlateModelManager(DEFAULT_REPO_URL)
+            pm_manager = PlateModelManager()
         else:
             pm_manager = PlateModelManager(args.repository)
-        print(pm_manager.get_available_model_names())
+        for name in pm_manager.get_available_model_names():
+            print(name)
     elif args.command == "download":
         print(f"download {args.model}")
         if args.repository == None:
-            pm_manager = PlateModelManager(DEFAULT_REPO_URL)
+            pm_manager = PlateModelManager()
         else:
             pm_manager = PlateModelManager(args.repository)
-        model = pm_manager.get_model(args.model)
-        model.set_data_dir(args.path)
-        model.download_all()
+
+        if args.model.lower() == "all":
+            pm_manager.download_all_models(args.path)
+        else:
+            model = pm_manager.get_model(args.model)
+            model.set_data_dir(args.path)
+            model.download_all_layers()
 
 
 if __name__ == "__main__":

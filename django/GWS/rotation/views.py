@@ -4,7 +4,7 @@ import numpy as np
 import pygplates
 from django.conf import settings
 from django.http import HttpResponse
-from utils.model_utils import get_reconstruction_model_dict
+from utils.model_utils import get_rotation_model, get_static_polygons
 from utils.round_float import round_floats
 from utils.wrapping_tools import wrap_polylines
 
@@ -32,18 +32,7 @@ def reconstruction_tree_map(request):
     time = request.GET.get("time", 0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
 
-    model_dict = get_reconstruction_model_dict(model)
-
-    rotation_model = pygplates.RotationModel(
-        [
-            str("%s/%s/%s" % (settings.MODEL_STORE_DIR, model, rot_file))
-            for rot_file in model_dict["RotationFile"]
-        ]
-    )
-
-    static_polygons_filename = str(
-        "%s/%s/%s" % (settings.MODEL_STORE_DIR, model, model_dict["StaticPolygons"])
-    )
+    rotation_model = get_rotation_model(model)
 
     tree = rotation_model.get_reconstruction_tree(float(time))
 
@@ -64,7 +53,7 @@ def reconstruction_tree_map(request):
     print(uniq)
 
     rsp = []
-    pygplates.reconstruct(static_polygons_filename, rotation_model, rsp, float(time))
+    pygplates.reconstruct(get_static_polygons(model), rotation_model, rsp, float(time))
 
     tree_features = []
 
@@ -73,7 +62,6 @@ def reconstruction_tree_map(request):
         p1 = GetPolygonCentroid(rsp, plate_pair[1])
 
         if (len(p0) > 0) & (len(p1) > 0):
-
             feature = pygplates.Feature()
             simple_line = pygplates.PolylineOnSphere([p0, p1])
             feature.set_geometry(simple_line.to_tessellated(np.radians(1)))
