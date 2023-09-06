@@ -1,7 +1,7 @@
 {
   "present-day-coastlines": {
     "displayName": "Coastlines",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
+    "url": "https://geoserver.gplates.org/geoserver/gwc/service/wmts",
     "layerName": "gplates:Global_EarthByte_GPlates_PresentDay_Coastlines",
     "format": "image/jpeg",
     "style": "present-day-coastlines-polygons",
@@ -11,7 +11,7 @@
   },
   "present-day-static-polygons": {
     "displayName": "Static Polygons",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
+    "url": "https://geoserver.gplates.org/geoserver/gwc/service/wmts",
     "layerName": "gplates:Global_EarthByte_GPlates_PresentDay_StaticPlatePolygons",
     "format": "image/jpeg",
     "style": "present-day-static-polygons",
@@ -21,7 +21,7 @@
   },
   "present-day-subduction-zones": {
     "displayName": "Subduction Zones",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
+    "url": "https://geoserver.gplates.org/geoserver/gwc/service/wmts",
     "layerName": "gplates:present-day-subduction-zones",
     "format": "image/jpeg",
     "style": "present-day-subduction-zones",
@@ -31,7 +31,7 @@
   },
   "present-day-plate-boundaries": {
     "displayName": "Plate Boundaries",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
+    "url": "https://geoserver.gplates.org/geoserver/gwc/service/wmts",
     "layerName": "gplates:present-day-plate-boundaries",
     "format": "image/jpeg",
     "style": "present-day-plate-boundaries",
@@ -41,7 +41,7 @@
   },
   "present-day-continental-polygons": {
     "displayName": "Continental Polygons",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
+    "url": "https://geoserver.gplates.org/geoserver/gwc/service/wmts",
     "layerName": "gplates:Global_EarthByte_GPlates_PresentDay_ContinentalPolygons",
     "format": "image/jpeg",
     "style": "present-day-continental-polygons",
@@ -51,7 +51,7 @@
   },
   "present-day-isochrons": {
     "displayName": "Isochrons",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
+    "url": "https://geoserver.gplates.org/geoserver/gwc/service/wmts",
     "layerName": "gplates:present-day-isochrons",
     "format": "image/jpeg",
     "style": "present-day-isochrons",
@@ -61,7 +61,7 @@
   },
   "present-day-LIPs": {
     "displayName": "LIPs",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
+    "url": "https://geoserver.gplates.org/geoserver/gwc/service/wmts",
     "layerName": "gplates:Johansson_etal_2018_VolcanicProvinces_v2",
     "format": "image/jpeg",
     "style": "present-day-LIPs",
@@ -71,7 +71,7 @@
   },
   "present-day-seafloor-fabric": {
     "displayName": "Seafloor Fabric",
-    "url": "http://geoserver.gplates.org:8080/geoserver/gwc/service/wmts",
+    "url": "https://geoserver.gplates.org/geoserver/gwc/service/wmts",
     "layerName": "gplates:seafloor-fabric",
     "format": "image/jpeg",
     "style": "present-day-seafloor-fabric",
