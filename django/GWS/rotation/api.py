@@ -1,4 +1,4 @@
-import _rotation as rotation
+import lib.rotation as rotation
 import json
 import math
 
@@ -54,9 +54,7 @@ def get_rotation_map(request):
 
     rotation_data = []
     for rot_file in get_rotation_files(model_name):
-        with open(
-            f"{settings.MODEL_STORE_DIR}/{model_name}/{rot_file}", "r", encoding="utf-8"
-        ) as fp:
+        with open(rot_file, "r", encoding="utf-8") as fp:
             for line in fp:
                 items = line.split()
                 # print(items)

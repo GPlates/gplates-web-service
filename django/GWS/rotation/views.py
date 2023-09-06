@@ -8,6 +8,8 @@ from utils.model_utils import get_rotation_model, get_static_polygons
 from utils.round_float import round_floats
 from utils.wrapping_tools import wrap_polylines
 
+# this file contains legacy code from Simon Williams
+
 
 def reconstruction_tree_map(request):
     """
@@ -50,7 +52,7 @@ def reconstruction_tree_map(request):
     uniq = list(set(tree_list))
 
     # Print a list of unique plate-pairs....
-    print(uniq)
+    # print(len(uniq))
 
     rsp = []
     pygplates.reconstruct(get_static_polygons(model), rotation_model, rsp, float(time))
@@ -69,6 +71,7 @@ def reconstruction_tree_map(request):
             feature.set_shapefile_attribute("FixedPlate", plate_pair[1])
             tree_features.append(feature)
 
+    # print(len(tree_features))
     data = wrap_polylines(tree_features, 0.0)
 
     ret = json.dumps(round_floats(data))

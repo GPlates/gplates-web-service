@@ -4,6 +4,7 @@ from plate_model_manager import PlateModel, PlateModelManager
 
 
 def get_rotation_files(model):
+    """return a list of rotation files"""
     plate_model = PlateModel(model, data_dir=settings.MODEL_REPO_DIR, readonly=True)
     return plate_model.get_rotation_model()
 
@@ -40,6 +41,7 @@ def get_static_polygons_filenames(model):
 
 
 def get_static_polygons(model):
+    """return a pygplates.FeatureCollection of static polygons"""
     files = get_static_polygons_filenames(model)
     features = []
     for f in files:
@@ -49,6 +51,12 @@ def get_static_polygons(model):
 
 
 def get_layer(model, layer_name):
+    """return a pygplates.FeatureCollection of the layer
+
+    :param model: model name
+    :param layer_name: layer name
+
+    """
     plate_model = PlateModel(model, data_dir=settings.MODEL_REPO_DIR, readonly=True)
     files = plate_model.get_layer(layer_name)
     features = []
@@ -59,6 +67,7 @@ def get_layer(model, layer_name):
 
 
 def get_topologies(model):
+    """return a list of topology files"""
     plate_model = PlateModel(model, data_dir=settings.MODEL_REPO_DIR, readonly=True)
     return plate_model.get_topologies()
 
@@ -83,6 +92,7 @@ def is_time_valid_for_model(model_name, time):
 
 
 def get_layer_names(model_name):
+    """return all the layers in a model"""
     plate_model = PlateModel(
         model_name, data_dir=settings.MODEL_REPO_DIR, readonly=True
     )

@@ -1,9 +1,8 @@
-
 import io
 import json
 import math
 
-import _rotation as rotation
+import lib.rotation as rotation
 import matplotlib.pyplot as plt
 from django.http import HttpResponse, HttpResponseBadRequest
 from rest_framework.decorators import api_view, schema
@@ -13,16 +12,16 @@ from .icosahedron import get_mesh
 
 
 def find_axis_and_angle(request):
-    '''
+    """
     http://localhost:18000/earth/find_axis_and_angle/?point_a=120,45&point_b=20,-45
-    '''
-    point_a_str = request.GET.get('point_a', None)
-    point_b_str = request.GET.get('point_b', None)
+    """
+    point_a_str = request.GET.get("point_a", None)
+    point_b_str = request.GET.get("point_b", None)
     if not point_a_str or not point_b_str:
         return HttpResponseBadRequest("Two points are required in the request!")
     try:
-        point_a = point_a_str.split(',')
-        point_b = point_b_str.split(',')
+        point_a = point_a_str.split(",")
+        point_b = point_b_str.split(",")
 
         lon_a = float(point_a[0])
         lat_a = float(point_a[1])
@@ -31,31 +30,34 @@ def find_axis_and_angle(request):
     except:
         return HttpResponseBadRequest("Invalid points!")
 
-    axis, angle = rotation.find_axis_and_angle((math.radians(lat_a), math.radians(
-        lon_a)), (math.radians(lat_b), math.radians(lon_b)))
+    axis, angle = rotation.find_axis_and_angle(
+        (math.radians(lat_a), math.radians(lon_a)),
+        (math.radians(lat_b), math.radians(lon_b)),
+    )
 
-    ret = {'axis': (math.degrees(axis[1]), math.degrees(
-        axis[0])), "angle": math.degrees(angle)}
+    ret = {
+        "axis": (math.degrees(axis[1]), math.degrees(axis[0])),
+        "angle": math.degrees(angle),
+    }
 
-    response = HttpResponse(json.dumps(ret),
-                            content_type='application/json')
+    response = HttpResponse(json.dumps(ret), content_type="application/json")
 
-    response['Access-Control-Allow-Origin'] = '*'
+    response["Access-Control-Allow-Origin"] = "*"
     return response
 
 
 def interp_two_locations(request):
-    '''
+    """
     http://localhost:18000/earth/interp_two_locations/?point_a=120,45&point_b=20,-45&num=10
-    '''
-    point_a_str = request.GET.get('point_a', None)
-    point_b_str = request.GET.get('point_b', None)
-    num_str = request.GET.get('num', 10)
+    """
+    point_a_str = request.GET.get("point_a", None)
+    point_b_str = request.GET.get("point_b", None)
+    num_str = request.GET.get("num", 10)
     if not point_a_str or not point_b_str:
         return HttpResponseBadRequest("Two points are required in the request!")
     try:
-        point_a = point_a_str.split(',')
-        point_b = point_b_str.split(',')
+        point_a = point_a_str.split(",")
+        point_b = point_b_str.split(",")
 
         lon_a = float(point_a[0])
         lat_a = float(point_a[1])
@@ -66,34 +68,37 @@ def interp_two_locations(request):
     except:
         return HttpResponseBadRequest("Invalid points!")
 
-    points_r = rotation.interp_two_points((math.radians(lat_a), math.radians(
-        lon_a)), (math.radians(lat_b), math.radians(lon_b)), num)
+    points_r = rotation.interp_two_points(
+        (math.radians(lat_a), math.radians(lon_a)),
+        (math.radians(lat_b), math.radians(lon_b)),
+        num,
+    )
 
-    points_d = [[round(math.degrees(p[1]), 4), round(
-        math.degrees(p[0]), 4)]for p in points_r]
+    points_d = [
+        [round(math.degrees(p[1]), 4), round(math.degrees(p[0]), 4)] for p in points_r
+    ]
 
-    ret = {'locations': points_d}
+    ret = {"locations": points_d}
 
-    response = HttpResponse(json.dumps(ret),
-                            content_type='application/json')
+    response = HttpResponse(json.dumps(ret), content_type="application/json")
 
-    response['Access-Control-Allow-Origin'] = '*'
+    response["Access-Control-Allow-Origin"] = "*"
     return response
 
 
 def distance(request):
-    '''
+    """
     http://localhost:18000/earth/distance/?point_a=120,45&point_b=20,-45
     calculate the greate arch length between two locations
-    '''
-    point_a_str = request.GET.get('point_a', None)
-    point_b_str = request.GET.get('point_b', None)
+    """
+    point_a_str = request.GET.get("point_a", None)
+    point_b_str = request.GET.get("point_b", None)
 
     if not point_a_str or not point_b_str:
         return HttpResponseBadRequest("Two points are required in the request!")
     try:
-        point_a = point_a_str.split(',')
-        point_b = point_b_str.split(',')
+        point_a = point_a_str.split(",")
+        point_b = point_b_str.split(",")
 
         lon_a = float(point_a[0])
         lat_a = float(point_a[1])
@@ -103,15 +108,16 @@ def distance(request):
     except:
         return HttpResponseBadRequest("Invalid points!")
 
-    distance = rotation.distance((math.radians(lat_a), math.radians(
-        lon_a)), (math.radians(lat_b), math.radians(lon_b)))
+    distance = rotation.distance(
+        (math.radians(lat_a), math.radians(lon_a)),
+        (math.radians(lat_b), math.radians(lon_b)),
+    )
 
-    ret = {'distance': distance}
+    ret = {"distance": distance}
 
-    response = HttpResponse(json.dumps(ret),
-                            content_type='application/json')
+    response = HttpResponse(json.dumps(ret), content_type="application/json")
 
-    response['Access-Control-Allow-Origin'] = '*'
+    response["Access-Control-Allow-Origin"] = "*"
     return response
 
 
@@ -144,7 +150,6 @@ class GlobeMeshSchema(AutoSchema):
                 "description": "return format. either json or png.",
                 "schema": {"type": "string"},
             },
-
         ]
         responses = {
             "200": {
@@ -157,8 +162,12 @@ class GlobeMeshSchema(AutoSchema):
             "responses": responses,
         }
         if method.lower() == "get":
-            my_operation["description"] = "Get globe mesh created by bisecting icosahedron"
-            my_operation["summary"] = "GET method to return globe mesh created by bisecting icosahedron"
+            my_operation[
+                "description"
+            ] = "Get globe mesh created by bisecting icosahedron"
+            my_operation[
+                "summary"
+            ] = "GET method to return globe mesh created by bisecting icosahedron"
         else:
             my_operation = {"summary": "Not implemented yet!"}
 
@@ -169,33 +178,41 @@ class GlobeMeshSchema(AutoSchema):
 @api_view(["GET"])
 @schema(GlobeMeshSchema())
 def get_globe_mesh(request):
-    '''
+    """
     return a mesh created by using icosahedron
     http://localhost:18000/earth/get_globe_mesh/?&level=2&fmt=png
-    '''
-    level_str = request.GET.get('level', 3)
-    format = request.GET.get('fmt', 'json')
+    """
+    level_str = request.GET.get("level", 3)
+    format = request.GET.get("fmt", "json")
     try:
         level = int(level_str)
     except:
         level = 3
-        print(f'invalid level parameter({level_str}), must be integer, use 3.')
+        print(f"invalid level parameter({level_str}), must be integer, use 3.")
 
     if level > 7:
-        return HttpResponseBadRequest("the level is not allowed to exceed 7 due to server constrain")
+        return HttpResponseBadRequest(
+            "the level is not allowed to exceed 7 due to server constrain"
+        )
 
     vertices, faces = get_mesh(level)
 
-    ret = {'vertices': vertices.tolist(), 'faces': faces.tolist()}
+    ret = {"vertices": vertices.tolist(), "faces": faces.tolist()}
 
     # return a 3d png image of the globe mesh
-    if format == 'png':
+    if format == "png":
         fig = plt.figure(figsize=(12, 12), dpi=300)
         ax = plt.axes(projection="3d")
 
-        ax.plot_trisurf(vertices[:, 0], vertices[:, 1], vertices[:, 2], triangles=faces,
-                        cmap='jet', linewidths=1)
-        ax.view_init(elev=-160., azim=45)
+        ax.plot_trisurf(
+            vertices[:, 0],
+            vertices[:, 1],
+            vertices[:, 2],
+            triangles=faces,
+            cmap="jet",
+            linewidths=1,
+        )
+        ax.view_init(elev=-160.0, azim=45)
         ax.set_box_aspect((1, 1, 0.9))
 
         imgdata = io.BytesIO()
@@ -211,12 +228,10 @@ def get_globe_mesh(request):
         imgdata.seek(0)  # rewind the data
         plt.clf()
 
-        response = HttpResponse(
-            imgdata.getvalue(), content_type="image/png")
+        response = HttpResponse(imgdata.getvalue(), content_type="image/png")
 
     else:
-        response = HttpResponse(json.dumps(ret),
-                                content_type='application/json')
+        response = HttpResponse(json.dumps(ret), content_type="application/json")
 
-    response['Access-Control-Allow-Origin'] = '*'
+    response["Access-Control-Allow-Origin"] = "*"
     return response

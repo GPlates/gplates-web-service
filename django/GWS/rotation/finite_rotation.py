@@ -10,7 +10,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from utils.model_utils import get_rotation_model
 from utils.round_float import round_floats
-from utils.quaternions import lat_lon_to_cart, axis_angle_to_quat
+from lib.quaternions import lat_lon_to_cart, axis_angle_to_quat
 
 
 #
