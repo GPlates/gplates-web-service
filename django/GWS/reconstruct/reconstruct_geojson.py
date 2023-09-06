@@ -22,9 +22,6 @@ def reconstruct(request):
     else:
         return HttpResponseBadRequest("Unrecognized request type")
 
-    if "time" not in params and "geologicage" in params:
-        params["time"] = params["geologicage"]
-
     # output_format = params.get("output", "geojson")
     fc_str = params.get("feature_collection")
     model = params.get("model", settings.MODEL_DEFAULT)
@@ -32,7 +29,10 @@ def reconstruct(request):
     ignore_valid_time = True if "ignore_valid_time" in params else False
     keep_properties = True if "keep_properties" in params else False
 
-    timef = get_time(params)
+    if "time" not in params and "geologicage" in params:
+        timef = get_time(params, name="geologicage")
+    else:
+        timef = get_time(params)
     anchor_plate_id = get_anchor_plate_id(params)
 
     # Convert geojson input to gplates feature collection

@@ -10,8 +10,6 @@ import urllib3
 
 class RotationTestCase(unittest.TestCase):
     def setUp(self):
-        print("setting up RotationTestCase")
-
         self.logger = logging.getLogger()
         Path("logs").mkdir(parents=True, exist_ok=True)
         fh = logging.FileHandler("logs/test-rotation.log")
@@ -20,15 +18,17 @@ class RotationTestCase(unittest.TestCase):
         fh.setFormatter(formatter)
         self.logger.addHandler(fh)
 
-        print(self.logger.handlers)
+        # print(self.logger.handlers)
         urllib3.disable_warnings()
 
         self.SERVER_URL = os.getenv("GWS_SERVER_URL")
         if not self.SERVER_URL:
             self.SERVER_URL = "http://127.0.0.1:18000"
-            print(f"Using server URL in script {self.SERVER_URL}")
+            self.logger.info(f"Using server URL in script {self.SERVER_URL}")
         else:
-            print(f"Using server URL in environment variable {self.SERVER_URL}")
+            self.logger.info(
+                f"Using server URL in environment variable {self.SERVER_URL}"
+            )
 
         self.proxies = {"http": ""}
 
@@ -49,7 +49,7 @@ class RotationTestCase(unittest.TestCase):
         self.assertTrue(len(pids) > 0)
 
         self.logger.info(json.dumps(pids, sort_keys=True, indent=4))
-        print("PASSED! GET get_plate_ids")
+        self.logger.info("PASSED! GET get_plate_ids")
 
 
 if __name__ == "__main__":
