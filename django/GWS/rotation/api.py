@@ -8,7 +8,7 @@ from utils.model_utils import get_rotation_files
 
 
 def rotate(request):
-    """
+    """rotate a point by axis and angle
     http://localhost:18000/rotation/rotate/?point=120,45&axis=20,-45&angle=20
     """
     point_str = request.GET.get("point", None)
@@ -47,8 +47,21 @@ def rotate(request):
 
 def get_rotation_map(request):
     """
-    return a map
+    return a map of the rotation model
     http://localhost:18000/rotation/get_rotation_map/?model=MERDITH2021
+    for example:
+    {
+        "101": [
+            {"fpid": 111, "times": [0.0, 10.], "plats": [90.0, 81.0], "plons": [0.0, 22.9], "angles": [0.0, 2.84]}
+            {"fpid": 222, "times": [10.0, 20.], "plats": [90.0, 81.0], "plons": [0.0, 22.9], "angles": [0.0, 2.84]}
+        ],
+         "102": [
+            {"fpid": 333, "times": [0.0, 100], "plats": [90.0, 81.0], "plons": [0.0, 22.9], "angles": [0.0, 2.84]}
+            {"fpid": 444, "times": [100, 200], "plats": [90.0, 81.0], "plons": [0.0, 22.9], "angles": [0.0, 2.84]}
+        ],
+        ....
+        ....
+    }
     """
     model_name = request.GET.get("model", settings.MODEL_DEFAULT)
 

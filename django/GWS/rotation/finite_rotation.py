@@ -1,6 +1,3 @@
-#
-# put your copyright, software license and legal information here.
-#
 import json
 import math
 
@@ -8,16 +5,18 @@ import numpy as np
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
+from lib.quaternions import axis_angle_to_quat, lat_lon_to_cart
 from utils.model_utils import get_rotation_model
 from utils.round_float import round_floats
-from lib.quaternions import lat_lon_to_cart, axis_angle_to_quat
 
 
-#
-# return all the plate ids in the reconstruction tree at given time
-#
 @csrf_exempt
 def get_plate_ids(request):
+    """return all the plate ids in the reconstruction tree at given time
+    https://gws.gplates.org/rotation/get_plate_ids?time=100
+
+    :returns: a json list of plate ids
+    """
     time = request.GET.get("time", 0)
     model_name = request.GET.get("model", settings.MODEL_DEFAULT)
     try:
@@ -42,6 +41,9 @@ def get_plate_ids(request):
 #
 @csrf_exempt
 def get_euler_pole_and_angle(request):
+    """return the finite rotation as pole and angle
+    https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100&pids=701,801,901
+    """
     return get_rotation(request)
 
 
@@ -50,13 +52,12 @@ def get_euler_pole_and_angle(request):
 #
 @csrf_exempt
 def get_quaternions(request):
+    """return finite rotation as quaternions
+    https://gws.gplates.org/rotation/get_quaternions?times=10.50.100&pids=701,801,901
+    """
     return get_rotation(request, True)
 
 
-#
-# return the finite rotation
-# https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100&pids=701,801,901
-#
 def get_rotation(request, return_quat=False):
     if request.method == "POST":
         params = request.POST
@@ -121,10 +122,8 @@ def get_rotation(request, return_quat=False):
     return response
 
 
-#
-# parse parameters from http request
-#
 def get_request_parameters(params):
+    """parse parameters from http request"""
     time_str = params.get("times", None)
     pid_str = params.get("pids", None)
     model = params.get("model", settings.MODEL_DEFAULT)

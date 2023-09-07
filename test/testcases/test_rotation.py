@@ -1,5 +1,6 @@
 import json
 import logging
+import random
 import os
 import unittest
 from pathlib import Path
@@ -50,6 +51,53 @@ class RotationTestCase(unittest.TestCase):
 
         self.logger.info(json.dumps(pids, sort_keys=True, indent=4))
         self.logger.info("PASSED! GET get_plate_ids")
+
+    def test_finite_rotation(self):
+        time = 100.0
+
+        # get all the plate IDs in the reconstruction tree at 100Ma
+        url = f"{self.SERVER_URL}/rotation/get_plate_ids?time=100"
+        r = requests.get(url)
+        self.assertEqual(r.status_code, 200)
+        pids = json.loads(r.text)
+        self.logger.info(r.text)
+
+        # pick up a random plate ID from above plate IDs
+        random_pid = pids[random.randint(0, len(pids) - 1)]
+        # print(random_pid)
+
+        # rotate with euler pole and angle
+        url = f"{self.SERVER_URL}/rotation/get_euler_pole_and_angle?times={time}&pids={random_pid}"
+        r = requests.get(url)
+        self.assertEqual(r.status_code, 200)
+        self.logger.info(r.text)
+
+        # rotate with quaternions
+        url = (
+            f"{self.SERVER_URL}/rotation/get_quaternions?times={time}&pids={random_pid}"
+        )
+        # print(url)
+        r = requests.get(url)
+        self.assertEqual(r.status_code, 200)
+        self.logger.info(r.text)
+
+        def test_rotation_map(self):
+            data = {"point": "120,45", "axis": "20,-45", "angle": 20}
+            r = requests.get(
+                self.SERVER_URL + "/rotation/rotate",
+                params=data,
+                verify=False,
+                proxies=self.proxies,
+            )
+            self.assertEqual(r.status_code, 200)
+
+            r = requests.get(
+                self.SERVER_URL + "rotation/get_rotation_map/?model=MERDITH2021",
+                verify=False,
+                proxies=self.proxies,
+            )
+            self.assertEqual(r.status_code, 200)
+            self.logger.info(r.text)
 
 
 if __name__ == "__main__":
