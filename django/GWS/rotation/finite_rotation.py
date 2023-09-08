@@ -59,6 +59,7 @@ def get_quaternions(request):
 
 
 def get_rotation(request, return_quat=False):
+    """get finite rotaton as (pole,angle) or quaternions"""
     if request.method == "POST":
         params = request.POST
         if len(list(params.items())) == 0:
@@ -71,7 +72,7 @@ def get_rotation(request, return_quat=False):
     model_name, times, pids = get_request_parameters(params)
 
     # return results as {pid_1:[a list of rotation], pid_2:[a list of rotation]}
-    # not group the results by "time"
+    # now group the results by "time"
     is_group_by_pid = True if "group_by_pid" in params else False
 
     rotation_model = get_rotation_model(model_name)

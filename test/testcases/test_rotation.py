@@ -81,18 +81,56 @@ class RotationTestCase(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
         self.logger.info(r.text)
 
-        def test_rotation_map(self):
-            data = {"point": "120,45", "axis": "20,-45", "angle": 20}
-            r = requests.get(
-                self.SERVER_URL + "/rotation/rotate",
-                params=data,
-                verify=False,
-                proxies=self.proxies,
-            )
-            self.assertEqual(r.status_code, 200)
+    def test_rotation_map(self):
+        data = {"point": "120,45", "axis": "20,-45", "angle": 20}
+        r = requests.get(
+            self.SERVER_URL + "/rotation/rotate",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.assertEqual(r.status_code, 200)
 
+        r = requests.get(
+            self.SERVER_URL + "/rotation/get_rotation_map/?model=MERDITH2021",
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.assertEqual(r.status_code, 200)
+        self.logger.info(r.text)
+
+    def test_reconstruction_tree(self):
+        r = requests.get(
+            self.SERVER_URL
+            + "/rotation/get_reconstruction_tree_edges/?model=seton2012&level=4&pids=707,702,314,833",
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.assertEqual(r.status_code, 200)
+
+        r = requests.get(
+            self.SERVER_URL + "/rotation/get_reconstruction_tree_height",
+            verify=False,
+            proxies=self.proxies,
+        )
+        # print(r.text)
+        self.assertEqual(r.status_code, 200)
+        self.logger.info(r.text)
+
+        r = requests.get(
+            self.SERVER_URL + "/rotation/get_reconstruction_tree_leaves",
+            verify=False,
+            proxies=self.proxies,
+        )
+        # print(r.text)
+        self.assertEqual(r.status_code, 200)
+        self.logger.info(r.text)
+
+        pids = json.loads(r.text)
+        for pid in pids[:5]:
             r = requests.get(
-                self.SERVER_URL + "rotation/get_rotation_map/?model=MERDITH2021",
+                self.SERVER_URL
+                + f"/rotation/get_ancestors_in_reconstruction_tree/?pid={pid}",
                 verify=False,
                 proxies=self.proxies,
             )

@@ -4,7 +4,7 @@ import math
 
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
-from utils.model_utils import get_rotation_files
+from utils.model_utils import get_rotation_files, get_rotation_model
 
 
 def rotate(request):
@@ -171,6 +171,160 @@ def get_rotation_map(request):
     ret = data_map
 
     response = HttpResponse(json.dumps(ret), content_type="application/json")
+
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+
+def get_edges_of_pid(edges, pid):
+    """get edges which have the given fixed plate id
+
+    :param edges: all edges in the reconstruction tree
+    :param pid: fixed plate id
+    :returns: the edges whose fixed plate id is the same with the given one
+    """
+    return [e for e in edges if e[0] == pid]
+
+
+def get_reconstruction_tree_edges(request):
+    """return edges in a reconstruction tree at given time
+    http://localhost:18000/rotation/get_reconstruction_tree_edges/?model=MERDITH2021&time=100&level=4&pids=452,447,712
+
+    :param level: the numbre of tree levels to return. if 0 or not present, means all
+
+    :returns: a list of [fixed plate ID, moving plate ID]
+    """
+
+    time = request.GET.get("time", 0)
+    model = request.GET.get("model", settings.MODEL_DEFAULT)
+    level = request.GET.get("level", 3)
+    pids_str = request.GET.get("pids", "")
+    pids = []
+    try:
+        time = float(time)
+        level = int(level)
+        if len(pids_str) > 0:
+            for p in pids_str.split(","):
+                pids.append(int(p))
+    except:
+        return HttpResponseBadRequest(f"time: {time}, level: {level}, pids:{pids_str}")
+
+    rotation_model = get_rotation_model(model)
+    tree = rotation_model.get_reconstruction_tree(time)
+    edges = tree.get_edges()
+
+    edge_list = list(
+        set([(e.get_fixed_plate_id(), e.get_moving_plate_id()) for e in edges])
+    )
+
+    if level > 0 or len(pids) > 0:
+        edges_buf = []
+
+        fp = set([e[0] for e in edge_list])
+        mp = set([e[1] for e in edge_list])
+        if len(pids) == 0:
+            pids = [i for i in fp if i not in mp]  # get the roots
+        safe_guard = 0
+        while True:
+            new_pids = []
+            for pid in pids:
+                es = get_edges_of_pid(edge_list, pid)
+                edges_buf.extend(es)
+                new_pids.extend([i[1] for i in es])
+            pids = set(new_pids)
+            if level > 0:
+                level -= 1
+                if level == 0:
+                    break
+            elif len(new_pids) == 0:
+                break
+            safe_guard += 1
+            if safe_guard > 20:
+                break
+        edge_list = edges_buf
+
+    response = HttpResponse(json.dumps(edge_list), content_type="application/json")
+
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+
+def get_reconstruction_tree_height(request):
+    """return the height of the reconstruction tree"""
+    time = request.GET.get("time", 0)
+    model = request.GET.get("model", settings.MODEL_DEFAULT)
+    rotation_model = get_rotation_model(model)
+    tree = rotation_model.get_reconstruction_tree(time)
+
+    height = 1
+
+    def traverse_sub_tree(edge, depth):
+        nonlocal height
+        if depth > height:
+            height = depth
+            print(edge.get_moving_plate_id())
+
+        for child_edge in edge.get_child_edges():
+            traverse_sub_tree(child_edge, depth=depth + 1)
+
+    for anchor_plate_edge in tree.get_anchor_plate_edges():
+        traverse_sub_tree(anchor_plate_edge, depth=1)
+
+    response = HttpResponse(json.dumps(height), content_type="application/json")
+
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+
+def get_reconstruction_tree_leaves(request):
+    """return all the leaves of the reconstruction tree"""
+    time = request.GET.get("time", 0)
+    model = request.GET.get("model", settings.MODEL_DEFAULT)
+    rotation_model = get_rotation_model(model)
+    tree = rotation_model.get_reconstruction_tree(time)
+
+    leaves = []
+
+    def traverse_sub_tree(edge):
+        nonlocal leaves
+        child_edges = edge.get_child_edges()
+        if len(child_edges) == 0:
+            leaves.append(edge.get_moving_plate_id())
+        else:
+            for child_edge in edge.get_child_edges():
+                traverse_sub_tree(child_edge)
+
+    for anchor_plate_edge in tree.get_anchor_plate_edges():
+        traverse_sub_tree(anchor_plate_edge)
+
+    response = HttpResponse(
+        json.dumps(list(set(leaves))), content_type="application/json"
+    )
+
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+
+def get_ancestors_in_reconstruction_tree(request):
+    """return all ancestors PIDs"""
+    time = request.GET.get("time", 0)
+    model = request.GET.get("model", settings.MODEL_DEFAULT)
+    pid = request.GET.get("pid", None)
+
+    try:
+        pid = int(pid)
+    except:
+        return HttpResponseBadRequest(f"The parameter 'pid' is required!")
+
+    rotation_model = get_rotation_model(model)
+    tree = rotation_model.get_reconstruction_tree(time)
+    edge = tree.get_edge(pid)
+    ancestors = []
+    while edge:
+        ancestors.append(edge.get_fixed_plate_id())
+        edge = edge.get_parent_edge()
+
+    response = HttpResponse(json.dumps(ancestors), content_type="application/json")
 
     response["Access-Control-Allow-Origin"] = "*"
     return response
