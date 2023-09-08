@@ -250,9 +250,20 @@ def get_reconstruction_tree_edges(request):
 
 
 def get_reconstruction_tree_height(request):
-    """return the height of the reconstruction tree"""
+    """return the height of the reconstruction tree
+    http://localhost:18000/rotation/get_reconstruction_tree_height?pid=304
+
+    """
     time = request.GET.get("time", 0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
+
+    pid = request.GET.get("pid", 0)
+
+    try:
+        pid = int(pid)
+    except:
+        return HttpResponseBadRequest(f"The parameter 'pid' is required!")
+
     rotation_model = get_rotation_model(model)
     tree = rotation_model.get_reconstruction_tree(time)
 
@@ -262,13 +273,18 @@ def get_reconstruction_tree_height(request):
         nonlocal height
         if depth > height:
             height = depth
-            print(edge.get_moving_plate_id())
 
         for child_edge in edge.get_child_edges():
             traverse_sub_tree(child_edge, depth=depth + 1)
 
-    for anchor_plate_edge in tree.get_anchor_plate_edges():
-        traverse_sub_tree(anchor_plate_edge, depth=1)
+    if pid:
+        traverse_sub_tree(tree.get_edge(pid), depth=1)
+    else:
+        for anchor_plate_edge in tree.get_anchor_plate_edges():
+            # print(
+            #    f">>>>{anchor_plate_edge.get_fixed_plate_id()}>>>{anchor_plate_edge.get_moving_plate_id()}"
+            # )
+            traverse_sub_tree(anchor_plate_edge, depth=2)
 
     response = HttpResponse(json.dumps(height), content_type="application/json")
 
@@ -277,7 +293,9 @@ def get_reconstruction_tree_height(request):
 
 
 def get_reconstruction_tree_leaves(request):
-    """return all the leaves of the reconstruction tree"""
+    """return all the leaves of the reconstruction tree
+    http://localhost:18000/rotation/get_reconstruction_tree_leaves
+    """
     time = request.GET.get("time", 0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
     rotation_model = get_rotation_model(model)
@@ -306,7 +324,9 @@ def get_reconstruction_tree_leaves(request):
 
 
 def get_ancestors_in_reconstruction_tree(request):
-    """return all ancestors PIDs"""
+    """return all ancestors PIDs
+    http://localhost:18000/rotation/get_ancestors_in_reconstruction_tree?pid=101
+    """
     time = request.GET.get("time", 0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
     pid = request.GET.get("pid", None)
