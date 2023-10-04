@@ -8,18 +8,23 @@ else
   printf "Using server URL in environment variable ${GWS_SERVER_URL}\n"
 fi 
 
-curl --fail -s -o /dev/null "${GWS_SERVER_URL}/raster/query?lon=99.50&lat=-40.24&raster_name=age_grid_geek_2007" || (printf "FAILED! raster query\n" & exit 1)
+curl --fail -s -o /dev/null "${GWS_SERVER_URL}/raster/query?lon=99.50&lat=-40.24&raster_name=age_grid_geek_2007" || { printf "FAILED! raster query\n"; exit 1; } 
 
 printf "PASSED! raster query\n"
 
-curl --fail -s -o /dev/null "${GWS_SERVER_URL}/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" || (printf "FAILED! reconstruct_points\n" & exit 1)
+curl --fail -s -o /dev/null "${GWS_SERVER_URL}/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" || { printf "FAILED! reconstruct_points\n"; exit 1; }
 
 printf "PASSED! reconstruct_points\n"
 
-curl --fail -s -o /dev/null "${GWS_SERVER_URL}/reconstruct/coastlines/?&time=140&model=SETON2012" || (printf "FAILED! coastlines\n" & exit 1)
+curl --fail -s -o /dev/null "${GWS_SERVER_URL}/reconstruct/coastlines/?&time=140&model=SETON2012" ||  { printf "FAILED! coastlines\n"; exit 1; }
 
 printf "PASSED! coastlines\n"
 
 python3 $(dirname "$0")/../examples/assign_shp_plate_ids_with_web_service.py
 
-python3 $(dirname "$0")/test.py
+cd $(dirname "$0")
+python3 -m unittest testcases/test_server.py
+
+echo "****************************"
+echo "All tests have passed!!!"
+echo "****************************"

@@ -19,7 +19,7 @@ from utils.fileio import (
     find_and_unzip_all_zip_files,
     NoOutputFileError,
 )
-from utils.model_utils import get_rotation_model, get_static_polygons_filename
+from utils.model_utils import get_rotation_model, get_static_polygons
 
 
 #
@@ -47,15 +47,11 @@ def assign_plate_ids(request):
             model = request.POST.get("model", settings.MODEL_DEFAULT)
 
             rotation_model = get_rotation_model(model)
-            static_polygons_filename = get_static_polygons_filename(model)
 
             # find and unzip all zip files
             find_and_unzip_all_zip_files(tmp_dir)
 
             reconstructable_files = glob.glob(f"{tmp_dir}/**/*.shp", recursive=True)
-
-            rotation_model = get_rotation_model(model)
-            static_polygons_filename = get_static_polygons_filename(model)
 
             # create output folder
             output_path = f"{tmp_dir}/output/"
@@ -64,7 +60,7 @@ def assign_plate_ids(request):
             for f in reconstructable_files:
                 # print(f)
                 features = pygplates.partition_into_plates(
-                    static_polygons_filename,
+                    get_static_polygons(model),
                     rotation_model,
                     f,
                     partition_method=pygplates.PartitionMethod.most_overlapping_plate,

@@ -12,14 +12,14 @@ from django.http import (
 )
 from rest_framework.decorators import api_view
 
-from utils.model_utils import *
+from utils.model_utils import get_layer_names, get_model_name_list
 
 
 @api_view(["GET"])
 def list_model_names(request):
     """List the names of all available retation models"""
     response = HttpResponse(
-        json.dumps(get_model_name_list(settings.MODEL_STORE_DIR)),
+        json.dumps(get_model_name_list(settings.MODEL_REPO_DIR)),
         content_type="application/json",
     )
 
@@ -32,7 +32,7 @@ def list_models(request):
     """List all available retation models with details"""
     ret = []
     namespaces = {"dc": "http://purl.org/dc/elements/1.1/"}
-    for name in get_model_name_list(settings.MODEL_STORE_DIR, include_hidden=False):
+    for name in get_model_name_list(settings.MODEL_REPO_DIR):
         # print(name)
         meta_file = settings.MODEL_STORE_DIR + "/" + name + "/" + name + "_metadata.xml"
         if os.path.isfile(meta_file):
@@ -88,7 +88,7 @@ def get_model_details(request):
             response["Access-Control-Allow-Origin"] = "*"
             return response
     else:
-        if model in get_model_name_list(settings.MODEL_STORE_DIR, include_hidden=False):
+        if model in get_model_name_list(settings.MODEL_REPO_DIR):
             return HttpResponseServerError(
                 f"This rotation model({model}) was not configurated properly. Please contact admin."
             )
@@ -102,7 +102,7 @@ def list_model_layers(request):
     List all available layers for a given rotation model
     """
     model_name = request.GET.get("model", settings.MODEL_DEFAULT)
-    response = JsonResponse(get_reconstruction_model_dict(model_name))
+    response = JsonResponse(get_layer_names(model_name))
 
     response["Access-Control-Allow-Origin"] = "*"
     return response

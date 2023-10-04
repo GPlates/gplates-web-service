@@ -1,7 +1,7 @@
 def get_pids(params, count):
-    '''
+    """
     return a list of plate IDs
-    '''
+    """
     pids_str = params.get("pids", None)
     pid_str = params.get("pid", None)
     pids = []
@@ -11,7 +11,8 @@ def get_pids(params, count):
             pids = [int(i) for i in pids]
             if len(pids) != count:
                 raise Exception(
-                    "The number of plate ids must be the same with the number of points.")
+                    "The number of plate ids must be the same with the number of points."
+                )
         else:
             if pid_str:
                 pids = count * [int(pid_str)]
@@ -22,11 +23,11 @@ def get_pids(params, count):
     return pids
 
 
-def get_time(params):
-    '''
+def get_time(params, name="time"):
+    """
     get reconstruction time from http request
-    '''
-    time = params.get("time", None)
+    """
+    time = params.get(name, None)
     timef = 0.0
     if not time:
         raise Exception('The "time" parameter cannot be empty.')
@@ -34,16 +35,14 @@ def get_time(params):
     try:
         timef = float(time)
     except:
-        raise Exception(
-            f'The "time" parameter is invalid ({time}).'
-        )
+        raise Exception(f'The "time" parameter is invalid ({time}).')
     return timef
 
 
 def get_anchor_plate_id(params):
-    '''
+    """
     get anchor plate id from http request
-    '''
+    """
     anchor_plate_id = params.get("anchor_plate_id", 0)
 
     try:

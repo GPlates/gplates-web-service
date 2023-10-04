@@ -4,7 +4,7 @@ import pygplates
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from utils.model_utils import get_rotation_model, get_static_polygons_filename
+from utils.model_utils import get_rotation_model, get_static_polygons
 from utils.round_float import round_floats
 
 cities_lon_lat = {
@@ -32,7 +32,6 @@ def get_city_lon_lat_at_time(request):
             )
 
     rotation_model = get_rotation_model(model)
-    static_polygons_filename = get_static_polygons_filename(model)
 
     # create features
     point_features = []
@@ -46,7 +45,7 @@ def get_city_lon_lat_at_time(request):
 
     # assign plate ids
     assigned_point_features = pygplates.partition_into_plates(
-        static_polygons_filename,
+        static_polygons(model),
         rotation_model,
         point_features,
         properties_to_copy=[

@@ -20,7 +20,7 @@ from utils.fileio import (
     find_and_unzip_all_zip_files,
     NoOutputFileError,
 )
-from utils.model_utils import get_rotation_model, get_static_polygons_filename, UnrecognizedModel
+from utils.model_utils import get_rotation_model, get_static_polygons, UnrecognizedModel
 
 
 #
@@ -67,21 +67,19 @@ def reconstruct(request):
             find_and_unzip_all_zip_files(tmp_dir)
 
             reconstructable_files = []
-            reconstructable_files = glob.glob(
-                f"{tmp_dir}/**/*.shp", recursive=True)
-            reconstructable_files += glob.glob(
-                f"{tmp_dir}/**/*.gpml", recursive=True)
-            reconstructable_files += glob.glob(
-                f"{tmp_dir}/**/*.gpmlz", recursive=True)
+            reconstructable_files = glob.glob(f"{tmp_dir}/**/*.shp", recursive=True)
+            reconstructable_files += glob.glob(f"{tmp_dir}/**/*.gpml", recursive=True)
+            reconstructable_files += glob.glob(f"{tmp_dir}/**/*.gpmlz", recursive=True)
             # print(reconstructable_files)
 
             try:
                 rotation_model = get_rotation_model(model)
-                static_polygons_filename = get_static_polygons_filename(model)
             except UnrecognizedModel as e:
-                return HttpResponseBadRequest(f'''Unrecognized Rotation Model: {model}.<br> 
+                return HttpResponseBadRequest(
+                    f"""Unrecognized Rotation Model: {model}.<br> 
                     Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
-                    to find all available models.''')
+                    to find all available models."""
+                )
 
             # create output folder
             output_path = f"{tmp_dir}/output/"
@@ -93,13 +91,15 @@ def reconstruct(request):
                 for f in reconstructable_files:
                     # print(f)
                     properties_to_copy = [
-                        pygplates.PartitionProperty.reconstruction_plate_id]
+                        pygplates.PartitionProperty.reconstruction_plate_id
+                    ]
                     if not ignore_valid_time:
                         properties_to_copy.append(
-                            pygplates.PartitionProperty.valid_time_period)
+                            pygplates.PartitionProperty.valid_time_period
+                        )
 
                     features = pygplates.partition_into_plates(
-                        static_polygons_filename,
+                        get_static_polygons(model),
                         rotation_model,
                         f,
                         partition_method=pygplates.PartitionMethod.most_overlapping_plate,

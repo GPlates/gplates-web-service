@@ -1,5 +1,8 @@
+examples/reconstruction-tree.png
+django/GWS/DATA/model-repo/
 django/GWS/DATA/*/*/map-layers/
 test.log
+logs
 
 node_modules
 
