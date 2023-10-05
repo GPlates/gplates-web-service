@@ -1,9 +1,8 @@
+import argparse
+import os
 import sys
 
-from .plate_model import *
-from .plate_model_manager import PlateModelManager
-
-import argparse
+from plate_model_manager import PlateModelManager, __version__
 
 
 class ArgParser(argparse.ArgumentParser):
@@ -15,6 +14,8 @@ class ArgParser(argparse.ArgumentParser):
 
 def main():
     parser = ArgParser()
+
+    parser.add_argument("-v", "--version", action="store_true")
 
     subparser = parser.add_subparsers(dest="command")
     ls_cmd = subparser.add_parser("ls")
@@ -32,6 +33,10 @@ def main():
         sys.exit(0)
 
     args = parser.parse_args()
+
+    if args.version:
+        print(__version__)
+        return
 
     if args.command == "ls":
         if args.repository == None:

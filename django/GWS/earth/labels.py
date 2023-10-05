@@ -1,13 +1,10 @@
-import io
 import json
-import math
+
 import pygplates
 from django.conf import settings
-import matplotlib.pyplot as plt
 from django.http import HttpResponse, HttpResponseBadRequest
-
+from utils.model_utils import UnrecognizedModel, get_rotation_model, get_static_polygons
 from utils.round_float import round_floats
-from utils.model_utils import get_reconstruction_model_dict
 
 
 def read_labels():
@@ -53,6 +50,63 @@ def read_labels():
     return labels
 
 
+def reconstruct_labels(names, lons, lats, model, time):
+    """reconstruct the label coordinates. return a list of names and reconstructed coordinates
+    the length of input lable list may be different from the output list because some labels may not exist at the time
+    """
+    assert len(lats) == len(lons)
+    assert len(names) == len(lons)
+    point_features = []
+    for lat, lon, name in zip(lats, lons, names):
+        point_feature = pygplates.Feature()
+        point_feature.set_geometry(pygplates.PointOnSphere(lat, lon))
+        point_feature.set_name(name)
+        point_features.append(point_feature)
+
+    try:
+        rotation_model = get_rotation_model(model)
+    except UnrecognizedModel as e:
+        return HttpResponseBadRequest(
+            f"""Unrecognized Rotation Model: {model}.<br> 
+        Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
+        to find all available models."""
+        )
+
+    assigned_point_features = pygplates.partition_into_plates(
+        get_static_polygons(model),
+        rotation_model,
+        point_features,
+        properties_to_copy=[
+            pygplates.PartitionProperty.reconstruction_plate_id,
+            pygplates.PartitionProperty.valid_time_period,
+        ],
+        reconstruction_time=time,
+    )
+
+    # reconstruct the points
+    assigned_point_feature_collection = pygplates.FeatureCollection(
+        assigned_point_features
+    )
+    reconstructed_feature_geometries = []
+
+    pygplates.reconstruct(
+        assigned_point_feature_collection,
+        rotation_model,
+        reconstructed_feature_geometries,
+        time,
+    )
+
+    rnames = []
+    rlons = []
+    rlats = []
+    for rfg in reconstructed_feature_geometries:
+        rnames.append(rfg.get_feature().get_name())
+        r_lat_lon = rfg.get_reconstructed_geometry().to_lat_lon()
+        rlons.append(r_lat_lon[1])
+        rlats.append(r_lat_lon[0])
+    return rnames, rlons, rlats
+
+
 def get_labels(request):
     if request.method != "GET":
         return HttpResponseBadRequest("Only GET request is supported!")
@@ -65,64 +119,35 @@ def get_labels(request):
 
     model = request.GET.get("model", settings.MODEL_DEFAULT)
 
-    model_dict = get_reconstruction_model_dict(model)
+    labels = read_labels()
 
-    rotation_model = pygplates.RotationModel(
-        [
-            f"{settings.MODEL_STORE_DIR}/{model}/{rot_file}"
-            for rot_file in model_dict["RotationFile"]
-        ]
-    )
+    names = []
+    lons = []
+    lats = []
+    oceans = []
+    for row in labels:
+        if row["fromtime"] >= time and row["totime"] <= time:
+            label = " ".join(row["label"].split(" "))
+            if label.endswith("Ocean"):
+                oceans.append((label, row["lat"], row["lon"]))
+            else:
+                names.append(label)
+                lons.append(row["lon"])
+                lats.append(row["lat"])
 
-    model_manager = PlateModelManager()
-    model = model_manager.get_model(model_name)
-    model.set_data_dir(f"{os.path.dirname(__file__)}/model-repo")
-
-    # print(model.get_static_polygons())
-
-    gplately_model = gplately.PlateReconstruction(
-        rotation_model=model.get_rotation_model(),
-        topology_features=[],
-        static_polygons=model.get_static_polygons(),
-    )
-
-    Path(f"output/{model_name}/csv").mkdir(parents=True, exist_ok=True)
-    Path(f"output/{model_name}/shapefile").mkdir(parents=True, exist_ok=True)
-    Path(f"output/{model_name}/json").mkdir(parents=True, exist_ok=True)
-
-    for time in range(model.get_small_time(), model.get_big_time() + 1):
-        names = []
-        lons = []
-        lats = []
-        oceans = []
-        for row in labels:
-            if row["fromtime"] >= time and row["totime"] <= time:
-                label = " ".join(row["label"].split(" "))
-                if label.endswith("Ocean"):
-                    oceans.append((label, row["lat"], row["lon"]))
-                else:
-                    names.append(label)
-                    lons.append(row["lon"])
-                    lats.append(row["lat"])
-
-        # print(lons, lats)
-        if len(lons):
-            gpts = gplately.Points(gplately_model, lons, lats)
-            rlons, rlats = gpts.reconstruct(time, return_array=True)
-        else:
-            rlons = []
-            rlats = []
-        assert len(lats) == len(lons)
-        assert len(rlons) == len(lons)
-        assert len(rlats) == len(lats)
-
-        # save as json
-        data_str = json.dumps(oceans + list(zip(names, rlats, rlons)), indent=4)
-        with open(f"output/{model_name}/json/{time}.json", "w") as outfile:
-            outfile.write(data_str)
+    if time != 0:
+        try:
+            rnames, rlons, rlats = reconstruct_labels(names, lons, lats, model, time)
+        except pygplates.InvalidLatLonError as e:
+            return HttpResponseBadRequest(f"Invalid longitude or latitude ({e}).")
+    else:
+        rnames = names
+        rlats = lats
+        rlons = lons
 
     response = HttpResponse(
-        json.dumps(round_floats(ret)), content_type="application/json"
+        json.dumps(round_floats(oceans + list(zip(rnames, rlats, rlons)))),
+        content_type="application/json",
     )
 
     # TODO:
