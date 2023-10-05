@@ -23,14 +23,15 @@ sys.path.append(f"{BASE_DIR}/lib")
 
 load_dotenv(f"{BASE_DIR}/.env")  # take environment variables from .env.
 
-EARTH_STORE_DIR = f"{BASE_DIR}/DATA/earth/"
-PALEO_STORE_DIR = f"{BASE_DIR}/DATA/paleo/"
-CACHED_LAYERS_DIR = f"{BASE_DIR}/DATA/cached-layers/"
-MODEL_REPO_DIR = f"{BASE_DIR}/DATA/model-repo/"
+EARTH_STORE_DIR = f"{BASE_DIR}/data/earth/"
+PALEO_STORE_DIR = f"{BASE_DIR}/data/paleo/"
+CACHED_LAYERS_DIR = f"{BASE_DIR}/data/cached-layers/"
+MODEL_REPO_DIR = f"{BASE_DIR}/data/model-repo/"
+MOBILE_APP_DIR = f"{BASE_DIR}/data/mobile-app"
 
 MODEL_DEFAULT = "MULLER2019"
 
-MEDIA_ROOT = f"{BASE_DIR}/DATA/tmp/"
+MEDIA_ROOT = f"{BASE_DIR}/data/tmp/"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/

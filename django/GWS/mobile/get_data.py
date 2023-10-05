@@ -6,7 +6,7 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseServerError
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-data_path = f"{settings.BASE_DIR}/DATA/mobile-app/"
+data_path = f"{settings.MOBILE_APP_DIR}"
 
 
 def get_scotese_etal_2021_global_temp(reqeust):

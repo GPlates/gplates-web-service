@@ -23,8 +23,8 @@ RUN pip3 install --use-deprecated=legacy-resolver cartopy
 RUN apt-get install -y ghostscript
 RUN apt-get install -y ffmpeg
 
-RUN mkdir -p /usr/src/django/GWS/DATA/tmp
-RUN chmod o+w /usr/src/django/GWS/DATA/tmp
+RUN mkdir -p /usr/src/django/GWS/data/tmp
+RUN chmod o+w /usr/src/django/GWS/data/tmp
 
 ADD ./docker/startup.sh /startup.sh
 RUN chmod +x /startup.sh
