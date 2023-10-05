@@ -125,6 +125,7 @@ def reconstruct_labels(names, lons, lats, model, time, pids=[]):
 
 
 def get_labels(request):
+    """http://localhost:18000/earth/get_labels?time=300&model=merdith2021"""
     if request.method != "GET":
         return HttpResponseBadRequest("Only GET request is supported!")
 
