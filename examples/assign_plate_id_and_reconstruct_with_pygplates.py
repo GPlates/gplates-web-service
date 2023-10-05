@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # use gplately conda env to run
 # conda create -n my-env gplately
 import os

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # use gplately conda env to run
 # conda create -n my-env gplately
 import json
@@ -20,8 +20,6 @@ def main():
     else:
         print(f"Using server URL in environment variable {SERVER_URL}")
 
-    # SERVER_URL = "http://localhost:80"
-
     time = 100.0
 
     # get all the plate IDs in the reconstruction tree at 100Ma
@@ -37,7 +35,6 @@ def main():
     # define a random test point
     test_point = [random.randint(-90, 90), random.randint(-180, 180)]  # lat, lon
 
-    script_path = os.path.dirname(os.path.realpath(__file__))
     mgr = PlateModelManager()
     model = mgr.get_model("SETON2012")
     rotation_model = pygplates.RotationModel(model.get_rotation_model())
