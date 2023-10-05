@@ -23,10 +23,9 @@ sys.path.append(f"{BASE_DIR}/lib")
 
 load_dotenv(f"{BASE_DIR}/.env")  # take environment variables from .env.
 
-MODEL_STORE_DIR = f"{BASE_DIR}/DATA/MODELS/"
 EARTH_STORE_DIR = f"{BASE_DIR}/DATA/earth/"
 PALEO_STORE_DIR = f"{BASE_DIR}/DATA/paleo/"
-
+CACHED_LAYERS_DIR = f"{BASE_DIR}/DATA/cached-layers/"
 MODEL_REPO_DIR = f"{BASE_DIR}/DATA/model-repo/"
 
 MODEL_DEFAULT = "MULLER2019"
