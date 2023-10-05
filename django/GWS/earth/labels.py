@@ -50,17 +50,31 @@ def read_labels():
     return labels
 
 
-def reconstruct_labels(names, lons, lats, model, time):
+def read_label_pids(model):
+    with open(
+        f"{settings.EARTH_STORE_DIR}/label-pids-{model.lower()}.csv", "rt"
+    ) as csv_fp:
+        return [int(line) for line in csv_fp]
+
+
+def reconstruct_labels(names, lons, lats, model, time, pids=[]):
     """reconstruct the label coordinates. return a list of names and reconstructed coordinates
     the length of input lable list may be different from the output list because some labels may not exist at the time
     """
     assert len(lats) == len(lons)
     assert len(names) == len(lons)
     point_features = []
-    for lat, lon, name in zip(lats, lons, names):
+    if not pids:
+        tpids = [None] * len(names)
+    else:
+        tpids = pids
+
+    for lat, lon, name, pid in zip(lats, lons, names, tpids):
         point_feature = pygplates.Feature()
         point_feature.set_geometry(pygplates.PointOnSphere(lat, lon))
         point_feature.set_name(name)
+        if pid:
+            point_feature.set_reconstruction_plate_id(int(pid))
         point_features.append(point_feature)
 
     try:
@@ -72,16 +86,19 @@ def reconstruct_labels(names, lons, lats, model, time):
         to find all available models."""
         )
 
-    assigned_point_features = pygplates.partition_into_plates(
-        get_static_polygons(model),
-        rotation_model,
-        point_features,
-        properties_to_copy=[
-            pygplates.PartitionProperty.reconstruction_plate_id,
-            pygplates.PartitionProperty.valid_time_period,
-        ],
-        reconstruction_time=time,
-    )
+    if not pids:
+        assigned_point_features = pygplates.partition_into_plates(
+            get_static_polygons(model),
+            rotation_model,
+            point_features,
+            properties_to_copy=[
+                pygplates.PartitionProperty.reconstruction_plate_id,
+                pygplates.PartitionProperty.valid_time_period,
+            ],
+            reconstruction_time=time,
+        )
+    else:
+        assigned_point_features = point_features
 
     # reconstruct the points
     assigned_point_feature_collection = pygplates.FeatureCollection(
@@ -120,12 +137,19 @@ def get_labels(request):
     model = request.GET.get("model", settings.MODEL_DEFAULT)
 
     labels = read_labels()
+    try:
+        pids = read_label_pids(model)
+    except FileNotFoundError as e:
+        pids = []
 
+    if not pids:
+        pids = [None] * len(labels)
     names = []
     lons = []
     lats = []
     oceans = []
-    for row in labels:
+    rpids = []
+    for row, pid in zip(labels, pids):
         if row["fromtime"] >= time and row["totime"] <= time:
             label = " ".join(row["label"].split(" "))
             if label.endswith("Ocean"):
@@ -134,10 +158,14 @@ def get_labels(request):
                 names.append(label)
                 lons.append(row["lon"])
                 lats.append(row["lat"])
+                if pid:
+                    rpids.append(pid)
 
     if time != 0:
         try:
-            rnames, rlons, rlats = reconstruct_labels(names, lons, lats, model, time)
+            rnames, rlons, rlats = reconstruct_labels(
+                names, lons, lats, model, time, pids=rpids
+            )
         except pygplates.InvalidLatLonError as e:
             return HttpResponseBadRequest(f"Invalid longitude or latitude ({e}).")
     else:
