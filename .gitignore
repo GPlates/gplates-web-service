@@ -1,6 +1,5 @@
 examples/reconstruction-tree.png
-django/GWS/data/model-repo/
-django/GWS/data/*/*/map-layers/
+
 test.log
 logs
 
@@ -27,8 +26,6 @@ django/GWS/tree.gmt.gplates.xml
 django/GWS/tree.gmt
 
 *.pyc
-
-django/GWS/data/tmp/*
 
 examples/output/
 
