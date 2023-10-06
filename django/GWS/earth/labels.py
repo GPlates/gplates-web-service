@@ -22,7 +22,7 @@ def read_labels():
 
     """
     labels = []
-    with open(f"{settings.EARTH_STORE_DIR}/labels.csv", "rt") as csv_fp:
+    with open(f"{settings.EARTH_STORE_DIR}/labels/labels.csv", "rt") as csv_fp:
         for line in csv_fp:
             items = line.split(",")
             if len(items) < 5:  # ignore when length is wrong
@@ -52,7 +52,7 @@ def read_labels():
 
 def read_label_pids(model):
     with open(
-        f"{settings.EARTH_STORE_DIR}/label-pids-{model.lower()}.csv", "rt"
+        f"{settings.EARTH_STORE_DIR}/labels/label-pids-{model.lower()}.csv", "rt"
     ) as csv_fp:
         return [int(line) for line in csv_fp]
 
