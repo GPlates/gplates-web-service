@@ -28,6 +28,8 @@ def main():
 
     download_cmd.add_argument("-r", "--repository", type=str, dest="repository")
 
+    download_cmd.add_argument("--download-rasters", action="store_true")
+
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(0)
@@ -57,7 +59,11 @@ def main():
         else:
             model = pm_manager.get_model(args.model)
             model.set_data_dir(args.path)
-            model.download_all_layers()
+            print(args.download_rasters)
+            if args.download_rasters:
+                model.download_all()
+            else:
+                model.download_all_layers()
 
 
 if __name__ == "__main__":

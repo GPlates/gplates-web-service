@@ -68,7 +68,14 @@ class PlateModel:
             self.loop.close()
 
     def get_model_dir(self):
-        return self.create_model_dir()
+        if PlateModel.is_model_dir(self.model_dir):
+            return self.model_dir
+        elif not self.readonly:
+            return self.create_model_dir()
+        else:
+            raise Exception(
+                f"The model dir {self.model_dir} is invalid and could not create it (in readonly mode)."
+            )
 
     def get_data_dir(self):
         return self.data_dir
@@ -152,9 +159,9 @@ class PlateModel:
         url = self.model["TimeDepRasters"][raster_name].format(time)
 
         if not self.readonly:
-            self.download_raster(url, f"{self.get_model_dir()}/{raster_name}")
+            self.download_raster(url, f"{self.get_model_dir()}/Rasters/{raster_name}")
         file_name = url.split("/")[-1]
-        local_path = f"{self.get_model_dir()}/{raster_name}/{file_name}"
+        local_path = f"{self.get_model_dir()}/Rasters/{raster_name}/{file_name}"
         if os.path.isfile(local_path):
             return local_path
         elif self.readonly:
@@ -184,7 +191,7 @@ class PlateModel:
         for time in times:
             url = self.model["TimeDepRasters"][raster_name].format(time)
             file_name = url.split("/")[-1]
-            local_path = f"{self.get_model_dir()}/{raster_name}/{file_name}"
+            local_path = f"{self.get_model_dir()}/Rasters/{raster_name}/{file_name}"
             if os.path.isfile(local_path):
                 paths.append(local_path)
             elif self.readonly:
@@ -258,8 +265,6 @@ class PlateModel:
             raise Exception("Unable to download layer files in readonly mode.")
 
         print(f"downloading {layer_name}")
-        download_flag = False
-        meta_etag = None
 
         # find layer file url. two parts. one is the rotation, the other is all other geometry layers
         if layer_name in self.model:
@@ -322,7 +327,7 @@ class PlateModel:
                 nonlocal times
                 tasks = []
 
-                dst_path = f"{self.get_model_dir()}/{raster_name}"
+                dst_path = f"{self.get_model_dir()}/Rasters/{raster_name}"
                 if not times:
                     times = range(self.model["SmallTime"], self.model["BigTime"])
                 for time in times:

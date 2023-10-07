@@ -68,7 +68,7 @@ class RequestsFetcher(FileFetcher):
             else:
                 self._save_file(filepath, filename, r.content)
         else:
-            raise Exception(f"HTTP request failed with code {r.status_code}.")
+            raise Exception(f"HTTP request failed with code {r.status_code}. {url}")
         new_etag = r.headers.get("ETag")
         if new_etag:
             # remove the content-encoding awareness thing

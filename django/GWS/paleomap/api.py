@@ -3,12 +3,13 @@ import os
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from PIL import Image
+from plate_model_manager import PlateModel
 
 
 def overlay_cached_layers(request):
     """This is experimental code to provide cached layer images
     return the overlay of prepared map layers
-    http://localhost:18000/map/get_cached_map?layers=agegrid,coastlines,topologies&model=MATTHEWS2016_mantle_ref&bg=211,211,211&size=1116,558
+    http://localhost:18000/map/get_cached_map?layers=AgeGrids,Coastlines,Topologies&model=MATTHEWS2016_mantle_ref&bg=211,211,211&size=1116,558
     the layer image files need to follow the naming convention.
     If the "bg" parameter does not present, use transparent background
     """
@@ -18,18 +19,22 @@ def overlay_cached_layers(request):
     size_str = request.GET.get("size", "1116, 558")
     layers_str = request.GET.get("layers", "")
     layers = layers_str.split(",")
-    layers_path = f"{settings.CACHED_LAYERS_DIR}/{model}/"
 
-    if len(layers) == 0 or layers[0] == "":
-        return HttpResponseBadRequest(
-            f"Invalid request. No layers found. layers({layers_str})"
-        )
+    plate_model = PlateModel(
+        model.lower(), data_dir=settings.MODEL_REPO_DIR, readonly=True
+    )
 
-    # the layer image files need to follow the naming convention.
-    print(f"{layers_path}/{layers[0]}/{layers[0]}-{time}-Ma.png")
-    if not os.path.isfile(f"{layers_path}/{layers[0]}/{layers[0]}-{time}-Ma.png"):
+    layer_paths = []
+    for layer in layers:
+        try:
+            layer_paths.append(plate_model.get_raster(layer, time))
+        except Exception as e:
+            print(e)
+            continue
+
+    if len(layer_paths) == 0:
         return HttpResponseBadRequest(
-            f"Layer({layers[0]}) at {time}Ma not found in model({model})."
+            f"Invalid request. No valid layer found. layers({layers_str})"
         )
 
     # determine the image size
@@ -56,16 +61,14 @@ def overlay_cached_layers(request):
     imgdata = Image.new("RGBA", size, background)
 
     # now overlay the other layers
-    if len(layers) > 0:
-        for layer in layers:
-            if not os.path.isfile(f"{layers_path}/{layer}/{layer}-{time}-Ma.png"):
+    if len(layer_paths) > 0:
+        for layer_path in layer_paths:
+            if not os.path.isfile(layer_path):
                 return HttpResponseBadRequest(
-                    f"Layer({layer}) at {time}Ma not found in model({model})."
+                    f"Layer({layer_path}) at {time}Ma not found in model({model})."
                 )
 
-            overlay = Image.open(
-                f"{layers_path}/{layer}/{layer}-{time}-Ma.png"
-            ).convert("RGBA")
+            overlay = Image.open(layer_path).convert("RGBA")
             overlay.resize(size)
             imgdata.paste(overlay, (0, 0), mask=overlay)
 

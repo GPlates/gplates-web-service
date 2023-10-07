@@ -25,7 +25,6 @@ load_dotenv(f"{BASE_DIR}/.env")  # take environment variables from .env.
 
 EARTH_STORE_DIR = f"{BASE_DIR}/data/earth/"
 PALEO_STORE_DIR = f"{BASE_DIR}/data/paleo/"
-CACHED_LAYERS_DIR = f"{BASE_DIR}/data/cached-layers/"
 MODEL_REPO_DIR = f"{BASE_DIR}/data/model-repo/"
 MOBILE_APP_DIR = f"{BASE_DIR}/data/mobile-app"
 

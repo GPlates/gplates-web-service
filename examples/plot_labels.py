@@ -59,15 +59,45 @@ def plot_labels(time, model):
         )
 
     plt.plot(lons, lats, "o", transform=ccrs.PlateCarree())
+    plt.title(f"{time} Ma", fontsize=40)
 
     # save the figure without frame so that the image can be used to project onto a globe
-    fig.savefig(f"{output_path}/labels-{time}-Ma.png", dpi=120)
+    output_file = f"{output_path}/labels-{time}-Ma.png"
+    fig.savefig(output_file, dpi=120)
     plt.close(fig)
 
     print(f"Done! The labels-{time}-Ma.png has been saved in {output_path}.")
+    return output_file
+
+
+def make_movie(frame_list):
+    # micromamba install -c conda-forge moviepy
+    # create the mp4 video
+    import moviepy.editor as mpy
+
+    # print(frame_list)
+    clip = mpy.ImageSequenceClip(frame_list, fps=6)
+
+    clip.write_videofile(
+        f"{output_path}/labels.mp4",
+        codec="libx264",
+        # audio_codec='aac',
+        ffmpeg_params=["-s", "1920x1440", "-pix_fmt", "yuv420p"],
+    )  # give image size here(the numbers must divide by 2)
+    print(f"The video {output_path}/labels.mp4 has been created!")
 
 
 if __name__ == "__main__":
     model = "MERDITH2021"
+    frame_list = []
     for time in range(0, 1001, 10):
-        plot_labels(time, model)
+        # avoid bad time
+        if time == 390:
+            time = 395
+        if time == 450:
+            time = 455
+        filepath = plot_labels(time, model)
+        frame_list.append(filepath)
+        # frame_list.append(f"{output_path}/labels-{time}-Ma.png")
+    frame_list.reverse()
+    make_movie(frame_list)
