@@ -23,9 +23,6 @@ RUN pip3 install --use-deprecated=legacy-resolver cartopy
 RUN apt-get install -y ghostscript
 RUN apt-get install -y ffmpeg
 
-RUN mkdir -p /usr/src/django/GWS/data/tmp
-RUN chmod o+w /usr/src/django/GWS/data/tmp
-
 ADD ./docker/startup.sh /startup.sh
 RUN chmod +x /startup.sh
 
@@ -49,8 +46,11 @@ RUN apt install -y gdal-bin libgdal-dev
 RUN pip3 install GDAL geoserver-rest
 RUN pip3 install python-dotenv
 RUN pip3 install tzdata black
+RUN pip3 install plate-model-manager
 
 ADD . /gws
+
+RUN pmm download all /gws/django/GWS/data/model-repo/
 
 # Add Tini
 ENV TINI_VERSION v0.9.0

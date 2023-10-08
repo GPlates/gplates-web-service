@@ -9,10 +9,6 @@ from utils.round_float import round_floats
 from utils.wrapping_tools import wrap_plate_boundaries, wrap_resolved_polygons
 
 
-def index(request):
-    return render(request, "list.html", {})
-
-
 def get_plate_polygons(request):
     """
     http GET request to retrieve reconstructed topological plate polygons

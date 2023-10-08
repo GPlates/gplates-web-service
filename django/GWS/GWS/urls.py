@@ -48,8 +48,7 @@ urlpatterns = [
     re_path(r"^rotation/", include("rotation.urls")),
     re_path(r"^mobile/", include("mobile.urls")),
     re_path(r"^earth/", include("earth.urls")),
-    path("info/", include("info.urls")),
+    re_path(r"^info/", include("info.urls")),
     re_path(r"^map/", include("paleomap.urls")),
-    re_path(r"^model/", include("model.urls")),
     re_path(r"^raster/", include("raster.urls")),
 ]

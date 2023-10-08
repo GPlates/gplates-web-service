@@ -10,10 +10,6 @@ from utils.model_utils import get_rotation_model, get_static_polygons, get_topol
 from utils.velocity_tools import get_velocities
 
 
-def index(request):
-    return render(request, "list.html", {})
-
-
 class PrettyFloat(float):
     def __repr__(self):
         return "%.2f" % self

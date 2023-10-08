@@ -1,18 +1,30 @@
 ## Quick start
 
-If you would like to try the GPlates Web Service very quickly, use the commands in this "quick start" section. The commands will start the docker container using the built-in source code. And the PostGIS database is not available. See "PostGIS Database and docker network" section for database configuration.
+If you would like to try the GPlates Web Service very quickly, follow the steps in this "quick start" section. The steps will start the docker container using the built-in source code. And the PostGIS database is not available. See "PostGIS Database and docker network" section for database configuration.
 
-#### 🟢 Run the service as daemon in the background
+- run the service as daemon in the background
 
 `docker run -d -p 80:80 --restart always gplates/gws`
 
-Use the link below to verify the service is up and running.
+or
 
-http://localhost/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012
 
-#### 🟢 Run the service interactively (you can check the error messages in the console)
+- run the service interactively (you can check the error messages in the console)
 
-`docker run --rm -it -p 8888:80 gplates/gws`
+`docker run --rm -it -p 80:80 gplates/gws`
+
+- verify the service is up and running.
+
+`wget -O test.json "http://localhost/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" `
+
+or
+
+`curl "http://localhost/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012"`
+
+or 
+
+use web browser if you have GUI
+
 
 ## Use docker container for development
 
@@ -30,11 +42,11 @@ http://localhost/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&m
 
 **IMPORTANT: ⚠ Make sure the BEDUG is set to True in settings.py**
 
-## Update the docker image
+## Build the docker image
 
-Go to the root directory of this repository and run
-
-`docker build -f docker/Dockerfile -t gplates/gws .`
+- go to the root directory of this repository 
+- `cp django/GWS/env.template django/GWS/.env`
+- `docker build -f docker/Dockerfile -t gplates/gws . --no-cache`
 
 ## Run docker container in production env
 
