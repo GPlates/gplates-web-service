@@ -6,7 +6,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from utils.model_utils import get_reconstruction_model_dict
+from utils.model_utils import get_rotation_model
 from utils.round_float import round_floats
 
 
@@ -53,14 +53,7 @@ def motion_path(request):
         if len(ts) == 3:
             times = np.arange(float(ts[0]), float(ts[1]) + 0.1, float(ts[2]))
 
-    model_dict = get_reconstruction_model_dict(model)
-
-    rotation_model = pygplates.RotationModel(
-        [
-            str("%s/%s/%s" % (settings.MODEL_STORE_DIR, model, rot_file))
-            for rot_file in model_dict["RotationFile"]
-        ]
-    )
+    rotation_model = get_rotation_model(model)
 
     # Create the motion path feature
     digitisation_time = 0
@@ -132,7 +125,6 @@ def flowline(request):
 
 @csrf_exempt
 def html_model_list(request):
-
     # df = pd.read_csv(
     #   "%s/%s" % (settings.PALEO_STORE_DIR, "ngeo2429-s2.csv"),
     #    index_col="Deposit number",

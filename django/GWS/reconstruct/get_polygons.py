@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.conf import settings
 
-from utils.model_utils import get_reconstruction_model_dict, is_time_valid_model
+from utils.model_utils import get_rotation_model, is_time_valid_for_model, get_layer
 from utils import wrapping_tools
 from utils.round_float import round_floats
 from utils import plot_geometries
@@ -86,24 +86,17 @@ def get_polygons(request, polygon_name):
     if "avoid_map_boundary" in request.GET:
         avoid_map_boundary = True
 
-    model_dict = get_reconstruction_model_dict(model)
-
-    if not is_time_valid_model(model_dict, time):
+    if not is_time_valid_for_model(model, time):
         return HttpResponseBadRequest(
             f"Requested time {time} not available for model {model}"
         )
 
-    rotation_model = pygplates.RotationModel(
-        [
-            f"{settings.MODEL_STORE_DIR}/{model}/{rot_file}"
-            for rot_file in model_dict["RotationFile"]
-        ]
-    )
+    rotation_model = get_rotation_model(model)
 
     reconstructed_polygons = []
-    fn = model_dict[polygon_name]
+
     pygplates.reconstruct(
-        f"{settings.MODEL_STORE_DIR}/{model}/{fn}",
+        get_layer(model, polygon_name),
         rotation_model,
         reconstructed_polygons,
         float(time),

@@ -23,13 +23,14 @@ sys.path.append(f"{BASE_DIR}/lib")
 
 load_dotenv(f"{BASE_DIR}/.env")  # take environment variables from .env.
 
-MODEL_STORE_DIR = "%s/DATA/MODELS/" % BASE_DIR
-EARTH_STORE_DIR = "%s/DATA/EARTH/" % BASE_DIR
-PALEO_STORE_DIR = "%s/DATA/PALEO/" % BASE_DIR
+EARTH_STORE_DIR = f"{BASE_DIR}/data/earth/"
+PALEO_STORE_DIR = f"{BASE_DIR}/data/paleo/"
+MODEL_REPO_DIR = f"{BASE_DIR}/data/model-repo/"
+MOBILE_APP_DIR = f"{BASE_DIR}/data/mobile-app"
 
-MODEL_DEFAULT = "SETON2012"
+MODEL_DEFAULT = "MULLER2019"
 
-MEDIA_ROOT = "%s/DATA/tmp/" % BASE_DIR
+MEDIA_ROOT = f"{BASE_DIR}/data/tmp/"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -170,11 +171,9 @@ STATIC_URL = "/static/"
 STATIC_ROOT = "/var/www/html/static/"
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
-DEFAULT_THROTTLE_ANON_RATE = os.getenv(
-    "DEFAULT_THROTTLE_ANON_RATE") or "10000/second"
+DEFAULT_THROTTLE_ANON_RATE = os.getenv("DEFAULT_THROTTLE_ANON_RATE") or "10000/second"
 
-DEFAULT_THROTTLE_USER_RATE = os.getenv(
-    "DEFAULT_THROTTLE_USER_RATE") or "10000/second"
+DEFAULT_THROTTLE_USER_RATE = os.getenv("DEFAULT_THROTTLE_USER_RATE") or "10000/second"
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
@@ -183,7 +182,10 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
     ],
-    "DEFAULT_THROTTLE_RATES": {"anon": DEFAULT_THROTTLE_ANON_RATE, "user": DEFAULT_THROTTLE_USER_RATE},
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": DEFAULT_THROTTLE_ANON_RATE,
+        "user": DEFAULT_THROTTLE_USER_RATE,
+    },
 }
 
 

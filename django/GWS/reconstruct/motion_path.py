@@ -4,9 +4,8 @@ import numpy as np
 import pygplates
 from django.conf import settings
 from django.http import HttpResponse
-from utils.model_utils import get_reconstruction_model_dict
-from utils.round_float import round_floats
 from utils.model_utils import get_rotation_model
+from utils.round_float import round_floats
 
 
 def get_motion_path(request):
