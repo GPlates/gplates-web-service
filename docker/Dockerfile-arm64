@@ -7,7 +7,8 @@
 
 # if error, try with --no-cache option
 
-FROM ubuntu:22.04
+FROM arm64v8/ubuntu:22.04
+MAINTAINER Michael Chin
 
 RUN apt-get update -y
 ARG DEBIAN_FRONTEND=noninteractive
@@ -32,9 +33,9 @@ RUN ln -s /gws/docker/gws.conf /etc/apache2/sites-enabled/gws.conf
 RUN apt-get install -y wget
 
 #install pygplates
-RUN wget https://www.earthbyte.org/download/9079/ -O /pygplates_0.36.0_py310_ubuntu-22.04-amd64.deb
-RUN apt-get install -y /pygplates_0.36.0_py310_ubuntu-22.04-amd64.deb
-RUN rm /pygplates_0.36.0_py310_ubuntu-22.04-amd64.deb
+RUN wget https://www.earthbyte.org/download/9316/ -O /pygplates_0.36.0_py310_ubuntu-22.04.deb
+RUN apt-get install -y /pygplates_0.36.0_py310_ubuntu-22.04.deb
+RUN rm /pygplates_0.36.0_py310_ubuntu-22.04.deb
 
 RUN ln -s /gws/django/GWS/static/ /var/www/html/static
 
@@ -54,7 +55,7 @@ RUN pmm download all /gws/django/GWS/data/model-repo/
 
 # Add Tini
 ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-amd64 /tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-arm64 /tini
 RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 CMD ["/startup.sh"]
