@@ -53,7 +53,7 @@ const config = {
   sidebar: {
     forcedNavOrder: [
       '/reconstruction', // add trailing slash if enabled above
-      '/reconstruction-models',
+      '/models',
       '/rotation',
       '/assign-plate-ids',
       '/topology',
@@ -63,13 +63,13 @@ const config = {
       '/using-docker'
     ],
     collapsedNav: [
-      '/topology', // add trailing slash if enabled above
-      '/velocity', // add trailing slash if enabled above
+      //'/topology', // add trailing slash if enabled above
+      //'/velocity', // add trailing slash if enabled above
       '/examples',
-      '/assign-plate-ids',
+      //'/assign-plate-ids',
     ],
     links: [
-      { text: 'GPlates', link: 'https://www.gplates.org' }, 
+      { text: 'GPlates', link: 'https://www.gplates.org' },
       { text: 'EarthByte', link: 'https://www.earthbyte.org' },
       { text: 'GPlates Portal', link: 'https://portal.gplates.org' }
     ],
