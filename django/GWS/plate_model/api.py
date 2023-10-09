@@ -5,13 +5,12 @@ import xml.etree.ElementTree as ET
 from django.conf import settings
 from django.http import (
     HttpResponse,
-    JsonResponse,
+    HttpResponseBadRequest,
     HttpResponseNotFound,
     HttpResponseServerError,
-    HttpResponseBadRequest,
+    JsonResponse,
 )
 from rest_framework.decorators import api_view
-
 from utils.model_utils import get_layer_names, get_model_name_list
 
 

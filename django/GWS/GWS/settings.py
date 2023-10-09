@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 import sys
+
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -74,7 +75,7 @@ INSTALLED_APPS = [
     "topology",
     "earth",
     "doc",
-    "info",
+    "plate_model",
     "paleomap",
     "mobile",
 ]

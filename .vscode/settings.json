@@ -1,7 +1,6 @@
 {
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
-  "python.formatting.provider": "none",
   "editor.defaultFormatter": "ms-python.python",
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
@@ -11,5 +10,11 @@
   },
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
+  },
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
 }

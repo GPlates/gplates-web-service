@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, re_path, path
+from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from rest_framework.schemas import get_schema_view
 
@@ -48,7 +48,7 @@ urlpatterns = [
     re_path(r"^rotation/", include("rotation.urls")),
     re_path(r"^mobile/", include("mobile.urls")),
     re_path(r"^earth/", include("earth.urls")),
-    re_path(r"^info/", include("info.urls")),
+    re_path(r"^model/", include("plate_model.urls")),
     re_path(r"^map/", include("paleomap.urls")),
     re_path(r"^raster/", include("raster.urls")),
 ]
