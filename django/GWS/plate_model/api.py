@@ -3,15 +3,9 @@ import os
 import xml.etree.ElementTree as ET
 
 from django.conf import settings
-from django.http import (
-    HttpResponse,
-    HttpResponseBadRequest,
-    HttpResponseNotFound,
-    HttpResponseServerError,
-    JsonResponse,
-)
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 from rest_framework.decorators import api_view
-from utils.model_utils import get_layer_names, get_model_name_list
+from utils.model_utils import get_layer_names, get_model_cfg, get_model_name_list
 
 
 @api_view(["GET"])
@@ -22,36 +16,6 @@ def list_model_names(request):
         content_type="application/json",
     )
 
-    response["Access-Control-Allow-Origin"] = "*"
-    return response
-
-
-@api_view(["GET"])
-def list_models(request):
-    """List all available retation models with details"""
-    ret = []
-    namespaces = {"dc": "http://purl.org/dc/elements/1.1/"}
-    for name in get_model_name_list(settings.MODEL_REPO_DIR):
-        # print(name)
-        meta_file = settings.MODEL_STORE_DIR + "/" + name + "/" + name + "_metadata.xml"
-        if os.path.isfile(meta_file):
-            with open(meta_file, "r", encoding="utf-8") as fp:
-                data = fp.read()
-                root = ET.fromstring(data)
-                title = root.find("dc:title", namespaces)
-                desc = root.find("dc:description", namespaces)
-                tmp = {}
-                tmp["name"] = name
-                tmp["title"] = title.text
-                tmp["desc"] = desc.text
-                ret.append(tmp)
-        else:
-            tmp = {}
-            tmp["name"] = name
-            tmp["title"] = name
-            tmp["desc"] = name
-            ret.append(tmp)
-    response = HttpResponse(json.dumps(ret), content_type="application/json")
     response["Access-Control-Allow-Origin"] = "*"
     return response
 
@@ -69,39 +33,31 @@ def get_model_details(request):
     if not model:
         return HttpResponseBadRequest("The 'model' parameter is required.")
 
-    namespaces = {"dc": "http://purl.org/dc/elements/1.1/"}
+    try:
+        model_cfg = get_model_cfg(model)
+    except:
+        return HttpResponseServerError(f"Unable to find info for model {model}.")
 
-    meta_file = settings.MODEL_STORE_DIR + "/" + model + "/" + model + "_metadata.xml"
-    if os.path.isfile(meta_file):
-        with open(meta_file, "r", encoding="utf-8") as fp:
-            data = fp.read()
-            root = ET.fromstring(data)
-            title = root.find("dc:title", namespaces)
-            desc = root.find("dc:description", namespaces)
-            tmp = {}
-            tmp["name"] = model
-            tmp["title"] = title.text
-            tmp["desc"] = desc.text
+    response = HttpResponse(json.dumps(model_cfg), content_type="application/json")
 
-            response = HttpResponse(json.dumps(tmp), content_type="application/json")
-            response["Access-Control-Allow-Origin"] = "*"
-            return response
-    else:
-        if model in get_model_name_list(settings.MODEL_REPO_DIR):
-            return HttpResponseServerError(
-                f"This rotation model({model}) was not configurated properly. Please contact admin."
-            )
-        else:
-            return HttpResponseNotFound(f"Unable to find roation model: {model}")
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 
 
 @api_view(["GET"])
 def list_model_layers(request):
-    """
-    List all available layers for a given rotation model
-    """
-    model_name = request.GET.get("model", settings.MODEL_DEFAULT)
-    response = JsonResponse(get_layer_names(model_name))
+    """List all available layers for a given plate model"""
+    model_name = request.GET.get("model", None)
+
+    if not model_name:
+        return HttpResponseBadRequest("The 'model' parameter is required.")
+
+    try:
+        layer_names = get_layer_names(model_name)
+    except:
+        return HttpResponseServerError(f"Unable to find layers for model {model_name}.")
+
+    response = HttpResponse(json.dumps(layer_names), content_type="application/json")
 
     response["Access-Control-Allow-Origin"] = "*"
     return response

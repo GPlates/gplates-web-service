@@ -99,5 +99,13 @@ def get_layer_names(model_name):
     return plate_model.get_avail_layers()
 
 
+def get_model_cfg(model_name):
+    """return the configuration of a model"""
+    plate_model = PlateModel(
+        model_name, data_dir=settings.MODEL_REPO_DIR, readonly=True
+    )
+    return plate_model.get_cfg()
+
+
 class UnrecognizedModel(Exception):
     pass

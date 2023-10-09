@@ -67,6 +67,9 @@ class PlateModel:
         if not self.readonly:
             self.loop.close()
 
+    def get_cfg(self):
+        return self.model
+
     def get_model_dir(self):
         if PlateModel.is_model_dir(self.model_dir):
             return self.model_dir
