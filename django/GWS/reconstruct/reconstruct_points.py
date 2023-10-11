@@ -10,15 +10,10 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, schema, throttle_classes
 from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.throttling import AnonRateThrottle
-
-from utils.model_utils import (
-    get_rotation_model,
-    get_static_polygons,
-    UnrecognizedModel,
-)
-from utils.round_float import round_floats
 from utils.get_lats_lons import get_lats_lons
+from utils.model_utils import UnrecognizedModel, get_rotation_model, get_static_polygons
 from utils.parameter_helper import get_anchor_plate_id, get_pids, get_time
+from utils.round_float import round_floats
 
 
 class ReconPointsSchema(AutoSchema):
@@ -243,7 +238,7 @@ def reconstruct(request):
             timef,
             anchor_plate_id=anchor_plate_id,
         )
-        print(f"anchor plate id: {anchor_plate_id}")
+        # print(f"anchor plate id: {anchor_plate_id}")
     else:
         # we still need reverse reconstruct if the points were not partitioned above
         if not all(id is None for id in pids):

@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import random
+import string
 import sys
 
 from dotenv import load_dotenv
@@ -44,11 +46,17 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # alternatively, put SECRET_KEY here, but do not submit the SECRET_KEY to code repository
 # SECRET_KEY = 'put your secret key here' # better not do this!!!
 if not SECRET_KEY:
-    raise Exception("SECRET_KEY not found!!! Check settings.py!!")
+    SECRET_KEY = "".join(
+        random.choice(string.ascii_letters + string.digits + string.punctuation)
+        for i in range(24)
+    )
+    print(
+        "SECRET_KEY not found!!! Check your .env and settings.py!! Use random string for now!"
+    )
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.getenv("DEBUG") == "true":
+if os.getenv("DEBUG") and os.getenv("DEBUG").lower() == "true":
     DEBUG = True
 else:
     DEBUG = False
