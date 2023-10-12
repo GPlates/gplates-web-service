@@ -1,9 +1,9 @@
 #
 # Check the password in create-gws-db.sql before building this docker image
-# docker build -f docker/Dockerfile-postgis -t gplates/postgis:amd64 .
+# docker build -f docker/Dockerfile-postgis -t gplates/postgis:arm64 .
 #
 
-FROM ubuntu:22.04
+FROM arm64v8/ubuntu:22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Australia
@@ -34,7 +34,7 @@ RUN chown postgres:postgres /etc/postgresql/15/main/*
 
 # Add Tini
 ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-amd64 /tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-arm64 /tini
 RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 #CMD ["/etc/init.d/postgresql start", "top"]

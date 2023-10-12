@@ -1,4 +1,4 @@
-create user gplates with encrypted password 'this is not a real password! go away!';
+create user gplates with encrypted password 'zaq12wsx';
 grant all privileges on database gplates to gplates;
 
 CREATE EXTENSION postgis;
