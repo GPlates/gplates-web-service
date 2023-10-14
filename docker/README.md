@@ -88,7 +88,6 @@ use web browser if you have GUI
 - `docker cp gws-postgis:/tmp/gplates.sql ~`(on host computer)
 
 
-
 ## 🟣 Use docker container for development
 
 - Create **gws-net** if haven't `docker network create --driver bridge gws-net`
@@ -144,7 +143,7 @@ run gws for debug `docker-compose run --rm --service-ports gws /bin/bash`
 
 create volume from local folder:
 
-`docker volume create --name gws-code --opt type=none --opt device=/Users/mchin/workspaces/gplates-web-service --opt o=bind`
+`docker volume create --name gws-code --opt type=none --opt device=/Users/mchin/workspace/gplates-web-service --opt o=bind`
 
 ⚠ when copying DB data from other computer, log into PostGIS docker container and change the owner and permission accordingly. Otherwise the Postgres would not start.
 
@@ -152,7 +151,7 @@ start and stop
 
 `docker-compose up -d`
 
-`docker-compose down -d`
+`docker-compose down`
 
 ## 🟣 Helper scripts
 
@@ -164,7 +163,7 @@ start and stop
 
 ### Run PostGIS in testing env
 
-Start the database(on host computer): `docker run --rm -it --name gws-postgis -v /Users/mchin/workspaces/gws-db-data:/var/lib/postgresql/15/main -p 5432:5432 --network gws-net gplates/postgis`
+Start the database(on host computer): `docker run --rm -it --name gws-postgis -v /Users/mchin/workspace/gws-db-data:/var/lib/postgresql/15/main -p 5432:5432 --network gws-net gplates/postgis`
 
 Test the database(on host computer): `psql -d gplates -h localhost -U gplates`
 
@@ -189,6 +188,11 @@ Test the database(on host computer): `psql -d gplates -h localhost -U gplates`
 - `docker network create --driver bridge gws-net` (bridge is the default docker network)
 - Use `--network gws-net` parameter to start docker containers
 - In GWS server container, use `psql -d gplates -h gws-postgis -U gplates` to test DB
+
+### Create and push manifest
+
+- `docker manifest create gplates/postgis gplates/postgis:amd64 gplates/postgis:arm64`
+- `docker manifest push gplates/postgis`
 
 Note: Add `postgis.gdal_enabled_drivers = 'ENABLE_ALL'` in postgres.conf to enable all GDAL driver(useful when export images from raster table)
 

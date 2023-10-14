@@ -6,7 +6,7 @@ volumes:
     name: gws-code
   gws-db-data:
     external: true
-    name: gws-db-data
+    name: gws-db-data-new
 
 services:
   gws-postgis:
@@ -15,9 +15,9 @@ services:
       - gws-net
     hostname: gws-postgis
     volumes:
-      - gws-db-data:/var/lib/postgresql/12/main
+      - gws-db-data:/var/lib/postgresql/15/main
     ports:
-      - 5433:5432
+      - 5432:5432
     environment:
       - POSTGRES_PASSWORD="this is not a real password! go away!"
     restart: on-failure
