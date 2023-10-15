@@ -1,54 +1,38 @@
-## 🟣 Quick start 
+## 👉 Quick start 
 
 If you would like to try the GPlates Web Service very quickly, follow the steps in this "quick start" section. The steps will start the docker container using the built-in source code. And the PostGIS database is not available. See "PostGIS Database and docker network" section for database configuration.
 
 - run the service as daemon in the background
 
-`docker run -d -p 80:80 --restart always gplates/gws`
+    `docker run -d -p 80:80 --restart always gplates/gws`
 
-or
+- or run the service interactively (you can check the error messages in the console)
 
-- run the service interactively (you can check the error messages in the console)
-
-`docker run --rm -it -p 80:80 gplates/gws`
+    `docker run --rm -it -p 80:80 gplates/gws`
 
 - verify the service is up and running.
 
-`wget -O test.json "http://localhost/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" `
+    - `wget -O test.json "http://localhost/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" `
+    - or `curl "http://localhost/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" `
+    - or use web browser if you have GUI
 
-or
+## 👉 Use the latest code from github.com to run the service 
 
-`curl "http://localhost/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012"`
-
-or 
-
-use web browser if you have GUI
-
-## 🟣 Use the latest code from github.com to run the service 
-
-- clone the github repository 
-
-`git clone https://github.com/GPlates/gplates-web-service gplates-web-service.git`
-
-- go into the repository root folder
-
-`cd gplates-web-service.git`
-
-- run the service 
-
-``docker run -it --rm -v `pwd`:/gws -p 80:80 gplates/gws``
-
+- `git clone https://github.com/GPlates/gplates-web-service gplates-web-service.git`
+- `cd gplates-web-service.git`
+- ``docker run --rm -it -v `pwd`:/gws  gplates/gws /bin/bash -c "pmm download all /gws/django/GWS/data/model-repo/"``
+- ``docker run -it --rm -v `pwd`:/gws -p 80:80 gplates/gws``
 - verify the service is up and running with wget, curl or web browser
 
-## 🟣 Setup PostGIS database
+## 👉 Setup PostGIS database
 
 - pull the postgis docker image from docker hub
 
-`docker pull gplates/postgis`
+    `docker pull gplates/postgis`
 
 - run the postgis docker image
 
-`docker run -it --name gws-postgis -p 5432:5432 gplates/postgis`
+    `docker run -it --name gws-postgis -p 5432:5432 gplates/postgis`
 
 - go inside the postgis docker container and change password for user gplates
 
@@ -65,10 +49,10 @@ use web browser if you have GUI
 
 - update your .env file accordingly and verify the DB
 
-`curl "http://localhost:18000/raster/query?lon=99.50&lat=-40.24&raster_name=age_grid_geek_2007"`
+    `curl "http://localhost:18000/raster/query?lon=99.50&lat=-40.24&raster_name=age_grid_geek_2007"`
 
 
-## 🟣 Keep the database data on host computer
+## 👉 Keep the database data on host computer
 
 - `docker run -it --rm --name gws-postgis -v /Users/mchin/workspace/gws-db-data:/var/lib/postgresql/15/main -p 5432:5432 gplates/postgis`
 - `docker exec -ti gws-postgis /bin/bash`
@@ -79,7 +63,7 @@ use web browser if you have GUI
 - continue to restore the database from gplates.sql
 
 
-## 🟣 Backup database
+## 👉 Backup database
 
 - `docker exec -ti gws-postgis /bin/bash`
 - `su postgres`
@@ -88,7 +72,7 @@ use web browser if you have GUI
 - `docker cp gws-postgis:/tmp/gplates.sql ~`(on host computer)
 
 
-## 🟣 Use docker container for development
+## 👉 Use docker container for development
 
 - Create **gws-net** if haven't `docker network create --driver bridge gws-net`
 - Go to the root directory of this repository and run `` docker run -it --rm -v `pwd`:/gws -p 18000:80 --network gws-net gplates/gws /bin/bash ``
@@ -101,7 +85,7 @@ use web browser if you have GUI
 **IMPORTANT: ⚠ Make sure the BEDUG is set to True in .env**
 
 
-## 🟣 Build the docker images
+## 👉 Build the docker images
 
 ### Build GWS docker image
 
@@ -115,7 +99,7 @@ use web browser if you have GUI
 - change the password in docker/create-gws-db.sql
 - `docker build -f docker/Dockerfile-postgis -t gplates/postgis . --no-cache`
 
-## 🟣 Run docker container in production env
+## 👉 Run docker container in production env
 
 - Go to folder "%{git-repo-root}/django/GWS/", run `copy env.template .env` and edit file ".env" according to the database configuration
 - Start the database 
@@ -135,7 +119,7 @@ If you start the docker container with "--network host", the localhost and 127.0
 `` docker run -d -v `pwd`:/gws --network host --restart always gplates/gws ``
 
 
-## 🟣 Docker compose
+## 👉 Docker compose
 
 run postgis: `docker-compose run --rm --service-ports gws-postgis`
 
@@ -153,13 +137,13 @@ start and stop
 
 `docker-compose down`
 
-## 🟣 Helper scripts
+## 👉 Helper scripts
 
 - `start-postgis.sh` start PostGIS server
 - `start-gws.sh` start GWS develop server
 - `test-dev-server.sh` test if the develop server has been started successfully
 
-## 🟣 Notes
+## 👉 Notes
 
 ### Run PostGIS in testing env
 
