@@ -32,15 +32,9 @@ def get_plate_polygons(request):
     model = request.GET.get("model", settings.MODEL_DEFAULT)
     wrap_to_dateline = request.GET.get("wrap_to_dateline", True)
 
-    # features = []
-    rotation_model = get_rotation_model(model)
-
-    # need to handle cases where topologies are in one file, and where they are spread across
-    # multiple files
-    topology_features = get_topologies(model)
     resolved_polygons = []
     pygplates.resolve_topologies(
-        topology_features, rotation_model, resolved_polygons, float(time)
+        get_topologies(model), get_rotation_model(model), resolved_polygons, float(time)
     )
 
     resolved_features = []
@@ -79,25 +73,21 @@ def get_topological_boundaries(request):
     time = request.GET.get("time", 0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
 
-    features = []
-    rotation_model = get_rotation_model(model)
-
-    # need to handle cases where topologies are in one file, and where they are spread across
-    # multiple files
-    topology_features = get_topologies(model)
+    print(get_topologies(model))
+    print(get_rotation_model(model))
 
     resolved_polygons = []
     shared_boundary_sections = []
     pygplates.resolve_topologies(
-        topology_features,
-        rotation_model,
+        get_topologies(model),
+        get_rotation_model(model),
         resolved_polygons,
         float(time),
         shared_boundary_sections,
     )
 
     data = wrap_plate_boundaries(shared_boundary_sections, 0.0)
-    print("here")
+
     ret = json.dumps(round_floats(data))
 
     response = HttpResponse(ret, content_type="application/json")

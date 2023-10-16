@@ -1,8 +1,8 @@
+import pygplates
+
 #
 # Functions for wrapping geometries to dateline before returning request geojson
 #
-
-import pygplates
 
 
 def wrap_polylines(polylines, lon0=0, central_meridian=0.0, tesselate_degrees=1):
@@ -110,7 +110,6 @@ def wrap_reconstructed_polygons(reconstructed_polygons, lon0=0, tesselate_degree
             reconstructed_polygon.get_reconstructed_geometry().get_orientation()
             == pygplates.PolygonOnSphere.Orientation.counter_clockwise
         ):
-            print("hello")
             rev = True
 
         if lon0 is not None:
@@ -195,8 +194,7 @@ def get_json_from_reconstructed_polygons(
     :param tesselate_degrees: tesselate degrees
 
     """
-    print("wrapp", wrap)
-    print(central_meridian)
+
     polygons = []
     if wrap:
         wrapped_polygons = []

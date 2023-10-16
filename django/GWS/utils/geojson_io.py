@@ -3,10 +3,8 @@ import json
 import pygplates
 
 
-#
-# load geojson and return pygplates feature collection
-#
 def load_geojson(geojson_str, keep_properties=True):
+    """load geojson and return pygplates feature collection"""
     features = []
     try:
         fc = json.loads(geojson_str)  # load the input feature collection
@@ -56,16 +54,37 @@ def load_geojson(geojson_str, keep_properties=True):
     return pygplates.FeatureCollection(features)
 
 
-#
-# convert pygplates feature collection to geojson
-#
 def save_reconstructed_geometries_geojson(
     reconstructed_geometries, keep_properties=True
 ):
+    """convert pygplates.ReconstructedFeatureGeometry objects to geojson feature collection"""
+
+    geoms = [g.get_reconstructed_geometry() for g in reconstructed_geometries]
+    list_of_properties = [
+        g.get_feature().get_shapefile_attributes() for g in reconstructed_geometries
+    ]
+
     data = {"type": "FeatureCollection"}
-    data["features"] = []
-    for g in reconstructed_geometries:
-        geom = g.get_reconstructed_geometry()
+    data["features"] = dump_geojson(geoms, list_of_properties=list_of_properties)
+    return data
+
+
+def dump_geojson(
+    geometries: list[pygplates.GeometryOnSphere],
+    list_of_properties: list[dict] = None,
+    date_line_wrapper=pygplates.DateLineWrapper(0),
+    tesselate_degrees=1,
+):
+    """convert a list of pygplates.GeometryOnSphere to a list of geojson features"""
+    if list_of_properties:
+        assert len(geometries) == len(list_of_properties)
+    else:
+        list_of_properties = [{}] * len(geometries)
+
+    features = []
+    for geom, properties in zip(geometries, list_of_properties):
+        if not geom:
+            continue
         feature = {"type": "Feature"}
         feature["geometry"] = {}
         if isinstance(geom, pygplates.PointOnSphere):
@@ -78,25 +97,55 @@ def save_reconstructed_geometries_geojson(
                 [lon, lat] for lat, lon in geom.to_lat_lon_list()
             ]
         elif isinstance(geom, pygplates.PolylineOnSphere):
-            feature["geometry"]["type"] = "LineString"
-            feature["geometry"]["coordinates"] = [
-                [lon, lat] for lat, lon in geom.to_lat_lon_list()
-            ]
+            if date_line_wrapper:
+                geometries = date_line_wrapper.wrap(geom, tesselate_degrees)
+            else:
+                geometries = [geom]
+
+            if len(geometries) > 1:
+                feature["geometry"]["type"] = "MultiLineString"
+                feature["geometry"]["coordinates"] = []
+                for g in geometries:
+                    feature["geometry"]["coordinates"].append(
+                        [
+                            [point.to_lat_lon()[1], point.to_lat_lon()[0]]
+                            for point in g.get_points()
+                        ]
+                    )
+            else:
+                feature["geometry"]["type"] = "LineString"
+                feature["geometry"]["coordinates"] = [
+                    [lon, lat] for lat, lon in geom.to_lat_lon_list()
+                ]
         elif isinstance(geom, pygplates.PolygonOnSphere):
-            feature["geometry"]["type"] = "Polygon"
-            feature["geometry"]["coordinates"] = [
-                [[lon, lat] for lat, lon in geom.to_lat_lon_list()]
-            ]
+            if date_line_wrapper:
+                geometries = date_line_wrapper.wrap(geom, tesselate_degrees)
+            else:
+                geometries = [geom]
+
+            if len(geometries) > 1:
+                feature["geometry"]["type"] = "MultiPolygon"
+                feature["geometry"]["coordinates"] = []
+                for g in geometries:
+                    feature["geometry"]["coordinates"].append(
+                        [
+                            [point.to_lat_lon()[1], point.to_lat_lon()[0]]
+                            for point in g.get_exterior_points()
+                        ]
+                    )
+            else:
+                feature["geometry"]["type"] = "Polygon"
+                feature["geometry"]["coordinates"] = [
+                    [[lon, lat] for lat, lon in geom.to_lat_lon_list()]
+                ]
         else:
+            print("geometry: " + geom)
             raise UnsupportedGeometryType()
 
-        feature["properties"] = {}
-        if keep_properties:
-            for pk in g.get_feature().get_shapefile_attributes():
-                feature["properties"][pk] = g.get_feature().get_shapefile_attribute(pk)
-        # print feature["properties"]
-        data["features"].append(feature)
-    return data
+        feature["properties"] = properties
+
+        features.append(feature)
+    return features
 
 
 class UnsupportedGeometryType(Exception):
