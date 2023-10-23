@@ -1,4 +1,5 @@
 import json
+import math
 
 import pygplates
 
@@ -127,17 +128,53 @@ def dump_geojson(
                 feature["geometry"]["type"] = "MultiPolygon"
                 feature["geometry"]["coordinates"] = []
                 for g in geometries:
-                    feature["geometry"]["coordinates"].append(
-                        [
-                            [point.to_lat_lon()[1], point.to_lat_lon()[0]]
-                            for point in g.get_exterior_points()
-                        ]
-                    )
-            else:
+                    lon_lat_list = [
+                        [point.to_lat_lon()[1], point.to_lat_lon()[0]]
+                        for point in g.get_exterior_points()
+                    ]
+                    if (
+                        pygplates.PolygonOnSphere(
+                            g.get_exterior_points()
+                        ).get_orientation()
+                        == pygplates.PolygonOnSphere.Orientation.counter_clockwise
+                    ):
+                        lon_lat_list.reverse()
+                    if not (
+                        math.isclose(lon_lat_list[0][0], lon_lat_list[-1][0])
+                        and math.isclose(lon_lat_list[0][1], lon_lat_list[-1][1])
+                    ):
+                        lon_lat_list.append(lon_lat_list[0])
+                    feature["geometry"]["coordinates"].append([lon_lat_list])
+            elif len(geometries) == 1:
                 feature["geometry"]["type"] = "Polygon"
-                feature["geometry"]["coordinates"] = [
-                    [[lon, lat] for lat, lon in geom.to_lat_lon_list()]
-                ]
+                if isinstance(geometries[0], pygplates.DateLineWrapper.LatLonPolygon):
+                    lon_lat_list = [
+                        [point.to_lat_lon()[1], point.to_lat_lon()[0]]
+                        for point in geometries[0].get_exterior_points()
+                    ]
+                    if (
+                        pygplates.PolygonOnSphere(
+                            geometries[0].get_exterior_points()
+                        ).get_orientation()
+                        == pygplates.PolygonOnSphere.Orientation.counter_clockwise
+                    ):
+                        lon_lat_list.reverse()
+                else:
+                    lon_lat_list = [
+                        [lon, lat] for lat, lon in geometries[0].to_lat_lon_list()
+                    ]
+                    if (
+                        geometries[0].get_orientation()
+                        == pygplates.PolygonOnSphere.Orientation.counter_clockwise
+                    ):
+                        lon_lat_list.reverse()
+
+                if not (
+                    math.isclose(lon_lat_list[0][0], lon_lat_list[-1][0])
+                    and math.isclose(lon_lat_list[0][1], lon_lat_list[-1][1])
+                ):
+                    lon_lat_list.append(lon_lat_list[0])
+                feature["geometry"]["coordinates"] = [lon_lat_list]
         else:
             print("geometry: " + geom)
             raise UnsupportedGeometryType()

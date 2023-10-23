@@ -14,12 +14,12 @@ def get_subduction_zones(request):
     time = request.GET.get("time", 0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
 
-    resolved_polygons = []
+    resolved_topologies = []
     shared_boundary_sections = []
     pygplates.resolve_topologies(
         get_topologies(model),
         get_rotation_model(model),
-        resolved_polygons,
+        resolved_topologies,
         float(time),
         shared_boundary_sections,
     )
