@@ -22,6 +22,10 @@ def get_plate_polygons(request):
     time = request.GET.get("time", 0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
     central_meridian = request.GET.get("central_meridian", 0)
+    as_lines = request.GET.get("as_lines", False)
+
+    if isinstance(as_lines, str) and as_lines.lower() == "true":
+        as_lines = True
 
     resolved_topologies = []
     pygplates.resolve_topologies(
@@ -42,6 +46,8 @@ def get_plate_polygons(request):
         ):
             # print(f.get_feature_type())
             geoms = f.get_geometries()
+            if as_lines:
+                geoms = [pygplates.PolylineOnSphere(g.to_lat_lon_list()) for g in geoms]
             geometries.extend(geoms)
             properties.extend([{"name": f.get_name()}] * len(geoms))
 
@@ -61,7 +67,7 @@ def get_plate_polygons(request):
 
 
 def get_topological_boundaries(request):
-    """http GET request to retrieve reconstructed topological plate polygons
+    """http GET request to retrieve reconstructed topological plate boundaries
 
     http://localhost:18000/topology/plate_boundaries?time=100&model=Muller2019
 
