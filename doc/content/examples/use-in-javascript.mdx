@@ -1,0 +1,36 @@
+---
+title: "Use GWS In JavaScript"
+metaTitle: "Use GWS In JavaScript"
+metaDescription: "Demonstrate how to use GWS in JavaScript programming language."
+---
+
+The code below shows how the GPlates Web Service can be used in JavaScript.
+You might also want to check out the gplates-js at https://github.com/michaelchin/gplates-js#readme.
+
+```javascript
+
+var url = 'https://gws.gplates.org/reconstruct/coastlines/?time=50';
+var method = "GET"      
+var xhr = new XMLHttpRequest();
+if("withCredentials" in xhr){
+    xhr.open(method, url, true);
+}else if(typeof XDomainRequest != "undefined"){
+    xhr = new XDomainRequest();
+    xhr.open(method, url);
+}else{
+    xhr = null;
+}
+if (!xhr) {
+    throw new Error('Does your web browser support CORS?');
+}
+xhr.onload = function() {
+    var text = xhr.responseText;
+    console.log(text);
+};
+xhr.onerror = function() {
+    alert('something is wrong!');
+};
+
+xhr.send();
+
+```

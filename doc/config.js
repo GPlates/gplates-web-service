@@ -52,21 +52,22 @@ const config = {
   },
   sidebar: {
     forcedNavOrder: [
-      '/reconstruction', // add trailing slash if enabled above
+      '/examples',
+      '/using-docker',
       '/models',
+      '/reconstruction', // add trailing slash if enabled above
       '/rotation',
       '/assign-plate-ids',
       '/topology',
       '/raster-query',
       '/velocity',
-      '/examples',
-      '/using-docker'
     ],
     collapsedNav: [
       //'/topology', // add trailing slash if enabled above
       //'/velocity', // add trailing slash if enabled above
       '/examples',
-      //'/assign-plate-ids',
+      '/assign-plate-ids',
+      '/rotation',
     ],
     links: [
       { text: 'GPlates', link: 'https://www.gplates.org' },

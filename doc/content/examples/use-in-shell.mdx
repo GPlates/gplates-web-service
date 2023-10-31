@@ -1,0 +1,17 @@
+---
+title: "Use GWS In Shell"
+metaTitle: "Use GWS In Shell"
+metaDescription: "Demonstrate how to use GWS in Shell command line."
+---
+
+You can use **wget** on Linux or **curl** on macOS to access the GPlates Web Service.
+
+```shell
+curl "https://gws.gplates.org/reconstruct/coastlines/?time=140" > data.json
+```
+
+or
+
+```shell
+wget "https://gws.gplates.org/reconstruct/coastlines/?time=140" -O data.json
+```

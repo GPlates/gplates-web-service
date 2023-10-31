@@ -1,15 +1,23 @@
 ---
-title: "Using Docker"
-metaTitle: "Using Docker"
-metaDescription: "Using Docker"
+title: "Use Docker"
+metaTitle: "Use Docker"
+metaDescription: "How to use Docker container to deploy the GPlates Web Service on your own server."
 ---
 
-Run Reconstruction Service In A Docker Container
-The GPlates team has prepared a Docker container for users to run the service in their own computers. Running the GPlates Web Service locally inside a Docker container is especially important in the following scenarios:
+## Use Docker Container for deployment
+
+The GPlates team has prepared a Docker image for users to deploy the GPlates Web Service on their own servers. 
+Running the GPlates Web Service locally inside a Docker container is especially important in the following scenarios:
 
 * User's program requires short response time and low latency.
 * User has a large volume of data to process and can provide much more computational power than GPlates server.
-* User has concerns about sending their data to a remote server.
-* User cannot access internet service all the time or the internet service is very poor.
+* User has security concerns about sending their data to a remote server.
+* User cannot access service via Internet or the quality of the Internet connection is very poor.
 
 The GPlates Web Service Docker container can be downloaded from Docker Hub https://hub.docker.com/r/gplates/gws. 
+
+```shell
+docker pull gplates/gws:latest
+```
+
+Details about the GPlates Web Service Docker image can be found at https://github.com/GPlates/gplates-web-service/tree/master/docker#readme.
