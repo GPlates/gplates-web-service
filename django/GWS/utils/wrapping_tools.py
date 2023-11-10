@@ -178,70 +178,23 @@ def wrap_plate_boundaries(shared_boundary_sections, lon0=0, tesselate_degrees=1)
     return data
 
 
-def get_json_from_reconstructed_polygons(
-    reconstructed_polygons,
-    wrap=False,
-    central_meridian=0,
-    avoid_map_boundary=False,
-    tesselate_degrees=2,
-):
-    """prepare reconstructed polygons in geojson format
+def get_json_from_shapely_polygons(shapely_polygons, avoid_map_boundary=False):
+    """prepare shapely polygons in geojson format
 
-    :param reconstructed_polygons: reconstructed polygons
-    :param wrap: flag to indicate wrapping to dateline
-    :param central_meridian: central meridian
+    :param shapely_polygons: shapely polygons
     :param avoid_map_boundary: avoid map boundary
-    :param tesselate_degrees: tesselate degrees
 
     """
-
     polygons = []
-    if wrap:
-        wrapped_polygons = []
-        date_line_wrapper = pygplates.DateLineWrapper(central_meridian)
-        for p in reconstructed_polygons:
-            wrapped_polygons += date_line_wrapper.wrap(
-                p.get_reconstructed_geometry(), tesselate_degrees
-            )
-        for p in wrapped_polygons:
-            # LOOK HERE!!!!!!
-            # https://www.gplates.org/docs/pygplates/generated/pygplates.datelinewrapper
-            # If central_meridian is non-zero then the dateline is essentially shifted
-            # such that the longitudes of the wrapped points lie in the range
-            # [central_meridian - 180, central_meridian + 180]. If central_meridian
-            # is zero then the output range becomes [-180, 180].
-
-            # what about interior points?
-            lats = [i.get_latitude() for i in p.get_exterior_points()]
-            lons = []
-            # we move the geometries back to range [-180, 180]
-            for i in p.get_exterior_points():
-                lon = i.get_longitude()
-                if lon < -180:
-                    lon = 360 + lon
-                elif lon > 180:
-                    lon = 360 - lon
-                lons.append(lon)
-
-            if (
-                pygplates.PolygonOnSphere(zip(lats, lons)).get_orientation()
-                == pygplates.PolygonOnSphere.Orientation.clockwise
-            ):
-                polygons.append((lons, lats))
-            else:
-                polygons.append((lons[::-1], lats[::-1]))
-    else:
-        for p in reconstructed_polygons:
-            lats, lons = list(zip(*p.get_reconstructed_geometry().to_lat_lon_list()))
-            # lats = list(lats)
-            # lons = list(lons)
-            if (
-                pygplates.PolygonOnSphere(zip(lats, lons)).get_orientation()
-                == pygplates.PolygonOnSphere.Orientation.clockwise
-            ):
-                polygons.append((lons, lats))
-            else:
-                polygons.append((lons[::-1], lats[::-1]))
+    for p in shapely_polygons:
+        lons, lats = p.exterior.coords.xy
+        if (
+            pygplates.PolygonOnSphere(zip(lats, lons)).get_orientation()
+            == pygplates.PolygonOnSphere.Orientation.clockwise
+        ):
+            polygons.append((lons, lats))
+        else:
+            polygons.append((lons[::-1], lats[::-1]))
 
     data = {"type": "FeatureCollection"}
     data["features"] = []

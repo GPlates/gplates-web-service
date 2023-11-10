@@ -1,6 +1,7 @@
 import json
 
 import pygplates
+import shapely
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from utils import parameter_helper, plot_geometries, wrapping_tools
@@ -34,7 +35,7 @@ def get_static_polygons(request):
 
 
 def get_polygons(request, polygon_name):
-    """return reconstructed polygons in JSON or PNG formt
+    """return reconstructed polygons in geojson or PNG formt
 
     :param anchor_plate_id : integer value for reconstruction anchor plate id [default=0]
     :param  time : time for reconstruction [required]
@@ -101,29 +102,6 @@ def get_polygons(request, polygon_name):
         anchor_plate_id=anchor_plate_id,
     )
 
-    if extent:
-        # filter the geometries with the bounding box
-        # extent = [minx, maxx, miny, maxy]
-        tmp = []
-        for polygon in reconstructed_polygons:
-            all_points = polygon.get_reconstructed_geometry().to_lat_lon_list()
-            lats = [p[0] for p in all_points]
-            lons = [p[0] for p in all_points]
-            max_lat = max(lats)
-            min_lat = min(lats)
-            max_lon = max(lons)
-            min_lon = min(lons)
-            if (
-                max_lon < extent[0]
-                or min_lon > extent[1]
-                or max_lat < extent[2]
-                or min_lat > extent[3]
-            ):
-                continue
-            else:
-                tmp.append(polygon)
-        reconstructed_polygons = tmp
-
     # filter the polygons by min_area
     if min_area is not None and min_area > 0:
         tmp = []
@@ -131,15 +109,84 @@ def get_polygons(request, polygon_name):
             p = polygon.get_reconstructed_geometry()
             try:
                 if p.get_area() * (pygplates.Earth.mean_radius_in_kms**2) > min_area:
+                    # print(p.get_area() * (pygplates.Earth.mean_radius_in_kms**2))
                     tmp.append(polygon)
             except:
                 print("Invalid geometry type {p}")
         reconstructed_polygons = tmp
 
+    shapely_polygons = []
+    for polygon in reconstructed_polygons:
+        if wrap:
+            # wrap the polygons to dateline
+            tesselate_degrees = 2
+            date_line_wrapper = pygplates.DateLineWrapper(central_meridian)
+
+            ps = date_line_wrapper.wrap(
+                polygon.get_reconstructed_geometry(), tesselate_degrees
+            )
+            for p in ps:
+                points = []
+                for point in p.get_exterior_points():
+                    lon = point.to_lat_lon()[1]
+                    lat = point.to_lat_lon()[0]
+                    # LOOK HERE!!!!!!
+                    # https://www.gplates.org/docs/pygplates/generated/pygplates.datelinewrapper
+                    # If central_meridian is non-zero then the dateline is essentially shifted
+                    # such that the longitudes of the wrapped points lie in the range
+                    # [central_meridian - 180, central_meridian + 180]. If central_meridian
+                    # is zero then the output range becomes [-180, 180].
+                    lon = lon - central_meridian
+                    points.append([lon, lat])
+                tp = shapely.Polygon(points).buffer(0)
+                if isinstance(tp, shapely.MultiPolygon):
+                    for pp in tp.geoms:
+                        shapely_polygons.append(pp)
+                else:
+                    shapely_polygons.append(tp)
+        else:
+            tp = shapely.Polygon(
+                [
+                    (p[1], p[0])
+                    for p in polygon.get_reconstructed_geometry().to_lat_lon_list()
+                ]
+            ).buffer(0)
+            if isinstance(tp, shapely.MultiPolygon):
+                for pp in tp.geoms:
+                    shapely_polygons.append(pp)
+            else:
+                shapely_polygons.append(tp)
+
+    if extent:
+        # clip the geometries with the bounding box
+        # extent = [minx, maxx, miny, maxy]
+        tmp = []
+        shapely_box = shapely.Polygon(
+            [
+                (extent[0], extent[3]),
+                (extent[0], extent[2]),
+                (extent[1], extent[2]),
+                (extent[1], extent[3]),
+                (extent[0], extent[3]),
+            ]
+        )
+        for shapely_polygon in shapely_polygons:
+            if not shapely_polygon.is_simple:
+                continue
+            tmp_p = shapely_box.intersection(shapely_polygon)
+            if tmp_p.is_empty:
+                continue
+            if isinstance(tmp_p, shapely.Polygon):
+                tmp.append(tmp_p)
+            elif isinstance(tmp_p, shapely.MultiPolygon):
+                for p in tmp_p.geoms:
+                    tmp.append(p)
+        shapely_polygons = tmp
+
     if return_format == "png":
         # plot and return the map
         imgdata = plot_geometries.plot_polygons(
-            reconstructed_polygons,
+            shapely_polygons,
             edgecolor,
             facecolor,
             alpha,
@@ -149,8 +196,8 @@ def get_polygons(request, polygon_name):
         response = HttpResponse(imgdata, content_type="image/png")
     else:
         # prepare and return in geojson format
-        data = wrapping_tools.get_json_from_reconstructed_polygons(
-            reconstructed_polygons, wrap, central_meridian, avoid_map_boundary
+        data = wrapping_tools.get_json_from_shapely_polygons(
+            shapely_polygons, avoid_map_boundary
         )
 
         response = HttpResponse(

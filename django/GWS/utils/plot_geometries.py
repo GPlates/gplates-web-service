@@ -3,13 +3,9 @@ import io
 import matplotlib
 
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from matplotlib.patches import Polygon
-from PIL import Image
 import cartopy.crs as ccrs
-from shapely.geometry.polygon import Polygon
-
-import pygplates
+import matplotlib.pyplot as plt
+from PIL import Image
 
 
 def plot_polygons(
@@ -22,7 +18,7 @@ def plot_polygons(
 ):
     """plot polygons with cartopy and return the map PNG image
 
-    :params polygons: polygons
+    :params polygons: shapely polygons
     :params edgecolor: edge color
     :params facecolor: face color
     :params alpha: alpha channel value
@@ -50,32 +46,8 @@ def plot_polygons(
         # ax.outline_patch.set_visible(False)  # Borders
         imgdata = io.BytesIO()
 
-        # alway wrap when plotting map
-        date_line_wrapper = pygplates.DateLineWrapper(central_meridian)
-        # date_line_wrapper = pygplates.DateLineWrapper(0)
-        # wrap the polygons at date iine
-        shapely_polygons = []
-
-        for polygon in polygons:
-            ps = date_line_wrapper.wrap(polygon.get_reconstructed_geometry(), 2.0)
-            for p in ps:
-                points = []
-                for point in p.get_exterior_points():
-                    lon = point.to_lat_lon()[1]
-                    lat = point.to_lat_lon()[0]
-
-                    # LOOK HERE!!!!!!
-                    # https://www.gplates.org/docs/pygplates/generated/pygplates.datelinewrapper
-                    # If central_meridian is non-zero then the dateline is essentially shifted
-                    # such that the longitudes of the wrapped points lie in the range
-                    # [central_meridian - 180, central_meridian + 180]. If central_meridian
-                    # is zero then the output range becomes [-180, 180].
-                    lon = lon - central_meridian
-                    points.append([lon, lat])
-                shapely_polygons.append(Polygon(points))
-
         ax.add_geometries(
-            shapely_polygons,
+            polygons,
             crs,
             edgecolor=edgecolor,
             facecolor=facecolor,
