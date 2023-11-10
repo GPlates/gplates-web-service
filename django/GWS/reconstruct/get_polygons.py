@@ -1,13 +1,11 @@
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.conf import settings
-
-from utils.model_utils import get_rotation_model, is_time_valid_for_model, get_layer
-from utils import wrapping_tools
-from utils.round_float import round_floats
-from utils import plot_geometries
-
 import json
+
 import pygplates
+from django.conf import settings
+from django.http import HttpResponse, HttpResponseBadRequest
+from utils import parameter_helper, plot_geometries, wrapping_tools
+from utils.model_utils import get_layer, get_rotation_model, is_time_valid_for_model
+from utils.round_float import round_floats
 
 
 # @request_access
@@ -51,7 +49,7 @@ def get_polygons(request, polygon_name):
 
     """
     anchor_plate_id = request.GET.get("pid", 0)
-    time = request.GET.get("time", 0)
+    time = parameter_helper.get_float(request.GET, "time", 0.0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
     return_format = request.GET.get("fmt", "")
     edgecolor = request.GET.get("edgecolor", "black")
@@ -60,10 +58,14 @@ def get_polygons(request, polygon_name):
     extent = request.GET.get("extent", None)
     wrap_str = request.GET.get("wrap", "true")
 
+    min_area = parameter_helper.get_float(request.GET, "min_area")
+
     if wrap_str.lower() == "false":
         wrap = False
     else:
         wrap = True
+
+    central_meridian = parameter_helper.get_float(request.GET, "central_meridian", 0.0)
 
     # parse the extent = [minx, maxx, miny, maxy]
     if extent:
@@ -74,32 +76,28 @@ def get_polygons(request, polygon_name):
             extent = None
             print("Invalid extent parameter!")
 
-    central_meridian = 0
-    if "central_meridian" in request.GET:
-        try:
-            central_meridian = float(request.GET["central_meridian"])
-        except:
-            wrap = False
-            print("Invalid central meridian.")
-
-    avoid_map_boundary = False
-    if "avoid_map_boundary" in request.GET:
+    # check the avoid_map_boundary flag
+    if (
+        "avoid_map_boundary" in request.GET
+        and request.GET["avoid_map_boundary"].lower() == "false"
+    ):
+        avoid_map_boundary = False
+    else:
         avoid_map_boundary = True
 
+    # validate time
     if not is_time_valid_for_model(model, time):
         return HttpResponseBadRequest(
             f"Requested time {time} not available for model {model}"
         )
 
-    rotation_model = get_rotation_model(model)
-
+    # do the reconstruction
     reconstructed_polygons = []
-
     pygplates.reconstruct(
         get_layer(model, polygon_name),
-        rotation_model,
+        get_rotation_model(model),
         reconstructed_polygons,
-        float(time),
+        time,
         anchor_plate_id=anchor_plate_id,
     )
 
@@ -126,8 +124,20 @@ def get_polygons(request, polygon_name):
                 tmp.append(polygon)
         reconstructed_polygons = tmp
 
-    # plot and return the map
+    # filter the polygons by min_area
+    if min_area is not None and min_area > 0:
+        tmp = []
+        for polygon in reconstructed_polygons:
+            p = polygon.get_reconstructed_geometry()
+            try:
+                if p.get_area() * (pygplates.Earth.mean_radius_in_kms**2) > min_area:
+                    tmp.append(polygon)
+            except:
+                print("Invalid geometry type {p}")
+        reconstructed_polygons = tmp
+
     if return_format == "png":
+        # plot and return the map
         imgdata = plot_geometries.plot_polygons(
             reconstructed_polygons,
             edgecolor,
@@ -138,6 +148,7 @@ def get_polygons(request, polygon_name):
         )
         response = HttpResponse(imgdata, content_type="image/png")
     else:
+        # prepare and return in geojson format
         data = wrapping_tools.get_json_from_reconstructed_polygons(
             reconstructed_polygons, wrap, central_meridian, avoid_map_boundary
         )

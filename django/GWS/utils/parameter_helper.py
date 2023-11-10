@@ -51,3 +51,29 @@ def get_anchor_plate_id(params):
         raise Exception(
             f'The "anchor_plate_id" parameter is invalid ({anchor_plate_id}).'
         )
+
+
+def get_float(params, param_name: str, default=None):
+    """get a float number from params for the given param_name, return None if invalid or non-exist"""
+    number = params.get(param_name, default)
+    if number is not None:
+        try:
+            number = float(number)
+        except ValueError:
+            print(f"Invalid floating point number: {param_name}({number})")
+            number = default
+
+    return number
+
+
+def get_int(params, param_name: str, default=None):
+    """get an integer number from params for the given param_name, return None if invalid or non-exist"""
+    number = params.get(param_name, default)
+    if number is not None:
+        try:
+            number = int(number)
+        except ValueError:
+            print(f"Invalid integer number: {param_name}({number})")
+            number = default
+
+    return number
