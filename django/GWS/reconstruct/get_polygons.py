@@ -57,15 +57,8 @@ def get_polygons(request, polygon_name):
     facecolor = request.GET.get("facecolor", "none")
     alpha = request.GET.get("alpha", 0.5)
     extent = request.GET.get("extent", None)
-    wrap_str = request.GET.get("wrap", "true")
-
-    min_area = parameter_helper.get_float(request.GET, "min_area")
-
-    if wrap_str.lower() == "false":
-        wrap = False
-    else:
-        wrap = True
-
+    wrap = parameter_helper.get_bool(request.GET, "wrap", True)
+    min_area = parameter_helper.get_float(request.GET, "min_area", 0.0)
     central_meridian = parameter_helper.get_float(request.GET, "central_meridian", 0.0)
 
     # parse the extent = [minx, maxx, miny, maxy]
@@ -78,13 +71,9 @@ def get_polygons(request, polygon_name):
             print("Invalid extent parameter!")
 
     # check the avoid_map_boundary flag
-    if (
-        "avoid_map_boundary" in request.GET
-        and request.GET["avoid_map_boundary"].lower() == "false"
-    ):
-        avoid_map_boundary = False
-    else:
-        avoid_map_boundary = True
+    avoid_map_boundary = parameter_helper.get_bool(
+        request.GET, "avoid_map_boundary", True
+    )
 
     # validate time
     if not is_time_valid_for_model(model, time):
@@ -103,7 +92,7 @@ def get_polygons(request, polygon_name):
     )
 
     # filter the polygons by min_area
-    if min_area is not None and min_area > 0:
+    if min_area > 0:
         tmp = []
         for polygon in reconstructed_polygons:
             p = polygon.get_reconstructed_geometry()

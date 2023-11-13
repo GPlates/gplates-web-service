@@ -1,3 +1,8 @@
+#
+# a bunch of helper function to deal with parameters in http request
+#
+
+
 def get_pids(params, count):
     """
     return a list of plate IDs
@@ -53,27 +58,57 @@ def get_anchor_plate_id(params):
         )
 
 
-def get_float(params, param_name: str, default=None):
-    """get a float number from params for the given param_name, return None if invalid or non-exist"""
+def get_float(params, param_name: str, default):
+    """get a float number from params for the given param_name, return default if invalid or non-exist"""
     number = params.get(param_name, default)
-    if number is not None:
-        try:
-            number = float(number)
-        except ValueError:
-            print(f"Invalid floating point number: {param_name}({number})")
-            number = default
-
+    try:
+        number = float(number)
+    except ValueError:
+        print(
+            f"Invalid floating point number: {param_name}({number}), using default value {default}"
+        )
+        number = default
+    if not isinstance(number, float) and number is not None:
+        raise Exception(
+            f"Invalid floating point number parameter: {param_name}({number}) and invalid default value {default}"
+        )
     return number
 
 
-def get_int(params, param_name: str, default=None):
-    """get an integer number from params for the given param_name, return None if invalid or non-exist"""
+def get_int(params, param_name: str, default):
+    """get an integer number from params for the given param_name, return default if invalid or non-exist"""
     number = params.get(param_name, default)
-    if number is not None:
-        try:
-            number = int(number)
-        except ValueError:
-            print(f"Invalid integer number: {param_name}({number})")
-            number = default
-
+    try:
+        number = int(number)
+    except ValueError:
+        print(
+            f"Invalid integer number: {param_name}({number}), using default value {default}"
+        )
+        number = default
+    if not isinstance(number, int) and number is not None:
+        raise Exception(
+            f"Invalid integer number parameter: {param_name}({number}) and invalid default value {default}"
+        )
     return number
+
+
+def get_bool(params, param_name: str, default):
+    """get boolean value from params for the given param_name, return default if invalid or non-exist"""
+    flag = params.get(param_name, default)
+    if isinstance(flag, str):
+        if flag.lower() == "true":
+            flag = True
+        elif flag.lower() == "false":
+            flag = False
+        elif flag.lower() == "0":
+            flag = False
+        elif flag.lower() == "1":
+            flag = True
+        else:
+            print(f"Invalid boolean value: {param_name}({flag})")
+            flag = default
+    if not isinstance(flag, int) and flag is not None:
+        raise Exception(
+            f"Invalid boolean parameter: {param_name}({flag}) and invalid default value {default}"
+        )
+    return flag
