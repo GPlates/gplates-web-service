@@ -49,7 +49,7 @@ def get_polygons(request, polygon_name):
     :param wrap: flag to indicate if wrap the polygons along dateline
 
     """
-    anchor_plate_id = request.GET.get("pid", 0)
+    anchor_plate_id = parameter_helper.get_int(request.GET, "anchor_plate_id", 0)
     time = parameter_helper.get_float(request.GET, "time", 0.0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
     return_format = request.GET.get("fmt", "")
