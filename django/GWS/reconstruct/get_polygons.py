@@ -172,6 +172,8 @@ def get_polygons(request, polygon_name):
                     tmp.append(p)
         shapely_polygons = tmp
 
+    shapely_polygons = [shapely.geometry.polygon.orient(p) for p in shapely_polygons]
+
     if return_format == "png":
         # plot and return the map
         imgdata = plot_geometries.plot_polygons(
@@ -188,7 +190,7 @@ def get_polygons(request, polygon_name):
         data = wrapping_tools.get_json_from_shapely_polygons(
             shapely_polygons, avoid_map_boundary
         )
-
+        # print(len(shapely_polygons))
         response = HttpResponse(
             json.dumps(round_floats(data)), content_type="application/json"
         )
