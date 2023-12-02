@@ -1,6 +1,6 @@
 from django.urls import re_path
 
-from . import finite_rotation, views, api
+from . import api, finite_rotation, r12n_tree, views
 
 urlpatterns = [
     re_path(
@@ -35,22 +35,27 @@ urlpatterns = [
     ),
     re_path(
         r"^get_reconstruction_tree_edges/?$",
-        api.get_reconstruction_tree_edges,
+        r12n_tree.get_reconstruction_tree_edges,
         name="get_reconstruction_tree_edges",
     ),
     re_path(
         r"^get_reconstruction_tree_height/?$",
-        api.get_reconstruction_tree_height,
+        r12n_tree.get_reconstruction_tree_height,
         name="get_reconstruction_tree_height",
     ),
     re_path(
         r"^get_reconstruction_tree_leaves/?$",
-        api.get_reconstruction_tree_leaves,
+        r12n_tree.get_reconstruction_tree_leaves,
         name="get_reconstruction_tree_leaves",
     ),
     re_path(
         r"^get_ancestors_in_reconstruction_tree/?$",
-        api.get_ancestors_in_reconstruction_tree,
+        r12n_tree.get_ancestors_in_reconstruction_tree,
         name="get_ancestors_in_reconstruction_tree",
+    ),
+    re_path(
+        r"^get_reconstruction_tree/?$",
+        r12n_tree.get_reconstruction_tree,
+        name="get_reconstruction_tree",
     ),
 ]

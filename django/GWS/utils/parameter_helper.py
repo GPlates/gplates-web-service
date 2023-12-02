@@ -63,7 +63,7 @@ def get_float(params, param_name: str, default):
     number = params.get(param_name, default)
     try:
         number = float(number)
-    except ValueError:
+    except (ValueError, TypeError):
         print(
             f"Invalid floating point number: {param_name}({number}), using default value {default}"
         )
@@ -80,7 +80,7 @@ def get_int(params, param_name: str, default):
     number = params.get(param_name, default)
     try:
         number = int(number)
-    except ValueError:
+    except (ValueError, TypeError):
         print(
             f"Invalid integer number: {param_name}({number}), using default value {default}"
         )
@@ -112,3 +112,17 @@ def get_bool(params, param_name: str, default):
             f"Invalid boolean parameter: {param_name}({flag}) and invalid default value {default}"
         )
     return flag
+
+
+def get_int_list(params, param_name: str):
+    """get an integer list from params for the given param_name, return [] if invalid or non-exist"""
+    param_str = params.get(param_name, "")
+    ret = []
+    try:
+        if param_str:
+            ret = param_str.split(",")
+            ret = [int(i) for i in ret]
+    except (ValueError, TypeError):
+        print(f"Invalid parameter {param_name}:{param_str}.")
+
+    return ret
