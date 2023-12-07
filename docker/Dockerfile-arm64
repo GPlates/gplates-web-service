@@ -2,7 +2,7 @@
 # to build this docker container image
 # step 1: git clone https://github.com/GPlates/gplates-web-service.git
 # step 2: go into folder gplates-web-service
-# step 3: docker build -f docker/Dockerfile -t gplates/gws .
+# step 3: docker build -f docker/Dockerfile-arm64 -t gplates/gws .
 #
 
 # if error, try with --no-cache option
@@ -47,7 +47,7 @@ RUN apt install -y gdal-bin libgdal-dev
 RUN pip3 install GDAL geoserver-rest
 RUN pip3 install python-dotenv
 RUN pip3 install tzdata black
-RUN pip3 install plate-model-manager
+RUN pip3 install plate-model-manager --upgrade
 
 ADD . /gws
 

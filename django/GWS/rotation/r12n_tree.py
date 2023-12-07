@@ -68,7 +68,7 @@ def build_json_trees(edges):
         nodes = get_children(root, edges)
         trees.append({"pid": root, "children": nodes})
 
-    print(trees)
+    # print(trees)
 
     return trees
 

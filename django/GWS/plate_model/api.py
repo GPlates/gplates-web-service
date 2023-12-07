@@ -35,7 +35,8 @@ def get_model_details(request):
 
     try:
         model_cfg = get_model_cfg(model)
-    except:
+    except Exception as e:
+        print(e)
         return HttpResponseServerError(f"Unable to find info for model {model}.")
 
     response = HttpResponse(json.dumps(model_cfg), content_type="application/json")
