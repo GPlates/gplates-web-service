@@ -4,7 +4,7 @@ import numpy as np
 import pygplates
 from django.conf import settings
 from django.http import HttpResponse
-from utils.model_utils import get_rotation_model
+from utils.plate_model_utils import get_rotation_model
 from utils.round_float import round_floats
 
 

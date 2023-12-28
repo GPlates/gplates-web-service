@@ -6,7 +6,11 @@ from utils.create_gpml import (
     create_gpml_healpix_mesh,
     create_gpml_regular_long_lat_mesh,
 )
-from utils.model_utils import get_rotation_model, get_static_polygons, get_topologies
+from utils.plate_model_utils import (
+    get_rotation_model,
+    get_static_polygons,
+    get_topologies,
+)
 from utils.velocity_tools import get_velocities
 
 

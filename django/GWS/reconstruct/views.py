@@ -6,7 +6,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from utils.model_utils import get_rotation_model
+from utils.plate_model_utils import get_rotation_model
 from utils.round_float import round_floats
 
 

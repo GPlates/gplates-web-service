@@ -8,7 +8,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from utils.kinematic_tools import subduction_parameters
-from utils.model_utils import get_rotation_model, get_static_polygons
+from utils.plate_model_utils import get_rotation_model, get_static_polygons
 from utils.reconstruct_tools import reconstruct_to_birth_time
 
 

@@ -4,7 +4,7 @@ import numpy as np
 import pygplates
 from django.conf import settings
 from django.http import HttpResponse
-from utils.model_utils import get_rotation_model, get_static_polygons
+from utils.plate_model_utils import get_rotation_model, get_static_polygons
 from utils.round_float import round_floats
 from utils.wrapping_tools import wrap_polylines
 

@@ -4,13 +4,13 @@ import pygplates
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from utils.model_utils import (
-    get_rotation_model,
-    get_static_polygons,
-    UnrecognizedModel,
-)
 from utils.geojson_io import load_geojson
 from utils.get_lats_lons import get_lats_lons
+from utils.plate_model_utils import (
+    UnrecognizedModel,
+    get_rotation_model,
+    get_static_polygons,
+)
 
 
 @csrf_exempt

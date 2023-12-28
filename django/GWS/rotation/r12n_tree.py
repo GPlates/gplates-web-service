@@ -3,7 +3,7 @@ import json
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from utils import parameter_helper
-from utils.model_utils import get_rotation_model
+from utils.plate_model_utils import get_rotation_model
 
 
 def get_child_edges(edges, pid):

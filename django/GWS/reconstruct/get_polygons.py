@@ -5,7 +5,11 @@ import shapely
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from utils import parameter_helper, plot_geometries, wrapping_tools
-from utils.model_utils import get_layer, get_rotation_model, is_time_valid_for_model
+from utils.plate_model_utils import (
+    get_layer,
+    get_rotation_model,
+    is_time_valid_for_model,
+)
 from utils.round_float import round_floats
 
 
@@ -38,13 +42,13 @@ def get_polygons(request, polygon_name):
     """return reconstructed polygons in geojson or PNG formt
 
     :param anchor_plate_id : integer value for reconstruction anchor plate id [default=0]
-    :param  time : time for reconstruction [required]
-    :param  model : name for reconstruction model [defaults to default model from web service settings]
-    :param  fmt : if set this parameter to "png", this function will return a png image
-    :param  facecolor : such as "black", "blue", etc
-    :param  edgecolor : such as "black", "blue", etc
-    :param  alpha : such as 1, 0.5, etc
-    :param  extent : such as extent=-180,180,-90,90
+    :param time : time for reconstruction [required]
+    :param model : name for reconstruction model [defaults to default model from web service settings]
+    :param fmt : if set this parameter to "png", this function will return a png image
+    :param facecolor : such as "black", "blue", etc
+    :param edgecolor : such as "black", "blue", etc
+    :param alpha : such as 1, 0.5, etc
+    :param extent : such as extent=-180,180,-90,90
     :param central_meridian: central meridian
     :param wrap: flag to indicate if wrap the polygons along dateline
 

@@ -1,10 +1,10 @@
-import lib.rotation as rotation
 import json
 import math
 
+import lib.rotation as rotation
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
-from utils.model_utils import get_rotation_files, get_rotation_model
+from utils.plate_model_utils import get_rotation_files, get_rotation_model
 
 
 def rotate(request):

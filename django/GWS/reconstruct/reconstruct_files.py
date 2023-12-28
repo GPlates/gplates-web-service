@@ -16,11 +16,15 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServer
 from django.views.decorators.csrf import csrf_exempt
 from geo.Geoserver import Geoserver
 from utils.fileio import (
-    save_upload_files,
-    find_and_unzip_all_zip_files,
     NoOutputFileError,
+    find_and_unzip_all_zip_files,
+    save_upload_files,
 )
-from utils.model_utils import get_rotation_model, get_static_polygons, UnrecognizedModel
+from utils.plate_model_utils import (
+    UnrecognizedModel,
+    get_rotation_model,
+    get_static_polygons,
+)
 
 
 #

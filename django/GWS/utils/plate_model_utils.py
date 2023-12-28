@@ -2,10 +2,25 @@ import pygplates
 from django.conf import settings
 from plate_model_manager import PlateModel, PlateModelManager
 
+FEATURE_COLLECTION_CACHE = {
+    "Rotations": {},
+    "Coastlines": {},
+    "StaticPolygons": {},
+    "ContinentalPolygons": {},
+    "Topologies": {},
+}
+ROTATION_FC = FEATURE_COLLECTION_CACHE["Rotations"]
+COASTLINES_FC = FEATURE_COLLECTION_CACHE["Coastlines"]
+STATIC_POLYGONS_FC = FEATURE_COLLECTION_CACHE["StaticPolygons"]
+TOPOLOGIES_FC = FEATURE_COLLECTION_CACHE["Topologies"]
+CONTINENTAL_POLYGONS_FC = FEATURE_COLLECTION_CACHE["ContinentalPolygons"]
+
 
 def get_rotation_files(model):
     """return a list of rotation files"""
     plate_model = PlateModel(model, data_dir=settings.MODEL_REPO_DIR, readonly=True)
+    if not plate_model:
+        raise UnrecognizedModel(f'The "model" ({model}) cannot be recognized.')
     return plate_model.get_rotation_model()
 
 
@@ -17,37 +32,23 @@ def get_rotation_model(model):
     :returns: a pygplates.RotationModel object
 
     """
-    rotation_files = get_rotation_files(model)
-
-    if not rotation_files:
-        raise UnrecognizedModel(f'The "model" ({model}) cannot be recognized.')
-
-    return pygplates.RotationModel(rotation_files)
-
-
-def get_static_polygons_filenames(model):
-    """return static polygons filenames
-
-    :param model: model name
-
-    """
-    plate_model = PlateModel(model, data_dir=settings.MODEL_REPO_DIR, readonly=True)
-
-    static_polygon_files = plate_model.get_static_polygons()
-
-    if not static_polygon_files:
-        raise UnrecognizedModel(f'The "model" ({model}) cannot be recognized.')
-    return static_polygon_files
+    if model in ROTATION_FC:
+        return ROTATION_FC[model]
+    else:
+        rotation_files = get_rotation_files(model)
+        m = pygplates.RotationModel(rotation_files)
+        ROTATION_FC[model] = m
+        return m
 
 
 def get_static_polygons(model):
     """return a pygplates.FeatureCollection of static polygons"""
-    files = get_static_polygons_filenames(model)
-    features = []
-    for f in files:
-        fc = pygplates.FeatureCollection(f)
-        features.extend(fc)
-    return pygplates.FeatureCollection(features)
+    return get_layer(model, "StaticPolygons")
+
+
+def get_continental_polygons(model):
+    """return a pygplates.FeatureCollection of continental polygons"""
+    return get_layer(model, "ContinentalPolygons")
 
 
 def get_layer(model, layer_name):
@@ -58,18 +59,36 @@ def get_layer(model, layer_name):
 
     """
     plate_model = PlateModel(model, data_dir=settings.MODEL_REPO_DIR, readonly=True)
+    if not plate_model:
+        raise UnrecognizedModel(f'The "model" ({model}) cannot be recognized.')
+
     files = plate_model.get_layer(layer_name)
-    features = []
-    for f in files:
-        fc = pygplates.FeatureCollection(f)
-        features.extend(fc)
-    return pygplates.FeatureCollection(features)
+    if not files:
+        print(f"Warning: layer({layer_name}) not found for model({model})")
+
+    if layer_name not in FEATURE_COLLECTION_CACHE:
+        FEATURE_COLLECTION_CACHE[layer_name] = {}
+
+    if model in FEATURE_COLLECTION_CACHE[layer_name]:
+        return FEATURE_COLLECTION_CACHE[layer_name][model]
+    else:
+        features = []
+        for f in files:
+            fc = pygplates.FeatureCollection(f)
+            features.extend(fc)
+        m = pygplates.FeatureCollection(features)
+        FEATURE_COLLECTION_CACHE[layer_name][model] = m
+        return m
+
+
+def get_coastlines(model):
+    """return a coastlines pygplates.FeatureCollection"""
+    return get_layer(model, "Coastlines")
 
 
 def get_topologies(model):
-    """return a list of topology files"""
-    plate_model = PlateModel(model, data_dir=settings.MODEL_REPO_DIR, readonly=True)
-    return plate_model.get_topologies()
+    """return a topology pygplates.FeatureCollection"""
+    return get_layer(model, "Topologies")
 
 
 def get_model_name_list(folder):

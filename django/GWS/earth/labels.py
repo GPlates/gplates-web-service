@@ -3,7 +3,11 @@ import json
 import pygplates
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
-from utils.model_utils import UnrecognizedModel, get_rotation_model, get_static_polygons
+from utils.plate_model_utils import (
+    UnrecognizedModel,
+    get_rotation_model,
+    get_static_polygons,
+)
 from utils.round_float import round_floats
 
 

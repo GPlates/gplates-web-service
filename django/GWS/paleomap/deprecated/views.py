@@ -20,7 +20,7 @@ import numpy as np
 import pygplates
 from matplotlib.patches import Polygon
 from PIL import Image
-from utils.model_utils import get_layer, get_rotation_model
+from utils.plate_model_utils import get_layer, get_rotation_model
 
 TMP_DIR = "/tmp/gws"
 

@@ -5,9 +5,13 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from utils.geojson_io import load_geojson, save_reconstructed_geometries_geojson
-from utils.model_utils import get_rotation_model, get_static_polygons, UnrecognizedModel
-from utils.round_float import round_floats
 from utils.parameter_helper import get_anchor_plate_id, get_time
+from utils.plate_model_utils import (
+    UnrecognizedModel,
+    get_rotation_model,
+    get_static_polygons,
+)
+from utils.round_float import round_floats
 
 
 #

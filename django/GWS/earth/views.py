@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from utils.create_gpml import create_gpml_crustal_thickness
 from utils.fileio import write_json_reconstructed_point_features
-from utils.model_utils import get_rotation_model, get_static_polygons
+from utils.plate_model_utils import get_rotation_model, get_static_polygons
 from utils.sphere_tools import healpix_mesh, random_points_on_sphere, sampleOnSphere
 
 # Create your views here.

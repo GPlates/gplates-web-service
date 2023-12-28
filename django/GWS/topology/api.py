@@ -4,7 +4,7 @@ import pygplates
 from django.conf import settings
 from django.http import HttpResponse
 from utils.geojson_io import dump_geojson
-from utils.model_utils import get_rotation_model, get_topologies
+from utils.plate_model_utils import get_rotation_model, get_topologies
 from utils.round_float import round_floats
 
 
