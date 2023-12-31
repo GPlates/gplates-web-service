@@ -1,4 +1,5 @@
 import json
+import logging
 
 import pygplates
 import shapely
@@ -11,6 +12,8 @@ from utils.plate_model_utils import (
     is_time_valid_for_model,
 )
 from utils.round_float import round_floats
+
+logger = logging.getLogger("default")
 
 
 # @request_access
@@ -41,6 +44,7 @@ def get_static_polygons(request):
 def get_polygons(request, polygon_name):
     """return reconstructed polygons in geojson or PNG formt
 
+    :param polygon_name: two options for now - "StaticPolygons", "Coastlines"
     :param anchor_plate_id : integer value for reconstruction anchor plate id [default=0]
     :param time : time for reconstruction [required]
     :param model : name for reconstruction model [defaults to default model from web service settings]
@@ -72,7 +76,7 @@ def get_polygons(request, polygon_name):
             extent = [float(tmp[0]), float(tmp[1]), float(tmp[2]), float(tmp[3])]
         except:
             extent = None
-            print("Invalid extent parameter!")
+            logger.warn("Invalid extent parameter!")
 
     # check the avoid_map_boundary flag
     avoid_map_boundary = parameter_helper.get_bool(
@@ -81,9 +85,9 @@ def get_polygons(request, polygon_name):
 
     # validate time
     if not is_time_valid_for_model(model, time):
-        return HttpResponseBadRequest(
-            f"Requested time {time} not available for model {model}"
-        )
+        msg = f"Requested time {time} not available for model {model}."
+        logger.warn(msg)
+        return HttpResponseBadRequest(msg)
 
     # do the reconstruction
     reconstructed_polygons = []
@@ -102,10 +106,10 @@ def get_polygons(request, polygon_name):
             p = polygon.get_reconstructed_geometry()
             try:
                 if p.get_area() * (pygplates.Earth.mean_radius_in_kms**2) > min_area:
-                    # print(p.get_area() * (pygplates.Earth.mean_radius_in_kms**2))
+                    # logger.debug(p.get_area() * (pygplates.Earth.mean_radius_in_kms**2))
                     tmp.append(polygon)
             except:
-                print("Invalid geometry type {p}")
+                logger.warn("Invalid geometry type {p}")
         reconstructed_polygons = tmp
 
     shapely_polygons = []
@@ -194,7 +198,7 @@ def get_polygons(request, polygon_name):
         data = wrapping_tools.get_json_from_shapely_polygons(
             shapely_polygons, avoid_map_boundary
         )
-        # print(len(shapely_polygons))
+        # logger.debug(len(shapely_polygons))
         response = HttpResponse(
             json.dumps(round_floats(data)), content_type="application/json"
         )
