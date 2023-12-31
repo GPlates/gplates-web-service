@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import queue
 import random
 import string
 import sys
@@ -205,6 +206,7 @@ if DEBUG:
 else:
     logger_level = "ERROR"
 
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": True,
@@ -223,6 +225,14 @@ LOGGING = {
             "backupCount": 2,
             "formatter": "standard",
         },
+        "access_log": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": f"{BASE_DIR}/access.log",
+            "maxBytes": 5000000,
+            "backupCount": 999,
+            "formatter": "standard",
+        },
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
@@ -232,11 +242,22 @@ LOGGING = {
             "level": "CRITICAL",
             "class": "django.utils.log.AdminEmailHandler",
         },
+        "queue": {
+            "level": "INFO",
+            "class": "utils.queue_listener_handler.QueueListenerHandler",
+            "handlers": ["cfg://handlers.console", "cfg://handlers.access_log"],
+            "queue": "cfg://objects.queue",
+        },
     },
     "loggers": {
         "default": {
             "handlers": ["console", "logfile", "mail_admins"],
             "level": logger_level,
         },
+        "queue": {
+            "handlers": ["queue"],
+            "level": "INFO",
+        },
     },
+    "objects": {"queue": {"class": "queue.Queue", "maxsize": 1000}},
 }

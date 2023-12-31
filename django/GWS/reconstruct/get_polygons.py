@@ -6,6 +6,7 @@ import shapely
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from utils import parameter_helper, plot_geometries, wrapping_tools
+from utils.access_control import get_client_ip
 from utils.plate_model_utils import (
     get_layer,
     get_rotation_model,
@@ -14,6 +15,7 @@ from utils.plate_model_utils import (
 from utils.round_float import round_floats
 
 logger = logging.getLogger("default")
+access_logger = logging.getLogger("queue")
 
 
 # @request_access
@@ -57,6 +59,9 @@ def get_polygons(request, polygon_name):
     :param wrap: flag to indicate if wrap the polygons along dateline
 
     """
+
+    access_logger.info(get_client_ip(request) + f" {request.get_full_path()}")
+
     anchor_plate_id = parameter_helper.get_int(request.GET, "anchor_plate_id", 0)
     time = parameter_helper.get_float(request.GET, "time", 0.0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
