@@ -1,7 +1,8 @@
 from django.urls import re_path
 
-from . import views, api
+from . import api, views
 from .labels import get_labels
+from .plate_names import get_plate_names
 
 urlpatterns = [
     re_path(r"^get_globe_mesh/?$", api.get_globe_mesh, name="get_globe_mesh"),
@@ -18,4 +19,5 @@ urlpatterns = [
     re_path(r"^paleolithology/?$", views.paleolithology, name="paleolithology"),
     re_path(r"^paleomagnetism/?$", views.paleomagnetic_poles, name="paleomagnetism"),
     re_path(r"^get_labels/?$", get_labels, name="get_labels"),
+    re_path(r"^get_plate_names/?$", get_plate_names, name="get_plate_names"),
 ]

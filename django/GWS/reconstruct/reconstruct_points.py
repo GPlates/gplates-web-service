@@ -1,7 +1,5 @@
-#
-# Copyright and legal info
-#
 import json
+import logging
 
 import pygplates
 from django.conf import settings
@@ -10,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, schema, throttle_classes
 from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.throttling import AnonRateThrottle
+from utils.access_control import get_client_ip
 from utils.get_lats_lons import get_lats_lons
 from utils.parameter_helper import get_anchor_plate_id, get_pids, get_time
 from utils.plate_model_utils import (
@@ -18,6 +17,9 @@ from utils.plate_model_utils import (
     get_static_polygons,
 )
 from utils.round_float import round_floats
+
+logger = logging.getLogger("default")
+access_logger = logging.getLogger("queue")
 
 
 class ReconPointsSchema(AutoSchema):
@@ -154,6 +156,9 @@ else:
 @schema(ReconPointsSchema())
 def reconstruct(request):
     """http request to reconstruct points"""
+
+    access_logger.info(get_client_ip(request) + f" {request.get_full_path()}")
+
     if request.method == "POST":
         params = request.POST
     elif request.method == "GET":
@@ -174,7 +179,7 @@ def reconstruct(request):
         return HttpResponseBadRequest(
             f"""Unrecognized Rotation Model: {model}.<br> 
         Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
-        to find all available models."""
+        to find all the names of available models."""
         )
 
     # create point features from input coordinates
