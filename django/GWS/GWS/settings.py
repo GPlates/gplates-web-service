@@ -261,3 +261,14 @@ LOGGING = {
     },
     "objects": {"queue": {"class": "queue.Queue", "maxsize": 1000}},
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+    },
+    "redis": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://gws-redis:6379",
+    },
+}

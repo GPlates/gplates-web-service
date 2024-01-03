@@ -5,7 +5,8 @@
 # 1. assign plate ids for labels (pre-compute/pre-assign plate ids to improve response time)
 # 2. reconstruct labels (for label caching)
 
-import os, json
+import json
+import os
 from pathlib import Path
 
 import gplately
@@ -140,8 +141,6 @@ def get_label_plate_id(model_name, labels):
     model_manager = PlateModelManager()
     model = model_manager.get_model(model_name)
     model.set_data_dir(f"{os.path.dirname(__file__)}/model-repo")
-
-    # print(model.get_static_polygons())
 
     gplately_model = gplately.PlateReconstruction(
         rotation_model=model.get_rotation_model(),

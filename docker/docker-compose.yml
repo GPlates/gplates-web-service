@@ -31,6 +31,7 @@ services:
     hostname: gws
     depends_on:
       - gws-postgis
+      - gws-redis
     volumes:
       - gws-code:/gws
     ports:
@@ -41,6 +42,16 @@ services:
       interval: 1m30s
       timeout: 10s
       retries: 3
+  
+  redis:
+    image: redis
+    networks:
+      - gws-net
+    hostname: gws-redis
+    restart: on-failure
+    healthcheck:
+      test: docker run -it --network gws-net --rm redis redis-cli -h gws-redis ping  
+
 
 networks:
   gws-net:

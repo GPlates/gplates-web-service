@@ -1,14 +1,23 @@
 import json
+import logging
 
 import pygplates
 from django.conf import settings
+from django.core.cache import caches
 from django.http import HttpResponse, HttpResponseBadRequest
+from utils import parameter_helper
+from utils.access_control import get_client_ip
 from utils.plate_model_utils import (
     UnrecognizedModel,
+    get_model_name_list,
     get_rotation_model,
     get_static_polygons,
 )
 from utils.round_float import round_floats
+
+logger = logging.getLogger("default")
+access_logger = logging.getLogger("queue")
+cache = caches["redis"]
 
 
 def read_labels():
@@ -25,6 +34,10 @@ def read_labels():
     ]
 
     """
+    d = cache.get("earth-labels")
+    if d is not None:
+        return d
+
     labels = []
     with open(f"{settings.EARTH_STORE_DIR}/labels/labels.csv", "rt") as csv_fp:
         for line in csv_fp:
@@ -51,14 +64,57 @@ def read_labels():
                     "totime": to_time,
                 }
             )
+    cache.set("earth-labels", labels)
     return labels
 
 
+read_labels()
+
+
 def read_label_pids(model):
-    with open(
-        f"{settings.EARTH_STORE_DIR}/labels/label-pids-{model.lower()}.csv", "rt"
-    ) as csv_fp:
-        return [int(line) for line in csv_fp]
+    return get_label_pids()[model]
+
+
+def get_label_pids():
+    """return a dictionary of pids, such as
+    {
+        "seton":[123,234,566],
+        'muller2019': [321,434,546]
+    }
+    """
+    d = cache.get("earth-labels-pids")
+    if d is not None:
+        return d
+
+    point_features = []
+    for label in read_labels():
+        point_feature = pygplates.Feature()
+        point_feature.set_geometry(pygplates.PointOnSphere(label["lat"], label["lon"]))
+        point_features.append(point_feature)
+
+    pid_dict = {}
+    for model in get_model_name_list(settings.MODEL_REPO_DIR):
+        # assign plate-ids to points using static polygons
+        assigned_point_features = pygplates.partition_into_plates(
+            get_static_polygons(model),
+            get_rotation_model(model),
+            point_features,
+            properties_to_copy=[
+                pygplates.PartitionProperty.reconstruction_plate_id,
+                pygplates.PartitionProperty.valid_time_period,
+            ],
+            reconstruction_time=0.0,
+        )
+
+        assert len(point_features) == len(assigned_point_features)
+
+        pids = [f.get_reconstruction_plate_id() for f in assigned_point_features]
+        pid_dict[model] = pids
+        cache.set("earth-labels-pids", pid_dict)
+    return pid_dict
+
+
+get_label_pids()
 
 
 def reconstruct_labels(names, lons, lats, model, time, pids=[]):
@@ -133,12 +189,9 @@ def get_labels(request):
     if request.method != "GET":
         return HttpResponseBadRequest("Only GET request is supported!")
 
-    try:
-        time = float(request.GET.get("time", 0))
-    except:
-        print("Invalid time parameter, use time 0.")
-        time = 0
+    access_logger.info(get_client_ip(request) + f" {request.get_full_path()}")
 
+    time = parameter_helper.get_float(request.GET, "time", 0.0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
 
     labels = read_labels()
@@ -147,14 +200,13 @@ def get_labels(request):
     except FileNotFoundError as e:
         pids = []
 
-    if not pids:
+    if len(pids) != len(labels):
         pids = [None] * len(labels)
     names = []
     lons = []
     lats = []
     oceans = []
-    rpids = []
-    for row, pid in zip(labels, pids):
+    for row in labels:
         if row["fromtime"] >= time and row["totime"] <= time:
             label = " ".join(row["label"].split(" "))
             if label.endswith("Ocean"):
@@ -163,13 +215,11 @@ def get_labels(request):
                 names.append(label)
                 lons.append(row["lon"])
                 lats.append(row["lat"])
-                if pid:
-                    rpids.append(pid)
 
     if time != 0:
         try:
             rnames, rlons, rlats = reconstruct_labels(
-                names, lons, lats, model, time, pids=rpids
+                names, lons, lats, model, time, pids=pids
             )
         except pygplates.InvalidLatLonError as e:
             return HttpResponseBadRequest(f"Invalid longitude or latitude ({e}).")
