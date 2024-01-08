@@ -4,33 +4,25 @@ import os
 import unittest
 from pathlib import Path
 
+import common
 import requests
 import urllib3
 
 
 class OldTestCase(unittest.TestCase):
     def setUp(self):
-        self.logger = logging.getLogger()
-        Path("logs").mkdir(parents=True, exist_ok=True)
-        fh = logging.FileHandler("logs/old-cases.log")
-        fh.setLevel(logging.INFO)
-        formatter = logging.Formatter("%(asctime)s \n\n%(message)s\n")
-        fh.setFormatter(formatter)
-        self.logger.addHandler(fh)
-
-        # print(self.logger.handlers)
-        urllib3.disable_warnings()
-
-        self.SERVER_URL = os.getenv("GWS_SERVER_URL")
-        if not self.SERVER_URL:
-            self.SERVER_URL = "http://127.0.0.1:18000"
-            self.logger.info(f"Using server URL in script {self.SERVER_URL}")
-        else:
-            self.logger.info(
-                f"Using server URL in environment variable {self.SERVER_URL}"
-            )
-
         self.proxies = {"http": ""}
+
+    def tearDown(self):
+        self.logger.info("tearDown")
+
+    @classmethod
+    def setUpClass(cls):
+        common.setup_logger(cls, Path(__file__).stem)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.logger.info("tearDownClass")
 
     def test_old_cases(self):
         data = {"points": "95,54,142,-33", "time": 140}

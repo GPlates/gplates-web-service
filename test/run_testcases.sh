@@ -3,4 +3,4 @@
 BASEDIR=$(dirname "$0")
 #echo "$BASEDIR"
 cd $BASEDIR
-python3 -m unittest 
+python3 -m unittest -v

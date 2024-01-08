@@ -203,13 +203,16 @@ THROTTLE = os.getenv("THROTTLE") and os.getenv("THROTTLE").lower() == "true"
 
 if DEBUG:
     logger_level = "DEBUG"
+    THROTTLE = False
+    disable_existing_loggers_flag = False
 else:
     logger_level = "ERROR"
+    disable_existing_loggers_flag = True
 
 
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": True,
+    "disable_existing_loggers": disable_existing_loggers_flag,
     "formatters": {
         "standard": {
             "format": "[%(asctime)s] %(levelname)s [%(filename)s:%(lineno)s] %(message)s",
@@ -220,7 +223,7 @@ LOGGING = {
         "logfile": {
             "level": "ERROR",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": f"{BASE_DIR}/error.log",
+            "filename": f"/gws/log/error.log",
             "maxBytes": 50000,
             "backupCount": 2,
             "formatter": "standard",
@@ -228,9 +231,9 @@ LOGGING = {
         "access_log": {
             "level": "INFO",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": f"{BASE_DIR}/access.log",
+            "filename": f"/gws/log/access.log",
             "maxBytes": 5000000,
-            "backupCount": 999,
+            "backupCount": 99,
             "formatter": "standard",
         },
         "console": {

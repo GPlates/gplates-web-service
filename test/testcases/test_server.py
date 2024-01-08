@@ -5,35 +5,22 @@ import time
 import unittest
 from pathlib import Path
 
+import common
 import requests
 import urllib3
 
 
 class ServerTestCase(unittest.TestCase):
     def setUp(self):
-        self.logger = logging.getLogger()
-        Path("logs").mkdir(parents=True, exist_ok=True)
-        fh = logging.FileHandler("logs/test-dev-server.log")
-        fh.setLevel(logging.INFO)
-        formatter = logging.Formatter("%(asctime)s \n\n%(message)s\n")
-        fh.setFormatter(formatter)
-        self.logger.addHandler(fh)
-
-        # print(self.logger.handlers)
-        urllib3.disable_warnings()
-
-        self.SERVER_URL = os.getenv("GWS_SERVER_URL")
-        if not self.SERVER_URL:
-            self.SERVER_URL = "http://127.0.0.1:18000"
-            self.logger.info(f"Using server URL in script {self.SERVER_URL}")
-        else:
-            self.logger.info(
-                f"Using server URL in environment variable {self.SERVER_URL}"
-            )
-
         self.proxies = {"http": ""}
 
-        self.fc = {
+    def tearDown(self):
+        self.logger.info("tearDown")
+
+    @classmethod
+    def setUpClass(cls):
+        common.setup_logger(cls, Path(__file__).stem)
+        cls.fc = {
             "type": "FeatureCollection",
             "features": [
                 {
@@ -59,6 +46,10 @@ class ServerTestCase(unittest.TestCase):
                 }
             ],
         }
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.logger.info("tearDownClass")
 
     def test_reconstruct_points_get(self):
         """test GET reconstructing points"""

@@ -22,8 +22,8 @@ printf "PASSED! coastlines\n"
 
 python3 $(dirname "$0")/../examples/assign_shp_plate_ids_with_web_service.py
 
-cd $(dirname "$0")
-python3 -m unittest testcases/test_server.py
+cd $(dirname "$0")/testcases
+python3 -m unittest -vv
 
 echo "****************************"
 echo "All tests have passed!!!"

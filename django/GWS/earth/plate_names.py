@@ -16,7 +16,9 @@ def load_plate_names():
     """load plate names from file"""
     plate_names_dict = {}
     with open(
-        f"{settings.EARTH_STORE_DIR}/Muller_etal_2019_plateID_list.csv", "rt"
+        f"{settings.EARTH_STORE_DIR}/Muller_etal_2019_plateID_list.csv",
+        "r",
+        encoding="utf-8",
     ) as csv_fp:
         for line in csv_fp:
             items = line.split(",")
