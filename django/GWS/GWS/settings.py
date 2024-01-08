@@ -245,7 +245,7 @@ LOGGING = {
         "queue": {
             "level": "INFO",
             "class": "utils.queue_listener_handler.QueueListenerHandler",
-            "handlers": ["cfg://handlers.console", "cfg://handlers.access_log"],
+            "handlers": ["cfg://handlers.access_log"],
             "queue": "cfg://objects.queue",
         },
     },

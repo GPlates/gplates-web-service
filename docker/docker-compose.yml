@@ -43,7 +43,7 @@ services:
       timeout: 10s
       retries: 3
   
-  redis:
+  gws-redis:
     image: redis
     networks:
       - gws-net

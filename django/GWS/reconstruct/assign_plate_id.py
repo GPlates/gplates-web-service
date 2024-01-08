@@ -29,7 +29,6 @@ def get_points_pids(request):
             "Unrecognized request type. Only accept POST and GET requests."
         )
 
-    points = params.get("points", None)
     model = params.get("model", settings.MODEL_DEFAULT)
     with_valid_time = True if "with_valid_time" in params else False
 
