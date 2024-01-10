@@ -1,13 +1,11 @@
 import json
 import logging
-import os
 import time
 import unittest
 from pathlib import Path
 
 import common
 import requests
-import urllib3
 
 
 class ServerTestCase(unittest.TestCase):

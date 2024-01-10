@@ -72,7 +72,11 @@ read_labels()
 
 
 def read_label_pids(model):
-    return get_label_pids()[model]
+    """return the pids of labels' coordinates
+
+    :param model: model name
+    """
+    return get_label_pids()[model.lower()]
 
 
 def get_label_pids():
