@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from utils import parameter_helper, plot_geometries, wrapping_tools
 from utils.access_control import get_client_ip
 from utils.plate_model_utils import (
+    get_coastline_low,
     get_layer,
     get_rotation_model,
     is_time_valid_for_model,
@@ -20,7 +21,12 @@ access_logger = logging.getLogger("queue")
 
 # @request_access
 def get_coastline_polygons_low(request):
-    return get_coastline_polygons(request)
+    model = request.GET.get("model", settings.MODEL_DEFAULT)
+    return get_polygons(
+        request,
+        model,
+        get_coastline_low(model),
+    )
 
 
 def get_coastline_polygons(request):
@@ -28,7 +34,12 @@ def get_coastline_polygons(request):
     see this link for how to use https://gwsdoc.gplates.org/reconstruction/reconstruct-coastlines
 
     """
-    return get_polygons(request, "Coastlines")
+    model = request.GET.get("model", settings.MODEL_DEFAULT)
+    return get_polygons(
+        request,
+        model,
+        get_layer(model, "Coastlines"),
+    )
 
 
 #
@@ -40,13 +51,18 @@ def get_static_polygons(request):
     see this link for how to use https://gwsdoc.gplates.org/reconstruction/reconstruct-static-polygons
 
     """
-    return get_polygons(request, "StaticPolygons")
+    model = request.GET.get("model", settings.MODEL_DEFAULT)
+    return get_polygons(
+        request,
+        model,
+        get_layer(model, "StaticPolygons"),
+    )
 
 
-def get_polygons(request, polygon_name):
+def get_polygons(request, model, polygons):
     """return reconstructed polygons in geojson or PNG formt
 
-    :param polygon_name: two options for now - "StaticPolygons", "Coastlines"
+    :param polygons: the feature collection which contains the polygons
     :param anchor_plate_id : integer value for reconstruction anchor plate id [default=0]
     :param time : time for reconstruction [required]
     :param model : name for reconstruction model [defaults to default model from web service settings]
@@ -64,7 +80,6 @@ def get_polygons(request, polygon_name):
 
     anchor_plate_id = parameter_helper.get_int(request.GET, "anchor_plate_id", 0)
     time = parameter_helper.get_float(request.GET, "time", 0.0)
-    model = request.GET.get("model", settings.MODEL_DEFAULT)
     return_format = request.GET.get("fmt", "")
     edgecolor = request.GET.get("edgecolor", "black")
     facecolor = request.GET.get("facecolor", "none")
@@ -97,7 +112,7 @@ def get_polygons(request, polygon_name):
     # do the reconstruction
     reconstructed_polygons = []
     pygplates.reconstruct(
-        get_layer(model, polygon_name),
+        polygons,
         get_rotation_model(model),
         reconstructed_polygons,
         time,

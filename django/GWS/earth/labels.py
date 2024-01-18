@@ -205,6 +205,9 @@ def get_labels(request):
         pids = []
 
     if len(pids) != len(labels):
+        logger.warning(
+            f"The number of PIDs({len(pids)}) is not the same with the number of labels({len(labels)}. And this will slow down the response.)"
+        )
         pids = [None] * len(labels)
     names = []
     lons = []

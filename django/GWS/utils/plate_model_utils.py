@@ -2,18 +2,32 @@ import pygplates
 from django.conf import settings
 from plate_model_manager import PlateModel, PlateModelManager
 
+from .downsample_polygons import downsample_polygons
+
 FEATURE_COLLECTION_CACHE = {
     "Rotations": {},
     "Coastlines": {},
     "StaticPolygons": {},
     "ContinentalPolygons": {},
     "Topologies": {},
+    "CoastlinesLow": {},
 }
 ROTATION_FC = FEATURE_COLLECTION_CACHE["Rotations"]
 COASTLINES_FC = FEATURE_COLLECTION_CACHE["Coastlines"]
 STATIC_POLYGONS_FC = FEATURE_COLLECTION_CACHE["StaticPolygons"]
 TOPOLOGIES_FC = FEATURE_COLLECTION_CACHE["Topologies"]
 CONTINENTAL_POLYGONS_FC = FEATURE_COLLECTION_CACHE["ContinentalPolygons"]
+COASTLINES_LOW_FC = FEATURE_COLLECTION_CACHE["CoastlinesLow"]
+
+
+def get_coastline_low(model_name):
+    if model_name in COASTLINES_LOW_FC:
+        return COASTLINES_LOW_FC[model_name]
+    else:
+        fc = get_layer(model_name, "Coastlines")
+        fc_low = downsample_polygons(fc)
+        COASTLINES_LOW_FC[model_name] = fc_low
+        return fc_low
 
 
 def get_rotation_files(model):

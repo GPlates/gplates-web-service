@@ -9,8 +9,12 @@ from rest_framework.decorators import api_view, schema, throttle_classes
 from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.throttling import AnonRateThrottle
 from utils.access_control import get_client_ip
-from utils.get_lats_lons import get_lats_lons
-from utils.parameter_helper import get_anchor_plate_id, get_pids, get_time
+from utils.parameter_helper import (
+    get_anchor_plate_id,
+    get_lats_lons,
+    get_pids,
+    get_time,
+)
 from utils.plate_model_utils import (
     UnrecognizedModel,
     get_rotation_model,
