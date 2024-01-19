@@ -23,22 +23,39 @@ def get_cities(request, params={}):
     model = params.get("model", settings.MODEL_DEFAULT).lower()
     city_data = get_city_data()
 
-    print({"names": city_data["names"], "coords": city_data["coords"]})
     if math.isclose(time, 0.0):
         return json.dumps(
-            round_floats({"names": city_data["names"], "coords": city_data["coords"]})
+            round_floats(
+                {
+                    "names": city_data["names"],
+                    "lons": city_data["lons"],
+                    "lats": city_data["lats"],
+                }
+            )
         )
 
     # create features
     features = []
-    for name, coords, pid_and_time in zip(
-        city_data["names"], city_data["coords"], city_data["pids"][model]
+    for name, lon, lat, pid_and_time in zip(
+        city_data["names"],
+        city_data["lons"],
+        city_data["lats"],
+        city_data["pids"][model],
     ):
         f = pygplates.Feature()
-        f.set_geometry(pygplates.PointOnSphere(coords[1], coords[0]))
+        f.set_geometry(pygplates.PointOnSphere(lat, lon))
         f.set_name(name)
         f.set_reconstruction_plate_id(pid_and_time[0])
-        f.set_valid_time(pid_and_time[1], pid_and_time[2])
+        if not isinstance(pid_and_time[1], float):
+            begin_time = pygplates.GeoTimeInstant.create_distant_past()
+        else:
+            begin_time = pid_and_time[1]
+
+        if not isinstance(pid_and_time[2], float):
+            end_time = pygplates.GeoTimeInstant.create_distant_future()
+        else:
+            end_time = pid_and_time[2]
+        f.set_valid_time(begin_time, end_time)
         features.append(f)
 
     # reconstruct
@@ -50,16 +67,17 @@ def get_cities(request, params={}):
         time,
     )
 
-    paleo_coords = [
-        rfg.get_reconstructed_geometry().to_lat_lon_list()[0][::-1]
-        for rfg in reconstructed_feature_geometries
-    ]
-
+    paleo_lons = []
+    paleo_lats = []
     for rfg in reconstructed_feature_geometries:
-        print(rfg.get_reconstructed_geometry().to_lat_lon_list()[0][::-1])
+        lat, lon = rfg.get_reconstructed_geometry().to_lat_lon_list()[0]
+        paleo_lons.append(lon)
+        paleo_lats.append(lat)
 
     return json.dumps(
-        round_floats({"names": city_data["names"], "coords": paleo_coords})
+        round_floats(
+            {"names": city_data["names"], "lons": paleo_lons, "lats": paleo_lats}
+        )
     )
 
 

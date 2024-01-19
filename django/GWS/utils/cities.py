@@ -25,19 +25,21 @@ def load_cities():
             cities = []
             names = []
             city_pids = {}
-            coords = []
+            lons = []
+            lats = []
             for city in city_data:
                 logger.debug(city)
                 names.append(city)
-                coords.append(city_data[city])
                 (lon, lat) = city_data[city]
+                lats.append(lat)
+                lons.append(lon)
                 cities.append(pygplates.PointOnSphere(lat, lon))
 
             for model in get_model_name_list(settings.MODEL_REPO_DIR):
                 pids_and_times = assign_plate_ids(cities, model)
                 city_pids[model] = pids_and_times
 
-            data = {"names": names, "coords": coords, "pids": city_pids}
+            data = {"names": names, "lons": lons, "lats": lats, "pids": city_pids}
             cache.add("cities", data)
             return data
     except OSError as err:
