@@ -72,7 +72,12 @@ def reconstruct_vgps(vgp_features, rotation_model, anchor_plate_id=0):
     return reconstructed_vgps
 
 
-def assign_plate_ids(geoms, model, time=0.0):
+def assign_plate_ids(
+    geoms,
+    model,
+    time=0.0,
+    method=pygplates.PartitionMethod.most_overlapping_plate,
+):
     """assign plate ids for geometries
 
     :param time: the paleo-age at which to assign plate IDs
@@ -100,6 +105,7 @@ def assign_plate_ids(geoms, model, time=0.0):
                 pygplates.PartitionProperty.valid_time_period,
             ],
             reconstruction_time=time,
+            partition_method=method,
         )
 
         assert len(features) == len(assigned_features)

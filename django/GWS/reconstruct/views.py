@@ -4,7 +4,7 @@ import numpy as np
 import pygplates
 from django.conf import settings
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from utils.plate_model_utils import get_rotation_model
 from utils.round_float import round_floats
@@ -148,3 +148,7 @@ def check_polygon_orientation(lons, lats):
         last_lon = lons[i]
         last_lat = lats[i]
     return result
+
+
+def get_cities(reqeust):
+    return redirect("get_cities", permanent=True)

@@ -3,7 +3,6 @@ from django.urls import re_path
 from . import (
     assign_plate_id,
     assign_shp_plate_id,
-    cities,
     get_polygons,
     motion_path,
     reconstruct_files,
@@ -58,7 +57,7 @@ urlpatterns = [
     ),
     re_path(
         r"^get_cities/?$",
-        cities.get_city_lon_lat_at_time,
+        views.get_cities,
         name="get_city_lon_lat_at_time",
     ),
 ]

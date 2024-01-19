@@ -26,12 +26,10 @@ def get_graphs(request):
 
 
 def get_cities(request):
-    """"""
+    """get the coordinates and PIDs of cities"""
     try:
         city_data = {}
-        with open(
-            f"{settings.EARTH_STORE_DIR}/cities.json", "r", encoding="utf-8"
-        ) as f:
+        with open(f"{data_path}/cities.json", "r", encoding="utf-8") as f:
             city_data = json.load(f)
 
         if city_data["dirty"]:
@@ -59,9 +57,7 @@ def get_cities(request):
 
             new_city_data["standby"] = city_data["standby"]
 
-            with open(
-                f"{settings.EARTH_STORE_DIR}/cities.json", "w", encoding="utf-8"
-            ) as f:
+            with open(f"{data_path}/cities.json", "w", encoding="utf-8") as f:
                 f.write(json.dumps(new_city_data, indent=4))
 
             response = HttpResponse(

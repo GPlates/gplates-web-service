@@ -26,6 +26,6 @@ urlpatterns = [
     re_path(
         r"^get_cities/?$",
         get_data.get_cities,
-        name="get_cities",
+        name="mobile_app_get_cities",
     ),
 ]
