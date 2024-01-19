@@ -14,6 +14,7 @@ from utils.round_float import round_floats
 @return_HttpResponse()
 def get_cities(request, params={}):
     """get the coordinates of cities at some paleo-age for a given plate model
+    http://localhost:18000/earth/get_cities?time=140&model=seton2012
 
     :param time: paleo-age
     :param model: plate model name
@@ -60,3 +61,12 @@ def get_cities(request, params={}):
     return json.dumps(
         round_floats({"names": city_data["names"], "coords": paleo_coords})
     )
+
+
+@check_get_post_request_and_get_params
+@return_HttpResponse()
+def get_present_day_cities(request, params={}):
+    """return present day city names, coordinates and pids
+    http://localhost:18000/earth/get_present_day_cities
+    """
+    return json.dumps(get_city_data())

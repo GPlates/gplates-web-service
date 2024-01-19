@@ -1,5 +1,4 @@
 import json
-import math
 
 import pygplates
 from django.conf import settings
@@ -20,9 +19,9 @@ def _prepare_ret(pids_and_times, with_valid_time):
             begin_time = x[1]
             end_time = x[2]
 
-            if math.isinf(begin_time):
+            if begin_time is None:
                 begin_time = "distant past"
-            if math.isinf(end_time):
+            if end_time is None:
                 end_time = "distant future"
             pid_valid_time_list.append(
                 {"pid": x[0], "valid_time": [begin_time, end_time]}
@@ -39,7 +38,7 @@ def get_points_pids(request, params={}):
     """
     assign plate IDs to locations/points
     http://localhost:18000/reconstruct/assign_points_plate_ids?lons=-10,-130,0&lats=50,-70,0
-    http://localhost:18000/reconstruct/assign_points_plate_ids?points=-10,50,-130,-70,0,0&with_valid_time
+    http://localhost:18000/reconstruct/assign_points_plate_ids?points=-10,50,-130,-70,0,0&with_valid_time=true
     """
 
     model = params.get("model", settings.MODEL_DEFAULT)

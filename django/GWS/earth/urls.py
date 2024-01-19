@@ -1,7 +1,7 @@
 from django.urls import re_path
 
 from . import api, views
-from .cities import get_cities
+from .cities import get_cities, get_present_day_cities
 from .labels import get_labels
 from .plate_names import get_plate_names
 
@@ -25,5 +25,10 @@ urlpatterns = [
         r"^get_cities/?$",
         get_cities,
         name="get_cities",
+    ),
+    re_path(
+        r"^get_present_day_cities/?$",
+        get_present_day_cities,
+        name="get_present_day_cities",
     ),
 ]

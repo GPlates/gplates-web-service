@@ -26,7 +26,9 @@ def get_graphs(request):
 
 
 def get_cities(request):
-    """get the coordinates and PIDs of cities"""
+    """get the coordinates and PIDs of cities
+    deprecated. only using in mobile app. will be replaced by https://gws.gplate.org/earth/get_cities",
+    """
     try:
         city_data = {}
         with open(f"{data_path}/cities.json", "r", encoding="utf-8") as f:

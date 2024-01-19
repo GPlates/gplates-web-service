@@ -1,4 +1,5 @@
 import logging
+import math
 
 import pygplates
 from utils.plate_model_utils import (
@@ -110,13 +111,19 @@ def assign_plate_ids(
 
         assert len(features) == len(assigned_features)
 
-        pid_and_time_dict = dict(
-            (
-                f.get_name(),
-                (f.get_reconstruction_plate_id(), *f.get_valid_time()),
+        pid_and_time_dict = {}
+        for f in assigned_features:
+            begin_time, end_time = f.get_valid_time(default=(None, None))
+
+            if math.isinf(begin_time):
+                begin_time = None
+            if math.isinf(end_time):
+                end_time = None
+            pid_and_time_dict[f.get_name()] = (
+                f.get_reconstruction_plate_id(),
+                begin_time,
+                end_time,
             )
-            for f in assigned_features
-        )
 
         for i in range(0, len(assigned_features)):
             # make sure the order of features is correct
