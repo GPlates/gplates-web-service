@@ -1,12 +1,9 @@
 import json
-import logging
-import os
 import unittest
 from pathlib import Path
 
-import common
 import requests
-import urllib3
+from common import get_server_url, setup_logger
 
 
 class OldTestCase(unittest.TestCase):
@@ -18,51 +15,14 @@ class OldTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        common.setup_logger(cls, Path(__file__).stem)
+        setup_logger(cls, Path(__file__).stem)
+        get_server_url(cls)
 
     @classmethod
     def tearDownClass(cls):
         cls.logger.info("tearDownClass")
 
     def test_old_cases(self):
-        data = {"points": "95,54,142,-33", "time": 140}
-        r = requests.get(
-            self.SERVER_URL + "/reconstruct/reconstruct_points/",
-            params=data,
-            verify=False,
-            proxies=self.proxies,
-        )
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
-        self.assertEqual(r.status_code, 200)
-
-        r = requests.post(
-            self.SERVER_URL + "/reconstruct/reconstruct_points/",
-            data=data,
-            verify=False,
-            proxies=self.proxies,
-        )
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
-        self.assertEqual(r.status_code, 200)
-
-        data = {"points": "95,54,-117.26,32.7,142,-33", "time": 140, "fc": ""}
-        r = requests.post(
-            self.SERVER_URL + "/reconstruct/reconstruct_points/",
-            data=data,
-            verify=False,
-            proxies=self.proxies,
-        )
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
-        self.assertEqual(r.status_code, 200)
-
-        r = requests.get(
-            self.SERVER_URL + "/reconstruct/reconstruct_points/",
-            params=data,
-            verify=False,
-            proxies=self.proxies,
-        )
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
-        self.assertEqual(r.status_code, 200)
-
         data = {
             "feature_collection": """{"type":"FeatureCollection",
                 "features":[

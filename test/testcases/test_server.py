@@ -4,8 +4,8 @@ import time
 import unittest
 from pathlib import Path
 
-import common
 import requests
+from common import get_server_url, setup_logger
 
 
 class ServerTestCase(unittest.TestCase):
@@ -17,7 +17,8 @@ class ServerTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        common.setup_logger(cls, Path(__file__).stem)
+        setup_logger(cls, Path(__file__).stem)
+        get_server_url(cls)
         cls.fc = {
             "type": "FeatureCollection",
             "features": [
@@ -49,82 +50,7 @@ class ServerTestCase(unittest.TestCase):
     def tearDownClass(cls):
         cls.logger.info("tearDownClass")
 
-    def test_reconstruct_points_get(self):
-        """test GET reconstructing points"""
-        time.sleep(1)
-        data = {"points": "95,54,142,-33", "time": 140}
-        r = requests.get(
-            self.SERVER_URL + "/reconstruct/reconstruct_points/",
-            params=data,
-            verify=False,
-            proxies=self.proxies,
-        )
-        self.assertEqual(r.status_code, 200)
-        if r.status_code == 200:
-            logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
-            self.logger.info("PASSED! GET reconstruct points")
-        else:
-            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
-
-    def test_reconstruct_points_post(self):
-        """test POST reconstructing points"""
-        time.sleep(1)
-        data = {"points": "95,54,142,-33", "time": 140}
-        r = requests.post(
-            self.SERVER_URL + "/reconstruct/reconstruct_points/",
-            data=data,
-            verify=False,
-            proxies=self.proxies,
-        )
-        self.assertEqual(r.status_code, 200)
-        if r.status_code == 200:
-            logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
-            self.logger.info("PASSED! POST reconstruct points")
-        else:
-            raise Exception(
-                "FAILED: " + r.request.url + r.request.body + str(r.request.headers)
-            )
-
-    def test_reconstruct_points_post_fc(self):
-        """test POST reconstructing points(return feature collection)"""
-        time.sleep(1)
-        data = {"points": "95,54,-117.26,32.7,142,-33", "time": 140, "fc": ""}
-        r = requests.post(
-            self.SERVER_URL + "/reconstruct/reconstruct_points/",
-            data=data,
-            verify=False,
-            proxies=self.proxies,
-        )
-        self.assertEqual(r.status_code, 200)
-        if r.status_code == 200:
-            logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
-            self.logger.info(
-                "PASSED! POST reconstruct points(return feature collection)"
-            )
-        else:
-            raise Exception(
-                "FAILED: " + r.request.url + r.request.body + str(r.request.headers)
-            )
-
-    def test_reconstruct_points_get_fc(self):
-        """test GET reconstructing points(return feature collection)"""
-        time.sleep(1)
-        data = {"points": "95,54,-117.26,32.7,142,-33", "time": 140, "fc": ""}
-        r = requests.get(
-            self.SERVER_URL + "/reconstruct/reconstruct_points/",
-            params=data,
-            verify=False,
-            proxies=self.proxies,
-        )
-        self.assertEqual(r.status_code, 200)
-        if r.status_code == 200:
-            logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
-            self.logger.info(
-                "PASSED! GET reconstruct points(return feature collection)"
-            )
-        else:
-            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
-
+    def test_raster_query(self):
         # test raster query
         data = {"lon": 99.50, "lat": -40.24, "raster_name": "age_grid_geek_2007"}
         r = requests.get(

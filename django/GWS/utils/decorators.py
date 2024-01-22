@@ -27,6 +27,9 @@ def return_HttpResponse(content_type: str = "application/json"):
         def wrapped_func(*args, **kwargs):
             ret = func_pointer(*args, **kwargs)
 
+            if not isinstance(ret, str):
+                return ret
+
             # add header for CORS
             # http://www.html5rocks.com/en/tutorials/cors/
             response = HttpResponse(ret, content_type=content_type)

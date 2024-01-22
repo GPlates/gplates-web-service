@@ -1,13 +1,10 @@
 import json
-import logging
-import os
 import random
 import unittest
 from pathlib import Path
 
-import common
 import requests
-import urllib3
+from common import get_server_url, setup_logger
 
 
 class RotationTestCase(unittest.TestCase):
@@ -19,7 +16,8 @@ class RotationTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        common.setup_logger(cls, Path(__file__).stem)
+        setup_logger(cls, Path(__file__).stem)
+        get_server_url(cls)
 
     @classmethod
     def tearDownClass(cls):
