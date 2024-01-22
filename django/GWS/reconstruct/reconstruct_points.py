@@ -14,9 +14,9 @@ from utils.decorators import check_get_post_request_and_get_params, return_HttpR
 from utils.parameter_helper import (
     get_anchor_plate_id,
     get_bool,
+    get_float,
     get_int,
     get_lats_lons,
-    get_time,
     get_value_list,
 )
 from utils.plate_model_utils import (
@@ -73,6 +73,12 @@ class ReconPointsSchema(AutoSchema):
                 "schema": {"type": "number"},
             },
             {
+                "name": "times",
+                "in": "query",
+                "description": "multiple times(mutually exclusive with time) for reconstruction [required]",
+                "schema": {"type": "list[float]"},
+            },
+            {
                 "name": "anchor_plate_id",
                 "in": "query",
                 "description": "integer value for reconstruction anchor plate id [default=0]",
@@ -88,12 +94,12 @@ class ReconPointsSchema(AutoSchema):
                 "name": "pids",
                 "in": "query",
                 "description": "specify plate id for each point to improve performance",
-                "schema": {"type": "string"},
+                "schema": {"type": "list[int]"},
             },
             {
                 "name": "pid",
                 "in": "query",
-                "description": "specify plate id to improve performance. all points use the same plate id",
+                "description": "specify plate id to improve performance. all points use the same plate id. mutually exclusive with pids",
                 "schema": {"type": "number"},
             },
             {
@@ -179,22 +185,34 @@ def reconstruct(request, params={}):
     ignore_valid_time = get_bool(params, "ignore_valid_time", False)
 
     try:
-        # create point features from input coordinates
         point_features = []
         p_index = 0
         rotation_model = get_rotation_model(model)
-        timef = get_time(params)
+        timef = get_float(params, "time", None)
         anchor_plate_id = get_anchor_plate_id(params)
         lats, lons = get_lats_lons(params)
         assert len(lats) == len(lons)
         pids = get_value_list(params, "pids", int)
         pid = get_int(params, "pid", None)
+        if pid is not None and len(pids) > 0:
+            raise Exception(
+                "The parameter 'pid' and 'pids' are mutually exclusive. Only one of them is allowed. "
+            )
         if len(pids) != len(lats):
             pids = len(lats) * [pid]
-        # logger.debug(pids)
         times = get_value_list(params, "times", float)
-        # logger.debug(times)
 
+        if timef is not None and len(times) > 0:
+            raise Exception(
+                "The parameter 'time' and 'times' are mutually exclusive. Only one of them is allowed. "
+            )
+
+        if is_reverse and timef is None:
+            raise Exception(
+                "The parameter 'time' must be present for 'reverse reconstruct'. The 'times' does not make sense for 'reverse reconstruct'. "
+            )
+
+        # create point features from input coordinates
         for lat, lon, pid in zip(lats, lons, pids):
             point_feature = pygplates.Feature()
             point_feature.set_geometry(pygplates.PointOnSphere(lat, lon))
@@ -204,7 +222,7 @@ def reconstruct(request, params={}):
             point_features.append(point_feature)
             p_index += 1
     except pygplates.InvalidLatLonError as e:
-        return HttpResponseBadRequest("Invalid longitude or latitude ({0}).".format(e))
+        return HttpResponseBadRequest(f"Invalid longitude or latitude ({e}).")
     except UnrecognizedModel as e:
         return HttpResponseBadRequest(
             f"""Unrecognized Rotation Model: {model}.<br> 
@@ -244,28 +262,55 @@ def reconstruct(request, params={}):
         assigned_point_features
     )
 
+    ret = None
     # reconstruct the points
-    if is_reverse:
-        lons, lats, pids, btimes, etimes = _reverse_reconstruct(
-            assigned_point_feature_collection,
-            rotation_model,
-            timef,
-            anchor_plate_id,
-            not all(id is None for id in pids),
-        )
-    else:
-        lons, lats, pids, btimes, etimes = _reconstruct(
-            assigned_point_feature_collection,
-            rotation_model,
-            timef,
-            anchor_plate_id,
-        )
+    if timef is not None:
+        # for single time
+        if is_reverse:
+            lons, lats, pids, btimes, etimes = _reverse_reconstruct(
+                assigned_point_feature_collection,
+                rotation_model,
+                timef,
+                anchor_plate_id,
+                not all(id is None for id in pids),
+            )
+        else:
+            lons, lats, pids, btimes, etimes = _reconstruct(
+                assigned_point_feature_collection,
+                rotation_model,
+                timef,
+                anchor_plate_id,
+            )
 
-    # prepare the response to be returned
-    if not return_feature_collection:
-        ret = _prepare_multipoint_ret(lons, lats, return_null_points)
+        # prepare the response to be returned
+        if not return_feature_collection:
+            ret = _prepare_multipoint_ret(lons, lats, return_null_points)
+        else:
+            ret = _prepare_feature_collection_ret(lons, lats, pids, btimes, etimes)
+
+    elif len(times) > 0:
+        # for multiple times
+        ret = {}
+        for time in times:
+            lons, lats, pids, btimes, etimes = _reconstruct(
+                assigned_point_feature_collection,
+                rotation_model,
+                time,
+                anchor_plate_id,
+            )
+
+            # prepare the response to be returned
+            if not return_feature_collection:
+                ret[str(time)] = _prepare_multipoint_ret(lons, lats, return_null_points)
+            else:
+                ret[str(time)] = _prepare_feature_collection_ret(
+                    lons, lats, pids, btimes, etimes
+                )
+
     else:
-        ret = _prepare_feature_collection_ret(lons, lats, pids, btimes, etimes)
+        return HttpResponseBadRequest(
+            f"Either parameter 'time' or 'times' is required. One of the two parameters must present."
+        )
 
     return json.dumps(round_floats(ret))
 
@@ -313,8 +358,8 @@ def _reverse_reconstruct(
     user_provide_pids_flag: bool,
 ):
     """reverse reconstruct"""
-    # we still need reverse reconstruct if the points had not been partitioned
-    # if user had provided the pids, we need to call pygplates.reverse_reconstruct
+    # we still need reverse reconstruct if the points had not been partitioned.
+    # if user had provided the pids, we did not do partition. So, we need to call pygplates.reverse_reconstruct in that case.
     if user_provide_pids_flag:
         pygplates.reverse_reconstruct(
             assigned_point_feature_collection,

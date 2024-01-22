@@ -17,8 +17,9 @@ else:
 url = f"{SERVER_URL}/reconstruct/assign_shp_plate_ids"
 
 script_path = os.path.dirname(os.path.realpath(__file__))
+cwd = Path.cwd()
 # print(script_path)
-output_path = f"{script_path}/output"
+output_path = f"{cwd}/output"
 Path(output_path).mkdir(parents=True, exist_ok=True)
 
 
