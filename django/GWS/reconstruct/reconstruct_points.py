@@ -1,19 +1,23 @@
 import json
 import logging
+import math
 
 import pygplates
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, schema, throttle_classes
 from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.throttling import AnonRateThrottle
 from utils.access_control import get_client_ip
+from utils.decorators import check_get_post_request_and_get_params, return_HttpResponse
 from utils.parameter_helper import (
     get_anchor_plate_id,
+    get_bool,
+    get_int,
     get_lats_lons,
-    get_pids,
     get_time,
+    get_value_list,
 )
 from utils.plate_model_utils import (
     UnrecognizedModel,
@@ -158,43 +162,38 @@ else:
 @api_view(["GET", "POST"])
 @throttle_classes(throttle_class_list)
 @schema(ReconPointsSchema())
-def reconstruct(request):
-    """http request to reconstruct points"""
+@check_get_post_request_and_get_params
+@return_HttpResponse()
+def reconstruct(request, params={}):
+    """http request to reconstruct points
+
+    http://localhost:18000/reconstruct/reconstruct_points/?lats=50,10,50&lons=-100,160,100&time=100&model=PALEOMAP&return_null_points
+    """
 
     access_logger.info(get_client_ip(request) + f" {request.get_full_path()}")
 
-    if request.method == "POST":
-        params = request.POST
-    elif request.method == "GET":
-        params = request.GET
-    else:
-        return HttpResponseBadRequest("Unrecognized request type")
-
     model = params.get("model", settings.MODEL_DEFAULT)
-
-    return_null_points = True if "return_null_points" in params else False
-    return_feature_collection = True if "fc" in params else False
-    is_reverse = True if "reverse" in params else False
-    ignore_valid_time = True if "ignore_valid_time" in params else False
+    return_null_points = get_bool(params, "return_null_points", False)
+    return_feature_collection = get_bool(params, "fc", False)
+    is_reverse = get_bool(params, "reverse", False)
+    ignore_valid_time = get_bool(params, "ignore_valid_time", False)
 
     try:
+        # create point features from input coordinates
+        point_features = []
+        p_index = 0
         rotation_model = get_rotation_model(model)
-    except UnrecognizedModel as e:
-        return HttpResponseBadRequest(
-            f"""Unrecognized Rotation Model: {model}.<br> 
-        Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
-        to find all the names of available models."""
-        )
-
-    # create point features from input coordinates
-    p_index = 0
-    point_features = []
-
-    try:
         timef = get_time(params)
         anchor_plate_id = get_anchor_plate_id(params)
         lats, lons = get_lats_lons(params)
-        pids = get_pids(params, len(lats))
+        assert len(lats) == len(lons)
+        pids = get_value_list(params, "pids", int)
+        pid = get_int(params, "pid", None)
+        if len(pids) != len(lats):
+            pids = len(lats) * [pid]
+        # logger.debug(pids)
+        times = get_value_list(params, "times", float)
+        # logger.debug(times)
 
         for lat, lon, pid in zip(lats, lons, pids):
             point_feature = pygplates.Feature()
@@ -206,17 +205,23 @@ def reconstruct(request):
             p_index += 1
     except pygplates.InvalidLatLonError as e:
         return HttpResponseBadRequest("Invalid longitude or latitude ({0}).".format(e))
+    except UnrecognizedModel as e:
+        return HttpResponseBadRequest(
+            f"""Unrecognized Rotation Model: {model}.<br> 
+        Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
+        to find all the names of available models."""
+        )
     except Exception as e:
         return HttpResponseBadRequest(str(e))
 
     # assign plate-ids to points using static polygons
     partition_time = timef if is_reverse else 0.0
 
+    #
+    # TODO: cache plate id(s)
+    #
     # if user has provided plate id(s), do not partition(slow)
     if all(id is None for id in pids):
-        # from time import time
-        # start = time()
-
         properties_to_copy = [pygplates.PartitionProperty.reconstruction_plate_id]
         if not ignore_valid_time:
             properties_to_copy.append(pygplates.PartitionProperty.valid_time_period)
@@ -232,114 +237,154 @@ def reconstruct(request):
             properties_to_copy=properties_to_copy,
             reconstruction_time=partition_time,
         )
-
-        # end=time()
-        # print(f'It took {end - start} seconds!')
     else:
         assigned_point_features = point_features
 
-    # reconstruct the points
     assigned_point_feature_collection = pygplates.FeatureCollection(
         assigned_point_features
     )
-    reconstructed_feature_geometries = []
-    if not is_reverse:
-        pygplates.reconstruct(
+
+    # reconstruct the points
+    if is_reverse:
+        lons, lats, pids, btimes, etimes = _reverse_reconstruct(
             assigned_point_feature_collection,
             rotation_model,
-            reconstructed_feature_geometries,
             timef,
-            anchor_plate_id=anchor_plate_id,
+            anchor_plate_id,
+            not all(id is None for id in pids),
         )
-        # print(f"anchor plate id: {anchor_plate_id}")
     else:
-        # we still need reverse reconstruct if the points were not partitioned above
-        if not all(id is None for id in pids):
-            pygplates.reverse_reconstruct(
-                assigned_point_feature_collection,
-                rotation_model,
-                timef,
-                anchor_plate_id=anchor_plate_id,
-            )
-
-    rfgs = p_index * [None]
-    for rfg in reconstructed_feature_geometries:
-        rfgs[int(rfg.get_feature().get_name())] = rfg
-
-    assigned_fc = p_index * [None]
-    for f in assigned_point_feature_collection:
-        assigned_fc[int(f.get_name())] = f
+        lons, lats, pids, btimes, etimes = _reconstruct(
+            assigned_point_feature_collection,
+            rotation_model,
+            timef,
+            anchor_plate_id,
+        )
 
     # prepare the response to be returned
     if not return_feature_collection:
-        ret = {"type": "MultiPoint", "coordinates": []}
-        for idx in range(p_index):
-            lon = None
-            lat = None
-            if not is_reverse and rfgs[idx]:
-                lon = rfgs[idx].get_reconstructed_geometry().to_lat_lon()[1]
-                lat = rfgs[idx].get_reconstructed_geometry().to_lat_lon()[0]
-            elif is_reverse and assigned_fc[idx]:
-                lon = assigned_fc[idx].get_geometry().to_lat_lon()[1]
-                lat = assigned_fc[idx].get_geometry().to_lat_lon()[0]
-
-            if lon is not None and lat is not None:
-                ret["coordinates"].append([lon, lat])
-            elif return_null_points:
-                # return null for invalid coordinates
-                ret["coordinates"].append(None)
-            else:
-                ret["coordinates"].append(
-                    [999.99, 999.99]
-                )  # use 999.99 to indicate invalid coordinates
-
+        ret = _prepare_multipoint_ret(lons, lats, return_null_points)
     else:
-        ret = {"type": "FeatureCollection", "features": []}
-        for idx in range(p_index):
-            lon = None
-            lat = None
-            begin_time = None
-            end_time = None
-            pid = 0
-            if not is_reverse and rfgs[idx]:
-                lon = rfgs[idx].get_reconstructed_geometry().to_lat_lon()[1]
-                lat = rfgs[idx].get_reconstructed_geometry().to_lat_lon()[0]
-            elif is_reverse and assigned_fc[idx]:
-                lon = assigned_fc[idx].get_geometry().to_lat_lon()[1]
-                lat = assigned_fc[idx].get_geometry().to_lat_lon()[0]
+        ret = _prepare_feature_collection_ret(lons, lats, pids, btimes, etimes)
 
-            if assigned_fc[idx]:
-                valid_time = assigned_fc[idx].get_valid_time(None)
-                if valid_time:
-                    begin_time, end_time = valid_time
-                pid = assigned_fc[idx].get_reconstruction_plate_id()
+    return json.dumps(round_floats(ret))
 
-            feat = {"type": "Feature", "geometry": {}}
-            if lon is not None and lat is not None:
-                feat["geometry"] = {"type": "Point", "coordinates": [lon, lat]}
-            else:
-                feat["geometry"] = None
-            if begin_time is not None and end_time is not None:
-                # write out begin and end time
-                if begin_time == pygplates.GeoTimeInstant.create_distant_past():
-                    begin_time = "distant past"
-                if end_time == pygplates.GeoTimeInstant.create_distant_future():
-                    end_time = "distant future"
-                feat["properties"] = {"valid_time": [begin_time, end_time]}
-            else:
-                feat["properties"] = {}
 
-            feat["properties"]["pid"] = pid
-
-            ret["features"].append(feat)
-
-    # add header for CORS
-    # http://www.html5rocks.com/en/tutorials/cors/
-    response = HttpResponse(
-        json.dumps(round_floats(ret)), content_type="application/json"
+def _reconstruct(
+    assigned_point_feature_collection,
+    rotation_model,
+    timef: float,
+    anchor_plate_id: int,
+):
+    """reconstruct"""
+    reconstructed_feature_geometries = []
+    pygplates.reconstruct(
+        assigned_point_feature_collection,
+        rotation_model,
+        reconstructed_feature_geometries,
+        timef,
+        anchor_plate_id=anchor_plate_id,
     )
+    point_count = len(assigned_point_feature_collection)
+    lons = point_count * [None]
+    lats = point_count * [None]
+    pids = point_count * [None]
+    btimes = point_count * [None]
+    etimes = point_count * [None]
+    for rfg in reconstructed_feature_geometries:
+        lat, lon = rfg.get_reconstructed_geometry().to_lat_lon()
+        feature = rfg.get_feature()
+        idx = int(feature.get_name())
+        lons[idx] = lon
+        lats[idx] = lat
+        pids[idx] = feature.get_reconstruction_plate_id()
+        btime, etime = feature.get_valid_time()
+        btimes[idx] = btime
+        etimes[idx] = etime
 
-    # TODO:
-    # The "*" makes the service wide open to anyone. We should implement access control when time comes.
-    response["Access-Control-Allow-Origin"] = "*"
-    return response
+    return lons, lats, pids, btimes, etimes
+
+
+def _reverse_reconstruct(
+    assigned_point_feature_collection,
+    rotation_model,
+    timef: float,
+    anchor_plate_id: int,
+    user_provide_pids_flag: bool,
+):
+    """reverse reconstruct"""
+    # we still need reverse reconstruct if the points had not been partitioned
+    # if user had provided the pids, we need to call pygplates.reverse_reconstruct
+    if user_provide_pids_flag:
+        pygplates.reverse_reconstruct(
+            assigned_point_feature_collection,
+            rotation_model,
+            timef,
+            anchor_plate_id=anchor_plate_id,
+        )
+    point_count = len(assigned_point_feature_collection)
+    lons = point_count * [None]
+    lats = point_count * [None]
+    pids = point_count * [None]
+    btimes = point_count * [None]
+    etimes = point_count * [None]
+    for feature in assigned_point_feature_collection:
+        lat, lon = feature.get_geometry().to_lat_lon()
+        idx = int(feature.get_name())
+        lons[idx] = lon
+        lats[idx] = lat
+        pids[idx] = feature.get_reconstruction_plate_id()
+        btime, etime = feature.get_valid_time()
+        btimes[idx] = btime
+        etimes[idx] = etime
+    return lons, lats, pids, btimes, etimes
+
+
+def _prepare_multipoint_ret(lons, lats, return_null_points):
+    """prepare multipoint return data"""
+
+    ret = {"type": "MultiPoint", "coordinates": []}
+    for idx in range(len(lons)):
+        lon = lons[idx]
+        lat = lats[idx]
+
+        if lon is not None and lat is not None:
+            ret["coordinates"].append([lon, lat])
+        elif return_null_points:
+            # return null for invalid coordinates
+            ret["coordinates"].append(None)
+        else:
+            ret["coordinates"].append(
+                [999.99, 999.99]
+            )  # use 999.99 to indicate invalid coordinates
+    return ret
+
+
+def _prepare_feature_collection_ret(lons, lats, pids, btimes, etimes):
+    """prepare feature collection return data"""
+    ret = {"type": "FeatureCollection", "features": []}
+    for idx in range(len(lons)):
+        lon = lons[idx]
+        lat = lats[idx]
+        begin_time = btimes[idx]
+        end_time = etimes[idx]
+        pid = pids[idx]
+
+        feat = {"type": "Feature", "geometry": {}}
+        if lon is not None and lat is not None:
+            feat["geometry"] = {"type": "Point", "coordinates": [lon, lat]}
+        else:
+            feat["geometry"] = None
+        if begin_time is not None and end_time is not None:
+            # write out begin and end time
+            if math.isinf(begin_time):
+                begin_time = "distant past"
+            if math.isinf(end_time):
+                end_time = "distant future"
+            feat["properties"] = {"valid_time": [begin_time, end_time]}
+        else:
+            feat["properties"] = {}
+
+        feat["properties"]["pid"] = pid
+        ret["features"].append(feat)
+        return ret

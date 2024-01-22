@@ -92,10 +92,14 @@ def get_int(params, param_name: str, default):
     return number
 
 
-def get_bool(params, param_name: str, default):
-    """get boolean value from params for the given param_name, return default if invalid or non-exist"""
+def get_bool(params, param_name: str, default: bool):
+    """get boolean value from params for the given param_name, return default if invalid or non-exist.
+    return true if the param_name exists but empty, such as "&return_null_points"
+    """
     flag = params.get(param_name, default)
     if isinstance(flag, str):
+        if flag == "":
+            return True
         if flag.lower() == "true":
             flag = True
         elif flag.lower() == "false":
@@ -105,9 +109,11 @@ def get_bool(params, param_name: str, default):
         elif flag.lower() == "1":
             flag = True
         else:
-            print(f"Invalid boolean value: {param_name}({flag})")
+            print(
+                f"Invalid boolean value: {param_name}({flag}). Use the default value {default}"
+            )
             flag = default
-    if not isinstance(flag, int) and flag is not None:
+    if not isinstance(flag, bool):
         raise Exception(
             f"Invalid boolean parameter: {param_name}({flag}) and invalid default value {default}"
         )
@@ -116,22 +122,22 @@ def get_bool(params, param_name: str, default):
 
 def get_int_list(params, param_name: str):
     """get an integer list from params for the given param_name, return [] if invalid or non-exist"""
+    return get_value_list(params, param_name, int)
+
+
+def get_value_list(params, param_name: str, value_type: type):
+    """get a list of values from params for the given param_name, return [] if invalid or non-exist"""
     param_str = params.get(param_name, "")
-    ret = []
     try:
-        if param_str:
-            ret = param_str.split(",")
-            ret = [int(i) for i in ret]
+        items = param_str.split(",")
+        return [value_type(i) for i in items if len(i.strip()) > 0]
     except (ValueError, TypeError):
         print(f"Invalid parameter {param_name}:{param_str}.")
-
-    return ret
+        return []
 
 
 def get_lats_lons(params):
-    """
-    return two lists, one is the lats and the other is lons
-    """
+    """return two lists, one is the lats and the other is lons"""
     points_str = params.get("points", None)
     lats_str = params.get("lats", None)
     lons_str = params.get("lons", None)
