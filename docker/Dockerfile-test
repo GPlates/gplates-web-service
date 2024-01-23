@@ -31,7 +31,6 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /tmp/gws
 RUN chown www-data /tmp/gws
-RUN chown www-data /var/www
 
 EXPOSE 80
 
