@@ -2,8 +2,8 @@ name: build and push docker
 
 on:
   push:
-    branches:
-      - 'master'
+    tags:
+      - 'v*.*.*'
 
 jobs:
   docker:
@@ -25,10 +25,24 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push
+        name: Build and push amd64
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/Dockerfile-test
+          file: ./docker/Dockerfile
           push: true
-          tags: mchin/test:latest
+          tags: gplates/gws:amd64-${{github.ref_name}}
+      -
+        name: Build and push arm64
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/Dockerfile-arm64
+          push: true
+          tags: gplates/gws:arm64-${{github.ref_name}}
+
+      -
+        name: Create manifest
+        run: |
+            docker buildx imagetools create -t gplates/gws:${{github.ref_name}} gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}
+            
