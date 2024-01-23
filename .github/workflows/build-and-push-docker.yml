@@ -2,8 +2,8 @@ name: build and push docker
 
 on:
   push:
-    branches:
-      - 'docker-action'
+    tags:
+      - 'v*.*.*'
 
 jobs:
   docker:
@@ -31,7 +31,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           push: true
-          tags: mchin/gws:amd64
+          tags: gplates/gws:amd64-${{github.ref_name}}
       -
         name: Build and push arm64
         uses: docker/build-push-action@v5
@@ -39,10 +39,10 @@ jobs:
           context: .
           file: ./docker/Dockerfile-arm64
           push: true
-          tags: mchin/gws:arm64
+          tags: gplates/gws:arm64-${{github.ref_name}}
 
       -
         name: Create manifest
         run: |
-            docker manifest create mchin/gws mchin/gws:amd64 mchin/gws:arm64
-            docker manifest push mchin/gws
+            docker buildx imagetools create -t gplates/gws:${{github.ref_name}} gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}
+            
