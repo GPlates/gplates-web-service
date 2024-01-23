@@ -28,6 +28,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
             "lons": "95, -117.26, 142",
             "lats": "54, 32.7, -33",
             "times": "140, 100, 50",
+            "model": "Muller2019",
         }
         cls.data_4 = {
             "lats": "50, 10, 50",
@@ -111,6 +112,9 @@ class ReconstructPointsTestCase(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
     def test_get_multi_times(self):
+        """test reconstruct points at multiple times
+        use pygplates to verify the results
+        """
         data = copy.copy(self.data_3)
         data["fc"] = False
         r = requests.get(
@@ -119,8 +123,42 @@ class ReconstructPointsTestCase(unittest.TestCase):
             verify=False,
             proxies=self.proxies,
         )
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+        try:
+            gws_return_data = json.loads(str(r.text))
+            self.logger.info(
+                json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+            )
+        except Exception as e:
+            self.logger.info(r.text)
+            raise e
         self.assertEqual(r.status_code, 200)
+
+        times = [float(t) for t in self.data_3["times"].split(",")]
+        for time in times:
+            rlons, rlats = _reconstruct(
+                self.data_3["lons"].split(","),
+                self.data_3["lats"].split(","),
+                self.data_3["model"],
+                time,
+            )
+            for i in range(len(rlons)):
+                rlon = 999.99 if rlons[i] is None else rlons[i]
+                rlat = 999.99 if rlats[i] is None else rlats[i]
+
+                self.assertTrue(
+                    math.isclose(
+                        gws_return_data[str(time)]["coordinates"][int(i)][0],
+                        rlon,
+                        abs_tol=0.0001,
+                    )
+                )
+                self.assertTrue(
+                    math.isclose(
+                        gws_return_data[str(time)]["coordinates"][int(i)][1],
+                        rlat,
+                        abs_tol=0.0001,
+                    )
+                )
 
     def test_post_multi_times(self):
         data = copy.copy(self.data_3)
@@ -247,8 +285,8 @@ def _reconstruct(lons, lats, model, time):
         reconstructed_feature_geometries,
         time,
     )
-    lons = len(reconstructed_feature_geometries) * [None]
-    lats = len(reconstructed_feature_geometries) * [None]
+    lons = len(assigned_point_features) * [None]
+    lats = len(assigned_point_features) * [None]
     for rfg in reconstructed_feature_geometries:
         lat, lon = rfg.get_reconstructed_geometry().to_lat_lon()
         name = rfg.get_feature().get_name()
