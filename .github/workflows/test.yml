@@ -50,6 +50,14 @@ jobs:
           docker exec gws mkdir -p /gws/log
           docker exec gws chown www-data:www-data -R /gws/log
           docker exec gws service apache2 start
+      -
+        name: Prepare DB
+        run: |
+          cd test
+          gunzip crustal_thickness.sql.gz
+          docker cp crustal_thickness.sql gws-postgis:/tmp
+          docker cp setup-db.sh gws-postgis:/tmp
+          docker exec  gws-postgis /tmp/setup-db.sh
       - 
         name: Sleep for 30 seconds
         run: sleep 30s
@@ -66,7 +74,7 @@ jobs:
       -
         name: Run testcases
         run: |     
-          docker exec test /workspace/test-server.sh
+          docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test-server.sh    
       -
         name: Check log
         if: always()
