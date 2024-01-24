@@ -55,6 +55,9 @@ jobs:
         run: |
           docker exec gws ls -l /var/log/apache2/error.log
           docker exec gws cat /var/log/apache2/error.log
+          docker exec gws cat /startup.sh
+          docker exec gws systemctl status apache2
+          docker exec gws /startup.sh
       -
         name: Run testcases
         run: |   
