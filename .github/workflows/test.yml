@@ -57,7 +57,10 @@ jobs:
           docker exec gws cat /var/log/apache2/error.log
           docker exec gws cat /startup.sh
           docker exec gws echo startup again
-          docker exec gws /startup.sh
+          docker exec gws service apache2 start
+          docker exec gws cat /var/log/apache2/error.log
+          docker exec gws ls -l /gws
+          docker exec gws cat /gws/django/GWS/.env
       -
         name: Run testcases
         run: |   
