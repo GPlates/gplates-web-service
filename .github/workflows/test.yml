@@ -11,10 +11,9 @@ on:
 jobs:
   test-gws:
     runs-on: ubuntu-latest
-    container: gplates/gws
-
+  
     services:
-      postgis:
+      gws-postgis:
         image: gplates/postgis
         env:
           POSTGRES_PASSWORD: postgres
@@ -24,7 +23,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      redis:
+      gws-redis:
         image: redis
         options: >-
           --health-cmd "redis-cli ping"
@@ -42,7 +41,7 @@ jobs:
         name: Run GWS
         run: |
           cp django/GWS/env.template django/GWS/.env
-          docker run -d --name gws -p 18000:80 -v `pwd`:/gws gplates/gws
+          docker run -d --name gws -p 18000:80 -v `pwd`:/gws --network ${{ job.container.network }} gplates/gws
       - 
         name: Sleep for 10 seconds
         run: sleep 10s
@@ -50,7 +49,6 @@ jobs:
       -
         name: Run testcases
         run: |
-          cd test/testcases
-          export GWS_SERVER_URL=http://gws:18000
-          python3 -m unittest -vv
+          cd test
+          docker run -it --rm --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:18000 gplates/gws /workspace/test-server.sh
       
