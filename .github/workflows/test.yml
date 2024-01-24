@@ -41,7 +41,7 @@ jobs:
         name: Run GWS
         run: |
           cp django/GWS/env.template django/GWS/.env
-          docker run -d --name gws -v `pwd`:/gws --network ${{ job.container.network }} gplates/gws
+          docker run -d --name gws -v `pwd`:/gws --network ${{ job.container.network }} -p 18000:80 gplates/gws
       - 
         name: Sleep for 10 seconds
         run: sleep 10s
@@ -49,6 +49,9 @@ jobs:
       -
         name: Run testcases
         run: |
+          docker ps
+          docker network ls
+          docker inspect gws -f "{{json .NetworkSettings.Networks }}"
           cd test
           docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test-server.sh
       
