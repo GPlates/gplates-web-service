@@ -51,9 +51,13 @@ jobs:
         run: sleep 30s
         shell: bash
       -
-        name: Run testcases
+        name: Check gws
         run: |
+          docker exec gws ls -l /var/log/apache2/error.log
           docker exec gws cat /var/log/apache2/error.log
+      -
+        name: Run testcases
+        run: |   
           docker ps
           docker network ls
           docker inspect gws -f "{{json .NetworkSettings.Networks }}"
