@@ -35,7 +35,22 @@ jobs:
           - 6379:6379
 
     steps:
-      - name: Check out repository code
+      - 
+        name: Check out repository code
         uses: actions/checkout@v4
-
+      - 
+        name: Run GWS
+        run: |
+          cp django/GWS/env.template django/GWS/.env
+          docker run -d --name gws -p 18000:80 -v `pwd`:/gws gplates/gws
+      - 
+        name: Sleep for 10 seconds
+        run: sleep 10s
+        shell: bash
+      -
+        name: Run testcases
+        run: |
+          cd test/testcases
+          export GWS_SERVER_URL=http://gws:18000
+          python3 -m unittest -vv
       

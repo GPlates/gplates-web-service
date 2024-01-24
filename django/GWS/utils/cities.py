@@ -8,7 +8,7 @@ from utils.plate_model_utils import get_model_name_list
 from utils.reconstruct_tools import assign_plate_ids
 
 logger = logging.getLogger("default")
-cache = caches["redis"]
+cache = caches[settings.get_cache_name()]
 
 
 def reload_cities():

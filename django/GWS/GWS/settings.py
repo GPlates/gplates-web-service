@@ -275,3 +275,8 @@ CACHES = {
         "LOCATION": "redis://gws-redis:6379",
     },
 }
+
+
+def get_cache_name():
+    name = os.getenv("CACHE")
+    return name if name else "default"
