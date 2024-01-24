@@ -45,7 +45,9 @@ jobs:
         name: Run GWS
         run: |
           cp django/GWS/env.template django/GWS/.env
-          docker run -d --name gws -v `pwd`:/gws --network ${{ job.container.network }} -p 18000:80 gplates/gws
+          docker run -d --name gws -v `pwd`:/gws --network ${{ job.container.network }} -p 18000:80 gplates/gws /startup.sh
+          docker exec gws mkdir -p /gws/log
+          docker exec gws chown www-data:www-data -R /gws/log
       - 
         name: Sleep for 30 seconds
         run: sleep 30s
@@ -53,30 +55,18 @@ jobs:
       -
         name: Check gws
         run: |
-          docker exec gws ls -l /var/log/apache2/error.log
-          docker exec gws cat /var/log/apache2/error.log
-          docker exec gws cat /startup.sh
-          docker exec gws echo startup again
-          docker exec gws pmm download all /gws/django/GWS/data/model-repo/
-          docker exec gws mkdir -p /gws/log
-          docker exec gws chown www-data:www-data -R /gws/log
-          docker exec gws service apache2 start
-          docker exec gws cat /var/log/apache2/error.log
-          docker exec gws ls -l /gws
-          docker exec gws cat /gws/django/GWS/.env
+           docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws wget http://gws:80
+           docker ps
+           docker network ls
+           docker inspect gws -f "{{json .NetworkSettings.Networks }}"
+        #  docker exec gws pmm download all /gws/django/GWS/data/model-repo/
+        #  docker exec gws service apache2 start      
       -
         name: Run testcases
-        run: |   
-          docker ps
-          docker network ls
-          docker inspect gws -f "{{json .NetworkSettings.Networks }}"
-          
-          cd test
-          
-          docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws wget http://gws:80
-          docker run --name test1 -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test-server.sh
+        run: |     
+          docker exec test /workspace/test-server.sh
       -
-        name: check log
+        name: Check log
         if: always()
         run: |
           docker exec gws cat /var/log/apache2/error.log
