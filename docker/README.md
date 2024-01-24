@@ -68,7 +68,7 @@ If you would like to try the GPlates Web Service very quickly, follow the steps 
 - `docker exec -ti gws-postgis /bin/bash`
 - `su postgres`
 - `cd tmp`
-- `pg_dump gplates > gplates.sql`
+- `pg_dump gplates > gplates.sql` (pg_dump --no-owner -d gplates -t raster.age_grid_geek_2007 > age_grid_geek_2007.sql)
 - `docker cp gws-postgis:/tmp/gplates.sql ~`(on host computer)
 
 

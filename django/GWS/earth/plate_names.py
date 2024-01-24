@@ -9,7 +9,7 @@ from utils.access_control import get_client_ip
 logger = logging.getLogger("default")
 access_logger = logging.getLogger("queue")
 
-cache = caches["redis"]
+cache = caches[settings.CACHE_NAME]
 
 
 def load_plate_names():

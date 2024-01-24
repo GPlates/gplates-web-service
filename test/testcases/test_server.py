@@ -52,7 +52,7 @@ class ServerTestCase(unittest.TestCase):
 
     def test_raster_query(self):
         # test raster query
-        data = {"lon": 99.50, "lat": -40.24, "raster_name": "age_grid_geek_2007"}
+        data = {"lon": 99.50, "lat": -40.24, "raster_name": "crustal_thickness"}
         r = requests.get(
             self.SERVER_URL + "/raster/query/",
             params=data,

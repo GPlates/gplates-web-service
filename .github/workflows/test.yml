@@ -1,9 +1,6 @@
 name: Unit Test 
 
 on:
-  push:
-    branches:
-      - test-action
   pull_request:
     branches:
       - master
@@ -11,10 +8,9 @@ on:
 jobs:
   test-gws:
     runs-on: ubuntu-latest
-    container: gplates/gws
-
+  
     services:
-      postgis:
+      gws-postgis:
         image: gplates/postgis
         env:
           POSTGRES_PASSWORD: postgres
@@ -23,19 +19,62 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --name gws-postgis
+        ports:
+          - 5432:5432
 
-      redis:
+      gws-redis:
         image: redis
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --name gws-redis
         ports:
           - 6379:6379
 
     steps:
-      - name: Check out repository code
+      - 
+        name: Check out repository code
         uses: actions/checkout@v4
+      -
+        name: Prepare DB
+        run: |
+          cd test
+          gunzip crustal_thickness.sql.gz
+          docker cp crustal_thickness.sql gws-postgis:/tmp
+          docker cp setup-db.sh gws-postgis:/tmp
+          docker exec  gws-postgis /tmp/setup-db.sh
+      - 
+        name: Run GWS
+        run: |
+          cp django/GWS/env.template django/GWS/.env
+          docker run -d --name gws -v `pwd`:/gws --network ${{ job.container.network }} -p 18000:80 gplates/gws
+          docker exec gws pmm download all /gws/django/GWS/data/model-repo/
+          docker exec gws mkdir -p /gws/log
+          docker exec gws chown www-data:www-data -R /gws/log
+          docker exec gws service apache2 start
+      - 
+        name: Sleep for 30 seconds
+        run: sleep 30s
+        shell: bash
+      -
+        name: Check gws docker container
+        if: always()
+        run: |
+           wget http://localhost:18000
+           docker ps
+           docker network ls
+           docker inspect gws -f "{{json .NetworkSettings.Networks }}"
+        
+      -
+        name: Run testcases
+        run: |     
+          docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test/test-server.sh    
+      -
+        name: Check log
+        if: always()
+        run: |
+          docker exec gws cat /var/log/apache2/error.log
 
-      
