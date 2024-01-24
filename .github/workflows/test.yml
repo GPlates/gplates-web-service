@@ -66,7 +66,7 @@ jobs:
         name: Check gws docker container
         if: always()
         run: |
-           docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws wget http://gws:80
+           wget http://localhost:18000
            docker ps
            docker network ls
            docker inspect gws -f "{{json .NetworkSettings.Networks }}"
