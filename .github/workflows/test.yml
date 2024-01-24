@@ -57,6 +57,9 @@ jobs:
           docker exec gws cat /var/log/apache2/error.log
           docker exec gws cat /startup.sh
           docker exec gws echo startup again
+          docker exec gws pmm download all /gws/django/GWS/data/model-repo/
+          docker exec gws mkdir -p /gws/log
+          docker exec gws chown www-data:www-data -R /gws/log
           docker exec gws service apache2 start
           docker exec gws cat /var/log/apache2/error.log
           docker exec gws ls -l /gws
@@ -72,4 +75,9 @@ jobs:
           
           docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws wget http://gws:80
           docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test-server.sh
-      
+      -
+        name: check log
+        if: always()
+        run: |
+          docker exec gws cat /var/log/apache2/error.log
+
