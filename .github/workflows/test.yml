@@ -22,6 +22,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --name gws-postgis
+        ports:
+          - 5432:5432
 
       gws-redis:
         image: redis
@@ -30,6 +33,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+          --name gws-redis
         ports:
           - 6379:6379
 
@@ -52,6 +56,7 @@ jobs:
           docker ps
           docker network ls
           docker inspect gws -f "{{json .NetworkSettings.Networks }}"
+          wget http://gws:80
           cd test
           docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test-server.sh
       

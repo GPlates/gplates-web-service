@@ -276,7 +276,4 @@ CACHES = {
     },
 }
 
-
-def get_cache_name():
-    name = os.getenv("CACHE")
-    return name if name else "default"
+CACHE_NAME = os.getenv("CACHE") if os.getenv("CACHE") else "default"

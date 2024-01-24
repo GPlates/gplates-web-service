@@ -17,7 +17,7 @@ from utils.round_float import round_floats
 
 logger = logging.getLogger("default")
 access_logger = logging.getLogger("queue")
-cache = caches[settings.get_cache_name()]
+cache = caches[settings.CACHE_NAME]
 
 
 def read_labels():
