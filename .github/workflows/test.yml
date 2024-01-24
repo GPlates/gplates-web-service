@@ -45,22 +45,24 @@ jobs:
         name: Run GWS
         run: |
           cp django/GWS/env.template django/GWS/.env
-          docker run -d --name gws -v `pwd`:/gws --network ${{ job.container.network }} -p 18000:80 gplates/gws /startup.sh
+          docker run -d --name gws -v `pwd`:/gws --network ${{ job.container.network }} -p 18000:80 gplates/gws
+          docker exec gws pmm download all /gws/django/GWS/data/model-repo/
           docker exec gws mkdir -p /gws/log
           docker exec gws chown www-data:www-data -R /gws/log
+          docker exec gws service apache2 start
       - 
         name: Sleep for 30 seconds
         run: sleep 30s
         shell: bash
       -
-        name: Check gws
+        name: Check gws docker container
+        if: always()
         run: |
            docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws wget http://gws:80
            docker ps
            docker network ls
            docker inspect gws -f "{{json .NetworkSettings.Networks }}"
-        #  docker exec gws pmm download all /gws/django/GWS/data/model-repo/
-        #  docker exec gws service apache2 start      
+        
       -
         name: Run testcases
         run: |     
