@@ -74,7 +74,7 @@ jobs:
           cd test
           
           docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws wget http://gws:80
-          docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test-server.sh
+          docker run --name test1 -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test-server.sh
       -
         name: check log
         if: always()
