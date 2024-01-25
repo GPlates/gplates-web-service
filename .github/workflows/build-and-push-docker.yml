@@ -26,21 +26,23 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push GWS amd64
-        if: false
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/gws-amd64/Dockerfile
           push: true
+          platforms: linux/amd64
+          provenance: false
           tags: gplates/gws:amd64-${{github.ref_name}}
       -
         name: Build and push GWS arm64
-        if: false
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./docker/gws-arm64/Dockerfile
           push: true
+          platforms: linux/arm64
+          provenance: false
           tags: gplates/gws:arm64-${{github.ref_name}}
       -
         name: Build and push PostGIS amd64
@@ -66,5 +68,5 @@ jobs:
         name: Create cross-platform images
         run: |
             docker buildx imagetools create -t gplates/postgis:${{github.ref_name}} gplates/postgis:amd64-${{github.ref_name}} gplates/postgis:arm64-${{github.ref_name}}
-#    docker buildx imagetools create -t gplates/gws:${{github.ref_name}} gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}
+            docker buildx imagetools create -t gplates/gws:${{github.ref_name}} gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}
             

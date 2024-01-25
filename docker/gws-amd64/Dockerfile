@@ -53,7 +53,7 @@ RUN pip3 install plate-model-manager --upgrade
 RUN pip3 install redis
 
 ADD . /gws
-
+RUN mv /gws/django/GWS/env.template /gws/django/GWS/.env
 RUN pmm download all /gws/django/GWS/data/model-repo/
 
 # Add Tini
