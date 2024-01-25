@@ -1,4 +1,4 @@
-name: build and push docker
+name: Build and push docker
 
 on:
   push:
@@ -25,24 +25,40 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push amd64
+        name: Build and push GWS amd64
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/Dockerfile
+          file: ./docker/gws-amd64/Dockerfile
           push: true
           tags: gplates/gws:amd64-${{github.ref_name}}
       -
-        name: Build and push arm64
+        name: Build and push GWS arm64
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/Dockerfile-arm64
+          file: ./docker/gws-arm64/Dockerfile
           push: true
           tags: gplates/gws:arm64-${{github.ref_name}}
-
       -
-        name: Create manifest
+        name: Build and push PostGIS amd64
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/gws-postgis-amd64/Dockerfile
+          push: true
+          tags: gplates/postgis:amd64-${{github.ref_name}}
+      -
+        name: Build and push PostGIS arm64
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./docker/gws-postgis-arm64/Dockerfile
+          push: true
+          tags: gplates/postgis:arm64-${{github.ref_name}}
+      -
+        name: Create cross-platform images
         run: |
             docker buildx imagetools create -t gplates/gws:${{github.ref_name}} gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}
+            docker buildx imagetools create -t gplates/postgis:${{github.ref_name}} gplates/postgis:amd64-${{github.ref_name}} gplates/postgis:arm64-${{github.ref_name}}
             
