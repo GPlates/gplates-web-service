@@ -1,28 +1,34 @@
 ## 👉 Quick start 
 
-If you would like to try the GPlates Web Service very quickly, follow the steps in this "quick start" section. The steps will start the docker container using the built-in source code. And the PostGIS database is not available. See "PostGIS Database and docker network" section for database configuration.
+If you would like to try the GPlates Web Service very quickly, follow the steps in this "quick start" section. The steps will start the docker container using the built-in source code. 
 
-- run the service as daemon in the background
+- run the with docker-compose
 
-    `docker run -d -p 80:80 --restart always gplates/gws`
-
-- or run the service interactively (you can check the error messages in the console)
-
-    `docker run --rm -it -p 80:80 gplates/gws`
+    - `git clone https://github.com/GPlates/gplates-web-service gplates-web-service.git`
+    - `cd gplates-web-service.git`
+    - `cd docker`
+    - `docker-compose up -d`
 
 - verify the service is up and running.
 
-    - `wget -O test.json "http://localhost/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" `
-    - or `curl "http://localhost/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" `
+    - `wget -O test.json "http://localhost:18000/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" `
+    - or `curl "http://localhost:18000/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" `
     - or use web browser if you have GUI
 
 ## 👉 Use the latest code from github.com to run the service 
 
 - `git clone https://github.com/GPlates/gplates-web-service gplates-web-service.git`
-- `cd gplates-web-service.git`
-- ``docker run --rm -it -v `pwd`:/gws  gplates/gws /bin/bash -c "pmm download all /gws/django/GWS/data/model-repo/"``
-- ``docker run -it --rm -v `pwd`:/gws -p 80:80 gplates/gws``
+- `cd gplates-web-service.git/docker`
+- `docker-compose run --rm --service-ports gws-postgis`
+- `docker-compose run --rm --service-ports redis`
+- ``docker run -it --rm -v `pwd`:/gws -p 18000:80 gplates/gws``
 - verify the service is up and running with wget, curl or web browser
+
+Alternatively, 
+
+you can write a customized docker-compose.yml, like Michael Chin did. See [docker-compose-mc.yml](docker-compose-mc.yml)
+
+## 👀 Warning: The notes from this line below are meant for Michael Chin. Other people might fail to understand them. Ask him! 👀 
 
 ## 👉 Setup PostGIS database
 
@@ -82,7 +88,7 @@ If you would like to try the GPlates Web Service very quickly, follow the steps 
 - `curl "http://localhost:18000/raster/query?lon=99.50&lat=-40.24&raster_name=age_grid_geek_2007"`
 - `curl "http://localhost:18000/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012"`
 
-**IMPORTANT: ⚠ Make sure the BEDUG is set to True in .env**
+**👀 IMPORTANT: Make sure the BEDUG is set to True in .env 👀**
 
 
 ## 👉 Build the docker images
