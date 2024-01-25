@@ -71,7 +71,7 @@ jobs:
       -
         name: Run testcases
         run: |     
-          docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test/test-server.sh && ls /workspace/test/testcases/ && ls /workspace/test/testcases/logs && cat /workspace/test/testcases/logs/*
+          docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test/test-server.sh && ls -l && cat ./test/testcases/logs/*
       -
         name: Check log
         if: always()
