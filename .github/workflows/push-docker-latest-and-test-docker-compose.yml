@@ -15,6 +15,7 @@ jobs:
     steps:
       -
         name: Push docker latest
+        if: false
         run: |
             docker buildx imagetools create -t gplates/postgis:latest gplates/postgis:amd64-${{ github.event.release.tag_name }} gplates/postgis:arm64-${{ github.event.release.tag_name }}
             docker buildx imagetools create -t gplates/gws:latest gplates/gws:amd64-${{ github.event.release.tag_name }} gplates/gws:arm64-${{ github.event.release.tag_name }}
