@@ -1,12 +1,12 @@
 name: Push Docker latest and test Docker Compose
 
-on:
-  release:
-    types: [published]
 #on:
-#  push:
-#    branches: 
-#      - dev
+#  release:
+#    types: [published]
+on:
+  push:
+    branches: 
+      - dev
 
 jobs:
   push-docker-latest:
