@@ -72,9 +72,11 @@ jobs:
         name: Run testcases
         run: |     
           docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test/test-server.sh    
+          docker exec test cat /workspace/test/testcases/logs/*
       -
         name: Check log
         if: always()
         run: |
           docker exec gws cat /var/log/apache2/error.log
+          
 
