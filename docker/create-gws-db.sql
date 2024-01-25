@@ -6,4 +6,6 @@ CREATE EXTENSION postgis_topology;
 CREATE EXTENSION postgis_raster;
 
 create schema raster;
+ALTER SCHEMA raster OWNER TO gplates;
+
 
