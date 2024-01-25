@@ -1,9 +1,12 @@
 #
 # Check the password in create-gws-db.sql before building this docker image
-# docker build -f docker/Dockerfile-postgis -t gplates/postgis:amd64 .
+# docker build -f docker/gws-postgis-amd64/Dockerfile -t gplates/postgis:amd64 .
 #
 
 FROM ubuntu:22.04
+
+LABEL org.opencontainers.image.authors="michael.chin@sydney.edu.au"
+LABEL version="0.1.0"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Australia
@@ -41,6 +44,8 @@ ENTRYPOINT ["/tini", "--"]
 CMD ["sh", "-c", "/etc/init.d/postgresql start ; tail -f /dev/null"]
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+HEALTHCHECK CMD pg_isready -U gplates -d gplates
 
 EXPOSE 80
 
