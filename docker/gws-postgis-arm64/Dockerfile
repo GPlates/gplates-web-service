@@ -25,6 +25,8 @@ RUN apt install -y  postgis postgresql-15-postgis-3
 #initialize DB
 ADD docker/init-db.sh /workspace/
 ADD docker/create-gws-db.sql /workspace/
+ADD test/crustal_thickness.sql.gz /workspace
+RUN gunzip /workspace/crustal_thickness.sql.gz
 RUN chmod +x /workspace/init-db.sh
 USER postgres
 RUN cd /workspace/ && ./init-db.sh
