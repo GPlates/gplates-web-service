@@ -2,13 +2,15 @@
 # to build this docker container image
 # step 1: git clone https://github.com/GPlates/gplates-web-service.git
 # step 2: go into folder gplates-web-service
-# step 3: docker build -f docker/Dockerfile-arm64 -t gplates/gws .
+# step 3: docker build -f docker/gws-arm64/Dockerfile -t gplates/gws:arm64 .
 #
 
 # if error, try with --no-cache option
 
 FROM arm64v8/ubuntu:22.04
-MAINTAINER Michael Chin
+
+LABEL org.opencontainers.image.authors="michael.chin@sydney.edu.au"
+LABEL version="0.1.0"
 
 RUN apt-get update -y
 ARG DEBIAN_FRONTEND=noninteractive
@@ -51,7 +53,7 @@ RUN pip3 install plate-model-manager --upgrade
 RUN pip3 install redis
 
 ADD . /gws
-
+RUN mv /gws/django/GWS/env.template /gws/django/GWS/.env
 RUN pmm download all /gws/django/GWS/data/model-repo/
 
 # Add Tini
@@ -70,7 +72,7 @@ RUN mkdir /tmp/gws
 RUN chown www-data /tmp/gws
 RUN chown www-data /var/www
 
-HEALTHCHECK CMD curl --fail -s http://localhost:80/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness || exit 1
+HEALTHCHECK CMD curl --fail -s "http://localhost:80/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness" || exit 1
 
 EXPOSE 80
 

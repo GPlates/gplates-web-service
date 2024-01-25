@@ -1,5 +1,7 @@
 # GPlates Web Service
 
+![Test](https://github.com/gplates/gplates-web-service/actions/workflows/test.yml/badge.svg)
+
 The **🔥GPlates Web Service🔥** is a part of the on-going GPlates project funded by [AuScope](https://www.auscope.org.au/).
 The web service is built upon [pygplates](https://www.gplates.org/docs/pygplates/index.html).
 It allows users to utilize the pygplates functionalities without installing pygplates locally.

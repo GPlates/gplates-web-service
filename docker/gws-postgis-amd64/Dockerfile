@@ -1,9 +1,12 @@
 #
 # Check the password in create-gws-db.sql before building this docker image
-# docker build -f docker/Dockerfile-postgis -t gplates/postgis:arm64 .
+# docker build -f docker/gws-postgis-amd64/Dockerfile -t gplates/postgis:amd64 .
 #
 
-FROM arm64v8/ubuntu:22.04
+FROM ubuntu:22.04
+
+LABEL org.opencontainers.image.authors="michael.chin@sydney.edu.au"
+LABEL version="0.1.0"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Australia
@@ -22,6 +25,8 @@ RUN apt install -y  postgis postgresql-15-postgis-3
 #initialize DB
 ADD docker/init-db.sh /workspace/
 ADD docker/create-gws-db.sql /workspace/
+ADD test/crustal_thickness.sql.gz /workspace
+RUN gunzip /workspace/crustal_thickness.sql.gz
 RUN chmod +x /workspace/init-db.sh
 USER postgres
 RUN cd /workspace/ && ./init-db.sh
@@ -34,13 +39,15 @@ RUN chown postgres:postgres /etc/postgresql/15/main/*
 
 # Add Tini
 ENV TINI_VERSION v0.19.0
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-arm64 /tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini-amd64 /tini
 RUN chmod +x /tini
 ENTRYPOINT ["/tini", "--"]
 #CMD ["/etc/init.d/postgresql start", "top"]
 CMD ["sh", "-c", "/etc/init.d/postgresql start ; tail -f /dev/null"]
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+HEALTHCHECK CMD pg_isready -U gplates -d gplates
 
 EXPOSE 80
 

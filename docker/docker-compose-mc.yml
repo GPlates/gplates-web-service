@@ -1,9 +1,24 @@
+# This is for Michael Chin only... 
 version: '3.9'
+
+volumes:
+  gws-code:
+    external: true
+    name: gws-code
+  gws-db-data:
+    external: true
+    name: gws-db-data-new
 
 services:
   gws-postgis:
     image: gplates/postgis
+    networks:
+      - gws-net
     hostname: gws-postgis
+    volumes:
+      - gws-db-data:/var/lib/postgresql/15/main
+    ports:
+      - 5432:5432
     environment:
       - POSTGRES_PASSWORD="this is not a real password! go away!"
     restart: on-failure
@@ -15,10 +30,14 @@ services:
 
   gws:
     image: gplates/gws
+    networks:
+      - gws-net
     hostname: gws
     depends_on:
       - gws-postgis
       - gws-redis
+    volumes:
+      - gws-code:/gws
     ports:
       - 18000:80
     restart: on-failure
@@ -30,6 +49,8 @@ services:
   
   gws-redis:
     image: redis
+    networks:
+      - gws-net
     hostname: gws-redis
     restart: on-failure
     healthcheck:
@@ -38,3 +59,7 @@ services:
       timeout: 10s
       retries: 3
 
+
+networks:
+  gws-net:
+    external: true

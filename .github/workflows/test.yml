@@ -72,9 +72,36 @@ jobs:
         name: Run testcases
         run: |     
           docker run --name test -v`pwd`:/workspace --network ${{ job.container.network }} --env GWS_SERVER_URL=http://gws:80 gplates/gws /workspace/test/test-server.sh    
+          docker exec test cat /workspace/test/testcases/logs/*
       -
         name: Check log
         if: always()
         run: |
           docker exec gws cat /var/log/apache2/error.log
+  
+  test-docker-compose:
+    runs-on: ubuntu-latest
+
+    steps:
+      -
+        name: Start Docker compose
+        run: |   
+          cd docker
+          docker-compose up -d
+      - 
+        name: Sleep for 30 seconds
+        run: sleep 30s
+        shell: bash
+      -  
+        name: Check Docker compose
+        if: always()
+        run: |
+           docker ps
+           docker network ls
+           docker inspect gws -f "{{json .NetworkSettings.Networks }}"
+           wget http://localhost:18000
+           curl --fail -s http://localhost:18000/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness
+           
+
+          
 
