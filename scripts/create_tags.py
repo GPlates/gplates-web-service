@@ -54,6 +54,7 @@ for file in files:
 
 
 subprocess.call(["git", "commit", "-m", f"update version to {new_version}"])
+subprocess.call(["git", "push"])
 
 subprocess.call(["git", "tag", "v" + new_version])
 subprocess.call(["git", "push", "origin", "--tags"])
