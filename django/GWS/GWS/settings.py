@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
+import logging
 import os
 import queue
 import random
@@ -18,6 +19,8 @@ import sys
 
 from dotenv import load_dotenv
 
+logger = logging.getLogger("default")
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))
@@ -25,7 +28,44 @@ BASE_DIR = os.path.dirname(
 
 sys.path.append(f"{BASE_DIR}/lib")
 
+DEBUG = os.getenv("DEBUG")
+SECRET_KEY = os.getenv("SECRET_KEY")
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+THROTTLE = os.getenv("THROTTLE")
+DEFAULT_THROTTLE_ANON_RATE = os.getenv("DEFAULT_THROTTLE_ANON_RATE")
+DEFAULT_THROTTLE_USER_RATE = os.getenv("DEFAULT_THROTTLE_USER_RATE")
+BING_KEY = os.getenv("BING_KEY")
+CACHE_NAME = os.getenv("CACHE_NAME")
+
 load_dotenv(f"{BASE_DIR}/.env")  # take environment variables from .env.
+
+DEBUG = os.getenv("DEBUG") if DEBUG is None else DEBUG
+SECRET_KEY = os.getenv("SECRET_KEY") if SECRET_KEY is None else SECRET_KEY
+DB_NAME = os.getenv("DB_NAME") if DB_NAME is None else DB_NAME
+DB_USER = os.getenv("DB_USER") if DB_USER is None else DB_USER
+DB_HOST = os.getenv("DB_HOST") if DB_HOST is None else DB_HOST
+DB_PORT = os.getenv("DB_PORT") if DB_PORT is None else DB_PORT
+DB_PASSWORD = os.getenv("DB_PASSWORD") if DB_PASSWORD is None else DB_PASSWORD
+THROTTLE = os.getenv("THROTTLE") if THROTTLE is None else THROTTLE
+DEFAULT_THROTTLE_ANON_RATE = (
+    os.getenv("DEFAULT_THROTTLE_ANON_RATE")
+    if DEFAULT_THROTTLE_ANON_RATE is None
+    else DEFAULT_THROTTLE_ANON_RATE
+)
+DEFAULT_THROTTLE_USER_RATE = (
+    os.getenv("DEFAULT_THROTTLE_USER_RATE")
+    if DEFAULT_THROTTLE_USER_RATE is None
+    else DEFAULT_THROTTLE_USER_RATE
+)
+BING_KEY = os.getenv("BING_KEY") if BING_KEY is None else BING_KEY
+CACHE_NAME = os.getenv("CACHE_NAME") if CACHE_NAME is None else CACHE_NAME
+
+if not CACHE_NAME:
+    CACHE_NAME = "default"
 
 EARTH_STORE_DIR = f"{BASE_DIR}/data/earth/"
 PALEO_STORE_DIR = f"{BASE_DIR}/data/paleo/"
@@ -43,7 +83,6 @@ MEDIA_ROOT = f"{BASE_DIR}/data/tmp/"
 # ************
 # SEE HERE!!! best to put the SECRET_KEY in your .env file
 # ************
-SECRET_KEY = os.getenv("SECRET_KEY")
 # alternatively, put SECRET_KEY here, but do not submit the SECRET_KEY to code repository
 # SECRET_KEY = 'put your secret key here' # better not do this!!!
 if not SECRET_KEY:
@@ -57,7 +96,7 @@ if not SECRET_KEY:
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.getenv("DEBUG") and os.getenv("DEBUG").lower() == "true":
+if isinstance(DEBUG, str) and (DEBUG.strip().lower() == "true" or DEBUG.strip() == "1"):
     DEBUG = True
 else:
     DEBUG = False
@@ -128,15 +167,13 @@ DATABASES = {
     "default": {
         # 'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "NAME": os.getenv(
-            "DB_NAME"
-        ),  # Database name. Or path to database file if using sqlite3.
+        "NAME": DB_NAME,  # Database name. Or path to database file if using sqlite3.
         # Database username. Not used with sqlite3.
-        "USER": os.getenv("DB_USER"),
-        "HOST": os.getenv("DB_HOST"),  # Database hostname
-        "PASSWORD": os.getenv("DB_PASSWORD"),  # Database password for USER
+        "USER": DB_USER,
+        "HOST": DB_HOST,  # Database hostname
+        "PASSWORD": DB_PASSWORD,  # Database password for USER
         # Set to empty string for default. Not used with sqlite3.
-        "PORT": os.getenv("DB_PORT"),
+        "PORT": DB_PORT,
     }
 }
 
@@ -181,9 +218,11 @@ STATIC_URL = "/static/"
 STATIC_ROOT = "/var/www/html/static/"
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
-DEFAULT_THROTTLE_ANON_RATE = os.getenv("DEFAULT_THROTTLE_ANON_RATE") or "10000/second"
+if DEFAULT_THROTTLE_ANON_RATE is None:
+    DEFAULT_THROTTLE_ANON_RATE = "10000/second"
 
-DEFAULT_THROTTLE_USER_RATE = os.getenv("DEFAULT_THROTTLE_USER_RATE") or "10000/second"
+if DEFAULT_THROTTLE_USER_RATE is None:
+    DEFAULT_THROTTLE_USER_RATE = "10000/second"
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
@@ -199,7 +238,12 @@ REST_FRAMEWORK = {
 }
 
 # flag to indicate if the traffic should be throttled.
-THROTTLE = os.getenv("THROTTLE") and os.getenv("THROTTLE").lower() == "true"
+if isinstance(THROTTLE, str) and (
+    THROTTLE.strip().lower() == "true" or THROTTLE.strip() == "1"
+):
+    THROTTLE = True
+else:
+    THROTTLE = False
 
 if DEBUG:
     logger_level = "DEBUG"
@@ -275,5 +319,3 @@ CACHES = {
         "LOCATION": "redis://gws-redis:6379",
     },
 }
-
-CACHE_NAME = os.getenv("CACHE") if os.getenv("CACHE") else "default"

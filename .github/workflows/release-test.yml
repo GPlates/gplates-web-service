@@ -1,4 +1,4 @@
-name: Push Docker latest and test Docker Compose
+name: release test
 
 on:
   release:
