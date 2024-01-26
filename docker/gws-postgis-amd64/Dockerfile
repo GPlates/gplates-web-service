@@ -6,7 +6,7 @@
 FROM ubuntu:22.04
 
 LABEL org.opencontainers.image.authors="michael.chin@sydney.edu.au"
-LABEL version="0.1.0"
+LABEL version="0.1.8"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Australia
