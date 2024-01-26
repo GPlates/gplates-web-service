@@ -13,14 +13,14 @@ services:
   gws-postgis:
     image: gplates/postgis
     networks:
-      - gws-net
+      - gplates-net
     hostname: gws-postgis
     volumes:
       - gws-db-data:/var/lib/postgresql/15/main
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_PASSWORD="this is not a real password! go away!"
+      - POSTGRES_PASSWORD=gplates
     restart: on-failure
     healthcheck:
       test: pg_isready -U gplates -d gplates
@@ -31,7 +31,7 @@ services:
   gws:
     image: gplates/gws
     networks:
-      - gws-net
+      - gplates-net
     hostname: gws
     depends_on:
       - gws-postgis
@@ -40,6 +40,8 @@ services:
       - gws-code:/gws
     ports:
       - 18000:80
+    environment:
+      - DB_PASSWORD=zaq12wsx
     restart: on-failure
     healthcheck:
       test: curl --fail -s "http://localhost:80/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness" || exit 1
@@ -50,7 +52,7 @@ services:
   gws-redis:
     image: redis
     networks:
-      - gws-net
+      - gplates-net
     hostname: gws-redis
     restart: on-failure
     healthcheck:
@@ -61,5 +63,5 @@ services:
 
 
 networks:
-  gws-net:
+  gplates-net:
     external: true

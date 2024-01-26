@@ -1,4 +1,4 @@
-name: Build and push docker
+name: build and push docker
 
 on:
   push:
@@ -68,7 +68,7 @@ jobs:
         name: Create cross-platform images
         run: |
             docker buildx imagetools create -t gplates/postgis:${{github.ref_name}} gplates/postgis:amd64-${{github.ref_name}} gplates/postgis:arm64-${{github.ref_name}}
-            docker buildx imagetools create -t gplates/postgis:latest gplates/postgis:amd64-${{github.ref_name}} gplates/postgis:arm64-${{github.ref_name}}
-            docker buildx imagetools create -t gplates/gws:latest gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}
             docker buildx imagetools create -t gplates/gws:${{github.ref_name}} gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}
             
+#docker buildx imagetools create -t gplates/postgis:latest gplates/postgis:amd64-${{github.ref_name}} gplates/postgis:arm64-${{github.ref_name}}
+#docker buildx imagetools create -t gplates/gws:latest gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}
