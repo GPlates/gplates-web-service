@@ -24,6 +24,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build and push GWS amd64
         uses: docker/build-push-action@v5
@@ -33,7 +39,9 @@ jobs:
           push: true
           platforms: linux/amd64
           provenance: false
-          tags: gplates/gws:amd64-${{github.ref_name}}
+          tags: |
+            gplates/gws:amd64-${{github.ref_name}}
+            ghcr.io/GPlates/gws:amd64-${{github.ref_name}}  
       -
         name: Build and push GWS arm64
         uses: docker/build-push-action@v5
@@ -43,7 +51,9 @@ jobs:
           push: true
           platforms: linux/arm64
           provenance: false
-          tags: gplates/gws:arm64-${{github.ref_name}}
+          tags: |
+            gplates/gws:arm64-${{github.ref_name}}
+            ghcr.io/GPlates/gws:arm64-${{github.ref_name}}
       -
         name: Build and push PostGIS amd64
         uses: docker/build-push-action@v5
@@ -53,7 +63,9 @@ jobs:
           push: true
           platforms: linux/amd64
           provenance: false
-          tags: gplates/postgis:amd64-${{github.ref_name}}
+          tags: |
+            gplates/postgis:amd64-${{github.ref_name}}
+            ghcr.io/GPlates/postgis:amd64-${{github.ref_name}}
       -
         name: Build and push PostGIS arm64
         uses: docker/build-push-action@v5
@@ -63,12 +75,16 @@ jobs:
           push: true
           platforms: linux/arm64
           provenance: false
-          tags: gplates/postgis:arm64-${{github.ref_name}}
+          tags: |
+            gplates/postgis:arm64-${{github.ref_name}}
+            ghcr.io/GPlates/postgis:arm64-${{github.ref_name}}
       -
         name: Create cross-platform images
         run: |
             docker buildx imagetools create -t gplates/postgis:${{github.ref_name}} gplates/postgis:amd64-${{github.ref_name}} gplates/postgis:arm64-${{github.ref_name}}
             docker buildx imagetools create -t gplates/gws:${{github.ref_name}} gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}
+            docker buildx imagetools create -t ghcr.io/GPlates/postgis:${{github.ref_name}} ghcr.io/GPlates/postgis:amd64-${{github.ref_name}} ghcr.io/GPlates/postgis:arm64-${{github.ref_name}}
+            docker buildx imagetools create -t ghcr.io/GPlates/gws:${{github.ref_name}} ghcr.io/GPlates/gws:amd64-${{github.ref_name}} ghcr.io/GPlates/gws:arm64-${{github.ref_name}}
             
 #docker buildx imagetools create -t gplates/postgis:latest gplates/postgis:amd64-${{github.ref_name}} gplates/postgis:arm64-${{github.ref_name}}
 #docker buildx imagetools create -t gplates/gws:latest gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}
