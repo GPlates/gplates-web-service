@@ -3,10 +3,6 @@ name: release test
 on:
   release:
     types: [published]
-#on:
-#  push:
-#    branches: 
-#      - dev
 
 jobs:
   push-docker-latest:
@@ -18,7 +14,9 @@ jobs:
         run: |
             docker buildx imagetools create -t gplates/postgis:latest gplates/postgis:amd64-${{ github.event.release.tag_name }} gplates/postgis:arm64-${{ github.event.release.tag_name }}
             docker buildx imagetools create -t gplates/gws:latest gplates/gws:amd64-${{ github.event.release.tag_name }} gplates/gws:arm64-${{ github.event.release.tag_name }}
-    
+            docker buildx imagetools create -t ghcr.io/gplates/postgis:latest ghcr.io/gplates/postgis:amd64-${{github.ref_name}} ghcr.io/gplates/postgis:arm64-${{github.ref_name}}
+            docker buildx imagetools create -t ghcr.io/gplates/gws:latest ghcr.io/gplates/gws:amd64-${{github.ref_name}} ghcr.io/gplates/gws:arm64-${{github.ref_name}}
+            
   test-docker-compose:
     runs-on: ubuntu-latest
 
