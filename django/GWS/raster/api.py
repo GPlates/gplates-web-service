@@ -1,18 +1,21 @@
+import json
 import logging
 import math
-import json
 import traceback
 
 from django.db import connection
-from django.http import (HttpResponse, HttpResponseBadRequest,
-                         HttpResponseServerError)
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
+from utils.decorators import check_get_post_request_and_get_params, return_HttpResponse
+from utils.parameter_helper import get_float, get_lats_lons
 
-logger = logging.getLogger("dev")
+logger = logging.getLogger("default")
+access_logger = logging.getLogger("queue")
 
 
-def query(request):
-    '''
-    Query a single value from raster by lon, lat
+@check_get_post_request_and_get_params
+@return_HttpResponse()
+def query(request, params={}):
+    """Query a single value from raster by lon, lat
     http://localhost:18000/raster/query?lon=90&lat=-20&raster_name=age_grid
 
     Query some values from raster by lons, lats
@@ -22,29 +25,22 @@ def query(request):
     the input points are like
     lons: lon_0, lon_1,...,lon_n
     lats: lat_0, lat_1,...,lat_n
-    '''
+
+    :param fmt: return data format
+        1. simple
+        2. json
+    """
 
     raster_name = request.GET.get("raster_name", None)
     if not raster_name:
-        return HttpResponseBadRequest("The 'raster_name' parameter must present in request!")
+        return HttpResponseBadRequest(
+            "The 'raster_name' parameter must present in the request!"
+        )
 
-    try:
-        lon = float(request.GET["lon"])
-        lat = float(request.GET["lat"])
-    except:
-        lon = None
-        lat = None
-
-    try:
-        lons_str = request.GET["lons"]
-        lats_str = request.GET["lats"]
-        lons = [float(i) for i in lons_str.split(',')]
-        lats = [float(i) for i in lats_str.split(',')]
-    except:
-        lons = None
-        lats = None
-
-    format = request.GET.get("fmt", None)
+    lon = get_float(params, "lon", None)
+    lat = get_float(params, "lat", None)
+    lats, lons = get_lats_lons(params)
+    format = request.GET.get("fmt", "simple").strip().lower()
 
     # lon = (lon + 360)%360
 
@@ -53,31 +49,29 @@ def query(request):
         try:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """SELECT rid,ST_Value(rast, ST_SetSRID(ST_MakePoint({0},{1}),4326), false) AS val
-                    FROM raster.{2}
-                    WHERE ST_Intersects(rast, ST_SetSRID(ST_MakePoint({0},{1}),4326))""".format(
-                        lon, lat, raster_name
-                    )
+                    f"""SELECT rid,ST_Value(rast, ST_SetSRID(ST_MakePoint({lon},{lat}),4326), false) AS val
+                    FROM raster.{raster_name}
+                    WHERE ST_Intersects(rast, ST_SetSRID(ST_MakePoint({lon},{lat}),4326))"""
                 )
                 row = cursor.fetchone()
-                # print(row)
-                if format == 'json':
-                    if row:
-                        ret = {'lon': lon, 'lat': lat, 'value': row[1]}
-                    else:
-                        ret = {'lon': lon, 'lat': lat, 'value': math.nan}
-                    response = HttpResponse(ret)
-                    response = HttpResponse(json.dumps(ret),
-                                            content_type='application/json')
+                ret_value = None
+                if row is None or not isinstance(row[1], (int, float)):
+                    ret_value = None
                 else:
-                    if row:
-                        ret = row[1]
-                    else:
-                        ret = "nan"
-                    response = HttpResponse(ret)
+                    ret_value = round(row[1], 4)
+
+                # print(row)
+                if format == "json":
+                    ret = {"lon": lon, "lat": lat, "value": ret_value}
+                else:
+                    ret = ret_value
+
+                return json.dumps(ret)
         except:
             logger.error(traceback.format_exc())
-            return HttpResponseServerError("Failed to query a single value from the raster.")
+            return HttpResponseServerError(
+                f"Failed to query a single value from raster: {raster_name}. Check if the raster name is correct. Use https://gws.gplates.org/raster/list to list all available rasters."
+            )
     # for multiple locations
     elif lons is not None and lats is not None:
         try:
@@ -92,38 +86,43 @@ def query(request):
                 CROSS JOIN pairs
                 WHERE ST_Intersects(rs.rast,  ST_SetSRID(ST_MakePoint(x, y), 4326));
             """
-            # print(query_str)
+            # logger.debug(query_str)
             with connection.cursor() as cursor:
                 cursor.execute(query_str)
                 rows = cursor.fetchall()
-                print(rows)
+                logger.debug(rows)
                 ret = []
                 for lon, lat in zip(lons, lats):
-                    value = math.nan
+                    value = None
                     for row in rows:
-                        if math.isclose(lon, row[0]) and math.isclose(lat, row[1]):
-                            value = row[2]
+                        if (
+                            math.isclose(lon, row[0])
+                            and math.isclose(lat, row[1])
+                            and isinstance(row[2], (int, float))
+                        ):
+                            value = round(row[2], 4)
                             break
-                    ret.append({'lon': lon, 'lat': lat, 'value': value})
-                response = HttpResponse(ret)
-                response = HttpResponse(json.dumps(ret),
-                                        content_type='application/json')
-
+                    ret.append({"lon": lon, "lat": lat, "value": value})
+                if format == "json":
+                    return json.dumps(ret)
+                else:
+                    return json.dumps([x["value"] for x in ret])
         except:
             logger.error(traceback.format_exc())
-            return HttpResponseServerError(f"Failed to query multiple locations from raster. {query_str}")
-    # TODO:
-    # The "*" makes the service wide open to anyone. We should implement access control when time comes.
-    response["Access-Control-Allow-Origin"] = "*"
-    return response
+            return HttpResponseServerError(
+                f"Failed to query multiple locations from raster: {raster_name}."
+                + f"The query string is {query_str}."
+            )
 
 
-def list_all_rasters(request):
-    '''
-    return all the raster names in DB
+@check_get_post_request_and_get_params
+@return_HttpResponse()
+def list_all_rasters(request, params={}):
+    """return all the raster names in DB
     select table_name from information_schema.tables where table_schema='raster';
+
     http://localhost:18000/raster/list
-    '''
+    """
 
     try:
         query_str = "  select table_name from information_schema.tables where table_schema='raster'; "
@@ -131,16 +130,10 @@ def list_all_rasters(request):
         with connection.cursor() as cursor:
             cursor.execute(query_str)
             rows = cursor.fetchall()
-            print(rows)
+            logger.debug(rows)
             ret = [i[0] for i in rows]
-            response = HttpResponse(ret)
-            response = HttpResponse(json.dumps(ret),
-                                    content_type='application/json')
+            return json.dumps(ret)
 
     except:
         logger.error(traceback.format_exc())
         return HttpResponseServerError(f"Failed to query raster names.")
-    # TODO:
-    # The "*" makes the service wide open to anyone. We should implement access control when time comes.
-    response["Access-Control-Allow-Origin"] = "*"
-    return response
