@@ -68,7 +68,7 @@ def read_labels():
     return labels
 
 
-read_labels()
+# read_labels()
 
 
 def read_label_pids(model):
@@ -118,7 +118,7 @@ def get_label_pids():
     return pid_dict
 
 
-get_label_pids()
+# get_label_pids()
 
 
 def reconstruct_labels(names, lons, lats, model, time, pids=[]):

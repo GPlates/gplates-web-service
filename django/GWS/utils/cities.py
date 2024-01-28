@@ -55,4 +55,4 @@ def get_cities():
         return cities
 
 
-logger.info(get_cities())
+# logger.info(get_cities())

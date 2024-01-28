@@ -4,7 +4,8 @@ import math
 import traceback
 
 from django.db import connection
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
+from django.db.utils import ProgrammingError
+from django.http import HttpResponseBadRequest, HttpResponseServerError
 from utils.decorators import check_get_post_request_and_get_params, return_HttpResponse
 from utils.parameter_helper import get_float, get_lats_lons
 
@@ -44,15 +45,15 @@ def query(request, params={}):
 
     # lon = (lon + 360)%360
 
-    # for a single location
-    if lon is not None and lat is not None:
-        try:
+    try:
+        query_str = None
+        # for a single location
+        if lon is not None and lat is not None:
             with connection.cursor() as cursor:
-                cursor.execute(
-                    f"""SELECT rid,ST_Value(rast, ST_SetSRID(ST_MakePoint({lon},{lat}),4326), false) AS val
+                query_str = f"""SELECT rid,ST_Value(rast, ST_SetSRID(ST_MakePoint({lon},{lat}),4326), false) AS val
                     FROM raster.{raster_name}
                     WHERE ST_Intersects(rast, ST_SetSRID(ST_MakePoint({lon},{lat}),4326))"""
-                )
+                cursor.execute(query_str)
                 row = cursor.fetchone()
                 ret_value = None
                 if row is None or not isinstance(row[1], (int, float)):
@@ -67,14 +68,8 @@ def query(request, params={}):
                     ret = ret_value
 
                 return json.dumps(ret)
-        except:
-            logger.error(traceback.format_exc())
-            return HttpResponseServerError(
-                f"Failed to query a single value from raster: {raster_name}. Check if the raster name is correct. Use https://gws.gplates.org/raster/list to list all available rasters."
-            )
-    # for multiple locations
-    elif lons is not None and lats is not None:
-        try:
+        # for multiple locations
+        elif lons is not None and lats is not None:
             query_str = "   WITH pairs(x, y) AS (VALUES "
             for lon, lat in zip(lons, lats):
                 query_str += f"({lon},{lat}),"
@@ -107,12 +102,15 @@ def query(request, params={}):
                     return json.dumps(ret)
                 else:
                     return json.dumps([x["value"] for x in ret])
-        except:
-            logger.error(traceback.format_exc())
-            return HttpResponseServerError(
-                f"Failed to query multiple locations from raster: {raster_name}."
-                + f"The query string is {query_str}."
-            )
+    except ProgrammingError as e:
+        logger.error(e)
+        return HttpResponseServerError(
+            f'The tabel "raster.{raster_name}" does not exist. Check if the raster name is correct. Use https://gws.gplates.org/raster/list to list all available rasters.'
+        )
+    except:
+        logger.error(traceback.format_exc())
+        logger.error(f"The query string is {query_str}.")
+        return HttpResponseServerError(f"Failed to query raster: {raster_name}.")
 
 
 @check_get_post_request_and_get_params
@@ -136,4 +134,4 @@ def list_all_rasters(request, params={}):
 
     except:
         logger.error(traceback.format_exc())
-        return HttpResponseServerError(f"Failed to query raster names.")
+        return HttpResponseServerError(f"Failed to list raster names.")
