@@ -1,10 +1,13 @@
 import json
 import random
+import time
 import unittest
 from pathlib import Path
 
 import requests
 from common import get_server_url, setup_logger
+
+# python3 -m unittest -vv test_rotation.py
 
 
 class RotationTestCase(unittest.TestCase):
@@ -22,6 +25,25 @@ class RotationTestCase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.logger.info("tearDownClass")
+
+    def test_rotate(self):
+        """test rotate"""
+        time.sleep(1)
+        data = {"point": "120,45", "axis": "20,-45", "angle": 20}
+        r = requests.get(
+            self.SERVER_URL + "/rotation/rotate",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.assertEqual(r.status_code, 200)
+        if r.status_code == 200:
+            self.logger.info(
+                json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+            )
+            self.logger.info("PASSED! test rotate")
+        else:
+            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
     def test_get_plate_ids(self):
         """https://gws.gplates.org/rotation/get_plate_ids?time=100

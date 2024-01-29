@@ -69,7 +69,7 @@ def query(request, params={}):
 
                 return json.dumps(ret)
         # for multiple locations
-        elif lons is not None and lats is not None:
+        elif lons and lats:
             query_str = "   WITH pairs(x, y) AS (VALUES "
             for lon, lat in zip(lons, lats):
                 query_str += f"({lon},{lat}),"
