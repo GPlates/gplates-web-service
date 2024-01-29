@@ -94,6 +94,61 @@ class MiscTestCase(unittest.TestCase):
         else:
             raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
+    def test_paleo_labels(self):
+        """test paleo-labels"""
+        time.sleep(1)
+        data = {"time": 100, "model": "muller2019"}
+        r = requests.get(
+            self.SERVER_URL + "/earth/get_labels",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.assertEqual(r.status_code, 200)
+        if r.status_code == 200:
+            self.logger.info(
+                json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+            )
+            self.logger.info("PASSED! test_paleo_labels")
+        else:
+            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+    def test_paleo_cities_1(self):
+        """test paleo-cities test_paleo_cities"""
+        time.sleep(1)
+        data = {"time": 100, "model": "muller2019"}
+        r = requests.get(
+            self.SERVER_URL + "/earth/get_cities",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.assertEqual(r.status_code, 200)
+        if r.status_code == 200:
+            self.logger.info(
+                json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+            )
+            self.logger.info("PASSED! test_paleo_cities")
+        else:
+            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+    def test_paleo_cities_2(self):
+        """test paleo-cities get_present_day_cities"""
+        time.sleep(1)
+        r = requests.get(
+            self.SERVER_URL + "/earth/get_present_day_cities",
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.assertEqual(r.status_code, 200)
+        if r.status_code == 200:
+            self.logger.info(
+                json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+            )
+            self.logger.info("PASSED! test_paleo_cities_2")
+        else:
+            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
 
 if __name__ == "__main__":
     unittest.main()

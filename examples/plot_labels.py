@@ -29,6 +29,9 @@ def plot_labels(time, model):
     ax.gridlines()
 
     r = requests.get(f"{SERVER_URL}/reconstruct/coastlines/?model={model}&time={time}")
+    if r.status_code != 200:
+        raise Exception("Failed to get coastlines!")
+
     feature_collection = r.json()["features"]
     geoms = [shape(feature["geometry"]).buffer(0) for feature in feature_collection]
 
@@ -38,7 +41,7 @@ def plot_labels(time, model):
 
     r = requests.get(f"{SERVER_URL}/earth/get_labels?time={time}&model={model}")
     if r.status_code != 200:
-        raise Exception("Failed to get coastlines!")
+        raise Exception("Failed to get labels!")
     labels = r.json()
     names = []
     lons = []

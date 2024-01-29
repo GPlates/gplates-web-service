@@ -28,7 +28,7 @@ def load_cities():
             lons = []
             lats = []
             for city in city_data:
-                logger.debug(city)
+                # logger.debug(city)
                 names.append(city)
                 (lon, lat) = city_data[city]
                 lats.append(lat)
