@@ -18,6 +18,8 @@ def get_cities(request, params={}):
 
     :param time: paleo-age
     :param model: plate model name
+
+    TODO: get paleo-coordinates of cities for multiple times
     """
     time = parameter_helper.get_float(params, "time", 0.0)
     model = params.get("model", settings.MODEL_DEFAULT).lower()

@@ -6,8 +6,8 @@ import pygplates
 from django.conf import settings
 from django.http import HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
+from openapi_schema.reconstruct_points_schema import ReconPointsSchema
 from rest_framework.decorators import api_view, schema, throttle_classes
-from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.throttling import AnonRateThrottle
 from utils.access_control import get_client_ip
 from utils.decorators import check_get_post_request_and_get_params, return_HttpResponse
@@ -30,134 +30,6 @@ logger = logging.getLogger("default")
 access_logger = logging.getLogger("queue")
 
 
-class ReconPointsSchema(AutoSchema):
-    """
-    OpenAPI schema for reconstruct points method
-    """
-
-    def get_components(self, path, method):
-        """
-        override get_components
-        """
-        return super().get_components(path, method)
-
-    def get_operation(self, path, method):
-        """
-        override get_operation
-        """
-        operation = super().get_operation(path, method)
-        parameters = [
-            {
-                "name": "points",
-                "in": "query",
-                "description": """list of points long,lat comma separated coordinates of points 
-                    to be reconstructed [Required or use "lats" and "lons" parameters]""",
-                "schema": {"type": "number"},
-            },
-            {
-                "name": "lats",
-                "in": "query",
-                "description": """list of latitudes of input points [Required or use "points" parameter]""",
-                "schema": {"type": "number"},
-            },
-            {
-                "name": "lons",
-                "in": "query",
-                "description": """list of latitudes of input points [Required or use "points" parameter]""",
-                "schema": {"type": "number"},
-            },
-            {
-                "name": "time",
-                "in": "query",
-                "description": "time for reconstruction [required]",
-                "schema": {"type": "number"},
-            },
-            {
-                "name": "times",
-                "in": "query",
-                "description": "multiple times(mutually exclusive with time) for reconstruction [required]",
-                "schema": {"type": "list[float]"},
-            },
-            {
-                "name": "anchor_plate_id",
-                "in": "query",
-                "description": "integer value for reconstruction anchor plate id [default=0]",
-                "schema": {"type": "number"},
-            },
-            {
-                "name": "model",
-                "in": "query",
-                "description": "name for reconstruction model [defaults to default model from web service settings]",
-                "schema": {"type": "string"},
-            },
-            {
-                "name": "pids",
-                "in": "query",
-                "description": "specify plate id for each point to improve performance",
-                "schema": {"type": "list[int]"},
-            },
-            {
-                "name": "pid",
-                "in": "query",
-                "description": "specify plate id to improve performance. all points use the same plate id. mutually exclusive with pids",
-                "schema": {"type": "number"},
-            },
-            {
-                "name": "return_null_points",
-                "in": "query",
-                "description": "use null to indicate invalid coordinates. otherwise, use [999.99, 999.99]",
-                "schema": {"type": "boolean"},
-            },
-            {
-                "name": "fc",
-                "in": "query",
-                "description": "flag to return geojson feature collection",
-                "schema": {"type": "boolean"},
-            },
-            {
-                "name": "reverse",
-                "in": "query",
-                "description": "reverse reconstruct paleo-coordinates to present-day coordinates",
-                "schema": {"type": "boolean"},
-            },
-            {
-                "name": "ignore_valid_time",
-                "in": "query",
-                "description": "if this flag presents, the reconstruction will ignore the valid time constraint",
-                "schema": {"type": "boolean"},
-            },
-        ]
-        responses = {
-            "200": {
-                "description": "reconstructed coordinates in json or geojson format",
-                "content": {"application/json": {}},
-            }
-        }
-        my_operation = {
-            "parameters": parameters,
-            "responses": responses,
-        }
-        if method.lower() == "get":
-            my_operation[
-                "description"
-            ] = """http GET request to reconstruct points.  
-                For details and examples, go https://gwsdoc.gplates.org/reconstruction/reconstruct-points"""
-            my_operation["summary"] = "GET method to reconstruct points"
-        elif method.lower() == "post":
-            my_operation[
-                "description"
-            ] = """http POST request to reconstruct points. 
-                Basically the same as 'GET' methon, only allow user to send more points.
-                For details and examples, go https://gwsdoc.gplates.org/reconstruction/reconstruct-points"""
-            my_operation["summary"] = "POST method to reconstruct points"
-
-        else:
-            my_operation = {"summary": "Not implemented yet!"}
-
-        operation.update(my_operation)
-        return operation
-
-
 if settings.THROTTLE:
     throttle_class_list = [AnonRateThrottle]
 else:
@@ -174,6 +46,11 @@ def reconstruct(request, params={}):
     """http request to reconstruct points
 
     http://localhost:18000/reconstruct/reconstruct_points/?lats=50,10,50&lons=-100,160,100&time=100&model=PALEOMAP&return_null_points
+
+    :param format: return data format
+        1. geojson -- (default) return multipoint geometry. Use [999.99,999.99] for null points to create a valid geojson structure
+        2. feature_collection  -- return a geojson feature collection with multiple point features.
+        3. simple -- simple return the {"lons":[...], "lats":[...], "pids":[...], "begin_time":[...], "end_time":[...]}
     """
 
     access_logger.info(get_client_ip(request) + f" {request.get_full_path()}")
@@ -183,6 +60,10 @@ def reconstruct(request, params={}):
     return_feature_collection = get_bool(params, "fc", False)
     is_reverse = get_bool(params, "reverse", False)
     ignore_valid_time = get_bool(params, "ignore_valid_time", False)
+    format = params.get("fmt", "geojson").strip().lower()
+    return_simple_data = True if format == "simple" else False
+    if format == "feature_collection":
+        return_feature_collection = True
 
     try:
         point_features = []
@@ -258,17 +139,13 @@ def reconstruct(request, params={}):
     else:
         assigned_point_features = point_features
 
-    assigned_point_feature_collection = pygplates.FeatureCollection(
-        assigned_point_features
-    )
-
     ret = None
     # reconstruct the points
     if timef is not None:
         # for single time
         if is_reverse:
             lons, lats, pids, btimes, etimes = _reverse_reconstruct(
-                assigned_point_feature_collection,
+                assigned_point_features,
                 rotation_model,
                 timef,
                 anchor_plate_id,
@@ -276,36 +153,50 @@ def reconstruct(request, params={}):
             )
         else:
             lons, lats, pids, btimes, etimes = _reconstruct(
-                assigned_point_feature_collection,
+                assigned_point_features,
                 rotation_model,
                 timef,
                 anchor_plate_id,
             )
 
-        # prepare the response to be returned
-        if not return_feature_collection:
-            ret = _prepare_multipoint_ret(lons, lats, return_null_points)
-        else:
-            ret = _prepare_feature_collection_ret(lons, lats, pids, btimes, etimes)
+        ret = _prepare_return_data(
+            lons,
+            lats,
+            pids,
+            btimes,
+            etimes,
+            return_feature_collection,
+            return_simple_data,
+            return_null_points,
+        )
 
     elif len(times) > 0:
         # for multiple times
         ret = {}
+        time_strings = params["times"].split(",")
         for time in times:
             lons, lats, pids, btimes, etimes = _reconstruct(
-                assigned_point_feature_collection,
+                assigned_point_features,
                 rotation_model,
                 time,
                 anchor_plate_id,
             )
 
+            time_str = str(time)
+            for ts in time_strings:
+                if math.isclose(time, float(ts)):
+                    time_str = ts.strip()
             # prepare the response to be returned
-            if not return_feature_collection:
-                ret[str(time)] = _prepare_multipoint_ret(lons, lats, return_null_points)
-            else:
-                ret[str(time)] = _prepare_feature_collection_ret(
-                    lons, lats, pids, btimes, etimes
-                )
+            ret[time_str] = _prepare_return_data(
+                lons,
+                lats,
+                pids,
+                btimes,
+                etimes,
+                return_feature_collection,
+                return_simple_data,
+                return_null_points,
+            )
 
     else:
         return HttpResponseBadRequest(
@@ -315,8 +206,55 @@ def reconstruct(request, params={}):
     return json.dumps(round_floats(ret))
 
 
+def _prepare_return_data(
+    lons,
+    lats,
+    pids,
+    btimes,
+    etimes,
+    return_feature_collection,
+    return_simple_data,
+    return_null_points,
+):
+    """prepare the return data"""
+    if return_feature_collection:
+        return _prepare_feature_collection_ret(lons, lats, pids, btimes, etimes)
+    elif return_simple_data:
+        return _prepare_simle_ret(lons, lats, pids, btimes, etimes)
+    else:
+        return _prepare_multipoint_ret(lons, lats, return_null_points)
+
+
+def _prepare_simle_ret(lons, lats, pids, btimes, etimes):
+    """prepare the simple data structure to return"""
+    _btimes = []
+    for t in btimes:
+        if t is None:
+            _btimes.append(t)
+        elif math.isinf(t):
+            _btimes.append("distant past")
+        else:
+            _btimes.append(t)
+
+    _etimes = []
+    for t in etimes:
+        if t is None:
+            _etimes.append(t)
+        elif math.isinf(t):
+            _etimes.append("distant future")
+        else:
+            _etimes.append(t)
+    return {
+        "lons": lons,
+        "lats": lats,
+        "pids": pids,
+        "begin_time": _btimes,
+        "end_time": _etimes,
+    }
+
+
 def _reconstruct(
-    assigned_point_feature_collection,
+    assigned_point_features,
     rotation_model,
     timef: float,
     anchor_plate_id: int,
@@ -324,13 +262,13 @@ def _reconstruct(
     """reconstruct"""
     reconstructed_feature_geometries = []
     pygplates.reconstruct(
-        assigned_point_feature_collection,
+        assigned_point_features,
         rotation_model,
         reconstructed_feature_geometries,
         timef,
         anchor_plate_id=anchor_plate_id,
     )
-    point_count = len(assigned_point_feature_collection)
+    point_count = len(assigned_point_features)
     lons = point_count * [None]
     lats = point_count * [None]
     pids = point_count * [None]
@@ -342,6 +280,8 @@ def _reconstruct(
         idx = int(feature.get_name())
         lons[idx] = lon
         lats[idx] = lat
+    for idx in range(len(assigned_point_features)):
+        feature = assigned_point_features[idx]
         pids[idx] = feature.get_reconstruction_plate_id()
         btime, etime = feature.get_valid_time()
         btimes[idx] = btime
@@ -351,7 +291,7 @@ def _reconstruct(
 
 
 def _reverse_reconstruct(
-    assigned_point_feature_collection,
+    assigned_point_features,
     rotation_model,
     timef: float,
     anchor_plate_id: int,
@@ -362,18 +302,18 @@ def _reverse_reconstruct(
     # if user had provided the pids, we did not do partition. So, we need to call pygplates.reverse_reconstruct in that case.
     if user_provide_pids_flag:
         pygplates.reverse_reconstruct(
-            assigned_point_feature_collection,
+            assigned_point_features,
             rotation_model,
             timef,
             anchor_plate_id=anchor_plate_id,
         )
-    point_count = len(assigned_point_feature_collection)
+    point_count = len(assigned_point_features)
     lons = point_count * [None]
     lats = point_count * [None]
     pids = point_count * [None]
     btimes = point_count * [None]
     etimes = point_count * [None]
-    for feature in assigned_point_feature_collection:
+    for feature in assigned_point_features:
         lat, lon = feature.get_geometry().to_lat_lon()
         idx = int(feature.get_name())
         lons[idx] = lon
@@ -420,16 +360,14 @@ def _prepare_feature_collection_ret(lons, lats, pids, btimes, etimes):
             feat["geometry"] = {"type": "Point", "coordinates": [lon, lat]}
         else:
             feat["geometry"] = None
-        if begin_time is not None and end_time is not None:
-            # write out begin and end time
-            if math.isinf(begin_time):
-                begin_time = "distant past"
-            if math.isinf(end_time):
-                end_time = "distant future"
-            feat["properties"] = {"valid_time": [begin_time, end_time]}
-        else:
-            feat["properties"] = {}
+
+        # write out begin and end time
+        if begin_time is not None and math.isinf(begin_time):
+            begin_time = "distant past"
+        if end_time is not None and math.isinf(end_time):
+            end_time = "distant future"
+        feat["properties"] = {"valid_time": [begin_time, end_time]}
 
         feat["properties"]["pid"] = pid
         ret["features"].append(feat)
-        return ret
+    return ret

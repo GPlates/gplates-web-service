@@ -86,5 +86,3 @@ jobs:
             docker buildx imagetools create -t ghcr.io/gplates/postgis:${{github.ref_name}} ghcr.io/gplates/postgis:amd64-${{github.ref_name}} ghcr.io/gplates/postgis:arm64-${{github.ref_name}}
             docker buildx imagetools create -t ghcr.io/gplates/gws:${{github.ref_name}} ghcr.io/gplates/gws:amd64-${{github.ref_name}} ghcr.io/gplates/gws:arm64-${{github.ref_name}}
             
-#docker buildx imagetools create -t gplates/postgis:latest gplates/postgis:amd64-${{github.ref_name}} gplates/postgis:arm64-${{github.ref_name}}
-#docker buildx imagetools create -t gplates/gws:latest gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}

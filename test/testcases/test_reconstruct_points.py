@@ -125,21 +125,18 @@ class ReconstructPointsTestCase(unittest.TestCase):
         )
         try:
             gws_return_data = json.loads(str(r.text))
-            self.logger.info(
-                json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
-            )
+            self.logger.info(json.dumps(gws_return_data, sort_keys=True, indent=4))
         except Exception as e:
             self.logger.info(r.text)
             raise e
         self.assertEqual(r.status_code, 200)
 
-        times = [float(t) for t in self.data_3["times"].split(",")]
-        for time in times:
+        for time in self.data_3["times"].split(","):
             rlons, rlats = _reconstruct(
                 self.data_3["lons"].split(","),
                 self.data_3["lats"].split(","),
                 self.data_3["model"],
-                time,
+                float(time),
             )
             for i in range(len(rlons)):
                 rlon = 999.99 if rlons[i] is None else rlons[i]
@@ -147,14 +144,14 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
                 self.assertTrue(
                     math.isclose(
-                        gws_return_data[str(time)]["coordinates"][int(i)][0],
+                        gws_return_data[time.strip()]["coordinates"][int(i)][0],
                         rlon,
                         abs_tol=0.0001,
                     )
                 )
                 self.assertTrue(
                     math.isclose(
-                        gws_return_data[str(time)]["coordinates"][int(i)][1],
+                        gws_return_data[time.strip()]["coordinates"][int(i)][1],
                         rlat,
                         abs_tol=0.0001,
                     )
@@ -253,6 +250,40 @@ class ReconstructPointsTestCase(unittest.TestCase):
         self.logger.info(r.text)
         self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
         self.assertEqual(r.status_code, 200)
+
+    def test_get_simple_return_data(self):
+        data = copy.copy(self.data_3)
+        data["fmt"] = "simple"
+
+        r = requests.get(
+            self.SERVER_URL + "/reconstruct/reconstruct_points/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info("test_get_simple_return_data: " + r.text)
+        gws_return_data = json.loads(str(r.text))
+        self.logger.info(json.dumps(gws_return_data, sort_keys=True, indent=4))
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(
+            len(data["times"].split(",")), len(list(gws_return_data.keys()))
+        )
+        for key in gws_return_data:
+            self.assertEqual(
+                len(data["lons"].split(",")), len(gws_return_data[key]["lons"])
+            )
+            self.assertEqual(
+                len(data["lons"].split(",")), len(gws_return_data[key]["lats"])
+            )
+            self.assertEqual(
+                len(data["lons"].split(",")), len(gws_return_data[key]["pids"])
+            )
+            self.assertEqual(
+                len(data["lons"].split(",")), len(gws_return_data[key]["begin_time"])
+            )
+            self.assertEqual(
+                len(data["lons"].split(",")), len(gws_return_data[key]["end_time"])
+            )
 
 
 def _reconstruct(lons, lats, model, time):
