@@ -173,6 +173,7 @@ def reconstruct(request, params={}):
     elif len(times) > 0:
         # for multiple times
         ret = {}
+        time_strings = params["times"].split(",")
         for time in times:
             lons, lats, pids, btimes, etimes = _reconstruct(
                 assigned_point_features,
@@ -181,8 +182,12 @@ def reconstruct(request, params={}):
                 anchor_plate_id,
             )
 
+            time_str = str(time)
+            for ts in time_strings:
+                if math.isclose(time, float(ts)):
+                    time_str = ts.strip()
             # prepare the response to be returned
-            ret[str(time)] = _prepare_return_data(
+            ret[time_str] = _prepare_return_data(
                 lons,
                 lats,
                 pids,
