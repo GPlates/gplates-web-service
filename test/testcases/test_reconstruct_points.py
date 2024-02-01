@@ -66,6 +66,8 @@ class ReconstructPointsTestCase(unittest.TestCase):
             lons, lats, self.data_1["model"], self.data_1["time"]
         )
         for i in range(len(rlons)):
+            self.logger.info(f"{gws_return_data['coordinates'][int(i)][0]}, {rlons[i]}")
+            self.logger.info(f"{gws_return_data['coordinates'][int(i)][1]}, {rlats[i]}")
             self.assertTrue(
                 math.isclose(
                     gws_return_data["coordinates"][int(i)][0], rlons[i], abs_tol=0.0001

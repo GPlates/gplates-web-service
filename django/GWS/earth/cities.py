@@ -38,15 +38,15 @@ def get_cities(request, params={}):
 
     # create features
     features = []
-    for name, lon, lat, pid_and_time in zip(
-        city_data["names"],
+    count = 0
+    for lon, lat, pid_and_time in zip(
         city_data["lons"],
         city_data["lats"],
         city_data["pids"][model],
     ):
         f = pygplates.Feature()
         f.set_geometry(pygplates.PointOnSphere(lat, lon))
-        f.set_name(name)
+        f.set_name(str(count))
         f.set_reconstruction_plate_id(pid_and_time[0])
         if not isinstance(pid_and_time[1], float):
             begin_time = pygplates.GeoTimeInstant.create_distant_past()
@@ -59,6 +59,7 @@ def get_cities(request, params={}):
             end_time = pid_and_time[2]
         f.set_valid_time(begin_time, end_time)
         features.append(f)
+        count += 1
 
     # reconstruct
     reconstructed_feature_geometries = []
@@ -69,12 +70,13 @@ def get_cities(request, params={}):
         time,
     )
 
-    paleo_lons = []
-    paleo_lats = []
+    paleo_lons = len(city_data["names"]) * [None]
+    paleo_lats = len(city_data["names"]) * [None]
     for rfg in reconstructed_feature_geometries:
         lat, lon = rfg.get_reconstructed_geometry().to_lat_lon_list()[0]
-        paleo_lons.append(lon)
-        paleo_lats.append(lat)
+        int(rfg.get_feature().get_name())
+        paleo_lons[int(rfg.get_feature().get_name())] = lon
+        paleo_lats[int(rfg.get_feature().get_name())] = lat
 
     return json.dumps(
         round_floats(

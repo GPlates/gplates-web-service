@@ -123,14 +123,14 @@ class MiscTestCase(unittest.TestCase):
             verify=False,
             proxies=self.proxies,
         )
+        self.logger.info(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
-        if r.status_code == 200:
-            self.logger.info(
-                json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
-            )
-            self.logger.info("PASSED! test_paleo_cities")
-        else:
-            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+        return_data = json.loads(str(r.text))
+        self.logger.info(json.dumps(return_data, sort_keys=True, indent=4))
+        self.assertEqual(len(return_data["names"]), len(return_data["lons"]))
+        self.assertEqual(len(return_data["names"]), len(return_data["lats"]))
+        self.logger.info("PASSED! test_paleo_cities")
 
     def test_paleo_cities_2(self):
         """test paleo-cities get_present_day_cities"""
