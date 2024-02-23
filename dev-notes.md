@@ -18,3 +18,22 @@
 ### Logging
 
 You need to specify a writable folder for the log files in settings.py. By default, the folder is /gws/log.
+
+### Load Balancing
+
+- `sudo a2enmod proxy_balancer`
+- `sudo a2enmod lbmethod_bytraffic`
+- `sudo a2enmod lbmethod_byrequests`
+- `sudo systemctl restart apache2`
+
+```
+<proxy balancer://serverpool>
+    BalancerMember http://localhost:18000
+    BalancerMember https://gws-nci.gplates.org
+    ProxySet lbmethod=bytraffic
+</proxy>
+```
+```
+ProxyPass / "balancer://serverpool/"
+ProxyPassReverse / "balancer://serverpool/"
+```

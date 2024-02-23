@@ -5,9 +5,8 @@ If you would like to try the GPlates Web Service very quickly, follow the steps 
 - run the with docker-compose
 
     - `git clone https://github.com/GPlates/gplates-web-service gplates-web-service.git`
-    - `cd gplates-web-service.git`
-    - `cd docker`
-    - `docker-compose up -d`
+    - `cd gplates-web-service.git/docker`
+    - `docker compose up -d`
 
 - verify the service is up and running.
 
@@ -19,8 +18,8 @@ If you would like to try the GPlates Web Service very quickly, follow the steps 
 
 - `git clone https://github.com/GPlates/gplates-web-service gplates-web-service.git`
 - `cd gplates-web-service.git/docker`
-- `docker-compose run --rm --service-ports gws-postgis`
-- `docker-compose run --rm --service-ports redis`
+- `docker compose run --rm --service-ports gws-postgis`
+- `docker compose run --rm --service-ports redis`
 - ``docker run -it --rm -v `pwd`:/gws -p 18000:80 gplates/gws``
 - verify the service is up and running with wget, curl or web browser
 
