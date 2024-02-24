@@ -4,6 +4,8 @@ services:
   gws-postgis:
     image: gplates/postgis
     hostname: gws-postgis
+    networks:
+      - gplates-net
     environment:
       - POSTGRES_PASSWORD="this is not a real password! go away!"
     restart: on-failure
@@ -16,6 +18,8 @@ services:
   gws:
     image: gplates/gws
     hostname: gws
+    networks:
+      - gplates-net
     depends_on:
       - gws-postgis
       - gws-redis
@@ -31,10 +35,16 @@ services:
   gws-redis:
     image: redis
     hostname: gws-redis
+    networks:
+      - gplates-net
     restart: on-failure
     healthcheck:
       test: redis-cli -h gws-redis ping  
       interval: 1m30s
       timeout: 10s
       retries: 3
+
+networks:
+  gplates-net:
+    driver: bridge
 

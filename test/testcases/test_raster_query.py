@@ -59,7 +59,9 @@ class RasterQueryCase(unittest.TestCase):
             logging.info(r.text)
             self.logger.info(f"PASSED! raster query ({r.text})")
         else:
-            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+            raise Exception(
+                f"FAILED: {r.status_code}  {r.request.url} {str(r.request.headers)}"
+            )
 
     def test_raster_query_multiple_locations_2(self):
         # test raster query multiple locations

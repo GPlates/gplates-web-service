@@ -14,13 +14,16 @@ If you would like to try the GPlates Web Service very quickly, follow the steps 
     - or `curl "http://localhost:18000/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" `
     - or use web browser if you have GUI
 
+Congratulations! At this point, you should have already got a basic running server.
+
 ## 👉 Use the latest code from github.com to run the service 
 
 - `git clone https://github.com/GPlates/gplates-web-service gplates-web-service.git`
 - `cd gplates-web-service.git/docker`
-- `docker compose run --rm --service-ports gws-postgis`
-- `docker compose run --rm --service-ports redis`
-- ``docker run -it --rm -v `pwd`:/gws -p 18000:80 gplates/gws``
+- `docker compose run --rm -d --service-ports gws-postgis`
+- `docker compose run --rm -d --service-ports gws-redis`
+- `cd .. && cp django/GWS/env.template .env`
+- ``docker run -d -v `pwd`:/gws -p 18000:80  --network docker_gplates-net gplates/gws``
 - verify the service is up and running with wget, curl or web browser
 
 Alternatively, 
