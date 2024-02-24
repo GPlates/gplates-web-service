@@ -7,7 +7,7 @@ volumes:
     name: gws-code
   gws-db-data:
     external: true
-    name: gws-db-data-new
+    name: gws-db-data
 
 services:
   gws-postgis:
@@ -64,4 +64,4 @@ services:
 
 networks:
   gplates-net:
-    external: true
+    driver: bridge

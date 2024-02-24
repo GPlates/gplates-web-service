@@ -14,7 +14,7 @@ If you would like to try the GPlates Web Service very quickly, follow the steps 
     - or `curl "http://localhost:18000/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012" `
     - or use web browser if you have GUI
 
-Congratulations! At this point, you should have already got a basic running server.
+👏👏👏Congratulations! At this point, you should have already got a basic running server.
 
 ## 👉 Use the latest code from github.com to run the service 
 
@@ -23,12 +23,25 @@ Congratulations! At this point, you should have already got a basic running serv
 - `docker compose run --rm -d --service-ports gws-postgis`
 - `docker compose run --rm -d --service-ports gws-redis`
 - `cd .. && cp django/GWS/env.template .env`
-- ``docker run -d -v `pwd`:/gws -p 18000:80  --network docker_gplates-net gplates/gws``
-- verify the service is up and running with wget, curl or web browser
+- ``docker run -d -v `pwd`:/gws -p 18000:80 --network docker_gplates-net gplates/gws``
+- verify the service is up and running with wget, curl or web browser (see above)
 
-Alternatively, 
+**Alternatively**, you can write a customized docker-compose.yml, like Michael Chin did. See [docker-compose-mc.yml](docker-compose-mc.yml)
 
-you can write a customized docker-compose.yml, like Michael Chin did. See [docker-compose-mc.yml](docker-compose-mc.yml)
+☣ You need to change the folder paths in the steps below according to your computer setup. 
+
+- `docker volume create --name gws-code --opt type=none --opt device=/home/ubuntu/gplates-web-service.git --opt o=bind`
+- `docker volume create --name gws-db-data --opt type=none --opt device=/home/ubuntu/gws-db-data --opt o=bind`
+- `cd /home/ubuntu/gplates-web-service.git && docker compose -f ./docker/docker-compose-mc.yml up -d`
+
+👀 👀 You may not have to do the steps below. But sometimes you do. I did not have to do this on my Ubuntu server. But I had to do it on my Macbook. Attention, you need to change the docker container name accordingly.
+
+- `docker exec -ti docker-gws-postgis-1 /bin/bash`
+- `chown postgres:postgres -R /var/lib/postgresql/15/main/`
+- `su postgres`
+- `/usr/lib/postgresql/15/bin/initdb -D /var/lib/postgresql/15/main`
+- `cd /workspace/ && ./init-db.sh`
+- continue to restore the database from gplates.sql
 
 ## 👀 Warning: The notes from this line below are meant for Michael Chin. Other people might fail to understand them. Ask him! 👀 
 
@@ -137,7 +150,7 @@ create volume from local folder:
 
 `docker volume create --name gws-code --opt type=none --opt device=/Users/mchin/workspace/gplates-web-service --opt o=bind`
 
-⚠ when copying DB data from other computer, log into PostGIS docker container and change the owner and permission accordingly. Otherwise the Postgres would not start.
+☣ when copying DB data from other computer, log into PostGIS docker container and change the owner and permission accordingly. Otherwise the Postgres would not start.
 
 start and stop
 
@@ -161,7 +174,7 @@ Test the database(on host computer): `psql -d gplates -h localhost -U gplates`
 
 ### Run PostGIS in production env
 
-`docker run --restart always --name gws-postgis -d -v /Users/mchin/workspaces/gws-db-data:/var/lib/postgresql/12/main gplates/postgis`
+`docker run --restart always --name gws-postgis -d -v /Users/mchin/workspaces/gws-db-data:/var/lib/postgresql/15/main gplates/postgis`
 
 ### Log into the running container
 

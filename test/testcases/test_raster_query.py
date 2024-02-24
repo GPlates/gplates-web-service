@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import json
 import logging
 import time
@@ -40,7 +41,9 @@ class RasterQueryCase(unittest.TestCase):
             logging.info(r.text)
             self.logger.info(f"PASSED! raster query ({r.text})")
         else:
-            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+            raise Exception(
+                f"FAILED: r.status_code r.request.url str(r.request.headers)"
+            )
 
     def test_raster_query_multiple_locations_1(self):
         # test raster query multiple locations
@@ -80,7 +83,9 @@ class RasterQueryCase(unittest.TestCase):
             logging.info(r.text)
             self.logger.info(f"PASSED! raster query ({r.text})")
         else:
-            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+            raise Exception(
+                f"FAILED: r.status_code r.request.url str(r.request.headers)"
+            )
 
     def test_raster_query_multiple_locations_3(self):
         # test raster query multiple locations
@@ -98,7 +103,9 @@ class RasterQueryCase(unittest.TestCase):
             logging.info(r.text)
             self.logger.info(f"PASSED! raster query ({r.text})")
         else:
-            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+            raise Exception(
+                f"FAILED: r.status_code r.request.url str(r.request.headers)"
+            )
 
     def test_list_raster_names(self):
         # test list raster names
@@ -112,7 +119,9 @@ class RasterQueryCase(unittest.TestCase):
             logging.info(r.text)
             self.logger.info(f"PASSED! raster list name ({r.text})")
         else:
-            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+            raise Exception(
+                f"FAILED: r.status_code r.request.url str(r.request.headers)"
+            )
 
 
 if __name__ == "__main__":

@@ -37,3 +37,5 @@ You need to specify a writable folder for the log files in settings.py. By defau
 ProxyPass / "balancer://serverpool/"
 ProxyPassReverse / "balancer://serverpool/"
 ```
+
+https://gws.gplates.org/lb-manager
