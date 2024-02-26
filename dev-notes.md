@@ -39,3 +39,8 @@ ProxyPassReverse / "balancer://serverpool/"
 ```
 
 https://gws.gplates.org/lb-manager
+
+### Docker
+
+- `docker compose run --rm -d --service-ports gws-postgis`
+- ``docker run -d -v `pwd`:/gws -p 18000:80 --network docker_gplates-net --restart always gplates/gws``
