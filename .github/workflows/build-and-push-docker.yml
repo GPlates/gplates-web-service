@@ -15,6 +15,15 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       -
+        name: Decide the docker image version number
+        run: |
+            if [[ -f build-docker-images.txt ]]; then
+              echo "DOCKER_IMAGE_TAG=$( tail -n 1 build-docker-images.txt )" >> $GITHUB_ENV
+            else
+              echo "DOCKER_IMAGE_TAG=${{ github.ref_name }}" >> $GITHUB_ENV
+            fi
+            echo ${{ env.DOCKER_IMAGE_TAG }}
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       -
@@ -26,7 +35,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Login to GitHub Container Registry
+      - 
+        name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -42,8 +52,8 @@ jobs:
           platforms: linux/amd64
           provenance: false
           tags: |
-            gplates/gws:amd64-${{github.ref_name}}
-            ghcr.io/gplates/gws:amd64-${{github.ref_name}}  
+            gplates/gws:amd64-${{ env.DOCKER_IMAGE_TAG }}
+            ghcr.io/gplates/gws:amd64-${{ env.DOCKER_IMAGE_TAG }} 
       -
         name: Build and push GWS arm64
         uses: docker/build-push-action@v5
@@ -54,8 +64,8 @@ jobs:
           platforms: linux/arm64
           provenance: false
           tags: |
-            gplates/gws:arm64-${{github.ref_name}}
-            ghcr.io/gplates/gws:arm64-${{github.ref_name}}
+            gplates/gws:arm64-${{ env.DOCKER_IMAGE_TAG }}
+            ghcr.io/gplates/gws:arm64-${{ env.DOCKER_IMAGE_TAG }}
       -
         name: Build and push PostGIS amd64
         uses: docker/build-push-action@v5
@@ -66,8 +76,8 @@ jobs:
           platforms: linux/amd64
           provenance: false
           tags: |
-            gplates/postgis:amd64-${{github.ref_name}}
-            ghcr.io/gplates/postgis:amd64-${{github.ref_name}}
+            gplates/postgis:amd64-${{ env.DOCKER_IMAGE_TAG }}
+            ghcr.io/gplates/postgis:amd64-${{ env.DOCKER_IMAGE_TAG }}
       -
         name: Build and push PostGIS arm64
         uses: docker/build-push-action@v5
@@ -78,22 +88,22 @@ jobs:
           platforms: linux/arm64
           provenance: false
           tags: |
-            gplates/postgis:arm64-${{github.ref_name}}
-            ghcr.io/gplates/postgis:arm64-${{github.ref_name}}
+            gplates/postgis:arm64-${{ env.DOCKER_IMAGE_TAG }}
+            ghcr.io/gplates/postgis:arm64-${{ env.DOCKER_IMAGE_TAG }}
       -
         name: Create cross-platform images
         run: |
-            docker buildx imagetools create -t gplates/postgis:${{github.ref_name}} gplates/postgis:amd64-${{github.ref_name}} gplates/postgis:arm64-${{github.ref_name}}
-            docker buildx imagetools create -t gplates/gws:${{github.ref_name}} gplates/gws:amd64-${{github.ref_name}} gplates/gws:arm64-${{github.ref_name}}
-            docker buildx imagetools create -t ghcr.io/gplates/postgis:${{github.ref_name}} ghcr.io/gplates/postgis:amd64-${{github.ref_name}} ghcr.io/gplates/postgis:arm64-${{github.ref_name}}
-            docker buildx imagetools create -t ghcr.io/gplates/gws:${{github.ref_name}} ghcr.io/gplates/gws:amd64-${{github.ref_name}} ghcr.io/gplates/gws:arm64-${{github.ref_name}}
+            docker buildx imagetools create -t gplates/postgis:${{ env.DOCKER_IMAGE_TAG }} gplates/postgis:amd64-${{ env.DOCKER_IMAGE_TAG }} gplates/postgis:arm64-${{ env.DOCKER_IMAGE_TAG }}
+            docker buildx imagetools create -t gplates/gws:${{ env.DOCKER_IMAGE_TAG }} gplates/gws:amd64-${{ env.DOCKER_IMAGE_TAG }} gplates/gws:arm64-${{ env.DOCKER_IMAGE_TAG }}
+            docker buildx imagetools create -t ghcr.io/gplates/postgis:${{ env.DOCKER_IMAGE_TAG }} ghcr.io/gplates/postgis:amd64-${{ env.DOCKER_IMAGE_TAG }} ghcr.io/gplates/postgis:arm64-${{ env.DOCKER_IMAGE_TAG }}
+            docker buildx imagetools create -t ghcr.io/gplates/gws:${{ env.DOCKER_IMAGE_TAG }} ghcr.io/gplates/gws:amd64-${{ env.DOCKER_IMAGE_TAG }} ghcr.io/gplates/gws:arm64-${{ env.DOCKER_IMAGE_TAG }}
       -     
         name: Create the latest tags
         if: 
         run: |
             if [[ -f build-docker-images.txt ]]; then
-              docker buildx imagetools create -t gplates/postgis:latest gplates/postgis:amd64-${{ github.ref_name }} gplates/postgis:arm64-${{ github.ref_name }}
-              docker buildx imagetools create -t gplates/gws:latest gplates/gws:amd64-${{ github.ref_name }} gplates/gws:arm64-${{ github.ref_name }}
-              docker buildx imagetools create -t ghcr.io/gplates/postgis:latest ghcr.io/gplates/postgis:amd64-${{github.ref_name}} ghcr.io/gplates/postgis:arm64-${{github.ref_name}}
-              docker buildx imagetools create -t ghcr.io/gplates/gws:latest ghcr.io/gplates/gws:amd64-${{github.ref_name}} ghcr.io/gplates/gws:arm64-${{github.ref_name}} 
+              docker buildx imagetools create -t gplates/postgis:latest gplates/postgis:amd64-${{ env.DOCKER_IMAGE_TAG }} gplates/postgis:arm64-${{ env.DOCKER_IMAGE_TAG }}
+              docker buildx imagetools create -t gplates/gws:latest gplates/gws:amd64-${{ env.DOCKER_IMAGE_TAG }} gplates/gws:arm64-${{ env.DOCKER_IMAGE_TAG }}
+              docker buildx imagetools create -t ghcr.io/gplates/postgis:latest ghcr.io/gplates/postgis:amd64-${{ env.DOCKER_IMAGE_TAG }} ghcr.io/gplates/postgis:arm64-${{ env.DOCKER_IMAGE_TAG }}
+              docker buildx imagetools create -t ghcr.io/gplates/gws:latest ghcr.io/gplates/gws:amd64-${{ env.DOCKER_IMAGE_TAG }} ghcr.io/gplates/gws:arm64-${{ env.DOCKER_IMAGE_TAG }} 
             fi
