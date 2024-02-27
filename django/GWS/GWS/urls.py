@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
@@ -20,13 +21,15 @@ from rest_framework.schemas import get_schema_view
 
 from doc import views as doc_views
 
+from .version import VERSION, get_version
+
 urlpatterns = [
     path(
         "openapi",
         get_schema_view(
             title="GPlates Web API",
             description="the API allows users to access pygplates functionalities over Internet",
-            version="1.0.0",
+            version=VERSION,
         ),
         name="openapi-schema",
     ),
@@ -37,6 +40,11 @@ urlpatterns = [
             extra_context={"schema_url": "openapi-schema"},
         ),
         name="swagger-ui",
+    ),
+    path(
+        "version/",
+        get_version,
+        name="get_version",
     ),
     re_path(r"^$", doc_views.index),
     re_path(r"^examples/?$", doc_views.examples),

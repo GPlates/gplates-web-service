@@ -11,21 +11,21 @@ new_version = sys.argv[1]
 
 this_file_path = os.path.dirname(__file__)
 
-# 1. update version number in django/GWS/GWS/__init__.py
+# 1. update version number in django/GWS/GWS/version.py
 # 2. commit change, create a tag and push changes and the new tag
 
 lines = []
-with open(f"{this_file_path}/../django/GWS/GWS/__init__.py", "r") as f:
+with open(f"{this_file_path}/../django/GWS/GWS/version.py", "r") as f:
     for line in f:
-        if line.startswith("__version__"):
-            lines.append(f'__version__ = "{new_version}"\n')
+        if line.startswith("VERSION"):
+            lines.append(f'VERSION = "{new_version}"\n')
         else:
             lines.append(line)
 
-with open(f"{this_file_path}/../django/GWS/GWS/__init__.py", "w") as of:
+with open(f"{this_file_path}/../django/GWS/GWS/version.py", "w") as of:
     of.writelines(lines)
 
-subprocess.call(["git", "add", f"{this_file_path}/../django/GWS/GWS/__init__.py"])
+subprocess.call(["git", "add", f"{this_file_path}/../django/GWS/GWS/version.py"])
 
 files = [
     f"{this_file_path}/../docker/gws-amd64/Dockerfile",
