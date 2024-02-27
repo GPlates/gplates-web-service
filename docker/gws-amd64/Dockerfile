@@ -10,7 +10,7 @@
 FROM ubuntu:22.04
 
 LABEL org.opencontainers.image.authors="michael.chin@sydney.edu.au"
-LABEL version="0.1.9"
+LABEL version="v0.2.1"
 
 RUN apt-get update -y
 ARG DEBIAN_FRONTEND=noninteractive
