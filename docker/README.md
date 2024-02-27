@@ -38,6 +38,12 @@ You also need Redis image.
 
 - `docker pull redis`
 
+Use the "build-docker-images" branch to build Docker images.
+
+- merge master branch to the "build-docker-images" branch
+- update build-docker-images.txt in the "build-docker-images" branch
+- push
+
 ## ☣☣☣ Warning: The notes from this line below are meant for Michael Chin. Other people might fail to understand them. Ask him! 👀 
 
 ## 👉 Setup PostGIS database
