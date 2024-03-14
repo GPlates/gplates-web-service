@@ -10,11 +10,14 @@ from openapi_schema.reconstruct_points_schema import ReconPointsSchema
 from rest_framework.decorators import api_view, schema, throttle_classes
 from rest_framework.throttling import AnonRateThrottle
 from utils.access_control import get_client_ip
-from utils.decorators import check_get_post_request_and_get_params, return_HttpResponse
+from utils.decorators import (
+    check_get_post_request_and_get_params,
+    get_reconstruction_times,
+    return_HttpResponse,
+)
 from utils.parameter_helper import (
     get_anchor_plate_id,
     get_bool,
-    get_float,
     get_int,
     get_lats_lons,
     get_value_list,
@@ -41,19 +44,25 @@ else:
 @throttle_classes(throttle_class_list)
 @schema(ReconPointsSchema())
 @check_get_post_request_and_get_params
+@get_reconstruction_times
 @return_HttpResponse()
-def reconstruct(request, params={}):
+def reconstruct(request, params={}, times=[]):
     """http request to reconstruct points
+
+    this docstring is for developers only. the docs for users are in openapi_schema folder.
 
     http://localhost:18000/reconstruct/reconstruct_points/?lats=50,10,50&lons=-100,160,100&time=100&model=PALEOMAP&return_null_points
 
-    :param format: return data format
+    http://localhost:18000/reconstruct/reconstruct_points/?lats=50,10,50&lons=-100,160,100&times=100,50,0&model=PALEOMAP&return_null_points
+
+    :param fmt: return data format
         1. geojson -- (default) return multipoint geometry. Use [999.99,999.99] for null points to create a valid geojson structure
         2. feature_collection  -- return a geojson feature collection with multiple point features.
         3. simple -- simple return the {"lons":[...], "lats":[...], "pids":[...], "begin_time":[...], "end_time":[...]}
     """
 
     access_logger.info(get_client_ip(request) + f" {request.get_full_path()}")
+    logger.debug(f"the time(s) is/are {times}.")
 
     model = params.get("model", settings.MODEL_DEFAULT)
     return_null_points = get_bool(params, "return_null_points", False)
@@ -69,28 +78,28 @@ def reconstruct(request, params={}):
         point_features = []
         p_index = 0
         rotation_model = get_rotation_model(model)
-        timef = get_float(params, "time", None)
+        single_time = times[0] if len(times) == 1 else None  # for single time
         anchor_plate_id = get_anchor_plate_id(params)
         lats, lons = get_lats_lons(params)
         assert len(lats) == len(lons)
         pids = get_value_list(params, "pids", int)
+        if len(pids) > 0 and len(pids) != len(lats):
+            raise Exception(
+                f"The length of 'pids' must be the same with the length of 'lats', 'lons' or 'points'. {len(pids)}!={len(lats)}"
+            )
+
         pid = get_int(params, "pid", None)
         if pid is not None and len(pids) > 0:
             raise Exception(
                 "The parameter 'pid' and 'pids' are mutually exclusive. Only one of them is allowed. "
             )
-        if len(pids) != len(lats):
+        if len(pids) == 0:
+            # set the pids to all None or the single same value
             pids = len(lats) * [pid]
-        times = get_value_list(params, "times", float)
 
-        if timef is not None and len(times) > 0:
+        if is_reverse and single_time is None:
             raise Exception(
-                "The parameter 'time' and 'times' are mutually exclusive. Only one of them is allowed. "
-            )
-
-        if is_reverse and timef is None:
-            raise Exception(
-                "The parameter 'time' must be present for 'reverse reconstruct'. The 'times' does not make sense for 'reverse reconstruct'. "
+                "The parameter 'time' must present for 'reverse reconstruct'. The 'times' does not make sense for 'reverse reconstruct'. "
             )
 
         # create point features from input coordinates
@@ -103,9 +112,9 @@ def reconstruct(request, params={}):
             point_features.append(point_feature)
             p_index += 1
     except pygplates.InvalidLatLonError as e:
-        return HttpResponseBadRequest(f"Invalid longitude or latitude ({e}).")
+        raise Exception(f"Invalid longitude or latitude ({e}).")
     except UnrecognizedModel as e:
-        return HttpResponseBadRequest(
+        raise Exception(
             f"""Unrecognized Rotation Model: {model}.<br> 
         Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
         to find all the names of available models."""
@@ -114,7 +123,7 @@ def reconstruct(request, params={}):
         return HttpResponseBadRequest(str(e))
 
     # assign plate-ids to points using static polygons
-    partition_time = timef if is_reverse else 0.0
+    partition_time = single_time if is_reverse else 0.0
 
     #
     # TODO: cache plate id(s)
@@ -141,13 +150,13 @@ def reconstruct(request, params={}):
 
     ret = None
     # reconstruct the points
-    if timef is not None:
+    if single_time is not None:
         # for single time
         if is_reverse:
             lons, lats, pids, btimes, etimes = _reverse_reconstruct(
                 assigned_point_features,
                 rotation_model,
-                timef,
+                single_time,
                 anchor_plate_id,
                 not all(id is None for id in pids),
             )
@@ -155,7 +164,7 @@ def reconstruct(request, params={}):
             lons, lats, pids, btimes, etimes = _reconstruct(
                 assigned_point_features,
                 rotation_model,
-                timef,
+                single_time,
                 anchor_plate_id,
             )
 
@@ -170,7 +179,7 @@ def reconstruct(request, params={}):
             return_null_points,
         )
 
-    elif len(times) > 0:
+    elif len(times) > 1:
         # for multiple times
         ret = {}
         time_strings = params["times"].split(",")
@@ -182,6 +191,7 @@ def reconstruct(request, params={}):
                 anchor_plate_id,
             )
 
+            # to make sure the time string in return data is the same as user specified
             time_str = str(time)
             for ts in time_strings:
                 if math.isclose(time, float(ts)):
@@ -200,7 +210,7 @@ def reconstruct(request, params={}):
 
     else:
         return HttpResponseBadRequest(
-            f"Either parameter 'time' or 'times' is required. One of the two parameters must present."
+            f"The parameters 'time' and 'times' are mutually exclusive and required. One and only one of the two parameters must present."
         )
 
     return json.dumps(round_floats(ret))

@@ -13,7 +13,7 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 - cross-platform and language-independent -- the service can be used in any programming languange and on any operating system
 - scalability -- offload workload to servers, cluster, grid or Cloud to improve performance and support more concurrent users
 - automated plate model management -- provide plenty plate models out of the box
-- easy software deployment and upgrade -- avoid the hassle of software installation
+- easy software deployment and upgrade -- avoid the hassle of software installation and upgrade
 
 ## 🚀Quick start
 
@@ -23,7 +23,7 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 - Step 2: done and check the paleo-coordinates in the web browser
 
 ```
-{"type": "MultiPoint", "coordinates": [[84.9862, 59.2575], [123.374, -65.7611]]}
+{"type": "MultiPoint", "coordinates": [[62.6938, 58.8486], [126.7291, -61.6615]]}
 ```
 
 The GPlates Web Service server returns a valid GeoJSON MultiPoint geometry that contains the paleo-coordinates of two present-day locations at 140Ma. The paleo-coordinates were calculated according to the plate reconstruction model [Muller2019](https://www.earthbyte.org/muller-et-al-2019-deforming-plate-reconstruction-and-seafloor-age-grids-tectonics/). 

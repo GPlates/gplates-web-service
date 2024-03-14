@@ -19,6 +19,8 @@ TOPOLOGIES_FC = FEATURE_COLLECTION_CACHE["Topologies"]
 CONTINENTAL_POLYGONS_FC = FEATURE_COLLECTION_CACHE["ContinentalPolygons"]
 COASTLINES_LOW_FC = FEATURE_COLLECTION_CACHE["CoastlinesLow"]
 
+VALID_TIME_CACHE = {}
+
 
 def get_coastline_low(model_name):
     if model_name in COASTLINES_LOW_FC:
@@ -112,16 +114,22 @@ def get_model_name_list(folder):
 
 
 def is_time_valid_for_model(model_name, time):
-    """returns True if the time is within the valid time of specified model"""
+    """returns True if the time is within the valid time of the specified model"""
 
-    plate_model = PlateModel(
-        model_name, data_dir=settings.MODEL_REPO_DIR, readonly=True
-    )
+    if model_name not in VALID_TIME_CACHE:
+        plate_model = PlateModel(
+            model_name, data_dir=settings.MODEL_REPO_DIR, readonly=True
+        )
+        VALID_TIME_CACHE[model_name] = {
+            "big_time": plate_model.get_big_time(),
+            "small_time": plate_model.get_small_time(),
+        }
 
-    return (
-        float(time) <= plate_model.get_big_time()
-        and float(time) >= plate_model.get_small_time()
-    )
+    big_time = VALID_TIME_CACHE[model_name]["big_time"]
+    small_time = VALID_TIME_CACHE[model_name]["small_time"]
+    assert big_time > small_time
+    timef = float(time)
+    return timef <= big_time and timef >= small_time
 
 
 def get_layer_names(model_name):

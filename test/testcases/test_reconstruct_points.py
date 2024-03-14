@@ -287,6 +287,31 @@ class ReconstructPointsTestCase(unittest.TestCase):
                 len(data["lons"].split(",")), len(gws_return_data[key]["end_time"])
             )
 
+    def test_time_out_of_scope(self):
+        data = copy.copy(self.data_3)
+        data["times"] += ",10000"
+
+        r = requests.get(
+            self.SERVER_URL + "/reconstruct/reconstruct_points/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info(" test_time_out_of_scope: " + r.text)
+        self.assertEqual(r.status_code, 400)
+
+        data = copy.copy(self.data_1)
+        data["time"] = 10000
+
+        r = requests.get(
+            self.SERVER_URL + "/reconstruct/reconstruct_points/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info(" test_time_out_of_scope: " + r.text)
+        self.assertEqual(r.status_code, 400)
+
 
 def _reconstruct(lons, lats, model, time):
     point_features = []
