@@ -39,13 +39,12 @@ def query(request, params={}):
             "The 'raster_name' parameter must present in the request!"
         )
 
-    lon = get_float(params, "lon", None)
-    lat = get_float(params, "lat", None)
-    if ("lats" in params and "lons" in params) or "points" in params:
+    try:
         lats, lons = get_lats_lons(params)
-    else:
-        lats = None
-        lons = None
+    except Exception as e:
+        logger.error(e)
+        return HttpResponseBadRequest(str(e))
+
     format = request.GET.get("fmt", "simple").strip().lower()
 
     # lon = (lon + 360)%360
@@ -53,7 +52,9 @@ def query(request, params={}):
     try:
         query_str = None
         # for a single location
-        if lon is not None and lat is not None:
+        if len(lats) == 1 and len(lons) == 1:
+            lat = lats[0]
+            lon = lons[0]
             with connection.cursor() as cursor:
                 query_str = f"""SELECT rid,ST_Value(rast, ST_SetSRID(ST_MakePoint({lon},{lat}),4326), false) AS val
                     FROM raster.{raster_name}

@@ -112,9 +112,9 @@ def reconstruct(request, params={}, times=[]):
             point_features.append(point_feature)
             p_index += 1
     except pygplates.InvalidLatLonError as e:
-        raise Exception(f"Invalid longitude or latitude ({e}).")
+        return HttpResponseBadRequest(f"Invalid longitude or latitude ({str(e)}).")
     except UnrecognizedModel as e:
-        raise Exception(
+        return HttpResponseBadRequest(
             f"""Unrecognized Rotation Model: {model}.<br> 
         Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
         to find all the names of available models."""
