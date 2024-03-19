@@ -229,4 +229,11 @@ def get_lats_lons(params):
             f"Unable to get lats and lons from the request's parameter. points:{points_str} lats:{lats_str} lons:{lons_str} lon:{lon_str} lat:{lat_str} point:{point_str}"
         )
 
+    for lon in lons:
+        if lon > 180 or lon < -180:
+            raise Exception(f"Invalid longitude is found {lon}.")
+    for lat in lats:
+        if lat > 90 or lat < -90:
+            raise Exception(f"Invalid latitude is found {lat}.")
+
     return lats, lons

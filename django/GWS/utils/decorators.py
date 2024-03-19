@@ -3,7 +3,7 @@ import logging
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from utils.parameter_helper import get_float, get_value_list
-from utils.plate_model_utils import is_time_valid_for_model
+from utils.plate_model_utils import get_valid_time, is_time_valid_for_model
 
 logger = logging.getLogger("default")
 
@@ -80,7 +80,7 @@ def get_reconstruction_times(func_pointer):
         for t in times:
             if not is_time_valid_for_model(model_name, t):
                 return HttpResponseBadRequest(
-                    f"The time ({t}) is out of the scope of the reconstruction model {model_name}."
+                    f"The time ({t}) is out of the scope of the reconstruction model {model_name} {get_valid_time(model_name)}."
                 )
 
         kwargs["times"] = times

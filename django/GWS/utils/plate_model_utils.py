@@ -19,7 +19,7 @@ TOPOLOGIES_FC = FEATURE_COLLECTION_CACHE["Topologies"]
 CONTINENTAL_POLYGONS_FC = FEATURE_COLLECTION_CACHE["ContinentalPolygons"]
 COASTLINES_LOW_FC = FEATURE_COLLECTION_CACHE["CoastlinesLow"]
 
-VALID_TIME_CACHE = {}
+PlATE_MODEL_CACHE = {}
 
 
 def get_coastline_low(model_name):
@@ -34,7 +34,7 @@ def get_coastline_low(model_name):
 
 def get_rotation_files(model):
     """return a list of rotation files"""
-    plate_model = PlateModel(model, data_dir=settings.MODEL_REPO_DIR, readonly=True)
+    plate_model = get_plate_model(model)
     if not plate_model:
         raise UnrecognizedModel(f'The "model" ({model}) cannot be recognized.')
     return plate_model.get_rotation_model()
@@ -74,7 +74,7 @@ def get_layer(model, layer_name):
     :param layer_name: layer name
 
     """
-    plate_model = PlateModel(model, data_dir=settings.MODEL_REPO_DIR, readonly=True)
+    plate_model = get_plate_model(model)
     if not plate_model:
         raise UnrecognizedModel(f'The "model" ({model}) cannot be recognized.')
 
@@ -116,17 +116,9 @@ def get_model_name_list(folder):
 def is_time_valid_for_model(model_name, time):
     """returns True if the time is within the valid time of the specified model"""
 
-    if model_name not in VALID_TIME_CACHE:
-        plate_model = PlateModel(
-            model_name, data_dir=settings.MODEL_REPO_DIR, readonly=True
-        )
-        VALID_TIME_CACHE[model_name] = {
-            "big_time": plate_model.get_big_time(),
-            "small_time": plate_model.get_small_time(),
-        }
-
-    big_time = VALID_TIME_CACHE[model_name]["big_time"]
-    small_time = VALID_TIME_CACHE[model_name]["small_time"]
+    plate_model = get_plate_model(model_name)
+    big_time = plate_model.get_big_time()
+    small_time = plate_model.get_small_time()
     assert big_time > small_time
     timef = float(time)
     return timef <= big_time and timef >= small_time
@@ -134,18 +126,34 @@ def is_time_valid_for_model(model_name, time):
 
 def get_layer_names(model_name):
     """return all the layers in a model"""
-    plate_model = PlateModel(
-        model_name, data_dir=settings.MODEL_REPO_DIR, readonly=True
-    )
+    plate_model = get_plate_model(model_name)
     return plate_model.get_avail_layers()
 
 
 def get_model_cfg(model_name):
     """return the configuration of a model"""
-    plate_model = PlateModel(
-        model_name, data_dir=settings.MODEL_REPO_DIR, readonly=True
-    )
+    plate_model = get_plate_model(model_name)
     return plate_model.get_cfg()
+
+
+def get_valid_time(model_name):
+    """return the valid time of a model"""
+    plate_model = get_plate_model(model_name)
+    return {
+        "big_time": plate_model.get_big_time(),
+        "small_time": plate_model.get_small_time(),
+    }
+
+
+def get_plate_model(model_name):
+    """return a PlateModel object"""
+    if model_name not in PlATE_MODEL_CACHE:
+        plate_model = PlateModel(
+            model_name, data_dir=settings.MODEL_REPO_DIR, readonly=True
+        )
+        PlATE_MODEL_CACHE[model_name] = plate_model
+
+    return PlATE_MODEL_CACHE[model_name]
 
 
 class UnrecognizedModel(Exception):
