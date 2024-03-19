@@ -11,6 +11,7 @@ from utils.plate_model_utils import (
     get_coastline_low,
     get_layer,
     get_rotation_model,
+    get_valid_time,
     is_time_valid_for_model,
 )
 from utils.round_float import round_floats
@@ -105,9 +106,9 @@ def get_polygons(request, model, polygons):
 
     # validate time
     if not is_time_valid_for_model(model, time):
-        msg = f"Requested time {time} not available for model {model}."
-        logger.warn(msg)
-        return HttpResponseBadRequest(msg)
+        return HttpResponseBadRequest(
+            f"The time ({time}) is out of the scope of the reconstruction model {model} {get_valid_time(model)}."
+        )
 
     # do the reconstruction
     reconstructed_polygons = []
