@@ -146,7 +146,10 @@ def get_valid_time(model_name):
 
 
 def get_plate_model(model_name):
-    """return a PlateModel object"""
+    """return a PlateModel object
+
+    check the cache first, if not hit, create a new object and add to cache
+    """
     if model_name not in PlATE_MODEL_CACHE:
         plate_model = PlateModel(
             model_name, data_dir=settings.MODEL_REPO_DIR, readonly=True
