@@ -6,8 +6,6 @@ services:
     hostname: gws-postgis
     networks:
       - gplates-net
-    environment:
-      - POSTGRES_PASSWORD="this is not a real password! go away!"
     restart: on-failure
     healthcheck:
       test: pg_isready -U gplates -d gplates
@@ -37,7 +35,7 @@ services:
     hostname: gws-redis
     networks:
       - gplates-net
-    restart: on-failure
+    restart: unless-stopped
     healthcheck:
       test: redis-cli -h gws-redis ping  
       interval: 1m30s
