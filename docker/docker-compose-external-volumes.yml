@@ -1,37 +1,27 @@
-# Use external volumes for GPlates Web Service source code and PostGIS database
-version: '3.9'
-
 volumes:
   gws-code:
     external: true
     name: gws-code
-  gws-db-data:
+  gplates-db-data:
     external: true
-    name: gws-db-data
+    name: gplates-db-data
 
 services:
-  gws-postgis:
-    image: gplates/postgis
-    networks:
-      - gplates-net-cdv
-    hostname: gws-postgis
+  gplates-postgis:
+    extends:
+      file: docker-compose.yml 
+      service: gplates-postgis
     volumes:
-      - gws-db-data:/var/lib/postgresql/15/main
-    restart: on-failure
-    healthcheck:
-      test: pg_isready -U gplates -d gplates
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
+      - gplates-db-data:/var/lib/postgresql/15/main
 
   gws:
     image: gplates/gws
     networks:
-      - gplates-net-cdv
+      - gplates-net
     hostname: gws
     depends_on:
-      - gws-postgis
-      - gws-redis
+      - gplates-postgis
+      - gplates-redis
     volumes:
       - gws-code:/gws
     ports:
@@ -43,18 +33,21 @@ services:
       timeout: 10s
       retries: 3
   
-  gws-redis:
+  gplates-redis:
     image: redis
     networks:
-      - gplates-net-cdv
-    hostname: gws-redis
+      - gplates-net
+    hostname: gplates-redis
     restart: unless-stopped
     healthcheck:
-      test: redis-cli -h gws-redis ping  
+      test: redis-cli -h gplates-redis ping  
       interval: 1m30s
       timeout: 10s
       retries: 3
 
 networks:
-  gplates-net-cdv:
+  gplates-net:
+    name: gplates-net
     driver: bridge
+    external: true
+

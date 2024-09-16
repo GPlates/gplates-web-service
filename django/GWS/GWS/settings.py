@@ -316,6 +316,6 @@ CACHES = {
     },
     "redis": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://gws-redis:6379",
+        "LOCATION": "redis://gplates-redis:6379",
     },
 }
