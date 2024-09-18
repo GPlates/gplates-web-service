@@ -39,7 +39,9 @@ def read_labels():
         return d
 
     labels = []
-    with open(f"{settings.EARTH_STORE_DIR}/labels/labels.csv", "rt") as csv_fp:
+    with open(
+        f"{settings.EARTH_STORE_DIR}/labels/labels.csv", "rt", encoding="utf-8"
+    ) as csv_fp:
         for line in csv_fp:
             items = line.split(",")
             if len(items) < 5:  # ignore when length is wrong
