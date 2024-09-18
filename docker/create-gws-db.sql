@@ -7,5 +7,6 @@ CREATE EXTENSION postgis_raster;
 
 create schema raster;
 ALTER SCHEMA raster OWNER TO gplates;
+GRANT ALL ON SCHEMA public TO gplates;
 
 

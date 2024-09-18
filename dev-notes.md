@@ -1,8 +1,8 @@
 ### Redis
 
 - `docker pull redis`
-- `docker run --name gws-redis --network gws-net -d redis`
-- `docker run -it --network gws-net --rm redis redis-cli -h gws-redis`
+- `docker run --name gplates-redis --network gws-net -d redis`
+- `docker run -it --network gplates-net --rm redis redis-cli -h gplates-redis`
 
 ### Dev
 
@@ -42,5 +42,5 @@ https://gws.gplates.org/lb-manager
 
 ### Docker
 
-- `docker compose run --rm -d --service-ports gws-postgis`
-- ``docker run -d -v `pwd`:/gws -p 18000:80 --network docker_gplates-net --restart always gplates/gws``
+- `docker compose run --rm -d --service-ports gplates-postgis`
+- ``docker run -d -v `pwd`:/gws -p 18000:80 --network gplates-net --restart always gplates/gws``
