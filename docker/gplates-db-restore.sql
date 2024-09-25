@@ -1,0 +1,8 @@
+--
+-- This file is empty on purpose.
+-- This is a dummy gplates DB restore sql file.
+-- you should run "pg_dump gplates --clean > gplates-db-restore.sql" on your old server
+-- to dump gplates DB from previous setup.
+--
+-- or use a backup sql file.
+-- 
