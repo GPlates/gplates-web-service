@@ -16,7 +16,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Australia 
 
 RUN apt-get update -y
-RUN apt-get install -y wget python3 python3-pip less gdal-bin libgdal-dev
+RUN apt-get install -y wget python3 python3-pip less gdal-bin libgdal-dev curl
 RUN apt-get install -y apache2 apache2-dev libapache2-mod-wsgi-py3 ghostscript ffmpeg
 RUN apt-get install -y gmt gmt-dcw gmt-gshhg libpq-dev libgeos-dev libproj-dev proj-data proj-bin 
 
@@ -44,9 +44,11 @@ ADD . /gws
 RUN mv /gws/django/GWS/env.template /gws/django/GWS/.env
 RUN pmm download all /gws/django/GWS/data/model-repo/
 
+RUN chown www-data:www-data /pmm.log
+
 # Add Tini
 RUN apt-get install -y tini
-ENTRYPOINT ["/tini", "--"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["/startup.sh"]
 
 ENV PYTHONPATH=/usr/lib

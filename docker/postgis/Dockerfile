@@ -45,7 +45,7 @@ RUN chown postgres:postgres /etc/postgresql/15/main/*
 
 # Add Tini
 RUN apt-get install -y tini
-ENTRYPOINT ["/tini", "--"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
 
 ENV PAGER=less
 
