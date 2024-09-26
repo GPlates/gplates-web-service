@@ -1,6 +1,11 @@
 #
 # Check the password in create-gws-db.sql before building this docker image
-# docker build -f docker/postgis/Dockerfile -t gplates/postgis .
+#
+# step 1: git clone https://github.com/GPlates/gplates-web-service.git
+# step 2: go into folder gplates-web-service
+# step 3: docker build -f docker/postgis/Dockerfile -t gplates/postgis .
+#
+# if error, try with --no-cache option
 #
 
 FROM ubuntu:22.04

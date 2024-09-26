@@ -32,7 +32,7 @@ RUN rm /etc/apache2/sites-enabled/000-default.conf
 RUN ln -s /gws/docker/gws.conf /etc/apache2/sites-enabled/gws.conf
 
 #install pygplates
-ADD download-pygplates.sh /
+ADD ./docker/download-pygplates.sh /
 RUN chmod +x /download-pygplates.sh
 RUN /download-pygplates.sh
 RUN apt-get install -y /pygplates_0.36.0_py310_ubuntu-22.04.deb
