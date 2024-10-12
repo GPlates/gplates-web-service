@@ -37,13 +37,10 @@ class RasterQueryCase(unittest.TestCase):
             verify=False,
             proxies=self.proxies,
         )
-        if r.status_code == 200:
-            logging.info(r.text)
-            self.logger.info(f"PASSED! raster query ({r.text})")
-        else:
-            raise Exception(
-                f"FAILED: r.status_code r.request.url str(r.request.headers)"
-            )
+        self.logger.info(
+            f"test_raster_query: {r.text} {r.request.url} {str(r.request.headers)}"
+        )
+        self.assertEqual(r.status_code, 200)
 
     def test_raster_query_multiple_locations_1(self):
         # test raster query multiple locations
@@ -58,13 +55,10 @@ class RasterQueryCase(unittest.TestCase):
             verify=False,
             proxies=self.proxies,
         )
-        if r.status_code == 200:
-            logging.info(r.text)
-            self.logger.info(f"PASSED! raster query ({r.text})")
-        else:
-            raise Exception(
-                f"FAILED: {r.status_code}  {r.request.url} {str(r.request.headers)}"
-            )
+        self.logger.info(
+            f"test_raster_query_multiple_locations_1: {r.text} {r.request.url} {str(r.request.headers)}"
+        )
+        self.assertEqual(r.status_code, 200)
 
     def test_raster_query_multiple_locations_2(self):
         # test raster query multiple locations
@@ -79,13 +73,10 @@ class RasterQueryCase(unittest.TestCase):
             verify=False,
             proxies=self.proxies,
         )
-        if r.status_code == 200:
-            logging.info(r.text)
-            self.logger.info(f"PASSED! raster query ({r.text})")
-        else:
-            raise Exception(
-                f"FAILED: r.status_code r.request.url str(r.request.headers)"
-            )
+        self.logger.info(
+            f"test_raster_query_multiple_locations_2: {r.text} {r.request.url} {str(r.request.headers)}"
+        )
+        self.assertEqual(r.status_code, 200)
 
     def test_raster_query_multiple_locations_3(self):
         # test raster query multiple locations
@@ -99,13 +90,44 @@ class RasterQueryCase(unittest.TestCase):
             verify=False,
             proxies=self.proxies,
         )
-        if r.status_code == 200:
-            logging.info(r.text)
-            self.logger.info(f"PASSED! raster query ({r.text})")
-        else:
-            raise Exception(
-                f"FAILED: r.status_code r.request.url str(r.request.headers)"
-            )
+        self.logger.info(
+            f"test_raster_query_multiple_locations_3: {r.text} {r.request.url} {str(r.request.headers)}"
+        )
+        self.assertEqual(r.status_code, 200)
+
+    def test_raster_query_multiple_locations_4(self):
+        # test raster query multiple locations
+        data = {
+            "points": "[[99.50, -40.24], [0, 0], [10, 20]]",
+            "raster_name": "crustal_thickness",
+        }
+        r = requests.get(
+            self.SERVER_URL + "/raster/query/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info(
+            f"test_raster_query_multiple_locations_4: {r.text} {r.request.url} {str(r.request.headers)}"
+        )
+        self.assertEqual(r.status_code, 200)
+
+    def test_raster_query_multiple_locations_5(self):
+        # test raster query multiple locations
+        data = {
+            "points": "[[99aa.50, -40.24], [0, 0], [10, 20]]",
+            "raster_name": "crustal_thickness",
+        }
+        r = requests.get(
+            self.SERVER_URL + "/raster/query/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info(
+            f"test_raster_query_multiple_locations_5: {r.text} {r.request.url} {str(r.request.headers)}"
+        )
+        self.assertEqual(r.status_code, 400)
 
     def test_list_raster_names(self):
         # test list raster names
@@ -115,13 +137,10 @@ class RasterQueryCase(unittest.TestCase):
             verify=False,
             proxies=self.proxies,
         )
-        if r.status_code == 200:
-            logging.info(r.text)
-            self.logger.info(f"PASSED! raster list name ({r.text})")
-        else:
-            raise Exception(
-                f"FAILED: r.status_code r.request.url str(r.request.headers)"
-            )
+        self.logger.info(
+            f"test_list_raster_names: {r.text} {r.request.url} {str(r.request.headers)}"
+        )
+        self.assertEqual(r.status_code, 200)
 
 
 if __name__ == "__main__":

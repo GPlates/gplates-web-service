@@ -38,6 +38,12 @@ You also need Redis image.
 
 - `docker pull redis`
 
+Use the "build-docker-images" branch to build Docker images.
+
+- merge master branch to the "build-docker-images" branch
+- update build-docker-images.txt in the "build-docker-images" branch
+- push
+
 ## ☣☣☣ Warning: The notes from this line below are meant for Michael Chin. Other people might fail to understand them. Ask him! 👀 
 
 ## 👉 Setup PostGIS database
@@ -108,7 +114,7 @@ see **.github/workflows/build-and-push-docker.yml** and **.github/workflows/rele
 ## 👉 Run docker container in production env
 
 - see the section above "**Keep the database data on host computer**"
-- edit file ".env" accordinglt
+- edit file ".env" accordingly
 - The server is running at http://your-ip-address:18000. You may need to do some http requests redirection work.
 
 You can try "--network host" argument. The command below will start a server listening on the 80 port of the host computer.

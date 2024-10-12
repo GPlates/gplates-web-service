@@ -1,13 +1,9 @@
-version: '3.9'
-
 services:
-  gws-postgis:
+  gplates-postgis:
     image: gplates/postgis
-    hostname: gws-postgis
+    hostname: gplates-postgis
     networks:
       - gplates-net
-    environment:
-      - POSTGRES_PASSWORD="this is not a real password! go away!"
     restart: on-failure
     healthcheck:
       test: pg_isready -U gplates -d gplates
@@ -21,8 +17,8 @@ services:
     networks:
       - gplates-net
     depends_on:
-      - gws-postgis
-      - gws-redis
+      - gplates-postgis
+      - gplates-redis
     ports:
       - 18000:80
     restart: on-failure
@@ -32,19 +28,21 @@ services:
       timeout: 10s
       retries: 3
   
-  gws-redis:
+  gplates-redis:
     image: redis
-    hostname: gws-redis
+    hostname: gplates-redis
     networks:
       - gplates-net
-    restart: on-failure
+    restart: unless-stopped
     healthcheck:
-      test: redis-cli -h gws-redis ping  
+      test: redis-cli -h gplates-redis ping  
       interval: 1m30s
       timeout: 10s
       retries: 3
 
 networks:
   gplates-net:
+    name: gplates-net
     driver: bridge
+    external: true
 

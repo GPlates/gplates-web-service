@@ -1,0 +1,53 @@
+volumes:
+  gws-code:
+    external: true
+    name: gws-code
+  gplates-db-data:
+    external: true
+    name: gplates-db-data
+
+services:
+  gplates-postgis:
+    extends:
+      file: docker-compose.yml 
+      service: gplates-postgis
+    volumes:
+      - gplates-db-data:/var/lib/postgresql/15/main
+
+  gws:
+    image: gplates/gws
+    networks:
+      - gplates-net
+    hostname: gws
+    depends_on:
+      - gplates-postgis
+      - gplates-redis
+    volumes:
+      - gws-code:/gws
+    ports:
+      - 18000:80
+    restart: on-failure
+    healthcheck:
+      test: curl --fail -s "http://localhost:80/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness" || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+  
+  gplates-redis:
+    image: redis
+    networks:
+      - gplates-net
+    hostname: gplates-redis
+    restart: unless-stopped
+    healthcheck:
+      test: redis-cli -h gplates-redis ping  
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  gplates-net:
+    name: gplates-net
+    driver: bridge
+    external: true
+

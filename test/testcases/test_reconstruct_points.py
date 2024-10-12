@@ -22,7 +22,11 @@ class ReconstructPointsTestCase(unittest.TestCase):
         setup_logger(cls, Path(__file__).stem)
         get_server_url(cls)
         cls.proxies = {"http": ""}
-        cls.data_1 = {"points": "95, 54, 142, -33", "time": 140, "model": "Muller2019"}
+        cls.data_1 = {
+            "points": "95, 54, 142, -33",
+            "time": 140,
+            "model": "Muller2019",
+        }
         cls.data_2 = {"lons": "95, -117.26, 142", "lats": "54, 32.7, -33", "time": 140}
         cls.data_3 = {
             "lons": "95, -117.26, 142",
@@ -86,8 +90,11 @@ class ReconstructPointsTestCase(unittest.TestCase):
             verify=False,
             proxies=self.proxies,
         )
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+        self.logger.info("test_basic_post")
+        self.logger.info(self.data_1)
+        self.logger.info(r.text)
         self.assertEqual(r.status_code, 200)
+        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
 
     def test_post_return_feature_collection(self):
         data = copy.copy(self.data_2)
@@ -286,6 +293,117 @@ class ReconstructPointsTestCase(unittest.TestCase):
             self.assertEqual(
                 len(data["lons"].split(",")), len(gws_return_data[key]["end_time"])
             )
+
+    def test_time_out_of_scope(self):
+        data = copy.copy(self.data_3)
+        data["times"] += ",10000"
+
+        r = requests.get(
+            self.SERVER_URL + "/reconstruct/reconstruct_points/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info(" test_time_out_of_scope: " + r.text)
+        self.assertEqual(r.status_code, 400)
+
+        data = copy.copy(self.data_1)
+        data["time"] = 10000
+
+        r = requests.get(
+            self.SERVER_URL + "/reconstruct/reconstruct_points/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info(" test_time_out_of_scope: " + r.text)
+        self.assertEqual(r.status_code, 400)
+
+    def test_various_coordinates_input(self):
+        data = {
+            "lat": 50,
+            "lon": -100,
+            "time": 100,
+            "model": "PALEOMAP",
+        }
+        r = requests.get(
+            self.SERVER_URL + "/reconstruct/reconstruct_points/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info("test_various_coordinates_input: " + r.text)
+        self.assertEqual(r.status_code, 200)
+
+        data = {
+            "point": "-100,50",
+            "time": 100,
+            "model": "PALEOMAP",
+        }
+        r = requests.get(
+            self.SERVER_URL + "/reconstruct/reconstruct_points/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info("test_various_coordinates_input: " + r.text)
+        self.assertEqual(r.status_code, 200)
+
+        data = {
+            "point": "[-100,50]",
+            "time": 100,
+            "model": "PALEOMAP",
+        }
+        r = requests.get(
+            self.SERVER_URL + "/reconstruct/reconstruct_points/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info("test_various_coordinates_input: " + r.text)
+        self.assertEqual(r.status_code, 200)
+
+        data = {
+            "points": "[[-100,50],[95, 54], [142, -33]]",
+            "time": 100,
+            "model": "PALEOMAP",
+        }
+        r = requests.get(
+            self.SERVER_URL + "/reconstruct/reconstruct_points/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info("test_various_coordinates_input: " + r.text)
+        self.assertEqual(r.status_code, 200)
+
+        data = {
+            "points": "[100, 33, 50, 44, 0, 55]",
+            "time": 100,
+            "model": "PALEOMAP",
+        }
+        r = requests.get(
+            self.SERVER_URL + "/reconstruct/reconstruct_points/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info("test_various_coordinates_input: " + r.text)
+        self.assertEqual(r.status_code, 200)
+
+        data = {
+            "point": "[50,-100]",
+            "time": 100,
+            "model": "PALEOMAP",
+        }
+        r = requests.get(
+            self.SERVER_URL + "/reconstruct/reconstruct_points/",
+            params=data,
+            verify=False,
+            proxies=self.proxies,
+        )
+        self.logger.info("test_various_coordinates_input: " + r.text)
+        self.assertEqual(r.status_code, 400)
 
 
 def _reconstruct(lons, lats, model, time):

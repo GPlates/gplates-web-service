@@ -6,6 +6,7 @@ import traceback
 from django.db import connection
 from django.db.utils import ProgrammingError
 from django.http import HttpResponseBadRequest, HttpResponseServerError
+from utils.access_control import get_client_ip
 from utils.decorators import check_get_post_request_and_get_params, return_HttpResponse
 from utils.parameter_helper import get_float, get_lats_lons
 
@@ -17,7 +18,7 @@ access_logger = logging.getLogger("queue")
 @return_HttpResponse()
 def query(request, params={}):
     """Query a single value from raster by lon, lat
-    http://localhost:18000/raster/query?lon=90&lat=-20&raster_name=age_grid
+    http://localhost:18000/raster/query?lon=90&lat=-20&raster_name=crustal_thickness
 
     Query some values from raster by lons, lats
     http://localhost:18000/raster/query?raster_name=crustal_thickness&lons=120,50,40&lats=45,67,-89
@@ -32,15 +33,18 @@ def query(request, params={}):
         2. json
     """
 
-    raster_name = request.GET.get("raster_name", None)
+    raster_name = params.get("raster_name", None)
     if not raster_name:
         return HttpResponseBadRequest(
             "The 'raster_name' parameter must present in the request!"
         )
 
-    lon = get_float(params, "lon", None)
-    lat = get_float(params, "lat", None)
-    lats, lons = get_lats_lons(params)
+    try:
+        lats, lons = get_lats_lons(params)
+    except Exception as e:
+        logger.error(e)
+        return HttpResponseBadRequest(str(e))
+
     format = request.GET.get("fmt", "simple").strip().lower()
 
     # lon = (lon + 360)%360
@@ -48,7 +52,9 @@ def query(request, params={}):
     try:
         query_str = None
         # for a single location
-        if lon is not None and lat is not None:
+        if len(lats) == 1 and len(lons) == 1:
+            lat = lats[0]
+            lon = lons[0]
             with connection.cursor() as cursor:
                 query_str = f"""SELECT rid,ST_Value(rast, ST_SetSRID(ST_MakePoint({lon},{lat}),4326), false) AS val
                     FROM raster.{raster_name}
@@ -113,14 +119,14 @@ def query(request, params={}):
         return HttpResponseServerError(f"Failed to query raster: {raster_name}.")
 
 
-@check_get_post_request_and_get_params
 @return_HttpResponse()
-def list_all_rasters(request, params={}):
+def list_all_rasters(request):
     """return all the raster names in DB
     select table_name from information_schema.tables where table_schema='raster';
 
     http://localhost:18000/raster/list
     """
+    access_logger.info(get_client_ip(request) + f" {request.get_full_path()}")
 
     try:
         query_str = "  select table_name from information_schema.tables where table_schema='raster'; "
