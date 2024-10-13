@@ -122,6 +122,8 @@ You can try "--network host" argument. The command below will start a server lis
 If you start the docker container with "--network host", the localhost and 127.0.0.1 inside docker container are pointing to the host computer.
 
 `` docker run -d -v `pwd`:/gws --network host --restart always gplates/gws ``
+`docker run -d --name my-gws-0 -p 18000:80 --restart always gplates/gws`
+`docker run -d --name my-gws-1 -p 18001:80 --restart always gplates/gws`
 
 ## 👉 Docker compose
 

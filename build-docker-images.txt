@@ -3,4 +3,4 @@
 # keep this file in the "build-docker-images" branch only.
 # the "build-docker-images" branch is used to build docker images only.
 # always merge from master before push to "build-docker-images" branch 
-v0.2.3
+v0.2.4
