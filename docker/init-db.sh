@@ -4,7 +4,7 @@
 
 createdb gplates
 
-psql -d gplates -f create-gws-db.sql
+psql -d gplates -f create-gplates-db.sql
 
 export PGPASSWORD=gplates
 psql -d gplates -U gplates  -h localhost -f crustal_thickness.sql
