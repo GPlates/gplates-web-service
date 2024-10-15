@@ -61,7 +61,9 @@ RUN mkdir /tmp/gws
 RUN chown www-data /tmp/gws
 RUN chown www-data /var/www
 
-HEALTHCHECK CMD curl --fail -s "http://localhost:80/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness" || exit 1
+
+HEALTHCHECK CMD curl --fail -s "http://localhost:80/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140" || exit 1
+#HEALTHCHECK CMD curl --fail -s "http://localhost:80/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness" || exit 1
 
 EXPOSE 80
 
