@@ -47,7 +47,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/gws-amd64/Dockerfile
+          file: ./docker/Dockerfile
           push: true
           platforms: linux/amd64
           provenance: false
@@ -59,7 +59,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/gws-arm64/Dockerfile
+          file: ./docker/Dockerfile
           push: true
           platforms: linux/arm64
           provenance: false
@@ -71,7 +71,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/gws-postgis-amd64/Dockerfile
+          file: ./docker/postgis/Dockerfile
           push: true
           platforms: linux/amd64
           provenance: false
@@ -83,7 +83,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./docker/gws-postgis-arm64/Dockerfile
+          file: ./docker/postgis/Dockerfile
           push: true
           platforms: linux/arm64
           provenance: false

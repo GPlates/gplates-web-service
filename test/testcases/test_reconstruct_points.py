@@ -22,7 +22,11 @@ class ReconstructPointsTestCase(unittest.TestCase):
         setup_logger(cls, Path(__file__).stem)
         get_server_url(cls)
         cls.proxies = {"http": ""}
-        cls.data_1 = {"points": "95, 54, 142, -33", "time": 140, "model": "Muller2019"}
+        cls.data_1 = {
+            "points": "95, 54, 142, -33",
+            "time": 140,
+            "model": "Muller2019",
+        }
         cls.data_2 = {"lons": "95, -117.26, 142", "lats": "54, 32.7, -33", "time": 140}
         cls.data_3 = {
             "lons": "95, -117.26, 142",
@@ -86,8 +90,11 @@ class ReconstructPointsTestCase(unittest.TestCase):
             verify=False,
             proxies=self.proxies,
         )
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+        self.logger.info("test_basic_post")
+        self.logger.info(self.data_1)
+        self.logger.info(r.text)
         self.assertEqual(r.status_code, 200)
+        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
 
     def test_post_return_feature_collection(self):
         data = copy.copy(self.data_2)
