@@ -15,35 +15,16 @@ services:
       - gplates-db-data:/var/lib/postgresql/15/main
 
   gws:
-    image: gplates/gws
-    networks:
-      - gplates-net
-    hostname: gws
-    depends_on:
-      - gplates-postgis
-      - gplates-redis
+    extends:
+      file: docker-compose.yml
+      service: gws
     volumes:
-      - gws-code:/gws
-    ports:
-      - 18000:80
-    restart: on-failure
-    healthcheck:
-      test: curl --fail -s "http://localhost:80/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness" || exit 1
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
-  
+       - gws-code:/gws
+
   gplates-redis:
-    image: redis
-    networks:
-      - gplates-net
-    hostname: gplates-redis
-    restart: unless-stopped
-    healthcheck:
-      test: redis-cli -h gplates-redis ping  
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
+    extends:
+      file: docker-compose.yml
+      service: gplates-redis
 
 networks:
   gplates-net:
