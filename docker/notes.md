@@ -1,8 +1,13 @@
-- run the with docker-compose
-    - `git clone https://github.com/GPlates/gplates-web-service gplates-web-service.git`
-    - `docker compose -f gplates-web-service.git/docker/docker-compose.yml up -d`
+
 
 ## ☣☣☣ Warning: The notes from this line below are meant for Michael Chin. Other people might fail to understand them. Ask him! 👀 
+
+### Use the "build-docker-images" branch to build Docker images.
+
+- merge master branch to the "build-docker-images" branch
+- update build-docker-images.txt in the "build-docker-images" branch
+- push
+- the new docker images will be built by the github action
 
 ## 👉 Setup PostGIS database
 
@@ -125,5 +130,7 @@ start and stop
 
 - `docker manifest create gplates/postgis gplates/postgis:amd64 gplates/postgis:arm64`
 - `docker manifest push gplates/postgis`
+
+
 
 Note: Add `postgis.gdal_enabled_drivers = 'ENABLE_ALL'` in postgres.conf to enable all GDAL driver(useful when export images from raster table)

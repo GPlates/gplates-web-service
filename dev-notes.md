@@ -1,7 +1,7 @@
 ### Redis
 
 - `docker pull redis`
-- `docker run --name gplates-redis --network gws-net -d redis`
+- `docker run --name gplates-redis --network gplates-net -d redis`
 - `docker run -it --network gplates-net --rm redis redis-cli -h gplates-redis`
 
 ### Dev
@@ -44,3 +44,7 @@ https://gws.gplates.org/lb-manager
 
 - `docker compose run --rm -d --service-ports gplates-postgis`
 - ``docker run -d -v `pwd`:/gws -p 18000:80 --network gplates-net --restart always gplates/gws``
+
+### wsgi process and thread numbers
+
+You can change the numbers at docker/gws.conf. Each wsgi process may require 1.5~2.0GB memory. Check how much memory your computer has.
