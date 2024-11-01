@@ -48,3 +48,13 @@ https://gws.gplates.org/lb-manager
 ### wsgi process and thread numbers
 
 You can change the numbers at docker/gws.conf. Each wsgi process may require 1.5~2.0GB memory. Check how much memory your computer has.
+
+### Setup server
+
+- install Apache2
+- install certbot
+- add gws.conf and gws-ssl.conf on host computer and redirect https traffic to http://localhost:18000
+- sudo a2enmod proxy && sudo a2enmod proxy_http && sudo a2enmod ssl
+- sudo systemctl restart apache2
+- sudo certbot --apache 
+- go into gws docker container and change number of processes

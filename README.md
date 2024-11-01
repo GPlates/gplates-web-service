@@ -20,7 +20,7 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 👉 Use the GPlates Web Service in a web browser
 
 - Step 1: open this link in a web browser <https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=MULLER2019>
-- Step 2: done and check the paleo-coordinates in the web browser
+- Step 2: check the paleo-coordinates in the web browser
 
 ```
 {"type": "MultiPoint", "coordinates": [[62.6938, 58.8486], [126.7291, -61.6615]]}
@@ -34,13 +34,11 @@ See the examples at <https://github.com/michaelchin/gplates-python-proxy/blob/ma
 
 👉 Setup your own server
 
-Our https://gws.gplates.org is for **demostration purpose only** because we cannot afford an industrial level computer server/cluster. **📌Hence, for better performance and security, you are encouraged to setup your own servers if you need to process a substantial volume of data.**
+**📌For better performance and data security, you may want to setup your own servers.**
 
-- Step 1: `git clone https://github.com/GPlates/gplates-web-service gplates-web-service.git`
-- Step 2: `docker compose -f gplates-web-service.git/docker/docker-compose.yml up -d`
-- Step 3: open this link in a web browser <http://localhost:18000/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=MULLER2019>
+Start your own GWS server may be as simple as `docker run -d --rm -p 18000:80 gplates/gws`.
 
-See [docker/README.md](docker/README.md) for the details.
+See [docker/README.md](docker/README.md) for the step-by-step instructions.
 
 ## 📂Contents
 

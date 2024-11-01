@@ -54,7 +54,7 @@ class AssignPlateIDsTestCase(unittest.TestCase):
 
     def test_assign_plate_ids(self):
         """test assign plate ids for points"""
-        time.sleep(1)
+        # time.sleep(1)
         data = {"points": "-10,50,-30,-70,0,0"}
         r = requests.get(
             self.SERVER_URL + "/reconstruct/assign_points_plate_ids",
@@ -71,7 +71,7 @@ class AssignPlateIDsTestCase(unittest.TestCase):
 
     def test_assign_plate_ids_geojson(self):
         """test assign plate ids for geojson data"""
-        time.sleep(1)
+        # time.sleep(1)
         data = {"feature_collection": json.dumps(self.fc)}
         r = requests.get(
             self.SERVER_URL + "/reconstruct/assign_geojson_plate_ids",

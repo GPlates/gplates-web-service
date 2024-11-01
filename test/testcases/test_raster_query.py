@@ -13,7 +13,7 @@ from common import get_server_url, setup_logger
 
 class RasterQueryCase(unittest.TestCase):
     def setUp(self):
-        time.sleep(1)
+        # time.sleep(1)
         self.proxies = {"http": ""}
 
     def tearDown(self):

@@ -61,7 +61,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
         cls.logger.info("tearDownClass")
 
     def test_reconstruct_feature_collection(self):
-        time.sleep(1)
+        # time.sleep(1)
         r = requests.get(
             self.SERVER_URL + "/reconstruct/reconstruct_feature_collection/",
             params=self.data,

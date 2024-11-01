@@ -18,6 +18,12 @@ If you would like to try the GPlates Web Service very quickly, follow the steps 
 
 👏👏👏Congratulations! At this point, the most basic GPlates Web Service is up and running.
 
+## 👉 Use the source code on the host computer to start the GPlates Web Service 
+
+- `git clone --depth 1 -b master https://github.com/GPlates/gplates-web-service gplates-web-service.git`
+- `docker run -d --rm -v /THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-web-service.git:/gws -p 18000:80 gplates/gws`
+- verify the service is up and running with wget, curl or web browser (see above)
+
 ## 👉 Start the GPlates Web Service with Docker compose
 
 Alternatively, you can also use Docker compose to start the GPlates Web Service along with GPlates database and Redis cache.
@@ -36,9 +42,9 @@ If you would like to use the latest source code from github.com to run the servi
 
 - `git clone --depth 1 -b master https://github.com/GPlates/gplates-web-service gplates-web-service.git`
 - `cp gplates-web-service.git/django/GWS/env.template gplates-web-service.git/django/GWS/.env`
-- `docker volume create --name gws-code --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-SOURCE-CODE-FOLDER/gplates-web-service.git --opt o=bind`
+- `docker volume create --name gws-code --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-web-service.git --opt o=bind`
 - `mkdir gplates-db-data`
-- `docker volume create --name gplates-db-data --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-GPLATES-DB-DATA/gplates-db-data --opt o=bind`
+- `docker volume create --name gplates-db-data --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-db-data --opt o=bind`
 - `docker compose -f gplates-web-service.git/docker/docker-compose-external-volumes.yml up -d`
 - verify the service is up and running with wget, curl or web browser (see above)
 - verify the database with "http://localhost:80/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness"

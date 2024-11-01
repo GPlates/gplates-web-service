@@ -28,7 +28,7 @@ class RotationTestCase(unittest.TestCase):
 
     def test_rotate(self):
         """test rotate"""
-        time.sleep(1)
+        # time.sleep(1)
         data = {"point": "120,45", "axis": "20,-45", "angle": 20}
         r = requests.get(
             self.SERVER_URL + "/rotation/rotate",

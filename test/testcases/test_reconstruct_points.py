@@ -15,7 +15,8 @@ from plate_model_manager import PlateModelManager
 
 class ReconstructPointsTestCase(unittest.TestCase):
     def setUp(self):
-        time.sleep(1)
+        pass
+        # time.sleep(1)
 
     @classmethod
     def setUpClass(cls):

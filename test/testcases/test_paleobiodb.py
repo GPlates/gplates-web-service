@@ -24,7 +24,7 @@ class PaleobiodbTestCase(unittest.TestCase):
 
     @unittest.skip("skip test_paleobiodb")
     def test_paleobiodb(self):
-        time.sleep(1)
+        # time.sleep(1)
         r = requests.get(
             "http://paleobiodb.org/data1.1/occs/list.json?limit=all&interval_id=3001&show=coords,attr,loc,prot,time,strat,stratext,lith,lithext,geo,rem,ent,entname,crmod&showsource",
             proxies=self.proxies,

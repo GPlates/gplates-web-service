@@ -28,7 +28,7 @@ class MiscTestCase(unittest.TestCase):
 
     def test_motion_path(self):
         """test motion path"""
-        time.sleep(1)
+        # time.sleep(1)
         data = {"seedpoints": "0,0", "movplate": 701}
         r = requests.get(
             self.SERVER_URL + "/reconstruct/motion_path",
@@ -45,7 +45,7 @@ class MiscTestCase(unittest.TestCase):
 
     def test_find_axis_and_angle(self):
         """test find_axis_and_angle"""
-        time.sleep(1)
+        # time.sleep(1)
         data = {"point_a": "120,45", "point_b": "20,-45"}
         r = requests.get(
             self.SERVER_URL + "/earth/find_axis_and_angle",
@@ -62,7 +62,7 @@ class MiscTestCase(unittest.TestCase):
 
     def test_interp_two_locations(self):
         """test interp_two_locations"""
-        time.sleep(1)
+        # time.sleep(1)
         data = {"point_a": "120,45", "point_b": "20,-45", "num": 10}
         r = requests.get(
             self.SERVER_URL + "/earth/interp_two_locations",
@@ -79,7 +79,7 @@ class MiscTestCase(unittest.TestCase):
 
     def test_distance(self):
         """test distance"""
-        time.sleep(1)
+        # time.sleep(1)
         data = {"point_a": "120,45", "point_b": "20,-45"}
         r = requests.get(
             self.SERVER_URL + "/earth/distance",
@@ -96,7 +96,7 @@ class MiscTestCase(unittest.TestCase):
 
     def test_paleo_labels(self):
         """test paleo-labels"""
-        time.sleep(1)
+        # time.sleep(1)
         data = {"time": 100, "model": "muller2019"}
         r = requests.get(
             self.SERVER_URL + "/earth/get_labels",
@@ -115,7 +115,7 @@ class MiscTestCase(unittest.TestCase):
 
     def test_paleo_cities_1(self):
         """test paleo-cities test_paleo_cities"""
-        time.sleep(1)
+        # time.sleep(1)
         data = {"time": 100, "model": "muller2019"}
         r = requests.get(
             self.SERVER_URL + "/earth/get_cities",
@@ -134,7 +134,7 @@ class MiscTestCase(unittest.TestCase):
 
     def test_paleo_cities_2(self):
         """test paleo-cities get_present_day_cities"""
-        time.sleep(1)
+        # time.sleep(1)
         r = requests.get(
             self.SERVER_URL + "/earth/get_present_day_cities",
             verify=False,
