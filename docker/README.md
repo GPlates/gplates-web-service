@@ -45,9 +45,10 @@ If you would like to use the latest source code from github.com to run the servi
 - `docker volume create --name gws-code --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-web-service.git --opt o=bind`
 - `mkdir gplates-db-data`
 - `docker volume create --name gplates-db-data --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-db-data --opt o=bind`
+- `docker network create --driver bridge gplates-net`
 - `docker compose -f gplates-web-service.git/docker/docker-compose-external-volumes.yml up -d`
 - verify the service is up and running with wget, curl or web browser (see above)
-- verify the database with "http://localhost:80/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness"
+- verify the database with "http://localhost:18000/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness"
 - (optional) use `psql gplates < gplates.sql` to restore gplates database
 
 ## 👉 Docker images

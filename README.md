@@ -28,6 +28,11 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 
 The GPlates Web Service server returns a valid GeoJSON MultiPoint geometry that contains the paleo-coordinates of two present-day locations at 140Ma. The paleo-coordinates were calculated according to the plate reconstruction model [Muller2019](https://www.earthbyte.org/muller-et-al-2019-deforming-plate-reconstruction-and-seafloor-age-grids-tectonics/). 
 
+👉 Use curl or wget
+
+- `wget -qO - "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=MULLER2019" `
+- `curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=MULLER2019" `
+
 👉 Use GPlates Web Service Python Client/Proxy
 
 See the examples at <https://github.com/michaelchin/gplates-python-proxy/blob/main/README.md>
@@ -74,5 +79,10 @@ The OpenAPI schema is at https://gws.gplates.org/openapi
 
 The GPlates Web Service is free software (also known as open-source software), licensed for distribution under the GNU [General Public License (GPL)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html), version 2. Contact [Earthbyte](https://www.earthbyte.org/contact-us-3/) group about the details of the software licensing.
 
+## Servers
+
+- https://gws.gplates.org
+- https://gws1.gplates.org
+- https://gws2.gplates.org
 
 
