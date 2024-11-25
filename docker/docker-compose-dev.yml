@@ -1,0 +1,60 @@
+volumes:
+  gws-code:
+    external: true
+    name: gws-code
+  gplates-db-data:
+    external: true
+    name: gplates-db-data
+
+services:
+  gplates-postgis:
+    image: gplates/postgis
+    hostname: gplates-postgis
+    volumes:
+      - gplates-db-data:/var/lib/postgresql/15/main
+    networks:
+      - gplates-net
+    restart: on-failure
+    healthcheck:
+      test: pg_isready -U gplates -d gplates
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+  gws:
+    image: gplates/gws
+    hostname: gws
+    volumes:
+       - gws-code:/gws
+    networks:
+      - gplates-net
+    depends_on:
+      - gplates-postgis
+      - gplates-redis
+    ports:
+      - 18000:80
+    restart: on-failure
+    healthcheck:
+      test: curl --fail -s "http://localhost:80/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness" || exit 1
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+  
+  gplates-redis:
+    image: redis
+    hostname: gplates-redis
+    networks:
+      - gplates-net
+    restart: unless-stopped
+    healthcheck:
+      test: redis-cli -h gplates-redis ping  
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  gplates-net:
+    name: gplates-net
+    driver: bridge
+    external: true
+

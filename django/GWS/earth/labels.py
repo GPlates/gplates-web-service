@@ -19,40 +19,37 @@ logger = logging.getLogger("default")
 access_logger = logging.getLogger("queue")
 cache = caches[settings.CACHE_NAME]
 
+SHIELDS = ["Arabia"]
 
-def read_labels():
-    """return a list of labels
 
-    [
-        {
-            "label": label,
-            "lat": lat,
-            "lon": lon,
-            "fromtime": from_time,
-            "totime": to_time,
-        }
-    ]
+def read_labels(filepath: str) -> list:
+    """return a list of label dictionaries
+    [{"label": label, "lat": lat, "lon": lon, "fromtime": from_time, "totime": to_time,},{...},...]
 
+    :param filepath: the path to the file which contains the label data
+
+    :return: a list of label dictionaries
     """
-    d = cache.get("earth-labels")
-    if d is not None:
-        return d
 
     labels = []
     with open(
-        f"{settings.EARTH_STORE_DIR}/labels/labels.csv", "rt", encoding="utf-8"
+        filepath,
+        "rt",
+        encoding="utf-8",
     ) as csv_fp:
         for line in csv_fp:
-            items = line.split(",")
+            items = line.split("|")
+            # print(items)
             if len(items) < 5:  # ignore when length is wrong
                 print(f"ignore invlid line: {line}")
                 continue
             try:
-                label = items[0]
-                lat = float(items[1])
+                label = items[1].strip()
+                lat = float(items[3])
                 lon = float(items[2])
-                from_time = int(items[3])
-                to_time = int(items[4])
+                from_time = int(items[4])
+                to_time = int(items[5])
+                # comments = items[6].strip()
             except:
                 print(f"ignore invlid line: {line}")
                 continue
@@ -64,134 +61,102 @@ def read_labels():
                     "lon": lon,
                     "fromtime": from_time,
                     "totime": to_time,
+                    # "comments": comments,
                 }
             )
-    cache.set("earth-labels", labels)
+
     return labels
 
 
-# read_labels()
+def get_label_pids(model: str, label_data: list) -> list[int]:
+    """return the plate IDs of the labels for a given model.
 
+    :param model: the given model name
+    :param label_data: the list of labels. [{"label": label, "lat": lat, "lon": lon, "fromtime": from_time, "totime": to_time,},{...},...]
 
-def read_label_pids(model):
-    """return the pids of labels' coordinates
-
-    :param model: model name
+    :return: a list of plate IDs for the labels
     """
-    return get_label_pids()[model.lower()]
-
-
-def get_label_pids():
-    """return a dictionary of pids, such as
-    {
-        "seton":[123,234,566],
-        'muller2019': [321,434,546]
-    }
-    """
-    d = cache.get("earth-labels-pids")
-    if d is not None:
-        return d
-
     point_features = []
-    for label in read_labels():
+    for label in label_data:
         point_feature = pygplates.Feature()
         point_feature.set_geometry(pygplates.PointOnSphere(label["lat"], label["lon"]))
         point_features.append(point_feature)
 
-    pid_dict = {}
-    for model in get_model_name_list(settings.MODEL_REPO_DIR):
-        # assign plate-ids to points using static polygons
-        assigned_point_features = pygplates.partition_into_plates(
-            get_static_polygons(model),
-            get_rotation_model(model),
-            point_features,
-            properties_to_copy=[
-                pygplates.PartitionProperty.reconstruction_plate_id,
-                pygplates.PartitionProperty.valid_time_period,
-            ],
-            reconstruction_time=0.0,
-        )
+    # assign plate-ids to points using static polygons
+    assigned_point_features = pygplates.partition_into_plates(
+        get_static_polygons(model),
+        get_rotation_model(model),
+        point_features,
+        properties_to_copy=[pygplates.PartitionProperty.reconstruction_plate_id],
+        reconstruction_time=0.0,
+    )
 
-        assert len(point_features) == len(assigned_point_features)
+    assert len(point_features) == len(assigned_point_features)
 
-        pids = [f.get_reconstruction_plate_id() for f in assigned_point_features]
-        pid_dict[model] = pids
-        cache.set("earth-labels-pids", pid_dict)
-    return pid_dict
+    return [f.get_reconstruction_plate_id() for f in assigned_point_features]
 
 
-# get_label_pids()
-
-
-def reconstruct_labels(names, lons, lats, model, time, pids=[]):
+def reconstruct_labels(label_data: list, model: str, time: float, pids: list):
     """reconstruct the label coordinates. return a list of names and reconstructed coordinates
     the length of input lable list may be different from the output list because some labels may not exist at the time
+
+    :param label_data: the list of labels. [{"label": label, "lat": lat, "lon": lon, "fromtime": from_time, "totime": to_time,},{...},...]
+    :param model: the name of reconstruction model
+    :param time: the reconstruction time
+    :param pids: the labels' plate IDs
+
+    :return: a tuple of lists (label_name, lons, lats)
     """
-    assert len(lats) == len(lons)
-    assert len(names) == len(lons)
-    point_features = []
-    if not pids:
-        tpids = [None] * len(names)
-    else:
-        tpids = pids
+    names = []
+    lats = []
+    lons = []
+    for row in label_data:
+        if row["fromtime"] >= time and row["totime"] <= time:
+            names.append(row["label"])
+            lons.append(row["lon"])
+            lats.append(row["lat"])
 
-    for lat, lon, name, pid in zip(lats, lons, names, tpids):
-        point_feature = pygplates.Feature()
-        point_feature.set_geometry(pygplates.PointOnSphere(lat, lon))
-        point_feature.set_name(name)
-        if pid:
-            point_feature.set_reconstruction_plate_id(int(pid))
-        point_features.append(point_feature)
+    if time != 0:
+        point_features = []
+        for lat, lon, name, pid in zip(lats, lons, names, pids):
+            point_feature = pygplates.Feature()
+            point_feature.set_geometry(pygplates.PointOnSphere(lat, lon))
+            point_feature.set_name(name)
+            if pid:
+                point_feature.set_reconstruction_plate_id(int(pid))
+            point_features.append(point_feature)
 
-    try:
         rotation_model = get_rotation_model(model)
-    except UnrecognizedModel as e:
-        return HttpResponseBadRequest(
-            f"""Unrecognized Rotation Model: {model}.<br> 
-        Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
-        to find all available models."""
-        )
 
-    if not pids:
-        assigned_point_features = pygplates.partition_into_plates(
-            get_static_polygons(model),
+        # reconstruct the points
+        assigned_point_feature_collection = pygplates.FeatureCollection(point_features)
+        reconstructed_feature_geometries = []
+
+        pygplates.reconstruct(
+            assigned_point_feature_collection,
             rotation_model,
-            point_features,
-            properties_to_copy=[
-                pygplates.PartitionProperty.reconstruction_plate_id,
-                pygplates.PartitionProperty.valid_time_period,
-            ],
-            reconstruction_time=time,
+            reconstructed_feature_geometries,
+            time,
         )
+
+        rnames = []
+        rlons = []
+        rlats = []
+        for rfg in reconstructed_feature_geometries:
+            rnames.append(rfg.get_feature().get_name())
+            r_lat_lon = rfg.get_reconstructed_geometry().to_lat_lon()
+            rlons.append(r_lat_lon[1])
+            rlats.append(r_lat_lon[0])
+        return rnames, rlons, rlats
+
     else:
-        assigned_point_features = point_features
-
-    # reconstruct the points
-    assigned_point_feature_collection = pygplates.FeatureCollection(
-        assigned_point_features
-    )
-    reconstructed_feature_geometries = []
-
-    pygplates.reconstruct(
-        assigned_point_feature_collection,
-        rotation_model,
-        reconstructed_feature_geometries,
-        time,
-    )
-
-    rnames = []
-    rlons = []
-    rlats = []
-    for rfg in reconstructed_feature_geometries:
-        rnames.append(rfg.get_feature().get_name())
-        r_lat_lon = rfg.get_reconstructed_geometry().to_lat_lon()
-        rlons.append(r_lat_lon[1])
-        rlats.append(r_lat_lon[0])
-    return rnames, rlons, rlats
+        return names, lons, lats
 
 
 def get_labels(request):
-    """http://localhost:18000/earth/get_labels?time=300&model=merdith2021"""
+    """get_labels request handler
+    http://localhost:18000/earth/get_labels?time=300&model=merdith2021
+    """
     if request.method != "GET":
         return HttpResponseBadRequest("Only GET request is supported!")
 
@@ -200,45 +165,74 @@ def get_labels(request):
     time = parameter_helper.get_float(request.GET, "time", 0.0)
     model = request.GET.get("model", settings.MODEL_DEFAULT)
 
-    labels = read_labels()
-    try:
-        pids = read_label_pids(model)
-    except FileNotFoundError as e:
-        pids = []
-
-    if len(pids) != len(labels):
-        logger.warning(
-            f"The number of PIDs({len(pids)}) is not the same with the number of labels({len(labels)}. And this will slow down the response.)"
+    # try to get the label data from cache
+    # if the label data is not found in the cache, load the data from files
+    continent_label_data = cache.get("earth-continent-labels")
+    if not continent_label_data:
+        continent_label_data = read_labels(
+            f"{settings.EARTH_STORE_DIR}/labels/labels-continents.txt"
         )
-        pids = [None] * len(labels)
-    names = []
-    lons = []
-    lats = []
-    oceans = []
-    for row in labels:
-        if row["fromtime"] >= time and row["totime"] <= time:
-            label = " ".join(row["label"].split(" "))
-            if label.endswith("Ocean"):
-                oceans.append((label, row["lat"], row["lon"]))
-            else:
-                names.append(label)
-                lons.append(row["lon"])
-                lats.append(row["lat"])
+        cache.set("earth-continent-labels", continent_label_data)
+    ocean_label_data = cache.get("earth-ocean-labels")
 
-    if time != 0:
-        try:
-            rnames, rlons, rlats = reconstruct_labels(
-                names, lons, lats, model, time, pids=pids
-            )
-        except pygplates.InvalidLatLonError as e:
-            return HttpResponseBadRequest(f"Invalid longitude or latitude ({e}).")
-    else:
-        rnames = names
-        rlats = lats
-        rlons = lons
+    if not ocean_label_data:
+        ocean_label_data = read_labels(
+            f"{settings.EARTH_STORE_DIR}/labels/labels-oceans.txt"
+        )
+        cache.set("earth-ocean-labels", ocean_label_data)
+    craton_label_data = cache.get("earth-craton-labels")
+
+    if not craton_label_data:
+        craton_label_data = read_labels(
+            f"{settings.EARTH_STORE_DIR}/labels/labels-cratons.txt"
+        )
+        cache.set("earth-craton-labels", craton_label_data)
+
+    # try to get the labels' plate ID from cache first
+    # if not found in cache, use pygplates to assign plate IDs
+    craton_pids = cache.get(f"earth-craton-pids-{model}")
+    if craton_pids is None:
+        craton_pids = get_label_pids(model, craton_label_data)
+        cache.set(f"earth-craton-pids-{model}", craton_pids)
+
+    continent_pids = cache.get(f"earth-continent-pids-{model}")
+    if continent_pids is None:
+        continent_pids = get_label_pids(model, continent_label_data)
+        cache.set(f"earth-continent-pids-{model}", continent_pids)
+
+    # prepare ocean labels
+    oceans_ret = []
+    for row in ocean_label_data:
+        if row["fromtime"] >= time and row["totime"] <= time:
+            oceans_ret.append((row["label"], row["lat"], row["lon"], "ocean"))
+
+    try:
+        # prepare continent labels
+        rnames, rlons, rlats = reconstruct_labels(
+            continent_label_data, model, time, pids=continent_pids
+        )
+        continents_ret = list(zip(rnames, rlats, rlons, ["continent"] * len(rnames)))
+
+        # prepare craton labels
+        rnames, rlons, rlats = reconstruct_labels(
+            craton_label_data, model, time, pids=craton_pids
+        )
+        cratons_ret = list(zip(rnames, rlats, rlons, ["craton"] * len(rnames)))
+        # find the shields in cratons and label them as "shield"
+        for row in cratons_ret:
+            if row[0] in SHIELDS:
+                row[3] = "shield"
+    except pygplates.InvalidLatLonError as e:
+        return HttpResponseBadRequest(f"Invalid longitude or latitude ({e}).")
+    except UnrecognizedModel as e:
+        return HttpResponseBadRequest(
+            f"""Unrecognized Rotation Model: {model}.<br> 
+            Use <a href="https://gws.gplates.org/info/model_names">https://gws.gplates.org/info/model_names</a> 
+            to find all available models."""
+        )
 
     response = HttpResponse(
-        json.dumps(round_floats(oceans + list(zip(rnames, rlats, rlons)))),
+        json.dumps(round_floats(oceans_ret + continents_ret + cratons_ret)),
         content_type="application/json",
     )
 

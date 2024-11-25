@@ -1,0 +1,16 @@
+| Name                      |        Lon |        Lat |  From |    To | Notes                                                                                                                    | 
+| Africa                    |      23.01 |       6.09 |   200 |     0 | the world's second-largest and second-most populous continent after Asia                                                 | 
+| Antarctica                |      92.31 |     -82.07 |   100 |     0 | the southernmost continent and site of the South Pole, is an uninhabited, ice-covered landmass                           | 
+| Asia                      |     100.76 |      47.85 |   200 |     0 | the largest continent in the world by both land area and population                                                      | 
+| Australia                 |     136.19 |     -23.93 |   450 |     0 |                                                                                                                          | 
+| Eurasia                   |       63.4 |      60.68 |   190 |     0 |                                                                                                                          | 
+| Europe                    |      17.94 |      47.85 |    20 |     0 | a continent located entirely in the Northern Hemisphere and mostly in the Eastern Hemisphere                             | 
+| Gondwana                  |    31.6128 |    9.19475 |   550 |   200 |                                                                                                                          | 
+| Indochina                 |     103.77 |      15.35 |   410 |   275 | Includes Vietnam, Cambodia, Laos, Thailand, Myanmar (Burma), and part of Malaysia                                        | 
+| Laurasia                  |    23.3171 |    62.3264 |   240 |   190 |                                                                                                                          | 
+| Laurentia                 |     -91.71 |      51.75 |   600 |   431 |                                                                                                                          | 
+| Laurussia                 |   -90.6294 |    67.2101 |   430 |   320 |                                                                                                                          | 
+| N America                 |    -102.04 |      43.75 |   230 |     0 | a continent in the Northern and Western Hemispheres                                                                      | 
+| Pangea                    |    -14.261 |    21.5639 |   320 |   200 |                                                                                                                          | 
+| Rodinia                   |     -82.96 |      57.68 |  1000 |   700 |                                                                                                                          | 
+| S America                 |     -58.89 |     -12.88 |   400 |     0 | a continent entirely in the Western Hemisphere and mostly in the Southern Hemisphere                                     | 

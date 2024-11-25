@@ -1,0 +1,26 @@
+| Name                      |        Lon |        Lat |  From |    To | Notes                                                                                                                    | 
+| Alashan                   |      95.85 |      41.98 |   410 |   310 | the Alashan region is considered a craton                                                                                | 
+| Amazonia                  |    -62.315 |   -2.95807 |  1000 |   540 |                                                                                                                          | 
+| Amazonia                  |     -55.52 |      -3.53 |   480 |   410 |                                                                                                                          | 
+| Amuria                    |     129.76 |      44.13 |   410 |   240 | the Amuria region is considered part of the Amuria Craton                                                                | 
+| Annamia                   |      85.01 |       7.58 |   410 |   265 | the Annamia region is generally considered part of the Annamese or Annamite Craton. https://doi.org/10.1016/j.gsf.2017.11.012 | 
+| Arabia                    |      44.88 |      24.55 |   200 |     0 | Includes Saudi Arabia, Yemen, Oman, the United Arab Emirates, Qatar, and Bahrain                                         | 
+| Arabia                    |      49.63 |      26.78 |   480 |   410 | The Arabian Plate is a https://en.wikipedia.org/wiki/Shield_(geology)                                                    | 
+| Baltica                   |     34.214 |     57.602 |  1000 |   430 | Baltica is considered a craton                                                                                           | 
+| Congo                     |    17.6336 |   -7.11979 |  1000 |    85 |                                                                                                                          | 
+| E Antarctica              |     144.86 |     -81.93 |  1000 |   100 | The main part of Antarctica 1                                                                                            | 
+| Greenland                 |     -40.45 |      73.72 |    90 |     0 | Greenland is largely considered a craton                                                                                 | 
+| India                     |    80.8654 |    19.8743 |  1000 |     0 | Bangladesh, Bhutan, British Indian Ocean Territory, Nepal, Pakistan, Sri Lanka                                           | 
+| Kalahari                  |      27.42 |     -26.72 |  1000 |   550 |                                                                                                                          | 
+| Kara                      |      84.58 |      78.24 |   440 |   410 | the Kara region is considered a craton                                                                                   | 
+| Kazakstania               |      54.71 |       51.5 |   410 |   310 | Kazakhstan is associated with the Kazakh Craton (or Kazakstania)                                                         | 
+| Madagascar                |      46.53 |     -19.67 |    80 |     0 | southeastern coast of Africa; the world's fourth largest island                                                          | 
+| N China                   |    117.427 |    38.6259 |  1000 |   140 |                                                                                                                          | 
+| Parana                    |      25.39 |     -16.89 |   700 |   650 |                                                                                                                          | 
+| S Australia               |     132.07 |     -32.19 |  1000 |   450 |                                                                                                                          | 
+| S China                   |    118.058 |    26.3747 |  1000 |   140 |                                                                                                                          | 
+| Sahara                    |    21.6856 |    18.7687 |  1000 |    85 |                                                                                                                          | 
+| Siberia                   |    110.974 |    62.6209 |  1000 |   320 |                                                                                                                          | 
+| São Francisco             |     -43.46 |     -14.89 |  1000 |   570 | the São Francisco Craton is indeed classified as a craton                                                                | 
+| W Africa                  |   -6.16398 |    18.3178 |  1000 |    85 |                                                                                                                          | 
+| W Australia               |     119.58 |     -26.65 |  1000 |   450 |                                                                                                                          | 

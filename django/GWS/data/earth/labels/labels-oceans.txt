@@ -1,0 +1,23 @@
+| Name                      |        Lon |        Lat |  From |    To | Notes                                                                                                                    | 
+| Adamastor Ocean           |    145.382 |    -27.889 |   600 |   545 |                                                                                                                          | 
+| Arctic Ocean              |        0.0 |       82.3 |   130 |     0 | the smallest and shallowest of the world's five oceanic divisions                                                        | 
+| Iapetus Ocean             |   -83.8502 |   -30.6503 |   500 |   450 |                                                                                                                          | 
+| Indian Ocean              |      79.35 |     -21.39 |    50 |     0 | the third-largest of the world's five oceanic divisions                                                                  | 
+| Mirovia Ocean             |   -9.52645 |    66.1329 |  1000 |   901 |                                                                                                                          | 
+| Mirovia Ocean             |    9.25032 |    25.2658 |   900 |   801 |                                                                                                                          | 
+| Mirovia Ocean             |   -79.3871 |    10.3548 |   800 |   701 |                                                                                                                          | 
+| Mirovia Ocean             |    4.55613 |    83.8052 |   700 |   600 |                                                                                                                          | 
+| Mirovia Ocean             |    23.3329 |   -76.6258 |   700 |   600 |                                                                                                                          | 
+| Mongol-Okhotsk Ocean      |     142.35 |      72.08 |   360 |   350 |                                                                                                                          | 
+| Mongol-Okhotsk Ocean      |     142.35 |      72.08 |   335 |   240 |                                                                                                                          | 
+| N Atlantic Ocean          |     -41.56 |      34.51 |    20 |     0 | the second-largest of the world's five oceanic divisions                                                                 | 
+| Neo-Tethys                |      90.53 |       8.26 |   210 |    80 | prehistoric ocean during much of the Mesozoic Era and early-mid Cenozoic Era.                                            | 
+| Pacific Ocean             |    -147.66 |      -2.28 |   120 |     0 |                                                                                                                          | 
+| Paleo-Tethys              |      44.84 |     -12.88 |   410 |   370 | an ocean located along the northern margin of the paleocontinent Gondwana                                                | 
+| Panthalassa Ocean         |        0.0 |       61.2 |   440 |   410 |                                                                                                                          | 
+| Proto-Pacific Ocean       |   -88.7755 |   -4.83226 |   700 |   601 |                                                                                                                          | 
+| Proto-Pacific Ocean       |   -53.7071 |   -10.9071 |   600 |   550 |                                                                                                                          | 
+| Rheic Ocean               |  31.060645 |   -51.6361 |   500 |   440 |                                                                                                                          | 
+| S Atlantic Ocean          |     -15.06 |     -28.75 |    50 |     0 | the second-largest of the world's five oceanic divisions                                                                 | 
+| Southern Ocean            |        0.0 |     -65.49 |    70 |     0 | also known as the Antarctic Ocean, comprises the southernmost waters                                                     | 
+| Ægir Ocean                |     -30.69 |      -8.88 |   460 |   450 |                                                                                                                          | 
