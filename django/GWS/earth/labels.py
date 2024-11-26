@@ -9,7 +9,6 @@ from utils import parameter_helper
 from utils.access_control import get_client_ip
 from utils.plate_model_utils import (
     UnrecognizedModel,
-    get_model_name_list,
     get_rotation_model,
     get_static_polygons,
 )
@@ -26,7 +25,7 @@ def read_labels(filepath: str) -> list:
     """return a list of label dictionaries
     [{"label": label, "lat": lat, "lon": lon, "fromtime": from_time, "totime": to_time,},{...},...]
 
-    :param filepath: the path to the file which contains the label data
+    :param filepath: the path to the file which contains the label data, for example f"{settings.EARTH_STORE_DIR}/labels/labels-continents.txt", labels-oceans.txt,labels-cratons.txt
 
     :return: a list of label dictionaries
     """
@@ -110,15 +109,17 @@ def reconstruct_labels(label_data: list, model: str, time: float, pids: list):
     names = []
     lats = []
     lons = []
-    for row in label_data:
-        if row["fromtime"] >= time and row["totime"] <= time:
-            names.append(row["label"])
-            lons.append(row["lon"])
-            lats.append(row["lat"])
+    plate_ids = []
+    for row in zip(label_data, pids):
+        if row[0]["fromtime"] >= time and row[0]["totime"] <= time:
+            names.append(row[0]["label"])
+            lons.append(row[0]["lon"])
+            lats.append(row[0]["lat"])
+            plate_ids.append(row[1])
 
     if time != 0:
         point_features = []
-        for lat, lon, name, pid in zip(lats, lons, names, pids):
+        for lat, lon, name, pid in zip(lats, lons, names, plate_ids):
             point_feature = pygplates.Feature()
             point_feature.set_geometry(pygplates.PointOnSphere(lat, lon))
             point_feature.set_name(name)
@@ -129,11 +130,9 @@ def reconstruct_labels(label_data: list, model: str, time: float, pids: list):
         rotation_model = get_rotation_model(model)
 
         # reconstruct the points
-        assigned_point_feature_collection = pygplates.FeatureCollection(point_features)
         reconstructed_feature_geometries = []
-
         pygplates.reconstruct(
-            assigned_point_feature_collection,
+            point_features,
             rotation_model,
             reconstructed_feature_geometries,
             time,
@@ -217,11 +216,15 @@ def get_labels(request):
         rnames, rlons, rlats = reconstruct_labels(
             craton_label_data, model, time, pids=craton_pids
         )
-        cratons_ret = list(zip(rnames, rlats, rlons, ["craton"] * len(rnames)))
-        # find the shields in cratons and label them as "shield"
-        for row in cratons_ret:
-            if row[0] in SHIELDS:
-                row[3] = "shield"
+        # find the label is a shield or craton
+        craton_or_shield = []
+        for n in rnames:
+            if n in SHIELDS:
+                craton_or_shield.append("shield")
+            else:
+                craton_or_shield.append("craton")
+        cratons_ret = list(zip(rnames, rlats, rlons, craton_or_shield))
+
     except pygplates.InvalidLatLonError as e:
         return HttpResponseBadRequest(f"Invalid longitude or latitude ({e}).")
     except UnrecognizedModel as e:
