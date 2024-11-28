@@ -218,10 +218,18 @@ STATIC_URL = "/static/"
 STATIC_ROOT = "/var/www/html/static/"
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
-if DEFAULT_THROTTLE_ANON_RATE is None:
+# flag to indicate if the traffic should be throttled.
+if isinstance(THROTTLE, str) and (
+    THROTTLE.strip().lower() == "true" or THROTTLE.strip() == "1"
+):
+    THROTTLE = True
+else:
+    THROTTLE = False
+
+if DEFAULT_THROTTLE_ANON_RATE is None or not THROTTLE:
     DEFAULT_THROTTLE_ANON_RATE = "10000/second"
 
-if DEFAULT_THROTTLE_USER_RATE is None:
+if DEFAULT_THROTTLE_USER_RATE is None or not THROTTLE:
     DEFAULT_THROTTLE_USER_RATE = "10000/second"
 
 REST_FRAMEWORK = {
@@ -236,14 +244,6 @@ REST_FRAMEWORK = {
         "user": DEFAULT_THROTTLE_USER_RATE,
     },
 }
-
-# flag to indicate if the traffic should be throttled.
-if isinstance(THROTTLE, str) and (
-    THROTTLE.strip().lower() == "true" or THROTTLE.strip() == "1"
-):
-    THROTTLE = True
-else:
-    THROTTLE = False
 
 if DEBUG:
     logger_level = "DEBUG"

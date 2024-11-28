@@ -5,9 +5,8 @@ import time
 import unittest
 from pathlib import Path
 
-import pygplates
 import requests
-from common import get_server_url, setup_logger
+from common import get_server_url, get_test_flag, setup_logger
 from plate_model_manager import PlateModelManager
 
 # python3 -m unittest -vv test_reconstruct_points.py
@@ -64,25 +63,34 @@ class ReconstructPointsTestCase(unittest.TestCase):
             raise e
         self.assertEqual(r.status_code, 200)
 
-        ps = self.data_1["points"].split(",")
-        lats = ps[1::2]
-        lons = ps[0::2]
-        rlons, rlats = _reconstruct(
-            lons, lats, self.data_1["model"], self.data_1["time"]
-        )
-        for i in range(len(rlons)):
-            self.logger.info(f"{gws_return_data['coordinates'][int(i)][0]}, {rlons[i]}")
-            self.logger.info(f"{gws_return_data['coordinates'][int(i)][1]}, {rlats[i]}")
-            self.assertTrue(
-                math.isclose(
-                    gws_return_data["coordinates"][int(i)][0], rlons[i], abs_tol=0.0001
-                )
+        if get_test_flag("GWS_TEST_VALIDATE_WITH_PYGPLATES"):
+            ps = self.data_1["points"].split(",")
+            lats = ps[1::2]
+            lons = ps[0::2]
+            rlons, rlats = _reconstruct(
+                lons, lats, self.data_1["model"], self.data_1["time"]
             )
-            self.assertTrue(
-                math.isclose(
-                    gws_return_data["coordinates"][int(i)][1], rlats[i], abs_tol=0.0001
+            for i in range(len(rlons)):
+                self.logger.info(
+                    f"{gws_return_data['coordinates'][int(i)][0]}, {rlons[i]}"
                 )
-            )
+                self.logger.info(
+                    f"{gws_return_data['coordinates'][int(i)][1]}, {rlats[i]}"
+                )
+                self.assertTrue(
+                    math.isclose(
+                        gws_return_data["coordinates"][int(i)][0],
+                        rlons[i],
+                        abs_tol=0.0001,
+                    )
+                )
+                self.assertTrue(
+                    math.isclose(
+                        gws_return_data["coordinates"][int(i)][1],
+                        rlats[i],
+                        abs_tol=0.0001,
+                    )
+                )
 
     def test_basic_post(self):
         r = requests.post(
@@ -141,31 +149,32 @@ class ReconstructPointsTestCase(unittest.TestCase):
             raise e
         self.assertEqual(r.status_code, 200)
 
-        for time in self.data_3["times"].split(","):
-            rlons, rlats = _reconstruct(
-                self.data_3["lons"].split(","),
-                self.data_3["lats"].split(","),
-                self.data_3["model"],
-                float(time),
-            )
-            for i in range(len(rlons)):
-                rlon = 999.99 if rlons[i] is None else rlons[i]
-                rlat = 999.99 if rlats[i] is None else rlats[i]
+        if get_test_flag("GWS_TEST_VALIDATE_WITH_PYGPLATES"):
+            for time in self.data_3["times"].split(","):
+                rlons, rlats = _reconstruct(
+                    self.data_3["lons"].split(","),
+                    self.data_3["lats"].split(","),
+                    self.data_3["model"],
+                    float(time),
+                )
+                for i in range(len(rlons)):
+                    rlon = 999.99 if rlons[i] is None else rlons[i]
+                    rlat = 999.99 if rlats[i] is None else rlats[i]
 
-                self.assertTrue(
-                    math.isclose(
-                        gws_return_data[time.strip()]["coordinates"][int(i)][0],
-                        rlon,
-                        abs_tol=0.0001,
+                    self.assertTrue(
+                        math.isclose(
+                            gws_return_data[time.strip()]["coordinates"][int(i)][0],
+                            rlon,
+                            abs_tol=0.0001,
+                        )
                     )
-                )
-                self.assertTrue(
-                    math.isclose(
-                        gws_return_data[time.strip()]["coordinates"][int(i)][1],
-                        rlat,
-                        abs_tol=0.0001,
+                    self.assertTrue(
+                        math.isclose(
+                            gws_return_data[time.strip()]["coordinates"][int(i)][1],
+                            rlat,
+                            abs_tol=0.0001,
+                        )
                     )
-                )
 
     def test_post_multi_times(self):
         data = copy.copy(self.data_3)
@@ -408,6 +417,8 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
 
 def _reconstruct(lons, lats, model, time):
+    import pygplates
+
     point_features = []
     p_index = 0
     for lat, lon in zip(lats, lons):

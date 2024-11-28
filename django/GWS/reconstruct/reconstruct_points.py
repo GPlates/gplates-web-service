@@ -41,7 +41,7 @@ else:
 
 @csrf_exempt
 @api_view(["GET", "POST"])
-# @throttle_classes(throttle_class_list)
+@throttle_classes(throttle_class_list)
 @schema(ReconPointsSchema())
 @check_get_post_request_and_get_params
 @get_reconstruction_times

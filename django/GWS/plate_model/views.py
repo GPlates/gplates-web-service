@@ -1,12 +1,9 @@
 from django.shortcuts import render
-
-from rest_framework import generics
+from rest_framework import generics, serializers
+from rest_framework.decorators import api_view, schema
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
-from rest_framework.decorators import api_view, schema
-
-from rest_framework import serializers
 from utils.docstr_schema import DocstrSchema
 
 

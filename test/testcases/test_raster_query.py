@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 import json
-import logging
-import time
 import unittest
 from pathlib import Path
 
 import requests
-from common import get_server_url, setup_logger
+from common import get_server_url, get_test_flag, setup_logger
 
 # python3 -m unittest -vv test_raster_query.py
 
 
+@unittest.skipIf(
+    get_test_flag("GWS_TEST_DB_QUERY") is not True,
+    "GWS_TEST_DB_QUERY environment variable is not set to true.",
+)
 class RasterQueryCase(unittest.TestCase):
     def setUp(self):
         # time.sleep(1)

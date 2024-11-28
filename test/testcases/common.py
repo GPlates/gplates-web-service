@@ -31,3 +31,18 @@ def get_server_url(cls):
         cls.logger.info(f"Using server URL in script {cls.SERVER_URL}")
     else:
         cls.logger.info(f"Using server URL in environment variable {cls.SERVER_URL}")
+
+
+def get_test_level():
+    try:
+        return int(os.getenv("GWS_TEST_LEVEL", 0))
+    except:
+        return 0  # default test level 0
+
+
+def get_test_flag(env_var, default_var="false"):
+    flag = os.getenv(env_var, default_var)
+    if flag.lower().strip() in ["true", "1"]:
+        return True
+    else:
+        return False

@@ -23,9 +23,9 @@ SHIELDS = ["Arabia"]
 
 def read_labels(filepath: str) -> list:
     """return a list of label dictionaries
-    [{"label": label, "lat": lat, "lon": lon, "fromtime": from_time, "totime": to_time,},{...},...]
+    [{"label": label, "lat": lat, "lon": lon, "fromtime": from_time, "totime": to_time,}, {...}, ...]
 
-    :param filepath: the path to the file which contains the label data, for example f"{settings.EARTH_STORE_DIR}/labels/labels-continents.txt", labels-oceans.txt,labels-cratons.txt
+    :param filepath: the path to the file which contains the label data, for example f"{settings.EARTH_STORE_DIR}/labels/labels-continents.txt", labels-oceans.txt, labels-cratons.txt
 
     :return: a list of label dictionaries
     """
