@@ -1,11 +1,10 @@
 import json
 import logging
-import time
 import unittest
 from pathlib import Path
 
 import requests
-from common import get_server_url, setup_logger
+from common import get_server_url, send_get_request, setup_logger
 
 # python3 -m unittest -vv test_misc.py
 
@@ -148,6 +147,20 @@ class MiscTestCase(unittest.TestCase):
             self.logger.info("PASSED! test_paleo_cities_2")
         else:
             raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+    def test_paleo_labels(self):
+        """testing https://gws.gplates.org/earth/get_labels?time=300&model=merdith2021"""
+        r = send_get_request(
+            self.SERVER_URL + "/earth/get_labels",
+            data={"time": 300, "model": "merdith2021"},
+        )
+        self.assertEqual(r.status_code, 200)
+
+        self.logger.info(
+            "######### test_paleo_labels ###########\n"
+            + json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+            + "\n########## end of test_paleo_labels ##########\n"
+        )
 
 
 if __name__ == "__main__":
