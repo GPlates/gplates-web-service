@@ -1,21 +1,30 @@
 import copy
 import json
 import math
-import time
-import unittest
+import unittest, logging
 from pathlib import Path
+from collections.abc import Sequence
 
 import requests
-from common import get_server_url, get_test_flag, setup_logger
+from common import (
+    get_server_url,
+    get_test_flag,
+    setup_logger,
+    add_server_url_to_docstring,
+    send_get_request,
+    send_post_request,
+)
 from plate_model_manager import PlateModelManager
 
 # python3 -m unittest -vv test_reconstruct_points.py
 
 
 class ReconstructPointsTestCase(unittest.TestCase):
+    SERVER_URL = ""
+    logger = logging.getLogger()
+
     def setUp(self):
         pass
-        # time.sleep(1)
 
     @classmethod
     def setUpClass(cls):
@@ -45,25 +54,29 @@ class ReconstructPointsTestCase(unittest.TestCase):
     def tearDownClass(cls):
         cls.logger.info("tearDownClass")
 
+    @add_server_url_to_docstring()
     def test_basic_get(self):
-        r = requests.get(
+        """testing {}/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=Muller2019"""
+        msg = ""
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=self.data_1,
-            verify=False,
-            proxies=self.proxies,
         )
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
+
+        self.assertEqual(r.status_code, 200)
 
         try:
             gws_return_data = json.loads(str(r.text))
-            self.logger.info(
-                json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
-            )
+            msg += json.dumps(gws_return_data, sort_keys=True, indent=4) + "\n"
         except Exception as e:
-            self.logger.info(r.text)
+            self.logger.info("invalid return data: " + r.text)
+            self.assertTrue(False)
             raise e
-        self.assertEqual(r.status_code, 200)
 
         if get_test_flag("GWS_TEST_VALIDATE_WITH_PYGPLATES"):
+            msg += "validate results with pygplates.....\n"
             ps = self.data_1["points"].split(",")
             lats = ps[1::2]
             lons = ps[0::2]
@@ -71,85 +84,123 @@ class ReconstructPointsTestCase(unittest.TestCase):
                 lons, lats, self.data_1["model"], self.data_1["time"]
             )
             for i in range(len(rlons)):
-                self.logger.info(
-                    f"{gws_return_data['coordinates'][int(i)][0]}, {rlons[i]}"
-                )
-                self.logger.info(
-                    f"{gws_return_data['coordinates'][int(i)][1]}, {rlats[i]}"
-                )
-                self.assertTrue(
-                    math.isclose(
-                        gws_return_data["coordinates"][int(i)][0],
-                        rlons[i],
-                        abs_tol=0.0001,
-                    )
-                )
-                self.assertTrue(
-                    math.isclose(
-                        gws_return_data["coordinates"][int(i)][1],
-                        rlats[i],
-                        abs_tol=0.0001,
-                    )
-                )
+                msg += f"{gws_return_data['coordinates'][int(i)][0]}, {rlons[i]}\n"
+                msg += f"{gws_return_data['coordinates'][int(i)][1]}, {rlats[i]}\n"
 
+                rr = rlons[i]
+                if rr is not None:
+                    true_or_false = math.isclose(
+                        gws_return_data["coordinates"][int(i)][0],
+                        rr,
+                        abs_tol=0.0001,
+                    )
+                    self.assertTrue(true_or_false)
+
+                rr = rlats[i]
+                if rr is not None:
+                    self.assertTrue(
+                        math.isclose(
+                            gws_return_data["coordinates"][int(i)][1],
+                            rr,
+                            abs_tol=0.0001,
+                        )
+                    )
+
+        self.logger.info(
+            "######### test_basic_get ###########\n"
+            + msg
+            + "\n######### test_basic_get ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_basic_post(self):
-        r = requests.post(
+        """testing {}/reconstruct/reconstruct_points/  (HTTP POST method)"""
+        msg = ""
+        r = send_post_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             data=self.data_1,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info("test_basic_post")
-        self.logger.info(self.data_1)
-        self.logger.info(r.text)
-        self.assertEqual(r.status_code, 200)
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
 
+        self.assertEqual(r.status_code, 200)
+
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4) + "\n"
+
+        self.logger.info(
+            "######### test_basic_post ###########\n"
+            + msg
+            + "\n######### test_basic_post ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_post_return_feature_collection(self):
+        """testing {}/reconstruct/reconstruct_points/?fc=true (HTTP POST method)"""
+        msg = ""
         data = copy.copy(self.data_2)
         data["fc"] = True
-        r = requests.post(
+        r = send_post_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             data=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4) + "\n"
+        self.logger.info(
+            "######### test_post_return_feature_collection ###########\n"
+            + msg
+            + "\n######### test_post_return_feature_collection ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_get_return_feature_collection(self):
+        """testing {}/reconstruct/reconstruct_points/?fc=true (HTTP GET method)"""
+        msg = ""
         data = copy.copy(self.data_2)
         data["fc"] = True
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
+
         self.assertEqual(r.status_code, 200)
 
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4) + "\n"
+        self.logger.info(
+            "######### test_get_return_feature_collection ###########\n"
+            + msg
+            + "\n######### test_get_return_feature_collection ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_get_multi_times(self):
-        """test reconstruct points at multiple times
-        use pygplates to verify the results
-        """
+        """testing {}/reconstruct/reconstruct_points/   (HTTP GET method with multiple times)"""
+        msg = ""
         data = copy.copy(self.data_3)
-        data["fc"] = False
-        r = requests.get(
+        data["fc"] = "False"
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
         try:
             gws_return_data = json.loads(str(r.text))
-            self.logger.info(json.dumps(gws_return_data, sort_keys=True, indent=4))
+            msg += json.dumps(gws_return_data, sort_keys=True, indent=4) + "\n"
         except Exception as e:
-            self.logger.info(r.text)
+            msg += r.text + "\n"
+            self.assertTrue(False)
             raise e
+
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
         if get_test_flag("GWS_TEST_VALIDATE_WITH_PYGPLATES"):
+            msg += "validate results with pygplates.....\n"
             for time in self.data_3["times"].split(","):
                 rlons, rlats = _reconstruct(
                     self.data_3["lons"].split(","),
@@ -158,8 +209,12 @@ class ReconstructPointsTestCase(unittest.TestCase):
                     float(time),
                 )
                 for i in range(len(rlons)):
-                    rlon = 999.99 if rlons[i] is None else rlons[i]
-                    rlat = 999.99 if rlats[i] is None else rlats[i]
+                    rlon = rlons[i]
+                    if rlon is None:
+                        rlon = 999.99
+                    rlat = rlats[i]
+                    if rlat is None:
+                        rlat = 999.99
 
                     self.assertTrue(
                         math.isclose(
@@ -175,45 +230,78 @@ class ReconstructPointsTestCase(unittest.TestCase):
                             abs_tol=0.0001,
                         )
                     )
+        self.logger.info(
+            "######### test_get_multi_times ###########\n"
+            + msg
+            + "\n######### test_get_multi_times ###########\n"
+        )
 
+    @add_server_url_to_docstring()
     def test_post_multi_times(self):
+        """testing {}/reconstruct/reconstruct_points/   (HTTP POST method with multiple times)"""
+        msg = ""
         data = copy.copy(self.data_3)
-        data["fc"] = True
-        self.logger.info(data)
-        r = requests.post(
+        data["fc"] = "True"
+        r = send_post_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             data=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info(r.text)
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4) + "\n"
+        self.logger.info(
+            "######### test_post_multi_times ###########\n"
+            + msg
+            + "\n######### test_post_multi_times ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_get_with_pid(self):
+        """testing {}/reconstruct/reconstruct_points/  (with a single plate ID)"""
+        msg = ""
         data = copy.copy(self.data_1)
         data["pid"] = 701
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4) + "\n"
+        self.logger.info(
+            "######### test_get_with_pid ###########\n"
+            + msg
+            + "\n######### test_get_with_pid ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_get_with_pids(self):
+        """testing {}/reconstruct/reconstruct_points/  (with a list of plate IDs)"""
+        msg = ""
         data = copy.copy(self.data_1)
         data["pids"] = "701, 801"
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=self.data_1,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info(r.text)
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
+
         self.assertEqual(r.status_code, 200)
+
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4) + "\n"
+        self.logger.info(
+            "######### test_get_with_pids ###########\n"
+            + msg
+            + "\n######### test_get_with_pids ###########\n"
+        )
 
     def test_get_ignore_valid_time(self):
         data = copy.copy(self.data_2)
@@ -228,9 +316,9 @@ class ReconstructPointsTestCase(unittest.TestCase):
         self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
         self.assertEqual(r.status_code, 200)
 
-    def test_get_ignore_valid_time(self):
+    def test_get_ignore_valid_time_ex(self):
         data = copy.copy(self.data_4)
-        data["ignore_valid_time"] = True
+        data["ignore_valid_time"] = "True"
 
         r = requests.get(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
@@ -244,7 +332,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
     def test_get_return_null_points(self):
         data = copy.copy(self.data_4)
-        data["return_null_points"] = True
+        data["return_null_points"] = "True"
 
         r = requests.get(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
@@ -416,46 +504,50 @@ class ReconstructPointsTestCase(unittest.TestCase):
         self.assertEqual(r.status_code, 400)
 
 
-def _reconstruct(lons, lats, model, time):
+def _reconstruct(
+    lons: list, lats: list, model: str, time: int | float
+) -> tuple[Sequence[float | None], Sequence[float | None]]:
     import pygplates
 
     point_features = []
     p_index = 0
     for lat, lon in zip(lats, lons):
-        point_feature = pygplates.Feature()
-        point_feature.set_geometry(pygplates.PointOnSphere(float(lat), float(lon)))
+        point_feature = pygplates.Feature()  # type: ignore
+        point_feature.set_geometry(pygplates.PointOnSphere(float(lat), float(lon)))  # type: ignore
         point_feature.set_name(str(p_index))
         point_features.append(point_feature)
         p_index += 1
 
-    properties_to_copy = [pygplates.PartitionProperty.reconstruction_plate_id]
-    properties_to_copy.append(pygplates.PartitionProperty.valid_time_period)
+    properties_to_copy = [pygplates.PartitionProperty.reconstruction_plate_id]  # type: ignore
+    properties_to_copy.append(pygplates.PartitionProperty.valid_time_period)  # type: ignore
 
     pm_manager = PlateModelManager()
-    model = pm_manager.get_model(model)
+    mm = pm_manager.get_model(model)
+    if not mm:
+        raise Exception(f"Unable to get model {model}")
 
-    assigned_point_features = pygplates.partition_into_plates(
-        model.get_static_polygons(),
-        model.get_rotation_model(),
+    assigned_point_features = pygplates.partition_into_plates(  # type: ignore
+        mm.get_static_polygons(),
+        mm.get_rotation_model(),
         point_features,
         properties_to_copy=properties_to_copy,
     )
 
     reconstructed_feature_geometries = []
-    pygplates.reconstruct(
-        pygplates.FeatureCollection(assigned_point_features),
-        model.get_rotation_model(),
+    pygplates.reconstruct(  # type: ignore
+        pygplates.FeatureCollection(assigned_point_features),  # type: ignore
+        mm.get_rotation_model(),
         reconstructed_feature_geometries,
         time,
     )
-    lons = len(assigned_point_features) * [None]
-    lats = len(assigned_point_features) * [None]
+    rlons = len(assigned_point_features) * [None]
+    rlats = len(assigned_point_features) * [None]
     for rfg in reconstructed_feature_geometries:
         lat, lon = rfg.get_reconstructed_geometry().to_lat_lon()
         name = rfg.get_feature().get_name()
-        lons[int(name)] = lon
-        lats[int(name)] = lat
-    return lons, lats
+        rlons[int(name)] = lon
+        rlats[int(name)] = lat
+    return rlons, rlats
 
 
 if __name__ == "__main__":

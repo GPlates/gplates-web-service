@@ -12,8 +12,13 @@ from common import (
 
 # python3 -m unittest -vv test_misc.py
 
+# pay attention here !!! this testcase can reveal some excessive memory usage issue.
+
 
 class MiscTestCase(unittest.TestCase):
+    SERVER_URL = ""
+    logger = logging.getLogger()
+
     def setUp(self):
         self.proxies = {"http": ""}
 
@@ -38,7 +43,8 @@ class MiscTestCase(unittest.TestCase):
             self.SERVER_URL + "/reconstruct/motion_path",
             params=data,
         )
-        self.logger.debug(r.request.url + str(r.request.headers))
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
         logging.info(
@@ -55,7 +61,8 @@ class MiscTestCase(unittest.TestCase):
             self.SERVER_URL + "/earth/find_axis_and_angle",
             params=data,
         )
-        self.logger.debug(r.request.url + str(r.request.headers))
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
         logging.info(
@@ -72,7 +79,8 @@ class MiscTestCase(unittest.TestCase):
         r = send_get_request(
             self.SERVER_URL + "/earth/interp_two_locations", params=data
         )
-        self.logger.debug(r.request.url + str(r.request.headers))
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
         logging.info(
@@ -87,7 +95,8 @@ class MiscTestCase(unittest.TestCase):
 
         data = {"point_a": "120,45", "point_b": "20,-45"}
         r = send_get_request(self.SERVER_URL + "/earth/distance", params=data)
-        self.logger.debug(r.request.url + str(r.request.headers))
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
         dist = json.loads(r.text)
@@ -106,7 +115,8 @@ class MiscTestCase(unittest.TestCase):
             self.SERVER_URL + "/earth/get_cities",
             params={"time": 100, "model": "muller2019"},
         )
-        self.logger.debug(r.request.url + str(r.request.headers))
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
         return_data = json.loads(str(r.text))
@@ -126,7 +136,8 @@ class MiscTestCase(unittest.TestCase):
         r = send_get_request(
             self.SERVER_URL + "/earth/get_present_day_cities",
         )
-        self.logger.debug(r.request.url + str(r.request.headers))
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
 
         self.assertEqual(r.status_code, 200)
 
@@ -144,7 +155,8 @@ class MiscTestCase(unittest.TestCase):
             self.SERVER_URL + "/earth/get_labels",
             params={"time": 300, "model": "merdith2021"},
         )
-        self.logger.debug(r.request.url + str(r.request.headers))
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
 
         self.assertEqual(r.status_code, 200)
 
