@@ -9,9 +9,6 @@ else
   printf "Using server URL in environment variable GWS_SERVER_URL ${GWS_SERVER_URL}\n"
 fi 
 
-GWS_TEST_VALIDATE_WITH_PYGPLATES=False
-GWS_TEST_DB_QUERY=False
-
 cd $(dirname "$0")/testcases
 python3 -m unittest -vv
 

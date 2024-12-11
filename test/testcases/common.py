@@ -13,8 +13,12 @@ def setup_logger(cls, name: str, level=logging.INFO):
     cls.logger = logging.getLogger(name)
     cls.logger.setLevel(level)
     cls.logger.propagate = False
-    Path("logs").mkdir(parents=True, exist_ok=True)
-    fh = logging.FileHandler(f"logs/{name}.log")
+    log_path = "unittest-logs"
+    Path(log_path).mkdir(parents=True, exist_ok=True)
+    log_filepath = f"{log_path}/{name}.log"
+    if os.path.exists(log_filepath):
+        os.remove(log_filepath)
+    fh = logging.FileHandler(log_filepath)
     fh.setLevel(level)
     formatter = logging.Formatter(
         "%(asctime)s {%(pathname)s:%(lineno)d} \n\n%(message)s\n "

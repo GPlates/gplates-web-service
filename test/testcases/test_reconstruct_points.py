@@ -1,18 +1,18 @@
 import copy
 import json
+import logging
 import math
-import unittest, logging
-from pathlib import Path
+import unittest
 from collections.abc import Sequence
+from pathlib import Path
 
-import requests
 from common import (
+    add_server_url_to_docstring,
     get_server_url,
     get_test_flag,
-    setup_logger,
-    add_server_url_to_docstring,
     send_get_request,
     send_post_request,
+    setup_logger,
 )
 from plate_model_manager import PlateModelManager
 
@@ -52,11 +52,11 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.logger.info("tearDownClass")
+        cls.logger.debug("tearDownClass")
 
     @add_server_url_to_docstring()
     def test_basic_get(self):
-        """testing {}/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=Muller2019"""
+        """-   testing {}/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=Muller2019"""
         msg = ""
         r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
@@ -114,7 +114,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_basic_post(self):
-        """testing {}/reconstruct/reconstruct_points/  (HTTP POST method)"""
+        """-   testing {}/reconstruct/reconstruct_points/  (HTTP POST method)"""
         msg = ""
         r = send_post_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
@@ -135,7 +135,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_post_return_feature_collection(self):
-        """testing {}/reconstruct/reconstruct_points/?fc=true (HTTP POST method)"""
+        """-   testing {}/reconstruct/reconstruct_points/?fc=true (HTTP POST method)"""
         msg = ""
         data = copy.copy(self.data_2)
         data["fc"] = True
@@ -157,7 +157,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_get_return_feature_collection(self):
-        """testing {}/reconstruct/reconstruct_points/?fc=true (HTTP GET method)"""
+        """-   testing {}/reconstruct/reconstruct_points/?fc=true (HTTP GET method)"""
         msg = ""
         data = copy.copy(self.data_2)
         data["fc"] = True
@@ -179,7 +179,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_get_multi_times(self):
-        """testing {}/reconstruct/reconstruct_points/   (HTTP GET method with multiple times)"""
+        """-   testing {}/reconstruct/reconstruct_points/   (HTTP GET method with multiple times)"""
         msg = ""
         data = copy.copy(self.data_3)
         data["fc"] = "False"
@@ -238,7 +238,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_post_multi_times(self):
-        """testing {}/reconstruct/reconstruct_points/   (HTTP POST method with multiple times)"""
+        """-   testing {}/reconstruct/reconstruct_points/   (HTTP POST method with multiple times)"""
         msg = ""
         data = copy.copy(self.data_3)
         data["fc"] = "True"
@@ -260,7 +260,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_get_with_pid(self):
-        """testing {}/reconstruct/reconstruct_points/  (with a single plate ID)"""
+        """-   testing {}/reconstruct/reconstruct_points/  (with a single plate ID)"""
         msg = ""
         data = copy.copy(self.data_1)
         data["pid"] = 701
@@ -282,7 +282,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_get_with_pids(self):
-        """testing {}/reconstruct/reconstruct_points/  (with a list of plate IDs)"""
+        """-   testing {}/reconstruct/reconstruct_points/  (with a list of plate IDs)"""
         msg = ""
         data = copy.copy(self.data_1)
         data["pids"] = "701, 801"
@@ -303,74 +303,119 @@ class ReconstructPointsTestCase(unittest.TestCase):
             + "\n######### test_get_with_pids ###########\n"
         )
 
+    @add_server_url_to_docstring()
     def test_get_ignore_valid_time(self):
+        """-   testing {}/reconstruct/reconstruct_points/?ignore_valid_time=true"""
+        msg = ""
         data = copy.copy(self.data_2)
         data["ignore_valid_time"] = True
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=self.data_1,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info(r.text)
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+        self.logger.info(
+            "######### test_get_ignore_valid_time ###########\n"
+            + msg
+            + "\n######### test_get_ignore_valid_time ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_get_ignore_valid_time_ex(self):
+        """-   testing {}/reconstruct/reconstruct_points/?ignore_valid_time=true  (with different data)"""
+        msg = ""
         data = copy.copy(self.data_4)
         data["ignore_valid_time"] = "True"
 
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info(r.text)
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+        self.logger.info(
+            "######### test_get_ignore_valid_time_ex ###########\n"
+            + msg
+            + "\n######### test_get_ignore_valid_time_ex ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_get_return_null_points(self):
+        """-   testing {}/reconstruct/reconstruct_points/?return_null_points=true"""
+        msg = ""
         data = copy.copy(self.data_4)
         data["return_null_points"] = "True"
 
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info(r.text)
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+        self.logger.info(
+            "######### test_get_return_null_points ###########\n"
+            + msg
+            + "\n######### test_get_return_null_points ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_get_reverse(self):
+        """-   testing {}/reconstruct/reconstruct_points/?reverse=true"""
+        msg = ""
         data = copy.copy(self.data_2)
         data["reverse"] = True
 
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info(r.text)
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+
+        if r.request.url:
+            self.logger.debug(r.request.url + str(r.request.headers))
         self.assertEqual(r.status_code, 200)
 
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+        self.logger.info(
+            "######### test_get_reverse ###########\n"
+            + msg
+            + "\n######### test_get_reverse ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_get_simple_return_data(self):
+        """-   testing {}/reconstruct/reconstruct_points/?fmt=simple"""
+        msg = ""
         data = copy.copy(self.data_3)
         data["fmt"] = "simple"
 
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info("test_get_simple_return_data: " + r.text)
-        gws_return_data = json.loads(str(r.text))
-        self.logger.info(json.dumps(gws_return_data, sort_keys=True, indent=4))
+
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+
+        try:
+            gws_return_data = json.loads(str(r.text))
+            msg += json.dumps(gws_return_data, sort_keys=True, indent=4) + "\n"
+        except:
+            msg += r.text + "\n"
+            self.assertTrue(False)  # invalid return data
+
         self.assertEqual(r.status_code, 200)
         self.assertEqual(
             len(data["times"].split(",")), len(list(gws_return_data.keys()))
@@ -392,121 +437,151 @@ class ReconstructPointsTestCase(unittest.TestCase):
                 len(data["lons"].split(",")), len(gws_return_data[key]["end_time"])
             )
 
+        self.logger.info(
+            "######### test_get_simple_return_data ###########\n"
+            + msg
+            + "\n######### test_get_simple_return_data ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_time_out_of_scope(self):
+        """-   testing {}/reconstruct/reconstruct_points/    (with time out of valid range)"""
+        msg = ""
         data = copy.copy(self.data_3)
         data["times"] += ",10000"
 
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info(" test_time_out_of_scope: " + r.text)
+
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+
+        msg += " test_time_out_of_scope_1: " + r.text + "\n"
         self.assertEqual(r.status_code, 400)
 
         data = copy.copy(self.data_1)
         data["time"] = 10000
 
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info(" test_time_out_of_scope: " + r.text)
+        msg += " test_time_out_of_scope_2: " + r.text + "\n"
         self.assertEqual(r.status_code, 400)
 
+        self.logger.info(
+            "######### test_time_out_of_scope ###########\n"
+            + msg
+            + "\n######### test_time_out_of_scope ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_various_coordinates_input(self):
+        """-   testing {}/reconstruct/reconstruct_points/    (with various points coordinates input)"""
+        msg = ""
         data = {
             "lat": 50,
             "lon": -100,
             "time": 100,
             "model": "PALEOMAP",
         }
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info("test_various_coordinates_input: " + r.text)
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+        msg += "test_various_coordinates_input_1: " + r.text + "\n\n"
         self.assertEqual(r.status_code, 200)
 
+        #############################
         data = {
             "point": "-100,50",
             "time": 100,
             "model": "PALEOMAP",
         }
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info("test_various_coordinates_input: " + r.text)
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+        msg += "test_various_coordinates_input_2: " + r.text + "\n\n"
         self.assertEqual(r.status_code, 200)
 
+        #############################
         data = {
             "point": "[-100,50]",
             "time": 100,
             "model": "PALEOMAP",
         }
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info("test_various_coordinates_input: " + r.text)
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+        msg += "test_various_coordinates_input_3: " + r.text + "\n\n"
         self.assertEqual(r.status_code, 200)
 
+        #############################
         data = {
             "points": "[[-100,50],[95, 54], [142, -33]]",
             "time": 100,
             "model": "PALEOMAP",
         }
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info("test_various_coordinates_input: " + r.text)
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+        msg += "test_various_coordinates_input_4: " + r.text + "\n\n"
         self.assertEqual(r.status_code, 200)
 
+        #############################
         data = {
             "points": "[100, 33, 50, 44, 0, 55]",
             "time": 100,
             "model": "PALEOMAP",
         }
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info("test_various_coordinates_input: " + r.text)
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+        msg += "test_various_coordinates_input_5: " + r.text + "\n\n"
         self.assertEqual(r.status_code, 200)
 
+        #############################
         data = {
             "point": "[50,-100]",
             "time": 100,
             "model": "PALEOMAP",
         }
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
-        self.logger.info("test_various_coordinates_input: " + r.text)
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+        msg += "test_various_coordinates_input_6: " + r.text + "\n\n"
         self.assertEqual(r.status_code, 400)
+
+        self.logger.info(
+            "######### test_various_coordinates_input ###########\n"
+            + msg
+            + "\n######### test_various_coordinates_input ###########\n"
+        )
 
 
 def _reconstruct(
     lons: list, lats: list, model: str, time: int | float
 ) -> tuple[Sequence[float | None], Sequence[float | None]]:
+    """use pygplates to reconstruct coordinates"""
     import pygplates
 
     point_features = []
