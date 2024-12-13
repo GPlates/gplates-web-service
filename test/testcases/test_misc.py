@@ -36,7 +36,7 @@ class MiscTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_motion_path(self):
-        """testing {}/reconstruct/motion_path?seedpoints=0,0&movplate=701"""
+        """-   testing {}/reconstruct/motion_path?seedpoints=0,0&movplate=701"""
 
         data = {"seedpoints": "0,0", "movplate": 701}
         r = send_get_request(
@@ -55,7 +55,7 @@ class MiscTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_find_axis_and_angle(self):
-        """testing {}/earth/find_axis_and_angle?point_a=120,45&point_b=20,-45"""
+        """-   testing {}/earth/find_axis_and_angle?point_a=120,45&point_b=20,-45"""
         data = {"point_a": "120,45", "point_b": "20,-45"}
         r = send_get_request(
             self.SERVER_URL + "/earth/find_axis_and_angle",
@@ -73,7 +73,7 @@ class MiscTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_interp_two_locations(self):
-        """testing {}/earth/interp_two_locations?point_a=120,45&point_b=20,-45&num=10"""
+        """-   testing {}/earth/interp_two_locations?point_a=120,45&point_b=20,-45&num=10"""
 
         data = {"point_a": "120,45", "point_b": "20,-45", "num": 10}
         r = send_get_request(
@@ -91,7 +91,7 @@ class MiscTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_distance(self):
-        """testing {}/earth/distance?point_a=120,45&point_b=20,-45"""
+        """-   testing {}/earth/distance?point_a=120,45&point_b=20,-45"""
 
         data = {"point_a": "120,45", "point_b": "20,-45"}
         r = send_get_request(self.SERVER_URL + "/earth/distance", params=data)
@@ -109,7 +109,7 @@ class MiscTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_paleo_cities(self):
-        """testing {}/earth/get_cities?time=100&model=muller2019"""
+        """-   testing {}/earth/get_cities?time=100&model=muller2019"""
 
         r = send_get_request(
             self.SERVER_URL + "/earth/get_cities",
@@ -131,7 +131,7 @@ class MiscTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_get_present_day_cities(self):
-        """testing {}/earth/get_present_day_cities"""
+        """-   testing {}/earth/get_present_day_cities"""
 
         r = send_get_request(
             self.SERVER_URL + "/earth/get_present_day_cities",
@@ -149,14 +149,14 @@ class MiscTestCase(unittest.TestCase):
 
     @add_server_url_to_docstring()
     def test_paleo_labels(self):
-        """testing {}/earth/get_labels?time=300&model=merdith2021"""
+        """-   testing {}/earth/get_labels?time=300&model=merdith2021"""
 
         r = send_get_request(
             self.SERVER_URL + "/earth/get_labels",
             params={"time": 300, "model": "merdith2021"},
         )
         if r.request.url:
-            self.logger.debug(r.request.url + str(r.request.headers))
+            self.logger.info(r.request.url + str(r.request.headers))
 
         self.assertEqual(r.status_code, 200)
 

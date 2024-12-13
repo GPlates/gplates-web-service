@@ -1,17 +1,15 @@
 import json
-import time
 import unittest
 from pathlib import Path
 
-import requests
-from common import get_server_url, setup_logger
+from common import get_server_url, send_get_request, send_post_request, setup_logger
 
 # python3 -m unittest -vv test_reconstruct_feature_collection.py
 
 
 class ReconstructPointsTestCase(unittest.TestCase):
     def setUp(self):
-        self.proxies = {"http": ""}
+        pass
 
     @classmethod
     def setUpClass(cls):
@@ -58,34 +56,43 @@ class ReconstructPointsTestCase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.logger.info("tearDownClass")
+        cls.logger.debug("tearDownClass")
 
     def test_reconstruct_feature_collection(self):
-        # time.sleep(1)
-        r = requests.get(
+        """-   testing {}/reconstruct/reconstruct_feature_collection/"""
+        msg = ""
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_feature_collection/",
             params=self.data,
-            verify=False,
-            proxies=self.proxies,
         )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
         self.assertEqual(r.status_code, 200)
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4) + "\n"
 
+        # TODO:
         self.data["keep_properties"] = ""
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_feature_collection/",
             params=self.data,
-            verify=False,
-            proxies=self.proxies,
         )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
         self.assertEqual(r.status_code, 200)
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4) + "\n"
 
-        r = requests.post(
+        # TODO:
+        r = send_post_request(
             self.SERVER_URL + "/reconstruct/reconstruct_feature_collection/",
             data=self.data,
-            verify=False,
-            proxies=self.proxies,
         )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
         self.assertEqual(r.status_code, 200)
-        self.logger.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4) + "\n"
+
+        self.logger.info(
+            "######### test_reconstruct_feature_collection ###########\n"
+            + msg
+            + "\n########## end of test_reconstruct_feature_collection ##########\n"
+        )

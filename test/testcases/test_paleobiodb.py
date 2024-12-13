@@ -1,5 +1,4 @@
 import json
-import time
 import unittest
 from pathlib import Path
 
@@ -11,7 +10,7 @@ from common import get_server_url, setup_logger
 
 class PaleobiodbTestCase(unittest.TestCase):
     def setUp(self):
-        self.proxies = {"http": ""}
+        pass
 
     @classmethod
     def setUpClass(cls):
@@ -20,13 +19,12 @@ class PaleobiodbTestCase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.logger.info("tearDownClass")
+        cls.logger.debug("tearDownClass")
 
     @unittest.skip("skip test_paleobiodb")
     def test_paleobiodb(self):
-        # time.sleep(1)
         r = requests.get(
-            "http://paleobiodb.org/data1.1/occs/list.json?limit=all&interval_id=3001&show=coords,attr,loc,prot,time,strat,stratext,lith,lithext,geo,rem,ent,entname,crmod&showsource",
+            "http://paleobiodb.org/data1.1/occs/list.json?limit=all&interval_id=300&show=coords,attr,loc,prot,time,strat,stratext,lith,lithext,geo,rem,ent,entname,crmod&showsource",
             proxies=self.proxies,
         )
 
@@ -34,15 +32,12 @@ class PaleobiodbTestCase(unittest.TestCase):
         self.logger.info(r.text)
 
         pbdb = json.loads(r.text)
-        lons = []
-        lats = []
-        for record in pbdb["records"]:
-            lons.append(record["lng"])
-            lats.append(record["lat"])
+
+        records = pbdb["records"][:100]  # do the first 100 records
 
         fc = {"type": "FeatureCollection"}
         fc["features"] = []
-        for i, record in enumerate(pbdb["records"]):
+        for i, record in enumerate(records):
             feature = {"type": "Feature"}
             feature["geometry"] = {}
             feature["geometry"]["type"] = "Point"
