@@ -39,7 +39,7 @@ def get_server_url(cls=None) -> str:
 
     if cls is not None:
         cls.SERVER_URL = url
-        cls.logger.info(msg.format(cls.SERVER_URL))
+        cls.logger.debug(msg.format(cls.SERVER_URL))
     return url
 
 

@@ -7,6 +7,8 @@ from common import get_server_url, setup_logger
 
 # python3 -m unittest -vv test_paleobiodb.py
 
+# TODO: turn this testcase into an example
+
 
 class PaleobiodbTestCase(unittest.TestCase):
     def setUp(self):

@@ -1,21 +1,23 @@
 import json
-import logging
-import time
 import unittest
 from pathlib import Path
 
-import requests
-from common import get_server_url, setup_logger
+from common import (
+    add_server_url_to_docstring,
+    get_server_url,
+    send_get_request,
+    setup_logger,
+)
 
 # python3 -m unittest -vv test_assign_plate_ids.py
 
 
 class AssignPlateIDsTestCase(unittest.TestCase):
     def setUp(self):
-        self.proxies = {"http": ""}
+        pass
 
     def tearDown(self):
-        self.logger.info("tearDown")
+        self.logger.debug("tearDown")
 
     @classmethod
     def setUpClass(cls):
@@ -50,41 +52,54 @@ class AssignPlateIDsTestCase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.logger.info("tearDownClass")
+        cls.logger.debug("tearDownClass")
 
+    @add_server_url_to_docstring()
     def test_assign_plate_ids(self):
-        """test assign plate ids for points"""
-        # time.sleep(1)
-        data = {"points": "-10,50,-30,-70,0,0"}
-        r = requests.get(
+        """-   testing {}/reconstruct/assign_points_plate_ids
+        test assign plate ids for points"""
+        msg = ""
+        data = {"points": "-10, 50, -30, -70, 0, 0"}
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/assign_points_plate_ids",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
         self.assertEqual(r.status_code, 200)
-        if r.status_code == 200:
-            logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
-            self.logger.info("PASSED! test assign plate ids for points")
-        else:
-            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
 
+        msg += json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4) + "\n"
+        self.logger.info(
+            "######### test_assign_plate_ids ###########\n\n"
+            + msg
+            + "\n########## end of test_assign_plate_ids ##########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_assign_plate_ids_geojson(self):
-        """test assign plate ids for geojson data"""
-        # time.sleep(1)
+        """-   testing {}/reconstruct/assign_geojson_plate_ids
+        test assigning plate ID for the polygon in geojson format
+        """
+        msg = ""
         data = {"feature_collection": json.dumps(self.fc)}
-        r = requests.get(
+        r = send_get_request(
             self.SERVER_URL + "/reconstruct/assign_geojson_plate_ids",
             params=data,
-            verify=False,
-            proxies=self.proxies,
         )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
         self.assertEqual(r.status_code, 200)
-        if r.status_code == 200:
-            logging.info(json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4))
-            self.logger.info("PASSED! test assign plate ids for geojson data")
-        else:
-            raise Exception("FAILED: " + r.request.url + str(r.request.headers))
+
+        ret_json_data = json.loads(str(r.text))
+        msg += json.dumps(ret_json_data, sort_keys=True, indent=4) + "\n"
+        self.assertEqual(len(ret_json_data), 1)  # only 1 plate ID being returned
+        self.assertEqual(ret_json_data[0], 801)  # the plate ID should be 801
+
+        self.logger.info(
+            "######### test_assign_plate_ids_geojson ###########\n\n"
+            + msg
+            + "\n########## end of test_assign_plate_ids_geojson ##########\n"
+        )
 
 
 if __name__ == "__main__":

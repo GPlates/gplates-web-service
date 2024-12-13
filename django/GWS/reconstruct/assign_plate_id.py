@@ -4,7 +4,6 @@ import pygplates
 from django.conf import settings
 from django.http import HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from utils.cities import get_cities
 from utils.decorators import check_get_post_request_and_get_params, return_HttpResponse
 from utils.geojson_io import load_geojson
 from utils.parameter_helper import get_bool, get_lats_lons
@@ -35,8 +34,9 @@ def _prepare_ret(pids_and_times, with_valid_time):
 @check_get_post_request_and_get_params
 @return_HttpResponse()
 def get_points_pids(request, params={}):
-    """
-    assign plate IDs to locations/points
+    """http request handler for reconstruct/assign_points_plate_ids
+    return a list of plate IDs for the input locations/points
+
     http://localhost:18000/reconstruct/assign_points_plate_ids?lons=-10,-130,0&lats=50,-70,0
     http://localhost:18000/reconstruct/assign_points_plate_ids?points=-10,50,-130,-70,0,0&with_valid_time=true
     """
@@ -57,15 +57,15 @@ def get_points_pids(request, params={}):
 @check_get_post_request_and_get_params
 @return_HttpResponse()
 def get_plate_ids_for_geojson(request, params={}):
-    """return geojson features plate IDs
+    """http request handler for /reconstruct/assign_geojson_plate_ids
+    return a list of plate IDs for the given feature collection in geojson format
 
     http://localhost:18000/reconstruct/assign_geojson_plate_ids
 
     """
-    print(get_cities())
     fc_str = params.get("feature_collection", "")
     model = params.get("model", settings.MODEL_DEFAULT)
-    with_valid_time = get_bool(request.GET, "with_valid_time", False)
+    with_valid_time = get_bool(params, "with_valid_time", False)
 
     # Convert geojson input to gplates feature collection
     try:

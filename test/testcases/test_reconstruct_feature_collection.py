@@ -2,7 +2,13 @@ import json
 import unittest
 from pathlib import Path
 
-from common import get_server_url, send_get_request, send_post_request, setup_logger
+from common import (
+    add_server_url_to_docstring,
+    get_server_url,
+    send_get_request,
+    send_post_request,
+    setup_logger,
+)
 
 # python3 -m unittest -vv test_reconstruct_feature_collection.py
 
@@ -58,6 +64,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
     def tearDownClass(cls):
         cls.logger.debug("tearDownClass")
 
+    @add_server_url_to_docstring()
     def test_reconstruct_feature_collection(self):
         """-   testing {}/reconstruct/reconstruct_feature_collection/"""
         msg = ""
