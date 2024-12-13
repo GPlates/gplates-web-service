@@ -11,6 +11,8 @@ import quaternions
 import requests
 from plate_model_manager import PlateModelManager
 
+# TODO: move this file to test/testcases
+
 
 def main():
     SERVER_URL = os.getenv("GWS_SERVER_URL")
