@@ -1,15 +1,29 @@
 #!/usr/bin/env python3
 
 import json
-from pathlib import Path
 
 import requests
 
-# get present-day locations from http://paleobiodb.org/ and use GWS to get their paleo-coordinates
+# You need to `pip install requests` to run this example
+# This example will get present-day locations from http://paleobiodb.org/ and then use GWS to get their paleo-coordinates.
+# The results will be saved into two files in geojson format.
+# feature_collection_retrieved_from_paleobiodb.json - the feature collection retrieved from http://paleobiodb.org/
+# paleobiodb_feature_collection_reconstructed_by_gws.json - the feature collection reconstructed by GWS
+
 
 # SERVER_URL = "http://127.0.0.1:18000"
 SERVER_URL = "https://gws.gplates.org"
-NUMBER_OF_RECORDS = 10
+
+# the number of unique locations from http://paleobiodb.org/
+# for demonstration purse, we only use 10 unique locations to explain the idea
+NUMBER_OF_LOCATIONS = 10
+
+# the number of records retrieved from http://paleobiodb.org/
+# this number is used to limit the size of data returned from http://paleobiodb.org/
+# you may use "NUMBER_OF_RECORDS = all" to get all records (the size of returned data may be large)
+NUMBER_OF_RECORDS = 100
+
+# the interval ID, contact http://paleobiodb.org/ for the meaning of this ID
 INTERVAL_ID = 43
 
 
@@ -28,28 +42,42 @@ def main():
     # print("The first record in the paleobiodb data: ")
     # print(pbdb["records"][0])
 
+    # being used to keep tracking the locations which have been added
+    coordinates_have_seen = []
+
     # build the geojson FeatureCollection
     # the FeatureCollection will be sent to GWS for plate tectonic reconstruction
     fc = {"type": "FeatureCollection"}
     fc["features"] = []
     for i, record in enumerate(pbdb["records"]):
+        coord_string = f"{record['lng']}, {record['lat']}"
+        if coord_string in coordinates_have_seen:
+            continue  # the coordinates have been added into the feature collection before. ignore this time
+        else:
+            coordinates_have_seen.append(coord_string)
+
         feature = {"type": "Feature"}
         feature["geometry"] = {}
         feature["geometry"]["type"] = "Point"
-        feature["geometry"]["coordinates"] = [record["lng"], record["lat"]]
+        feature["geometry"]["coordinates"] = [
+            float(record["lng"]),
+            float(record["lat"]),
+        ]
         feature["properties"] = {}
         feature["properties"]["oid"] = record["oid"]
         fc["features"].append(feature)
         print(
             f"oid: {record['oid']}, present-day coordinates: [{record['lng']}, {record['lat']}]"
         )
-
+        if len(coordinates_have_seen) >= NUMBER_OF_LOCATIONS:
+            break
     data = {"feature_collection": json.dumps(fc)}
 
-    data["keep_properties"] = True
-    data["time"] = 120.0
+    with open("feature_collection_retrieved_from_paleobiodb.json", "w+") as f:
+        f.write(json.dumps(fc, indent=4))
 
-    # print(data)
+    data["keep_properties"] = True
+    data["time"] = 120.0  # reconstruct coordinates to 120Ma
 
     # reconstruct the geojson FeatureCollection
     r = requests.post(
@@ -57,7 +85,11 @@ def main():
         data=data,
         verify=True,
     )
-    # print(r.text)
+
+    # save the reconstructed coordinates in geojson format
+    with open("paleobiodb_feature_collection_reconstructed_by_gws.json", "w+") as f:
+        f.write(json.dumps(json.loads(r.text), indent=4))
+
     print()
     for f in json.loads(r.text)["features"]:
         print(

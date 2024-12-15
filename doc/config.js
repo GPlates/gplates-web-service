@@ -9,7 +9,7 @@ const config = {
     logo: 'https://raw.githubusercontent.com/GPlates/gplates-web-service/master/doc/src/gplates-log.svg',
     logoLink: 'https://gws.gplates.org',
     title:
-      `<a href='https://gws.gplates.org/'>GPlates Web Service</a>`,
+      `<a href='https://gws.gplates.org/'>GWS</a>`,
     githubUrl: 'https://github.com/GPlates/gplates-web-service',
     helpUrl: '',
     tweetText: '',
@@ -53,7 +53,7 @@ const config = {
   sidebar: {
     forcedNavOrder: [
       '/examples',
-      '/using-docker',
+      '/on-prem-hosting',
       '/models',
       '/reconstruction', // add trailing slash if enabled above
       '/rotation',
@@ -77,7 +77,7 @@ const config = {
     frontline: false,
     ignoreIndex: true,
     title:
-      "<a href='https://www.gplates.org/'>GPlates </a><div class='greenCircle'></div><a href='/'>Web Service Doc</a>",
+      "<a href='https://www.gplates.org/'>GPlates </a><div class='greenCircle'></div><a href='/'>Web Service</a>",
   },
   siteMetadata: {
     title: 'GPlates Web Service',
