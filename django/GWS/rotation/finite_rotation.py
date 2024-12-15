@@ -112,9 +112,9 @@ def get_rotation(request, return_quat=False):
                 ret_by_pids[str(pid)][idx] = ret[str(time)][str(pid)]
 
     if is_group_by_pid:
-        ret = json.dumps(round_floats(ret_by_pids))
+        ret = json.dumps(round_floats(ret_by_pids, decimals=8))
     else:
-        ret = json.dumps(round_floats(ret))
+        ret = json.dumps(round_floats(ret, decimals=8))
 
     response = HttpResponse(ret, content_type="application/json")
     # TODO:

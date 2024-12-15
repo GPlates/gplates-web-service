@@ -3,15 +3,17 @@ import random
 import unittest
 from pathlib import Path
 
-import requests
 from common import (
     add_server_url_to_docstring,
     get_server_url,
+    get_test_flag,
     send_get_request,
     setup_logger,
 )
 
 # python3 -m unittest -vv test_rotation.py
+
+# if GWS_TEST_VALIDATE_WITH_PYGPLATES is enabled, you need to install pygplates, plate_model_manager and gwspy
 
 
 class RotationTestCase(unittest.TestCase):
@@ -76,10 +78,12 @@ class RotationTestCase(unittest.TestCase):
     def test_get_euler_pole_and_angle(self):
         """-   testing {}/rotation/get_euler_pole_and_angle?time=100&pids=801"""
         msg = ""
-
+        model_name = "MULLER2019"
+        time = 100
+        pid = 801
         r = send_get_request(
             self.SERVER_URL + "/rotation/get_euler_pole_and_angle",
-            params={"times": 100, "pids": 801},
+            params={"times": time, "pids": pid, "model": model_name},
         )
 
         if r.request.url:
@@ -87,6 +91,43 @@ class RotationTestCase(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         msg += r.text + "\n"
+
+        if get_test_flag("GWS_TEST_VALIDATE_WITH_PYGPLATES"):
+            import math
+
+            import pygplates
+            from gwspy import rotation
+            from plate_model_manager import PlateModelManager
+
+            # define a random test point
+            test_point = [
+                random.randint(-90, 90),
+                random.randint(-180, 180),
+            ]  # lat, lon
+            model = PlateModelManager().get_model(model_name)
+            rotation_model = pygplates.RotationModel(model.get_rotation_model())
+
+            # rotate the test point with pygplates
+            rotated_points = rotation_model.get_rotation(
+                float(time), pid
+            ) * pygplates.PointOnSphere(test_point)
+            pygplates_lat, pygplates_lon = rotated_points.to_lat_lon()
+            msg += f"pygplates: {pygplates_lat}, {pygplates_lon}\n"
+
+            pole_and_angle = json.loads(r.text)
+            pole_and_angle = pole_and_angle[str(float(time))][str(pid)]
+            lat, lon = rotation.rotate(
+                [math.radians(test_point[0]), math.radians(test_point[1])],
+                [math.radians(pole_and_angle[1]), math.radians(pole_and_angle[0])],
+                math.radians(pole_and_angle[2]),
+            )
+            euler_lat = math.degrees(lat)
+            euler_lon = math.degrees(lon)
+            msg += f"euler pole and angle: {euler_lat}, {euler_lon} \n"
+
+            self.assertAlmostEqual(pygplates_lat, euler_lat, delta=0.0001)
+            self.assertAlmostEqual(pygplates_lon, euler_lon, delta=0.0001)
+
         self.logger.info(
             "######### test_get_euler_pole_and_angle ###########\n\n"
             + msg
@@ -97,10 +138,12 @@ class RotationTestCase(unittest.TestCase):
     def test_get_quaternions(self):
         """-   testing {}/rotation/get_quaternions?time=100&pids=801"""
         msg = ""
-
+        model_name = "MULLER2019"
+        time = 100
+        pid = 801
         r = send_get_request(
             f"{self.SERVER_URL}/rotation/get_quaternions/",
-            params={"times": 100, "pids": 801},
+            params={"times": time, "pids": pid, "model": model_name},
         )
 
         if r.request.url:
@@ -108,6 +151,43 @@ class RotationTestCase(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
         msg += r.text + "\n"
+
+        if get_test_flag("GWS_TEST_VALIDATE_WITH_PYGPLATES"):
+            import math
+
+            import pygplates
+            from gwspy import quaternions
+            from plate_model_manager import PlateModelManager
+
+            # define a random test point
+            test_point = [
+                random.randint(-90, 90),
+                random.randint(-180, 180),
+            ]  # lat, lon
+            model = PlateModelManager().get_model(model_name)
+            rotation_model = pygplates.RotationModel(model.get_rotation_model())
+
+            # rotate the test point with pygplates
+            rotated_points = rotation_model.get_rotation(
+                float(time), pid
+            ) * pygplates.PointOnSphere(test_point)
+            pygplates_lat, pygplates_lon = rotated_points.to_lat_lon()
+            msg += f"pygplates: {pygplates_lat}, {pygplates_lon}\n"
+
+            quat = json.loads(r.text)
+            quat = quat[str(float(time))][str(pid)]
+            v = quaternions.lat_lon_to_cart(
+                math.radians(test_point[0]), math.radians(test_point[1])
+            )
+            ret = quaternions.quat_vec_mult(quat, v)
+            quat_lat, quat_lon = quaternions.cart_to_lat_lon(ret[0], ret[1], ret[2])
+            quat_lon = math.degrees(quat_lon)
+            quat_lat = math.degrees(quat_lat)
+            msg += f"quaternions: {quat_lat}, {quat_lon} \n"
+
+            self.assertAlmostEqual(pygplates_lat, quat_lat, delta=0.0001)
+            self.assertAlmostEqual(pygplates_lon, quat_lon, delta=0.0001)
+
         self.logger.info(
             "######### test_get_quaternions ###########\n\n"
             + msg
