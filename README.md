@@ -35,7 +35,7 @@ The GPlates Web Service server returns a valid GeoJSON MultiPoint geometry that 
 
 👉 Use GPlates Web Service Python Client/Proxy
 
-See the examples at <https://github.com/michaelchin/gplates-python-proxy/blob/main/README.md>
+See the examples at <https://github.com/michaelchin/gwspy/blob/main/README.md>
 
 👉 Setup your own server
 
@@ -80,6 +80,8 @@ The OpenAPI schema is at https://gws.gplates.org/openapi
 The GPlates Web Service is free software (also known as open-source software), licensed for distribution under the GNU [General Public License (GPL)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html), version 2. Contact [Earthbyte](https://www.earthbyte.org/contact-us-3/) group about the details of the software licensing.
 
 ## Servers
+
+The main server is provided by [NCI](https://nci.org.au/) under AuScope scheme.
 
 - https://gws.gplates.org
 - https://gws1.gplates.org

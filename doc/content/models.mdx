@@ -1,21 +1,44 @@
 ---
 title: "Plate Tectonics Models"
 metaTitle: "Models"
-metaDescription: "the plate tectonics reconstruction models that are available in the GPlates Web Service."
+metaDescription: "the available plate tectonics reconstruction models in GPlates Web Service."
 ---
 
-The list below describes the plate tectonic reconstruction models that are available in the GPlates Web Service.
+This web page contains a lift of the available plate tectonics reconstruction models in GPlates Web Service.
 
-All models by default comprise a minimum of a rotation model and a set of static polygons. 
-The availability of other components varies between different models. 
-Models also vary in the range of geological time that they cover.
+All models by default comprise a minimum of a rotation model and a set of static polygons. The availability of other components varies between different models. Models also vary in the range of geological time that they cover.
 
-The more information about a list of EarthByte global and regional plate motion models can be found 
-at https://www.earthbyte.org/category/resources/data-models/global-regional-plate-motion-models/. 
-Not all models have been included in this web service.
+More information about the EarthByte global and regional plate motion models can be found at https://www.earthbyte.org/category/resources/data-models/global-regional-plate-motion-models/. Not all models in the web page have been included in this web service. Contact [EarthByte group](https://www.earthbyte.org/contact-us-3/) to request adding new models into GPlates Web Service.
 
-A list of model names can be found at https://gws.gplates.org/model/list and you can 
-find the details about these models at https://gws.gplates.org/model/show?model=muller2019 (use the model name in which you are interested to replace muller2019).
+---
+### CAO2024
+
+Earth’s tectonic and plate boundary evolution over 1.8 billion years.
+
+   **Layers**: StaticPolygons, Coastlines, ContinentalPolygons, Topologies, COBs
+   
+   **Timespan**: [0 - 1800 Ma] 
+
+   **Reference**:
+
+   Cao, X., Collins, A.S., Pisarevsky, S., Flament, N., Li, S., Hasterok, D. and Müller, R.D., 2024. Earth’s tectonic and plate boundary evolution over 1.8 billion years. Geoscience Frontiers, v.15, n. 2, p.101922, https://doi.org/10.1016/j.gsf.2024.101922.
+   
+   [**Download Data**](https://doi.org/10.5281/zenodo.11536686) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=CAO2024)
+
+---
+### ALFONSO2024
+
+This plate model is based on that of Clennett et al. (2020) (https://zenodo.org/records/10348271). The Clennett et al. (2020) model was an extension of the global model of Müller et al. (2019) (https://zenodo.org/records/10525287), with a focus on producing a more detailed tectonic reconstruction of the North American Cordillera. Further minor modifications were made to the model for a paper by Alfonso et al. (2024), using the GPlates software (https://www.gplates.org/). 
+
+**Layers**: StaticPolygons, Coastlines, Isochrons, Topologies, Terranes
+
+**Timespan**: [0 - 170 Ma] 
+
+**Reference**:
+
+Christopher P. Alfonso, R. Dietmar Müller, Ben Mather, Michele Anthony; Spatio-temporal copper prospectivity in the American Cordillera predicted by positive-unlabeled machine learning. GSA Bulletin 2024; doi: https://doi.org/10.1130/B37614.1
+
+[**Download Data**](https://doi.org/10.5281/zenodo.11392268) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=ALFONSO2024)
 
 ---
 ### MULLER2022
@@ -27,32 +50,35 @@ reference frames grows cumulatively back in time – hence the two reconstructio
 MULLER2022) diverge progressively in the Paleozoic and Proterozoic both in terms of paleolatitude and 
 paleolongitude.
 
-   * Available layers: [Coastlines | Static Plate Polygons]
+   **Layers**: StaticPolygons, Coastlines, ContinentalPolygons, Topologies, COBs, Cratons
    
-   * Timespan: [0 - 1000 Ma] 
+   **Timespan**: [0 - 1000 Ma] 
 
-   * More information:
-   
-      - <https://se.copernicus.org/articles/13/1127/2022/>
-      - <https://earthbyte.org/webdav/ftp/Data_Collections/Muller_etal_2022_SE/>
-
-   * Examples:
-
-      - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2022>
-      - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MULLER2022>
-      - <https://gws.gplates.org/reconstruct/static_polygons/?time=140&model=MULLER2022>
-
-   * Reference:
+   **Reference**:
 
    Müller, R. D., Flament, N., Cannon, J., Tetley, M. G., Williams, S. E., Cao, X., Bodur, Ö. F., Zahirovic, S., 
    and Merdith, A.: A tectonic-rules-based mantle reference frame since 1 billion years ago – implications 
    for supercontinent cycles and plate–mantle system evolution, Solid Earth, 13, 1127–1159, 
    https://doi.org/10.5194/se-13-1127-2022, 2022.
    
-   * Data:
+   [**Download Data**](https://doi.org/10.5281/zenodo.10297173) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2022)
 
-   https://earthbyte.org/webdav/ftp/Data_Collections/Muller_etal_2022_SE/
+---
+### ZAHIROVIC2022
 
+***default model***
+
+Subduction kinematics and carbonate platform interactions.
+
+   **Layers**: StaticPolygons, Coastlines, ContinentalPolygons, Topologies
+   
+   **Timespan**: [0 - 410 Ma] 
+
+   **Reference**:
+
+   Zahirovic, S., Eleish, A., Doss, S., Pall, J., Cannon, J., Pistone, M., Tetley, M. G., Young, A., & Fox, P. (2022). Subduction kinematics and carbonate platform interactions. Geoscience Data Journal, 9(2), p.371-383, https://doi.org/10.1002/gdj3.146.
+   
+   [**Download Data**](https://doi.org/10.5281/zenodo.4729045) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=ZAHIROVIC2022)
 
 ---
 ### MERDITH2021
@@ -63,36 +89,36 @@ symmetry of the Earth's magnetic field. It is broadly based on a modified combin
 for the last 230 Ma, the MATTHEWS2016_pmag_ref model for 250-410 Ma and a newly constructed model for
  earlier times.
 
-   * Available layers: [Coastlines | Static Plate Polygons]
+   **Layers**: StaticPolygons, Coastlines, ContinentalPolygons, Topologies, Cratons
  
-   * Timespan: [0 - 1000 Ma] 
- 
-   * More information:
- 
-      - <https://www.sciencedirect.com/science/article/pii/S0012825220305237>
-      - <http://www.earthbyte.org/webdav/ftp/Data_Collections/Merdith_etal_2021_ESR/>
- 
-   * Examples:
- 
-      - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MERDITH2021>
-      - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MERDITH2021>
-      - <https://gws.gplates.org/reconstruct/static_polygons/?time=140&model=MERDITH2021>
+   **Timespan**: [0 - 1000 Ma] 
 
-   * Reference:
+   **Reference**:
    
    Andrew S. Merdith, Simon E. Williams, Alan S. Collins, Michael G. Tetley, Jacob A. Mulder, Morgan L. Blades, Alexander Young,
     Sheree E. Armistead, John Cannon, Sabin Zahirovic, R. Dietmar Müller, (2021). Extending full-plate 
     tectonic models into deep time: Linking the Neoproterozoic and the Phanerozoic, Earth-Science Reviews, 
     Volume 214, 2021, 103477, ISSN 0012-8252, https://doi.org/10.1016/j.earscirev.2020.103477.
 
-   * Data:
-   
-   http://www.earthbyte.org/webdav/ftp/Data_Collections/Merdith_etal_2021_ESR/
+   [**Download Data**](https://doi.org/10.5281/zenodo.10346399) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MERDITH2021)
+
+---
+### CLENNETT2020
+
+Quantitative Tomotectonic Plate Reconstruction of Western North America and the Eastern Pacific Basin. 
+
+**Layers**: StaticPolygons, Coastlines, Topologies, Terranes
+
+**Timespan**: [0 - 170 Ma] 
+
+**Reference**:
+
+Clennett, E., Sigloch, K., Mihalynuk, M. G., Seton, M., Hosseini, K., Mohammadzaheri, A., Johnston, S.T., & Müller, R.D. (2020). A Quantitative Tomotectonic Plate Reconstruction of Western North America and the Eastern Pacific Basin, Geochemistry, Geophysics, Geosystems, https://doi.org/10.1029/2020GC009117
+
+[**Download Data**](https://doi.org/10.5281/zenodo.10348270) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=CLENNETT2020)
 
 ---
 ### MULLER2019 
-
-***default model***
 
 This plate model for the last 250 Ma is based on a mantle reference frame, 
 ie it orients the plates relative to the mantle using a set of geodynamic rules to exclude 
@@ -100,30 +126,17 @@ geodynamically unreasonable plate motions, which typically result from models ba
 The model also includes continental deformation both along major rift systems and collisional plate 
 boundary zones.
 
-   * Available layers: [Coastlines | Static Plate Polygons]
+   **Layers**: Coastlines, StaticPolygons, ContinentalPolygons, Topologies, COBs, Hotspots, SeafloorFabric, Whittaker2015LIPs, Johansson2018LIPs
 
-   * Timespan: [0 - 250 Ma] 
-   
-   * More information:
-   
-      - <https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2018TC005462>
-      - <http://www.earthbyte.org/muller-et-al-2019-deforming-plate-reconstruction-and-seafloor-age-grids-tectonics/>
-   
-   * Examples:
-   
-      - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2019>
-      - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MULLER2019>
-      - <https://gws.gplates.org/reconstruct/static_polygons/?time=140&model=MULLER2019>
+   **Timespan**: [0 - 250 Ma] 
 
-   * Reference:
+   **Reference**:
    
-      Müller, R. D., Zahirovic, S., Williams, S. E., Cannon, J., Seton, M., Bower, D. J., Tetley, M. G., Heine, C., Le Breton, E., Liu, S., Russell, S. H. J., Yang, T., Leonard, J., and Gurnis, M. (2019), 
-      A global plate model including lithospheric deformation along major rifts and orogens since the 
-      Triassic. Tectonics, vol. 38, https://doi.org/10.1029/2018TC005462.
+   Müller, R. D., Zahirovic, S., Williams, S. E., Cannon, J., Seton, M., Bower, D. J., Tetley, M. G., Heine, C., Le Breton, E., Liu, S., Russell, S. H. J., Yang, T., Leonard, J., and Gurnis, M. (2019), 
+   A global plate model including lithospheric deformation along major rifts and orogens since the 
+   Triassic. Tectonics, vol. 38, https://doi.org/10.1029/2018TC005462.
 
-   * Data:
-
-      http://www.earthbyte.org/muller-et-al-2019-deforming-plate-reconstruction-and-seafloor-age-grids-tectonics/
+   [**Download Data**](https://doi.org/10.5281/zenodo.10525286) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2019)
 
 ---
 ### MULLER2016
@@ -134,30 +147,18 @@ and a true-polar wander corrected paleomagnetic model for 230 to 100 Ma, with an
 correction for the time period from 100-230 Ma in an attempt to minimise geodynamically unreasonable 
 longitudinal plate motions, resulting in a modified mantle reference frame.
 
-   * Available layers: [Coastlines | Topological Plate Polygons]
+   **Layers**: Coastlines, StaticPolygons, Topologies, COBs
 
-   * Timespan: [0 - 230 Ma]   
+   **Timespan**: [0 - 230 Ma]   
 
-   * More information:
 
-      - <https://www.researchgate.net/publication/284179323_Ocean_Basin_Evolution_and_Global-Scale_Plate_Reorganization_Events_Since_Pangea_Breakup>
-      - <http://www.earthbyte.org/ocean-basin-evolution-and-global-scale-plate-reorganization-events-since-pangea-breakup/>
-
-   * Examples:
-
-      - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2016>
-      - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MULLER2016>
-      - <https://gws.gplates.org/topology/plate_polygons/?&time=140&model=MULLER2016>
-
-   * Reference:
+   **Reference**:
       
-      Müller, R.D., Seton, M., Zahirovic, S., Williams, S.E., Matthews, K.J., Wright, N.M., Shephard, G.E., Maloney, K.T., Barnett-Moore, N., Hosseinpour, M., Bower, D.J., Cannon, J., 2016, 
-      [Ocean basin evolution and global-scale plate reorganization events since Pangea breakup](https://www.researchgate.net/publication/284179323_Ocean_Basin_Evolution_and_Global-Scale_Plate_Reorganization_Events_Since_Pangea_Breakup): 
-      Annual Reviews of Earth and Planetary Sciences, Vol 44, 107-138
+   Müller, R.D., Seton, M., Zahirovic, S., Williams, S.E., Matthews, K.J., Wright, N.M., Shephard, G.E., Maloney, K.T., Barnett-Moore, N., Hosseinpour, M., Bower, D.J., Cannon, J., 2016, 
+   [Ocean basin evolution and global-scale plate reorganization events since Pangea breakup](https://www.researchgate.net/publication/284179323_Ocean_Basin_Evolution_and_Global-Scale_Plate_Reorganization_Events_Since_Pangea_Breakup): 
+   Annual Reviews of Earth and Planetary Sciences, Vol 44, 107-138
 
-   * Data:
-
-      http://www.earthbyte.org/ocean-basin-evolution-and-global-scale-plate-reorganization-events-since-pangea-breakup/
+   [**Download Data**](https://doi.org/10.5281/zenodo.10565444) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2016)
 
 
 ---
@@ -166,31 +167,17 @@ longitudinal plate motions, resulting in a modified mantle reference frame.
 This model is identical to MATTHEWS2016_pmag_ref in terms of relative plate models but uses a true 
 polar wander corrected paleomagnetic model, viewed as a proxy for a mantle reference frame model.
 
-   * Available layers: [Coastlines | Topological Plate Polygons]
+   **Layers**: Coastlines, StaticPolygons, ContinentalPolygons, Topologies
 
-   * Timespan: [0 - 410 Ma]  
+   **Timespan**: [0 - 410 Ma]  
 
-   * More information:
-
-      - <https://www.researchgate.net/publication/308978755_Global_plate_boundary_evolution_and_kinematics_since_the_late_Paleozoic>
-      - <http://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/>
-
-   * Examples:
-
-      - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MATTHEWS2016_mantle_ref>
-      - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MATTHEWS2016_mantle_ref>
-      - <https://gws.gplates.org/topology/plate_polygons/?time=140&model=MATTHEWS2016_mantle_ref>
-
-   * Reference:
+   **Reference**:
       
-      Matthews, K.J., Maloney, K.T., Zahirovic, S., Williams, S.E., Seton, M., and Müller, R.D. 2016, 
-      [Global plate boundary evolution and kinematics since the late Paleozoic](https://www.researchgate.net/publication/308978755_Global_plate_boundary_evolution_and_kinematics_since_the_late_Paleozoic) :
-       Global and Planetary Change, 
-      Vol 146, 226-250.
+   Matthews, K.J., Maloney, K.T., Zahirovic, S., Williams, S.E., Seton, M., and Müller, R.D. 2016, 
+   [Global plate boundary evolution and kinematics since the late Paleozoic](https://www.researchgate.net/publication/308978755_Global_plate_boundary_evolution_and_kinematics_since_the_late_Paleozoic) :
+   Global and Planetary Change, Vol 146, 226-250.
 
-   * Data:
-
-      http://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/
+   [**Download Data**](https://doi.org/10.5281/zenodo.10526156) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MATTHEWS2016_mantle_ref)
 
 ---
 ###  MATTHEWS2016_pmag_ref
@@ -201,55 +188,20 @@ and the MULLER2016 model Mesozoic-Cenozoic (230–0 Ma). The model was designed 
 between the two models, used an updated absolute reference frame of the Mesozoic-Cenozoic model and added a new Paleozoic 
 reconstruction for the Baltica-derived Alexander Terrane, now accreted to western North America. 
 
-   * Available layers: [Coastlines | Topological Plate Polygons]
+   **Layers**: Coastlines, StaticPolygons, ContinentalPolygons, Topologies
 
-   * Timespan: [0 - 410 Ma]  
+   **Timespan**: [0 - 410 Ma]  
 
-   * More information:
 
-      - <https://www.researchgate.net/publication/308978755_Global_plate_boundary_evolution_and_kinematics_since_the_late_Paleozoic>
-      - <http://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/>
-
-   * Examples:
-
-      - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MATTHEWS2016_pmag_ref>
-      - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=MATTHEWS2016_pmag_ref>
-      - <https://gws.gplates.org/topology/plate_polygons/?time=140&model=MATTHEWS2016_pmag_ref>
-
-   * Reference:
+   **Reference**:
    
-      Matthews, K.J., Maloney, K.T., Zahirovic, S., Williams, S.E., Seton, M., and Müller, R.D. 2016, 
-      [Global plate boundary evolution and kinematics since the late Paleozoic](https://www.researchgate.net/publication/308978755_Global_plate_boundary_evolution_and_kinematics_since_the_late_Paleozoic) : 
-      Global and Planetary Change, Vol 146, 226-250.
+   Matthews, K.J., Maloney, K.T., Zahirovic, S., Williams, S.E., Seton, M., and Müller, R.D. 2016, 
+   [Global plate boundary evolution and kinematics since the late Paleozoic](https://www.researchgate.net/publication/308978755_Global_plate_boundary_evolution_and_kinematics_since_the_late_Paleozoic) : 
+   Global and Planetary Change, Vol 146, 226-250.
 
-   * Data:
-
-      http://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/
+   [**Download Data**](http://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MATTHEWS2016_pmag_ref)
 
 
----
-### RODINIA2013
-
-**Rodinia model from Precambrian Research**
-
-   * Available layers: [Coastlines]
-
-   * Timespan: [530 - 1100 Ma] 
-
-   * More information:
-
-      - <https://www.sciencedirect.com/science/article/pii/S0301926807001635>
-      - <http://www.earthbyte.org/webdav/ftp/Data_Collections/Li_etal_2008_RodiniaModel.zip>
-
-   * Examples:
-
-      - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=23,-6,127,-21&time=540&model=RODINIA2013>
-      - <https://gws.gplates.org/reconstruct/coastlines/?time=540&model=RODINIA2013>
-      
-   * Reference:
-
-      Li, Z.X., Evans, D.A. and Halverson, G.P., 2013. Neoproterozoic glaciations in a revised global palaeogeography from the breakup of Rodinia to the assembly of Gondwanaland. Sedimentary Geology, 294, pp.219-232.
-     Note: **The RODINIA2013 model starts at 540 Ma.**
 
 ---
 ### SETON2012 
@@ -342,5 +294,19 @@ viewed as a proxy for a mantle reference frame model.
       - To use a paleomagnetic frame (for any climatically-sensistive analysis), set 1 as the anchored Plate ID, as in this example <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=TorsvikCocks2017&anchor_plate_id=1>
 
 
+---
+### RODINIA
 
+Rodinia model from Precambrian Research
+
+   **Layers**: Coastlines, StaticPolygons
+
+   **Timespan**: [540 - 1100 Ma] 
+      
+   **Reference**:
+
+   Li, Z.X., Evans, D.A. and Halverson, G.P., 2013. Neoproterozoic glaciations in a revised global palaeogeography from the breakup of Rodinia to the assembly of Gondwanaland. Sedimentary Geology, 294, pp.219-232.
+   Note: **The RODINIA model starts at 540 Ma.**
+
+   [**Download Data**](https://www.sciencedirect.com/science/article/pii/S0301926807001635) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=23,-6,127,-21&time=540&model=RODINIA)
 
