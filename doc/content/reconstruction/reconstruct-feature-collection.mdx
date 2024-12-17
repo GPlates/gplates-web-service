@@ -6,30 +6,31 @@ metaDescription: "http request to reconstruct a GeoJSON feature collection."
 
 ## Reconstruct Feature Collection
 
-**Description:**
+**Description**:
 
-http GET request to reconstruct a GeoJSON feature collection. 
+HTTP GET/POST request to reconstruct a GeoJSON feature collection. 
 Each feature will be assigned a plate id and moved back in time using the given reconstruction model. 
 Input must be specified as GeoJSON string, and reconstructed features will be returned in GeoJSON format.
 
-**Endpoint:**
+**Endpoint**:
     
     https://gws.gplates.org/reconstruct/reconstruct_feature_collection
 
-**Parameters:**
+**Parameters:**:
 
-*feature_collection* : GeoJSON feature collection to be reconstructed [Required]
+- ***feature_collection*** : GeoJSON feature collection to be reconstructed [Required]
 
-*anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
+- ***anchor_plate_id*** : integer value for reconstruction anchor plate id [default=0]
 
-*time* : time for reconstruction [required]
+- ***time*** : geologic time(Ma) [required]
 
-*model* : name for reconstruction model [defaults to default model from web service settings]
+- ***model*** : name for the reconstruction model (if not specified, will use the default model)
 
-**Returns:** 
+**Return**: 
 
-Reconstructed GeoJSON feature collection.
+GeoJSON feature collection containing the reconstructed coordinates.
 
-**Examples:**
+**Example**:
 
-Check out the [online demo](https://portal.gplates.org/service/d3_demo/?view=feature_collection)
+Click this [link](/examples/use-with-paleobiodb) to see an example of sending GeoJSON feature collection via HTTP POST request to reconstruct paleobiology data. 
+

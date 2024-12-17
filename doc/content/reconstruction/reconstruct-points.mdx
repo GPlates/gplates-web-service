@@ -1,111 +1,121 @@
 ---
-title: "Reconstruct Points"
-metaTitle: "Reconstruct Points(Location Coordinates)"
-metaDescription: "http request to reconstruct points"
+title: "Reconstruct Locations"
+metaTitle: "Reconstruct Location Coordinates"
+metaDescription: "HTTP request to reconstruct location coordinates"
 ---
 
-## Reconstruct Points(Location Coordinates)
+## Reconstruct Location Coordinates
 
-**Description:**
+**Description**:
 
-Reconstruct the geographic locations from present day coordinates back to their paleo-positions. 
-Each location will be assigned a plate id and moved back in time using the chosen reconstruction model.
-http GET request to reconstruct points
+Reconstruct the geographic locations from the present-day coordinates to the paleo-positions. Each location will be assigned a plate ID and moved back in time using the chosen reconstruction model.
 
-**Endpoint:**
+HTTP GET/POST request to reconstruct location coordinates
+
+**Endpoint**:
     
     https://gws.gplates.org/reconstruct/reconstruct_points/
-    
-**Parameters:**
+     
+**Parameters**:
 
-*points* : list of points lon,lat comma separated coordinates of points to be reconstructed [Required]
+- ***lats*** : a list of latitudes of the locations [Required]
 
-*anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
+- ***lons*** : a list of longitudes of the locations [Required]
 
-*time* : time for reconstruction [required]
+- ***anchor_plate_id*** : integer value for reconstruction anchor plate id [default=0]
 
-*model* : name for reconstruction model [defaults to default model from web service settings]
+- ***time*** : geologic time(Ma) [required]
 
-*pids* : specify plate id for each point to improve performance
+- ***model*** : name for the reconstruction model (if not specified, will use the default model)
 
-*pid* : specify plate id to improve performance. all points use the same plate id
+- ***pids*** : specify plate IDs for each point to improve performance
 
-*reverse* : the flag to control the direction of reconstruction. If this flag is in the url, 
-the function will calculate the present-day coordinates of the given paleo-coordinates.
+- ***pid*** : specify a single plate ID for all the points to improve performance (all points use the same plate ID)
 
-*fc* : feature collection. If this flag exists, the function will return a GeoJSON feature collection.
+- ***reverse*** : If this flag is set, the server will return the present-day coordinates for the given paleo-coordinates
 
-*return_null_points* : If this flag exists, the function will return null points. 
-The null points happen when the present-day location does not exist back in the given time. 
-**Note**: The return data will **NOT** be in a valid GeoJSON format.
+- ***fc*** : If this flag is set, the server will return a GeoJSON feature collection
 
-*ignore_valid_time* : if this flag presents itself, the reconstruction will ignore the "valid time" constraint and 
-will always return coordiates, even the coordiates do not make sense(out of valid time). **Use with caution**.
+- ***return_null_points*** : If this flag is set, the server will return null points. The null points happen when the present-day location does not exist back in the given geologic time. The return data will **NOT** be valid GeoJSON format.
 
-**Returns:**
+- ***ignore_valid_time*** : if this flag is set, the reconstruction will ignore the "valid time" constraint and will always return coordiates, even the coordiates do not make sense(out of valid time). **Use with caution**.
+
+**Return**:
 
 Reconstructed coordinates in GeoJSON format.
 
 **Examples:**
 
-**E1**: Reconstruct two coordinates((lon:95,lat:54)(lon:142,lat:-33)) back to 140 million years ago using the "SETON2012" reconstruction model. 
-The function returns the reconstructed coordinates in the valid GeoJSON format. 
+**&#128994; E1**: Reconstruct two locations((lon:95,lat:54)(lon:142,lat:-33)) back to 140 million years ago using the [ZAHIROVIC2022](/models#zahirovic2022) model.
 
+**Click this [link](https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022) to try this example in a web browser.**
 
-- https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012
-- https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=SETON2012
-  
+Alternatively, use curl command.
 
-    Return: {"type":"MultiPoint","coordinates":[[84.99,59.26],[123.37,-65.76]]}
+```shell
+curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022"
+```
 
-**E2**: Reverse reconstruct the two paloe-coordinates ((lon:84.99,lat:59.26)(lon:123.37,lat:-65.76)) to present day.
+**&#128994; E2**: Reverse reconstruct the two paloe-coordinates ((lon:84.99,lat:59.26)(lon:123.37,lat:-65.76)) to present day.
 
-- https://gws.gplates.org/reconstruct/reconstruct_points/?points=84.99,59.26,123.37,-65.76&time=140&model=SETON2012&reverse
-- https://gws.gplates.org/reconstruct/reconstruct_points/?lats=59.26,-65.76&lons=84.99,123.37&time=140&model=SETON2012&reverse
-  
+**Click this [link](https://gws.gplates.org/reconstruct/reconstruct_points/?lats=59.26,-65.76&lons=84.99,123.37&time=140&model=ZAHIROVIC2022&reverse) to try this example in a web browser.**
 
-    Return: {"type":"MultiPoint","coordinates":[[95.01,54.00],[142.00,-33.00]]}
+Alternatively, use curl command.
 
-**E3**: Return GeoJSON feature collection. The function will not only return the paleo-coordinates, but also the  time period in which the location exists. 
+```shell
+curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lats=59.26,-65.76&lons=84.99,123.37&time=140&model=ZAHIROVIC2022&reverse"
+```
 
-- https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54&time=140&model=SETON2012&fc
-- https://gws.gplates.org/reconstruct/reconstruct_points/?lats=54&lons=95&time=140&model=SETON2012&fc
-  
+**&#128994; E3**: Return GeoJSON feature collection. The server will not only return the paleo-coordinates, but also the valid time period. 
 
-    Return: {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[84.99,59.26]},"properties":{"valid_time":[600.0,"distant future"]}}]}
+**Click this [link](https://gws.gplates.org/reconstruct/reconstruct_points/?lats=54&lons=95&time=140&model=ZAHIROVIC2022&fc) to try this example in a web browser.**
 
-**E4**: Return null points. The null points happen when the present-day locations do not exist back in the given time. 
-The return data will **NOT** be in a valid GeoJSON format, although the it is valid JSON. 
+Alternatively, use curl command.
 
-- https://gws.gplates.org/reconstruct/reconstruct_points/?points=-100,50,160,10,100,50&time=100&model=PALEOMAP&return_null_points
-- https://gws.gplates.org/reconstruct/reconstruct_points/?lats=50,10,50&lons=-100,160,100&time=100&model=PALEOMAP&return_null_points
-     
+```shell
+curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lats=54&lons=95&time=140&model=ZAHIROVIC2022&fc"
+```
 
-    Return: {"type":"MultiPoint","coordinates":[[-56.84,47.13],null,[89.38,52.58]]}
+**&#128994; E4**: Return ***null*** for invalid locations. The invalid locations happen when the present-day locations do not exist back in the given geologic time. The return data will **NOT** be valid GeoJSON format, although it is valid JSON. 
 
-**E5**: Return ***999.99*** for the invalid points. The invalid points happen when the present-day locations do not exist back in the given time. 
-The return data will be in a valid GeoJSON format. 
+**Click this [link](https://gws.gplates.org/reconstruct/reconstruct_points/?lats=50,10,50&lons=-100,160,100&time=100&model=PALEOMAP&return_null_points) to try this example in a web browser.**
 
-- https://gws.gplates.org/reconstruct/reconstruct_points/?points=-100,50,160,10,100,50&time=100&model=PALEOMAP
-- https://gws.gplates.org/reconstruct/reconstruct_points/?lats=50,10,50&lons=-100,160,100&time=100&model=PALEOMAP
-  
+Alternatively, use curl command.
 
-    Return: {"type":"MultiPoint","coordinates":[[-56.84,47.13],[999.99,999.99],[89.38,52.58]]}
+```shell
+curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lats=50,10,50&lons=-100,160,100&time=100&model=PALEOMAP&return_null_points"
+```
 
-**E6**: Use POST to reconstruct a large number of locations. See the example at https://github.com/GPlates/gplates-web-service/blob/master/python/gplatesws.ipynb
+**&#128994; E5**: Return ***999.99*** for invalid locations. The invalid locations happen when the present-day locations do not exist back in the given geologic time. The return data will be in a valid GeoJSON format. 
 
-**E7**: Provide plate ID to improve performance. All points use the same pid.
+**Click this [link](https://gws.gplates.org/reconstruct/reconstruct_points/?lats=50,10,50&lons=-100,160,100&time=100&model=PALEOMAP) to try this example in a web browser.**
 
-- https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012&pid=801
-- https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=SETON2012&pid=801
-  
+Alternatively, use curl command.
 
-    Return: {"type": "MultiPoint", "coordinates": [[110.4975, 29.7166], [123.374, -65.7611]]}
+```shell
+curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lats=50,10,50&lons=-100,160,100&time=100&model=PALEOMAP"
+```
 
-**E8**: Provide plate IDs to improve performance. One pid for each point.
+**&#128994; E6**: Use POST to reconstruct a large number of locations. 
 
-- https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012&pids=801,704
-- https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=SETON2012&pids=801,704
-  
+**Click this [link](https://github.com/GPlates/gplates-web-service/blob/master/examples/gplatesws.ipynb) to see an example in Jupyter Notebook.**
 
-    Return: {"type": "MultiPoint", "coordinates": [[110.4975, 29.7166], [-164.6523, -52.7301]]}
+**&#128994; E7**: Provide plate ID to improve performance. All points use the same pid.
+
+**Click this [link](https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022&pid=801) to try this example in a web browser.**
+
+Alternatively, use curl command.
+
+```shell
+curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022&pid=801"
+```
+
+**&#128994; E8**: Provide plate IDs to improve performance. One pid for each point. 
+
+**Click this [link](https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022&pids=801,704) to try this example in a web browser.**
+
+Alternatively, use curl command.
+
+```shell
+curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022&pids=801,704"
+```

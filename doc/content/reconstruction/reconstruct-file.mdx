@@ -6,33 +6,33 @@ metaDescription: "Reconstruct File."
 
 ## Reconstruct File
 
-**Endpoint:**
+**Endpoint**:
 
     https://gws.gplates.org/reconstruct/reconstruct_files
 
-**Parameters:**
+**Parameters**:
 
-*time* : time for reconstruction [required]
+- ***time*** : geologic time(Ma) [required]
 
-*model* : name for reconstruction model [defaults to default model from web service settings]
+- ***model*** : name for the reconstruction model (if not specified, will use the default model)
 
-*assign_plate_id* : set to 0, if your files already contains plate ids. the save_plate_id parameter will override this parameter
+- ***assign_plate_id*** : set to 0, if your files already contains plate ids. the save_plate_id parameter will override this parameter
     
-*basename* : your preferred output file name
+- ***basename*** : the output file name
     
-*save_plate_id* : save the intermedia files with assigned plate ids. This parameter will be no effect if you choose to upload the result to geoserver.
+- ***save_plate_id*** : save the intermedia files with assigned plate ids. This parameter will be no effect if you choose to upload the result to geoserver.
     
-*geosrv_url* : the url of your geoserver
+- ***geosrv_url*** : the url of geoserver [optional]
 
-*geosrv_username* : geoserver user name
+- ***geosrv_username*** : geoserver user name [optional]
 
-*geosrv_password* : geoserver geosrv_password
+- ***geosrv_password*** : geoserver password [optional] **only use this when you trust the server, such as On-Prem hosting!!!**
 
-*geosrv_workspace* : geoserver workspace name
+- ***geosrv_workspace*** : geoserver workspace name [optional]
 
 **Examples:**
 
-**&#128994; E1:** Check out the online live demo <https://portal.gplates.org/service/reconstruct_file_page/>.
+**&#128994; E1:** Click this [link](https://portal.gplates.org/service/reconstruct_file_page/) to see an online live demo.
 
 **&#128994; E2:** Example in Python
 

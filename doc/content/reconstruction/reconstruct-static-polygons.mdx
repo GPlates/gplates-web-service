@@ -1,49 +1,71 @@
 ---
-title: "Reconstruct Static Plate Polygons"
-metaTitle: "Reconstruct Static Plate Polygons"
-metaDescription: "http request to retrieve reconstructed static plate polygons"
+title: "Reconstruct Static Polygons"
+metaTitle: "Reconstruct Static Polygons"
+metaDescription: "HTTP request to retrieve reconstructed static plate polygons"
 ---
 
 ## Reconstruct Static Plate Polygons
 
-http GET request to retrieve reconstructed static plate polygons
+HTTP GET request to retrieve reconstructed static plate polygons
 
-**Endpoint:**
+**Endpoint**:
     
     https://gws.gplates.org/reconstruct/static_polygons
     
-**Parameters:**
+**Parameters**:
 
-*anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
+- ***anchor_plate_id*** : integer value for reconstruction anchor plate id [default=0]
 
-*time* : time for reconstruction [required]
+- ***time*** : geologic time(Ma) [required]
 
-*model* : name for reconstruction model [defaults to default model from web service settings]
+- ***model*** : name for the reconstruction model (if not specified, will use the default model)
 
-*fmt* : if set this parameter to "png", this function will return a png image
+- ***fmt*** : if set this parameter to "png", this function will return a png image
 
-*facecolor* : such as "black", "blue", etc
+- ***facecolor*** : such as "black", "blue", etc
 
-*edgecolor* : such as "black", "blue", etc
+- ***edgecolor*** : such as "black", "blue", etc
 
-*alpha* : such as 1, 0.5, etc
+- ***alpha*** : such as 1, 0.5, etc
 
-*extent* : such as extent=-20,20,-20,20
+- ***extent*** : such as extent=-20,20,-20,20
 
-**Returns:**
+**Return**:
 
 GeoJSON/PNG data containing reconstructed static plate polygons.
 
 **Examples:**
 
-**&#128994; E1:** Reconstruct the static plate polygons back to 100Ma using [SETON2012](https://github.com/GPlates/gplates_web_service_doc/wiki/Reconstruction-Models#seton2012) model.
+**&#128994; E1:** Reconstruct the static plate polygons back to 100Ma using [ZAHIROVIC2022](/models#zahirovic2022) model.
 
-<https://gws.gplates.org/reconstruct/static_polygons/?time=100>
+**Click this [link](https://gws.gplates.org/reconstruct/static_polygons/?time=100&model=ZAHIROVIC2022) to try this example in a web browser.**
 
-**&#128994; E2:** Return a png map <https://gws.gplates.org/reconstruct/static_polygons/?&time=140&model=SETON2012&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5>
+Alternatively, use curl command.
+
+```shell
+curl "https://gws.gplates.org/reconstruct/static_polygons/?time=100&model=ZAHIROVIC2022"
+```
+
+**&#128994; E2:** Return a PNG map for the whole world
+
+**Click this [link](https://gws.gplates.org/reconstruct/static_polygons/?&time=140&model=ZAHIROVIC2022&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5) to try this example in a web browser.**
+
+Alternatively, use curl command.
+
+```shell
+curl --output static-polygons.png "https://gws.gplates.org/reconstruct/static_polygons/?&time=140&model=ZAHIROVIC2022&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5"
+```
 
 ![static_polygons_140ma](../images/static_polygons_140ma.png)
 
-**&#128994; E3:** Return a png map within an extent <https://gws.gplates.org/reconstruct/static_polygons/?&time=140&model=SETON2012&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5&&extent=-50,50,-50,50>
+**&#128994; E3:** Return a PNG map within an extent 
+
+**Click this [link](https://gws.gplates.org/reconstruct/static_polygons/?&time=140&model=ZAHIROVIC2022&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5&&extent=-50,50,-50,50) to try this example in a web browser.**
+
+Alternatively, use curl command.
+
+```shell
+curl --output static-polygons.png "https://gws.gplates.org/reconstruct/static_polygons/?&time=140&model=ZAHIROVIC2022&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5&&extent=-50,50,-50,50"
+```
 
 ![static-polygons-50-50-50-50](../images/static-polygons-50-50-50-50.png)

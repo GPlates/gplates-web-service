@@ -6,53 +6,73 @@ metaDescription: "http request to retrieve reconstructed coastline polygons"
 
 ## Reconstruct Coastlines
 
-**Description:**
+**Description**:
 
-http GET request to retrieve reconstructed coastline polygons
+HTTP GET request to retrieve reconstructed coastline polygons
 
-**Endpoint:**
+**Endpoint**:
     
     https://gws.gplates.org/reconstruct/coastlines/
     
-**Parameters:**
+**Parameters**:
 
-*anchor_plate_id* : integer value for reconstruction anchor plate id [default=0]
+- ***time*** : geologic time(Ma) [required]
 
-*time* : time for reconstruction [required]
+- ***model*** : name for reconstruction model (if not specified, will use the default model)
 
-*model* : name for reconstruction model [defaults to default model from web service settings]
+- ***fmt*** : if set this parameter to "png", this function will return a png image
 
-*fmt* : if set this parameter to "png", this function will return a png image
+- ***anchor_plate_id*** : integer value for reconstruction anchor plate id [default=0]
 
-*facecolor* : such as "black", "blue", etc
+- ***facecolor*** : such as "black", "blue", etc
 
-*edgecolor* : such as "black", "blue", etc
+- ***edgecolor*** : such as "black", "blue", etc
 
-*alpha* : such as 1, 0.5, etc
+- ***alpha*** : such as 1, 0.5, etc
 
-*extent* : such as extent=-180,180,-90,90
+- ***extent*** : such as extent=-180,180,-90,90
 
-*central_meridian* : central meridian -- useful when wrap to dateline and plot png map
+- ***central_meridian*** : central meridian -- useful when wrap to dateline and plot png map
 
-*wrap* flag to indicate if wrap the coastlines along dateline, true or false
+- ***wrap*** : flag to indicate if wrap the coastlines along dateline, true or false
 
 
-**Returns:**
+**Return:**
 
 GeoJSON/PNG data containing reconstructed coastline features
 
 **Examples:**
 
-**&#128994; E1:** Reconstruct the coastlines back to 140Ma using [SETON2012](https://github.com/GPlates/gplates_web_service_doc/wiki/Reconstruction-Models#seton2012) model.
+**&#128994; E1:** Reconstruct the coastlines back to 140Ma using [ZAHIROVIC2022](/models#zahirovic2022) model.
 
-<https://gws.gplates.org/reconstruct/coastlines/?&time=140&model=SETON2012>
+**Click this [link](https://gws.gplates.org/reconstruct/coastlines/?&time=140&model=ZAHIROVIC2022) to try this example in a web browser.**
 
-See the result in an [interactive map](https://portal.gplates.org/service/d3_demo/).
+Alternatively, use curl command.
 
-**&#128994; E2:** Return a png map <https://gws.gplates.org/reconstruct/coastlines/?&time=140&model=SETON2012&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5>
+```shell
+curl "https://gws.gplates.org/reconstruct/coastlines/?&time=140&model=ZAHIROVIC2022"
+```
+
+**&#128994; E2:** Return a PNG map for the whole world
+
+**Click this [link](https://gws.gplates.org/reconstruct/coastlines/?&time=140&model=ZAHIROVIC2022&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5) to try this example in a web browser.**
+
+Alternatively, use curl command.
+
+```shell
+curl --output coastlines.png "https://gws.gplates.org/reconstruct/coastlines/?&time=140&model=ZAHIROVIC2022&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5"
+```
 
 ![coastline-lime](../images/coastline-lime.png)
 
-**&#128994; E3:** Return a png map within an extent <https://gws.gplates.org/reconstruct/coastlines/?&time=140&model=SETON2012&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5&extent=-50,50,-50,50>
+**&#128994; E3:** Return a PNG map within an extent 
+
+**Click this [link](https://gws.gplates.org/reconstruct/coastlines/?&time=140&model=ZAHIROVIC2022&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5&extent=-50,50,-50,50) to try this example in a web browser.**
+
+Alternatively, use curl command.
+
+```shell
+curl --output coastlines.png "https://gws.gplates.org/reconstruct/coastlines/?&time=140&model=ZAHIROVIC2022&fmt=png&facecolor=lime&edgecolor=black&alpha=0.5&extent=-50,50,-50,50"
+```
 
 ![coastlines-50-50-50-50](../images/coastlines-50-50-50-50.png)

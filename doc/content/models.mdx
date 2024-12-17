@@ -4,9 +4,9 @@ metaTitle: "Models"
 metaDescription: "the available plate tectonics reconstruction models in GPlates Web Service."
 ---
 
-This web page contains a lift of the available plate tectonics reconstruction models in GPlates Web Service.
+This web page contains a list of available plate tectonics reconstruction models in GPlates Web Service.
 
-All models by default comprise a minimum of a rotation model and a set of static polygons. The availability of other components varies between different models. Models also vary in the range of geological time that they cover.
+By default, all models comprise a minimum of a rotation model and a set of static polygons. The availability of other components varies between different models. Models also vary in the range of geological time that they cover.
 
 More information about the EarthByte global and regional plate motion models can be found at https://www.earthbyte.org/category/resources/data-models/global-regional-plate-motion-models/. Not all models in the web page have been included in this web service. Contact [EarthByte group](https://www.earthbyte.org/contact-us-3/) to request adding new models into GPlates Web Service.
 
@@ -28,7 +28,7 @@ Earth’s tectonic and plate boundary evolution over 1.8 billion years.
 ---
 ### ALFONSO2024
 
-This plate model is based on that of Clennett et al. (2020) (https://zenodo.org/records/10348271). The Clennett et al. (2020) model was an extension of the global model of Müller et al. (2019) (https://zenodo.org/records/10525287), with a focus on producing a more detailed tectonic reconstruction of the North American Cordillera. Further minor modifications were made to the model for a paper by Alfonso et al. (2024), using the GPlates software (https://www.gplates.org/). 
+This plate model is based on Clennett et al. (2020) (https://zenodo.org/records/10348271). The Clennett et al. (2020) model is an extension of the global model of Müller et al. (2019) (https://zenodo.org/records/10525287), with a focus on producing a more detailed tectonic reconstruction of the North American Cordillera. Further minor modifications are made to the model for a paper by Alfonso et al. (2024), using the GPlates software (https://www.gplates.org/). 
 
 **Layers**: StaticPolygons, Coastlines, Isochrons, Topologies, Terranes
 
@@ -66,8 +66,6 @@ paleolongitude.
 ---
 ### ZAHIROVIC2022
 
-***default model***
-
 Subduction kinematics and carbonate platform interactions.
 
    **Layers**: StaticPolygons, Coastlines, ContinentalPolygons, Topologies
@@ -78,6 +76,10 @@ Subduction kinematics and carbonate platform interactions.
 
    Zahirovic, S., Eleish, A., Doss, S., Pall, J., Cannon, J., Pistone, M., Tetley, M. G., Young, A., & Fox, P. (2022). Subduction kinematics and carbonate platform interactions. Geoscience Data Journal, 9(2), p.371-383, https://doi.org/10.1002/gdj3.146.
    
+   **Notes**:
+
+   This is the default model if you do not specify the reconstruction model in your HTTP request.
+
    [**Download Data**](https://doi.org/10.5281/zenodo.4729045) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=ZAHIROVIC2022)
 
 ---
@@ -201,8 +203,6 @@ reconstruction for the Baltica-derived Alexander Terrane, now accreted to wester
 
    [**Download Data**](http://www.earthbyte.org/global-plate-boundary-evolution-and-kinematics-since-the-late-paleozoic/) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MATTHEWS2016_pmag_ref)
 
-
-
 ---
 ### SETON2012 
 
@@ -211,88 +211,69 @@ It is based on a hybrid reference frame hybrid absolute reference frame, based o
 and a true-polar wander corrected paleomagnetic model for 200 to 100 Ma. This combination of absolute reference frames is 
 viewed as a proxy for a mantle reference frame model.
 
-   * Available layers: [Coastlines | Topological Plate Polygons]
+   **Layers**: Coastlines，StaticPolygons，ContinentalPolygons, Topologies, COBs
 
-   * Timespan: [0 - 200 Ma]  
-   
-   * More information:
-   
-      - <https://www.earthbyte.org/global-continental-and-ocean-basin-reconstructions-since-200-ma/>
-      - <https://www.researchgate.net/publication/235762480_Global_continental_and_ocean_basin_reconstructins_since_200_Ma>
-   
-   * Examples:
-   
-      - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012>
-      - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=SETON2012>
-      - <https://gws.gplates.org/topology/plate_polygons/?time=140&model=SETON2012>
+   **Timespan**: [0 - 200 Ma]  
       
-   * Reference:
+   **Reference**:
    
-      Seton, M., Müller, R., Zahirovic, S., Gaina, C., Torsvik, T., Shephard, G., Talsma, A., Gurnis, M., Turner, M., Maus, S., and Chandler, M., 2012, 
-      [Global continental and ocean basin reconstructions since 200 Ma](https://www.researchgate.net/publication/235762480_Global_continental_and_ocean_basin_reconstructions_since_200_Ma):
-       Earth-Science Reviews, v. 113, no. 3-4, p. 212-270.
+   Seton, M., Müller, R., Zahirovic, S., Gaina, C., Torsvik, T., Shephard, G., Talsma, A., Gurnis, M., Turner, M., Maus, S., and Chandler, M., 2012, 
+   [Global continental and ocean basin reconstructions since 200 Ma](https://www.researchgate.net/publication/235762480_Global_continental_and_ocean_basin_reconstructions_since_200_Ma):
+   Earth-Science Reviews, v. 113, no. 3-4, p. 212-270.
 
-   * Data:
-
-      http://www.earthbyte.org/global-continental-and-ocean-basin-reconstructions-since-200-ma/
+   [**Download Data**](https://doi.org/10.5281/zenodo.10596049) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=SETON2012)
 
 ---
 ### GOLONKA
 
-   * Available layers: [Coastlines] 
+   **Layers**: Coastlines, StaticPolygons
 
-   * Timespan: [0 - 550 Ma]  
+   **Timespan**: [0 - 550 Ma]  
+
+   **Reference**:
+
+   Wright, N., Zahirovic, S., Müller, R. D., and Seton, M. Towards community-driven paleogeographic reconstructions: integrating open-access paleogeographic and paleobiology data with plate tectonics, Biogeosciences, 10, 1529-1541, doi:10.5194/bg-10-1529-2013, 2013.
    
-   * More information:
+   **Notes**:
    
-      - <https://www.earthbyte.org/towards-community-driven-paleogeographic-reconstructions-integrating-open-access-paleogeographic-and-paleobiology-data-with-plate-tectonics/>
-   
-   * Examples:
-   
-      - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=GOLONKA>
-      - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=GOLONKA>
-   
-   * Note: **The GOLONKA model currently does not work for any present-day ocean point.**
+   The GOLONKA model currently does not work for any present-day ocean points.
+
+   [**Download Data**](https://www.earthbyte.org/towards-community-driven-paleogeographic-reconstructions-integrating-open-access-paleogeographic-and-paleobiology-data-with-plate-tectonics/) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=GOLONKA)
 
 ---
 ### PALEOMAP
 
 **Scotese (2016) PALEOMAP reconstructions**
 
-   * Available layers: [Coastlines] 
+   **Layers**: Coastlines, StaticPolygons
 
-   * Timespan: [0 - 1100 Ma]  
+   **Timespan**: [0 - 1100 Ma]  
 
-   * More information:
+   **Reference**:
+   
+   Scotese, C.R., 2016. PALEOMAP PaleoAtlas for GPlates and the PaleoData Plotter Program, PALEOMAP Project.
 
-      - <https://www.earthbyte.org/paleomap-paleoatlas-for-gplates/>
-
-   * Examples:
-
-      - <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=PALEOMAP>
-      - <https://gws.gplates.org/reconstruct/coastlines/?time=140&model=PALEOMAP>
-
+   [**Download Data**](https://www.earthbyte.org/paleomap-paleoatlas-for-gplates/) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=PALEOMAP)
 
 ---
 ### TorsvikCocks2017
 
 **Torsvik and Cocks (2017) reconstructions**
 
-   * Available layers: [Coastlines] 
+   **Layers**: Coastlines, StaticPolygons
 
-   * Timespan: [0 - 540 Ma]  
+   **Timespan**: [0 - 540 Ma]  
+
+   **Reference**:
 
    This reconstruction was published on http://www.earthdynamics.org/earthmodel/page2.html and described in Torsvik & Cocks 2017: Earth History and Palaeogeography. Cambridge University Press, 317 pp.
 
-   * More information:
+   **Notes**:
 
-      - <https://www.earthbyte.org/paleomap-paleoatlas-for-gplates/>
+   - For a default mantle frame reconstruction, the default anchored Plate ID of 0 is used <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=TorsvikCocks2017>
+   - To use a paleomagnetic frame (for any climatically-sensistive analysis), set 1 as the anchored Plate ID <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=TorsvikCocks2017&anchor_plate_id=1>
 
-   * Examples:
-
-      - For a default mantle frame reconstruction, the default anchored Plate ID of 0 is used <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=TorsvikCocks2017>
-      - To use a paleomagnetic frame (for any climatically-sensistive analysis), set 1 as the anchored Plate ID, as in this example <https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=TorsvikCocks2017&anchor_plate_id=1>
-
+   [**Download Data**](https://www.earthbyte.org/paleomap-paleoatlas-for-gplates/) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=TorsvikCocks2017)
 
 ---
 ### RODINIA
@@ -306,7 +287,10 @@ Rodinia model from Precambrian Research
    **Reference**:
 
    Li, Z.X., Evans, D.A. and Halverson, G.P., 2013. Neoproterozoic glaciations in a revised global palaeogeography from the breakup of Rodinia to the assembly of Gondwanaland. Sedimentary Geology, 294, pp.219-232.
-   Note: **The RODINIA model starts at 540 Ma.**
+
+   **Notes**: 
+   
+   The RODINIA model starts at 540 Ma.
 
    [**Download Data**](https://www.sciencedirect.com/science/article/pii/S0301926807001635) | [**Test Model**](https://gws.gplates.org/reconstruct/reconstruct_points/?points=23,-6,127,-21&time=540&model=RODINIA)
 
