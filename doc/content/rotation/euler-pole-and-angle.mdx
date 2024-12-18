@@ -1,57 +1,82 @@
 ---
 title: "Euler Pole And Angle"
 metaTitle: "Euler Pole And Angle"
-metaDescription: "Euler Pole And Angle."
+metaDescription: "get Euler pole and angle."
 ---
 
 ## Euler Pole And Angle
 
-get the finite rotation as a tuple of pole longitude, pole latitude and angle (all in degrees) at given times for plate IDs.
+**Description**:
 
-**Endpoint:**
+HTTP GET request to get the finite rotation as a tuple of pole longitude, pole latitude and angle (all in degrees) at given times for some plate IDs.
+
+**Endpoint**:
 
     https://gws.gplates.org/rotation/get_euler_pole_and_angle
 
-**Parameters:**
+**Parameters**:
 
-*times* : a list of times, such as `times=10,20,30`. a single time can also be used, such as `times=100` [required]
+- ***times*** : a list of times, such as `times=10,20,30`. a single time can also be used, such as `times=100` [required]
 
-*pids* : a list of plate ids [required]
+- ***pids*** : a list of plate IDs [required]
 
-*model* : name for reconstruction model [defaults to default model from web service settings]. 
-User can get a list of available model names at <https://gws.gplates.org/list/model_names>
+- ***model*** : name for the [reconstruction model](/models) (if not specified, will use the default model)
     
-*group_by_pid* : group the results by plate IDs
+- ***group_by_pid*** : group the results by plate IDs
 
-*start* : start age, such as "start=1"
+- ***start*** : start time, such as "start=1"
 
-*end* : end age, such as "end=100"
+- ***end*** : end time, such as "end=100"
 
-*step* : the size of step from start age to end age, such as "step=1"
+- ***step*** : the size of step from start time to end time, such as "step=1"
 
-**Return:**
+**Return**:
  
 [pole_lon, pole_lat, angle]
 
 **Examples:** 
 
-**&#128994; E1:** get euler pole and rotation angle at 100Ma for plate id 701
+**&#128994; E1:** get Euler pole and rotation angle at 100Ma for plate ID 701
 
-<https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=100&pids=701>
+**Click this [link](https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=100&pids=701) to try this example in a web browser.**
 
-**&#128994; E2:** get euler pole and rotation angle at 100Ma for plate id 701
+Alternatively, use curl command.
 
-<https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100&pids=701,801,901>
+```shell
+curl "https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=100&pids=701"
+```
 
-**&#128994; E3:** get euler pole and rotation angle at 100Ma for all plate ids
+**&#128994; E2:** get Euler pole and rotation angle at 10Ma, 50Ma, 100Ma for plate IDs 701, 801, 901
 
-<https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100>
+**Click this [link](https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100&pids=701,801,901) to try this example in a web browser.**
 
-**&#128994; E4:** get euler pole and rotation angle from 1Ma to 100Ma with step 2Ma; group the results by plate ids
+Alternatively, use curl command.
 
-<https://gws.gplates.org/rotation/get_euler_pole_and_angle?start=1&end=100&step=2&pids=701,801,901&group_by_pid>
+```shell
+curl "https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100&pids=701,801,901"
+```
 
-**&#128994; E5:** a Python example. the file can be found at <https://github.com/GPlates/gplates-web-service/blob/master/examples/get_rotation_with_web_service.py>
+**&#128994; E3:** get Euler pole and rotation angle at 10Ma, 50Ma, 100Ma for all plate IDs
+
+**Click this [link](https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100) to try this example in a web browser.**
+
+Alternatively, use curl command.
+
+```shell
+curl "https://gws.gplates.org/rotation/get_euler_pole_and_angle?times=10,50,100"
+```
+
+**&#128994; E4:** get Euler pole and rotation angle from 1Ma to 100Ma with step 2Ma for plate ID 701, 801, 901. group the results by plate IDs
+
+**Click this [link](https://gws.gplates.org/rotation/get_euler_pole_and_angle?start=1&end=100&step=2&pids=701,801,901&group_by_pid) to try this example in a web browser.**
+
+Alternatively, use curl command.
+
+```shell
+curl "https://gws.gplates.org/rotation/get_euler_pole_and_angle?start=1&end=100&step=2&pids=701,801,901&group_by_pid"
+```
+
+**&#128994; E5:** a Python example. The Python file can be found at <https://github.com/GPlates/gplates-web-service/blob/master/examples/get_rotation_with_web_service.py>
 
     import json
     import random

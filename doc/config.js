@@ -9,7 +9,7 @@ const config = {
     logo: 'https://raw.githubusercontent.com/GPlates/gplates-web-service/master/doc/src/gplates-log.svg',
     logoLink: 'https://gws.gplates.org',
     title:
-      `<a href='https://gws.gplates.org/'>GWS</a>`,
+      ``,
     githubUrl: 'https://github.com/GPlates/gplates-web-service',
     helpUrl: '',
     tweetText: '',

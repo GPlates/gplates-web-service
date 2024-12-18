@@ -1,33 +1,40 @@
 ---
 title: "Reconstruction Tree Map"
 metaTitle: "Reconstruction Tree Map"
-metaDescription: "Reconstruction Tree Map."
+metaDescription: "Reconstruction Tree Map"
 ---
 
 ## Reconstruction Tree Map
 
-http GET request to retrieve a geographical representation of a reconstruction hierarchy
+**Description**:
 
-**Endpoint:**
+HTTP GET request to retrieve a geographical representation of a reconstruction hierarchy.
+
+**Endpoint**:
 
     https://gws.gplates.org/rotation/reconstruction_tree_map
 
-**Parameters:**
+**Parameters**:
 
-*time* : time for reconstruction tree [required]
+- ***time*** : time for reconstruction tree [required]
 
-*model* : name for reconstruction model [defaults to default model from web service settings]
+- ***model*** : name for the [reconstruction model](/models) (if not specified, will use the default model)
 
-**Returns:**
+**Return**:
 
-json containing reconstructed feature collection with a geometry representing the rotation hierarchy in a
-geographical arrangement
+JSON data containing reconstructed feature collection with a geometry representing the rotation hierarchy in a geographical arrangement
 
 **Examples:** 
 
 **&#128994; E1:** get the reconstruction tree map at 100Ma
 
-<https://gws.gplates.org/rotation/reconstruction_tree_map?time=100>
+**Click this [link](https://gws.gplates.org/rotation/reconstruction_tree_map?time=100) to try this example in a web browser.**(a bit slow)
+
+Alternatively, use curl command.
+
+```shell
+curl "https://gws.gplates.org/rotation/reconstruction_tree_map?time=100"
+```
 
 If we plot the returned GeoJSON file in QGIS, the map look like this.
 Each line represent an "edge" of the reconstruction tree with one vertex is the "moving plate id"

@@ -1,30 +1,38 @@
 ---
-title: "Get All Plate IDs"
-metaTitle: "Get All Plate IDs"
-metaDescription: "Get All Plate IDs."
+title: "Plate IDs"
+metaTitle: "Plate IDs"
+metaDescription: "Get all the plate IDs in a reconstruction tree at a given time"
 ---
 
 ## Get All Plate IDs
 
-get all the plate ids in the reconstruction tree at a given time
+**Description**:
 
-**Endpoint:**
+HTTP GET request to get all the plate IDs in a reconstruction tree at a given time
+
+**Endpoint**:
 
     https://gws.gplates.org/rotation/get_plate_ids
 
-**Parameters:**
+**Parameters**:
 
-*time* : time at which to get the plate IDs [required]
+- ***time*** : time at which to get the plate IDs [required]
 
-*model* : name for reconstruction model [defaults to default model from web service settings]
+- ***model*** : name for the [reconstruction model](/models) (if not specified, will use the default model)
 
-**Returns:**
+**Return**:
 
-a list of plate IDs at the given time in the recontruction tree
+a list of plate IDs at the given time in the reconstruction tree
 
 **Examples:** 
 
 **&#128994; E1:** get all the plate IDs in the reconstruction tree at 100Ma
 
-<https://gws.gplates.org/rotation/get_plate_ids?time=100>
+**Click this [link](https://gws.gplates.org/rotation/get_plate_ids?time=100) to try this example in a web browser.**
+
+Alternatively, use curl command.
+
+```shell
+curl "https://gws.gplates.org/rotation/get_plate_ids?time=100"
+```
 
