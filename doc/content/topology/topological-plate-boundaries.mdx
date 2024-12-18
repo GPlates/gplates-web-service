@@ -4,20 +4,22 @@ metaTitle: "Topological Plate Boundaries"
 metaDescription: "Topological Plate Boundaries"
 ---
 
-## topology/plate_boundaries
+## Topological Plate Boundaries
 
-http GET request to retrieve reconstructed topological plate polygons
+**Description**:
 
-**usage**
+HTTP GET request to retrieve reconstructed topological plate boundaries
+
+**Endpoint**:
+
+    https://gws.gplates.org/topology/plate_boundaries
     
-    <http-address-to-gws>/topology/plate_boundaries/time=*reconstruction_time*&model=*reconstruction_model*
-    
-**parameters:**
+**Parameters**:
 
-*time* : time for reconstruction [default=0]
+- ***time*** : time for reconstruction [default=0]
 
-*model* : name for reconstruction model [defaults to default model from web service settings]
+- ***model*** : name for the [reconstruction model](/models) (if not specified, will use the default model)
 
-**returns:**
+**Return**:
 
-json containing reconstructed plate boundary features
+JSON data containing reconstructed plate boundary features

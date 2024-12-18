@@ -1,28 +1,30 @@
 ---
 title: "Assign Plate IDs For Shapefiles"
 metaTitle: "Assign Plate IDs For Shapefiles"
-metaDescription: "Assign Plate IDs For Shapefiles"
+metaDescription: "Assign Plate IDs for Shapefiles"
 ---
 
 ## Assign Plate IDs For Shapefiles
 
-Assign plate IDs for shapefiles
+**Description**:
 
-**Endpoint:**
+HTTP POST request to assign plate IDs for Shapefiles
+
+**Endpoint**:
 
     https://gws.gplates.org/reconstruct/assign_shp_plate_ids
 
-**Parameters:**
+**Parameters**:
 
-*model* : name for reconstruction model [defaults to default model from web service settings]
+- ***model*** : name for the [reconstruction model](/models) (if not specified, will use the default model)
 
-**Returns:**
+**Return:**
 
-shapefiles with plate IDs
+Shapefiles with plate IDs in a .zip file
 
 **Examples:** 
 
-**&#128994; E1:** assign plate IDs for shapefiles
+**&#128994; E1:** Python code to assign plate IDs for shapefiles
 
     import os
     from pathlib import Path

@@ -1,26 +1,28 @@
 ---
-title: "Assign GeoJSON Plate IDs"
-metaTitle: "Assign GeoJSON Plate IDs"
-metaDescription: "Assign GeoJSON Plate IDs."
+title: "Assign Plate IDs for GeoJSON"
+metaTitle: "Assign Plate IDs for GeoJSON"
+metaDescription: "Assign plate IDs for GeoJSON."
 ---
 
-## Assign GeoJSON Plate IDs
+## Assign Plate IDs for GeoJSON
 
-Assign plate IDS for GeoJSON data.
+**Description**:
 
-**Endpoint:**
+HTTP Get request to assign plate IDs for GeoJSON feature collection.
+
+**Endpoint**:
 
     https://gws.gplates.org/reconstruct/assign_geojson_plate_ids
 
-**Parameters:**
+**Parameters**:
 
-*model* : name for reconstruction model [defaults to default model from web service settings]. 
-User can get a list of available model names at <https://gws.gplates.org/list/model_names>
+- ***model*** : name for the [reconstruction model](/models) (if not specified, will use the default model)
     
+- ***feature_collection***: feature collection in GeoJSON format
 
-**Examples:** 
+**Examples**: 
 
-**&#128994; E1:** assign plate ids for geojson data
+**&#128994; E1:** Python code to assign plate IDs for GeoJSON feature collection
 
     import json, requests
     fc = {
