@@ -8,6 +8,8 @@ The **🔥GPlates Web Service🔥** is a part of the on-going GPlates project fu
 
 The GPlates Web Service is created and maintained by [EarthByte](https://www.earthbyte.org) group at the [University of Sydney](https://www.sydney.edu.au/).
 
+Please give us a ⭐**star**⭐ to show your support for our development team. Thank you very much!!!
+
 ## 🤔 Why use GPlates Web Service
 
 - easy to use -- it can be as easy as opening a URL in a web browser or a one-line curl command in a terminal

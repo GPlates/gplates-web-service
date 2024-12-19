@@ -1,10 +1,12 @@
 ## 👉 Quick start 
 
-If you would like to try the GPlates Web Service very quickly, follow the steps in this "quick start" section. The steps will start the Docker container using the built-in source code. 
+To setup GPlates Web Service quickly, follow the steps in this "Quick start" section. The basic setup will start the Docker container using the built-in source code. 
 
-- start the GPlates Web Service
+- run the one-line command below to start a basic GPlates Web Service (You need [Docker](https://www.docker.com/get-started/) to run the commmand)
 
-    `docker run -d --rm -p 18000:80 gplates/gws`
+    ```
+    docker run -d --rm -p 18000:80 gplates/gws
+    ```
 
 - verify the service is up and running.
 
@@ -12,58 +14,98 @@ If you would like to try the GPlates Web Service very quickly, follow the steps 
 
     OR
 
-    - `wget -qO - "http://localhost:18000/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140" `
-    - `curl "http://localhost:18000/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140" `
+    ```
+    wget -qO - "http://localhost:18000/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140" 
+    ```
+    
+    OR
+
+    ```
+    curl "http://localhost:18000/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140" 
+    ```
      
 
-👏👏👏Congratulations! At this point, the most basic GPlates Web Service is up and running.
+👏👏👏Congratulations! At this point, the most basic GPlates Web Service is up and running. Now, if you're up for a challenge, read on.
 
-## 👉 Use the source code on the host computer to start the GPlates Web Service 
+## 👉 Use the latest source code from github repository
 
-- `git clone --depth 1 -b master https://github.com/GPlates/gplates-web-service gplates-web-service.git`
-- `docker run -d --rm -v /THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-web-service.git:/gws -p 18000:80 gplates/gws`
+The source code included in the Docker image is the official release version. If you would like to use the latest source code from github repository, you need to follow the steps below.
+
+- get the source code from github repository
+```
+git clone --depth 1 -b master https://github.com/GPlates/gplates-web-service gplates-web-service.git
+```
+- attach the volume when starting the service
+```
+docker run -d --rm -v /THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-web-service.git:/gws -p 18000:80 gplates/gws
+```
 - verify the service is up and running with wget, curl or web browser (see above)
 
-## 👉 Start the GPlates Web Service with Docker compose
+## 👉 Start GWS with Docker compose
 
-Alternatively, you can also use Docker compose to start the GPlates Web Service along with GPlates database and Redis cache.
+The official GWS setup includes the GPlates database and Redis cache. You can use the Docker compose to start the service along with the GPlates database and Redis cache.
     
-- `git clone --depth 1 -b master https://github.com/GPlates/gplates-web-service gplates-web-service.git`
-- `docker network create --driver bridge gplates-net`
-- `docker compose -f gplates-web-service.git/docker/docker-compose.yml up -d`
+- get the latest source code from github repository
+```
+git clone --depth 1 -b master https://github.com/GPlates/gplates-web-service gplates-web-service.git
+```
+- create a gplates network
+```
+docker network create --driver bridge gplates-net
+```
+- start the service
+```
+docker compose -f gplates-web-service.git/docker/docker-compose.yml up -d
+```
 - verify the service is up and running with wget, curl or web browser (see above)
 
 
 ## 👉 Use external Docker volumes
 
-If you would like to use the latest source code from github.com to run the service or keep the database data on the host computer, follow the steps below. 
+If you would like to use the latest source code from github repository and keep the database files on your host computer, follow the steps below. 
 
-👀 👀 You need to change the folder paths in the steps below according to your computer setup. 
+👀 👀 You need to change the paths accordingly in the steps below. 
 
-- `git clone --depth 1 -b master https://github.com/GPlates/gplates-web-service gplates-web-service.git`
-- `cp gplates-web-service.git/django/GWS/env.template gplates-web-service.git/django/GWS/.env`
-- `docker volume create --name gws-code --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-web-service.git --opt o=bind`
-- `mkdir gplates-db-data`
-- `docker volume create --name gplates-db-data --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-db-data --opt o=bind`
-- `docker network create --driver bridge gplates-net`
-- `docker compose -f gplates-web-service.git/docker/docker-compose-external-volumes.yml up -d`
+- get the source code from github repository
+```
+git clone --depth 1 -b master https://github.com/GPlates/gplates-web-service gplates-web-service.git
+```
+- create a .env file from the template
+```
+cp gplates-web-service.git/django/GWS/env.template gplates-web-service.git/django/GWS/.env
+```
+- create GWS source code volume
+```
+docker volume create --name gws-code --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-web-service.git --opt o=bind
+```
+- create a folder for database files
+```
+mkdir gplates-db-data
+```
+- create database volume
+```
+docker volume create --name gplates-db-data --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-db-data --opt o=bind
+```
+- create a gplates network
+```
+docker network create --driver bridge gplates-net
+```
+- start the service
+```
+docker compose -f gplates-web-service.git/docker/docker-compose-external-volumes.yml up -d
+```
 - verify the service is up and running with wget, curl or web browser (see above)
-- verify the database with "http://localhost:18000/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness"
-- (optional) use `psql gplates < gplates.sql` to restore gplates database
+- verify the database is working with this [link](http://localhost:18000/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness)
+- (optional) use `psql gplates < gplates.sql` to restore GPlates database
 
 ## 👉 Docker images
 
-The Docker images are in two repositories, Docker Hub and GitHub Packages.
+The GWS Docker images are in two repositories, [Docker Hub](https://hub.docker.com/r/gplates/gws/tags) and [GitHub Packages](https://github.com/GPlates/gplates-web-service/pkgs/container/gws).
 
 - `docker pull gplates/gws`
 - `docker pull gplates/postgis`
 - `docker pull ghcr.io/gplates/gws:latest`
 - `docker pull ghcr.io/gplates/postgis:latest`
-
-We also use Redis Docker image.
-
-- `docker pull redis`
-
 
 
 
