@@ -25,7 +25,7 @@ To setup GPlates Web Service quickly, follow the steps in this "Quick start" sec
     ```
      
 
-👏👏👏Congratulations! At this point, the most basic GPlates Web Service is up and running. Now, if you're up for a challenge, read on.
+👏👏👏Congratulations! At this point, the most basic GPlates Web Service is up and running. Now, if you're up for some challenges, read on.
 
 ## 👉 Use the latest source code from github repository
 

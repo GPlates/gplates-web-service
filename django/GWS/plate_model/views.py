@@ -6,6 +6,10 @@ from rest_framework.reverse import reverse
 from rest_framework.throttling import AnonRateThrottle
 from utils.docstr_schema import DocstrSchema
 
+# This file contains some temporary experimental code
+# I will sort this out later
+# Michael Chin 2024-12-19
+
 
 class SnippetSerializer(serializers.Serializer):
     id = 123

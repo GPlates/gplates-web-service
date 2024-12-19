@@ -288,6 +288,26 @@ class RotationTestCase(unittest.TestCase):
             + "\n########## end of test_get_ancestors_in_reconstruction_tree ##########\n"
         )
 
+    @add_server_url_to_docstring()
+    def test_find_axis_and_angle(self):
+        """-   testing {}/earth/find_axis_and_angle?point_a=120,45&point_b=20,-45"""
+        msg = ""
+        data = {"point_a": "120,45", "point_b": "20,-45"}
+        r = send_get_request(
+            self.SERVER_URL + "/earth/find_axis_and_angle",
+            params=data,
+        )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+        self.assertEqual(r.status_code, 200)
+
+        msg += r.text + "\n"
+        self.logger.info(
+            "######### test_find_axis_and_angle ###########\n"
+            + msg
+            + "######### test_find_axis_and_angle ###########\n"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -21,8 +21,7 @@ class ReconPointsSchema(AutoSchema):
             {
                 "name": "points",
                 "in": "query",
-                "description": """list of points long,lat comma separated coordinates of points 
-                    to be reconstructed [Required or use "lats" and "lons" parameters]""",
+                "description": """list of points long,lat comma separated coordinates of points to be reconstructed [Required or use "lats" and "lons" parameters]""",
                 "schema": {"type": "number"},
             },
             {
@@ -109,17 +108,14 @@ class ReconPointsSchema(AutoSchema):
             "responses": responses,
         }
         if method.lower() == "get":
-            my_operation[
-                "description"
-            ] = """http GET request to reconstruct points.  
-                For details and examples, go https://gwsdoc.gplates.org/reconstruction/reconstruct-points"""
+            my_operation["description"] = (
+                """HTTP GET request to reconstruct points. For details and examples, go to https://gwsdoc.gplates.org/reconstruction/reconstruct-points"""
+            )
             my_operation["summary"] = "GET method to reconstruct points"
         elif method.lower() == "post":
-            my_operation[
-                "description"
-            ] = """http POST request to reconstruct points. 
-                Basically the same as 'GET' methon, only allow user to send more points.
-                For details and examples, go https://gwsdoc.gplates.org/reconstruction/reconstruct-points"""
+            my_operation["description"] = (
+                """HTTP POST request to reconstruct points. For details and examples, go to https://gwsdoc.gplates.org/reconstruction/reconstruct-points"""
+            )
             my_operation["summary"] = "POST method to reconstruct points"
 
         else:

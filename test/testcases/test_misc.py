@@ -20,10 +20,10 @@ class MiscTestCase(unittest.TestCase):
     logger = logging.getLogger()
 
     def setUp(self):
-        self.proxies = {"http": ""}
+        pass
 
     def tearDown(self):
-        self.logger.info("tearDown")
+        self.logger.debug("tearDown")
 
     @classmethod
     def setUpClass(cls):
@@ -32,97 +32,85 @@ class MiscTestCase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.logger.info("tearDownClass")
+        cls.logger.debug("tearDownClass")
 
     @add_server_url_to_docstring()
     def test_motion_path(self):
         """-   testing {}/reconstruct/motion_path?seedpoints=0,0&movplate=701"""
-
+        msg = ""
         data = {"seedpoints": "0,0", "movplate": 701}
         r = send_get_request(
             self.SERVER_URL + "/reconstruct/motion_path",
             params=data,
         )
         if r.request.url:
-            self.logger.debug(r.request.url + str(r.request.headers))
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
         self.assertEqual(r.status_code, 200)
 
-        logging.info(
+        msg += r.text + "\n"
+        self.logger.info(
             "######### test_motion_path ###########\n"
-            + json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+            + msg
             + "######### test_motion_path ###########\n"
-        )
-
-    @add_server_url_to_docstring()
-    def test_find_axis_and_angle(self):
-        """-   testing {}/earth/find_axis_and_angle?point_a=120,45&point_b=20,-45"""
-        data = {"point_a": "120,45", "point_b": "20,-45"}
-        r = send_get_request(
-            self.SERVER_URL + "/earth/find_axis_and_angle",
-            params=data,
-        )
-        if r.request.url:
-            self.logger.debug(r.request.url + str(r.request.headers))
-        self.assertEqual(r.status_code, 200)
-
-        logging.info(
-            "######### test_find_axis_and_angle ###########\n"
-            + json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
-            + "######### test_find_axis_and_angle ###########\n"
         )
 
     @add_server_url_to_docstring()
     def test_interp_two_locations(self):
         """-   testing {}/earth/interp_two_locations?point_a=120,45&point_b=20,-45&num=10"""
-
+        msg = ""
         data = {"point_a": "120,45", "point_b": "20,-45", "num": 10}
         r = send_get_request(
             self.SERVER_URL + "/earth/interp_two_locations", params=data
         )
         if r.request.url:
-            self.logger.debug(r.request.url + str(r.request.headers))
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
         self.assertEqual(r.status_code, 200)
 
-        logging.info(
+        msg += r.text + "\n"
+        self.logger.info(
             "######### test_interp_two_locations ###########\n"
-            + json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+            + msg
             + "\n########## end of test_interp_two_locations ##########\n"
         )
 
     @add_server_url_to_docstring()
     def test_distance(self):
         """-   testing {}/earth/distance?point_a=120,45&point_b=20,-45"""
-
+        msg = ""
         data = {"point_a": "120,45", "point_b": "20,-45"}
         r = send_get_request(self.SERVER_URL + "/earth/distance", params=data)
         if r.request.url:
-            self.logger.debug(r.request.url + str(r.request.headers))
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
         self.assertEqual(r.status_code, 200)
+
+        msg += r.text + "\n"
 
         dist = json.loads(r.text)
         self.assertAlmostEqual(dist["distance"], 14018, delta=1)
-        logging.info(
+        self.logger.info(
             "######### test_distance ###########\n"
-            + json.dumps(dist, sort_keys=True, indent=4)
+            + msg
             + "\n########## end of test_distance ##########\n"
         )
 
     @add_server_url_to_docstring()
     def test_paleo_cities(self):
         """-   testing {}/earth/get_cities?time=100&model=muller2019"""
-
+        msg = ""
         r = send_get_request(
             self.SERVER_URL + "/earth/get_cities",
             params={"time": 100, "model": "muller2019"},
         )
         if r.request.url:
-            self.logger.debug(r.request.url + str(r.request.headers))
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
         self.assertEqual(r.status_code, 200)
+
+        msg += r.text + "\n"
 
         return_data = json.loads(str(r.text))
         self.logger.info(
             "######### test_paleo_cities ###########\n"
-            + json.dumps(return_data, sort_keys=True, indent=4)
+            + msg
             + "\n########## end of test_paleo_cities ##########\n"
         )
 
@@ -132,38 +120,56 @@ class MiscTestCase(unittest.TestCase):
     @add_server_url_to_docstring()
     def test_get_present_day_cities(self):
         """-   testing {}/earth/get_present_day_cities"""
-
+        msg = ""
         r = send_get_request(
             self.SERVER_URL + "/earth/get_present_day_cities",
         )
         if r.request.url:
-            self.logger.debug(r.request.url + str(r.request.headers))
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
 
         self.assertEqual(r.status_code, 200)
-
+        msg += r.text + "\n"
         self.logger.info(
             "######### test_get_present_day_cities ###########\n"
-            + json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+            + msg
             + "\n########## end of test_get_present_day_cities ##########\n"
         )
 
     @add_server_url_to_docstring()
     def test_paleo_labels(self):
         """-   testing {}/earth/get_labels?time=300&model=merdith2021"""
-
+        msg = ""
         r = send_get_request(
             self.SERVER_URL + "/earth/get_labels",
             params={"time": 300, "model": "merdith2021"},
         )
         if r.request.url:
-            self.logger.info(r.request.url + str(r.request.headers))
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
 
         self.assertEqual(r.status_code, 200)
-
+        msg += r.text + "\n"
         self.logger.info(
             "######### test_paleo_labels ###########\n"
-            + json.dumps(json.loads(str(r.text)), sort_keys=True, indent=4)
+            + msg
             + "\n########## end of test_paleo_labels ##########\n"
+        )
+
+    @add_server_url_to_docstring()
+    def test_version(self):
+        """-   testing {}/version"""
+        msg = ""
+        r = send_get_request(
+            self.SERVER_URL + "/version",
+        )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+
+        self.assertEqual(r.status_code, 200)
+        msg += r.text + "\n"
+        self.logger.info(
+            "######### test_version ###########\n"
+            + msg
+            + "\n########## end of test_version ##########\n"
         )
 
 

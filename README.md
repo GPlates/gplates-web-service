@@ -55,7 +55,7 @@ The [gplates-js](https://github.com/michaelchin/gplates-js) is an experimental p
 
 👉 Setup your own server
 
-**📌For better performance and data security, you may setup the service on your own server/personal computer.**
+You are welcome to use our servers. But for better performance and data security, you might want to setup the service on your own server/personal computer.
 
 Start your own GWS server is as simple as the one-line command below. You need [Docker](https://www.docker.com/get-started/) to run the commmand.
 

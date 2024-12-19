@@ -107,7 +107,7 @@ def get_topologies(model):
     return get_layer(model, "Topologies")
 
 
-def get_model_name_list(folder):
+def get_model_name_list(folder: str) -> list[str]:
     """get a list of model names from the given folder."""
 
     return PlateModelManager.get_local_available_model_names(folder)

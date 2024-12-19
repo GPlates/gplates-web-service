@@ -22,7 +22,7 @@ RUN apt-get install -y gmt gmt-dcw gmt-gshhg libpq-dev libgeos-dev libproj-dev p
 
 RUN pip3 install --upgrade pip
 RUN pip3 install django djangorestframework uritemplate mod_wsgi numpy==1.26.4 pandas scipy healpy requests netCDF4 pyshp psycopg2 
-RUN pip3 install Cartopy pyopenssl==22.1.0 GDAL geoserver-rest python-dotenv tzdata redis
+RUN pip3 install Cartopy pyopenssl==22.1.0 GDAL geoserver-rest python-dotenv tzdata redis inflection
 RUN pip3 install plate-model-manager --upgrade
 
 ADD ./docker/startup.sh /startup.sh
