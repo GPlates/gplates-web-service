@@ -4,87 +4,97 @@
 ![Build Docker](https://github.com/gplates/gplates-web-service/actions/workflows/build-and-push-docker.yml/badge.svg)
 ![Release Test](https://github.com/gplates/gplates-web-service/actions/workflows/release-test.yml/badge.svg)
 
-The **🔥GPlates Web Service🔥** is a part of the on-going GPlates project funded by [AuScope](https://www.auscope.org.au/). The web service is built upon [pygplates](https://www.gplates.org/docs/pygplates/index.html) and allows users to utilize the pygplates functionalities without installing pygplates locally. Users send HTTP requests to https://gws.gplates.org or the local [dockerized](https://hub.docker.com/r/gplates/gws) server, and the server will process the requests and send the reconstruction results back. The web service enables pygplates functionalities in any programming languange and on any operating system.
+The **🔥GPlates Web Service🔥** is a part of the on-going GPlates project funded by [AuScope](https://www.auscope.org.au/). The web service is built upon [pyGPlates](https://www.gplates.org/docs/pygplates/index.html) and allows users to utilize the pyGPlates functionalities without the need of installing pyGPlates locally. Users send HTTP requests to https://gws.gplates.org or the On-Prem [dockerized](https://hub.docker.com/r/gplates/gws) server, and the server will process the requests and send the results back. The web service provides access to pyGPlates functionalities across multiple programming languages and operating systems.
 
 The GPlates Web Service is created and maintained by [EarthByte](https://www.earthbyte.org) group at the [University of Sydney](https://www.sydney.edu.au/).
 
-## 🤔Why use GPlates Web Service
+## 🤔 Why use GPlates Web Service
 
-- cross-platform and language-independent -- the service can be used in any programming languange and on any operating system
-- scalability -- offload workload to servers, cluster, grid or Cloud to improve performance and support more concurrent users
-- automated plate model management -- provide plenty plate models out of the box
-- easy software deployment and upgrade -- avoid the hassle of software installation and upgrade
+- easy to use -- it can be as easy as opening a URL in a web browser or a one-line curl command in a terminal
+- cross-platform and language-independent -- the service can be used in various programming languanges and on various operating systems
+- scalability -- distribute workload among servers, cluster, grid or Cloud to improve throughput and support concurrent usage
+- automated plate reconstruction model management -- provide a wide range of plate reconstruction models out of the box
+- software deployment and upgrade -- make the software installation and upgrade easier
 
-## 🚀Quick start
+## 🚀 Quick start
 
 👉 Use the GPlates Web Service in a web browser
 
-- Step 1: open this link in a web browser <https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=MULLER2019>
-- Step 2: check the paleo-coordinates in the web browser
+- Step 1: open this link in a web browser <https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022>
+- Step 2: the paleo-coordinates will show in the web browser in GeoJSON format. see the output below.
 
 ```
-{"type": "MultiPoint", "coordinates": [[62.6938, 58.8486], [126.7291, -61.6615]]}
+{"type": "MultiPoint", "coordinates": [[59.3469, 60.9242], [124.7549, -59.069]]}
 ```
-
-The GPlates Web Service server returns a valid GeoJSON MultiPoint geometry that contains the paleo-coordinates of two present-day locations at 140Ma. The paleo-coordinates were calculated according to the plate reconstruction model [Muller2019](https://www.earthbyte.org/muller-et-al-2019-deforming-plate-reconstruction-and-seafloor-age-grids-tectonics/). 
+This example returns a valid GeoJSON MultiPoint geometry containing the paleo-coordinates of two present-day locations at 140Ma. The paleo-coordinates are calculated using the plate reconstruction model [ZAHIROVIC2022](https://gwsdoc.gplates.org/models#zahirovic2022). 
 
 👉 Use curl or wget
 
-- `wget -qO - "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=MULLER2019" `
-- `curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=MULLER2019" `
+```wget -qO - "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022" ```
 
-👉 Use GPlates Web Service Python Client/Proxy
+```curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022" ```
 
-See the examples at <https://github.com/michaelchin/gwspy/blob/main/README.md>
+👉 Use GPlates Web Service Python Wrapper(gwspy)
+
+The examples of using the web service in Python can be found at <https://github.com/michaelchin/gwspy/blob/main/README.md>
 
 👉 Setup your own server
 
-**📌For better performance and data security, you may want to setup your own servers.**
+**📌For better performance and data security, you may setup the service on your own server/personal computer.**
 
-Start your own GWS server may be as simple as `docker run -d --rm -p 18000:80 gplates/gws`.
+Start your own GWS server may be as simple as 
+
+```docker run -d --rm -p 18000:80 gplates/gws```
 
 See [docker/README.md](docker/README.md) for the step-by-step instructions.
 
-## 📂Contents
+## 📂 Contents
 
-- **django** -- folder contains source code files for backend services (using django framework).
+- **django** -- source code files for the backend
 
-- **docker** -- folder contains files for building Docker image
+- **docker** -- files for building Docker image
 
-- **doc** -- documentation website. This doc website is built upon [gatsby-gitbook-starter](https://www.gatsbyjs.com/starters/hasura/gatsby-gitbook-starter/).
+- **doc** -- source files for the online documentation website 
 
-- **examples** -- some examples to show how to use this web service
+- **examples** -- examples of the usage of this web service
 
-- **test** -- code for testing this web service
+- **test** -- source code for testing
 
-- examples of accessing the service from different languages (R,matlab,bash/GMT,python) have now been moved to https://github.com/siwill22/gws-examples
+- **scripts** -- some miscellaneous supporting scripts
 
-## 🐳Docker
+- **data** -- symbolic link to the folder containing the data files
 
-click 👉[here](docker/README.md)👈 to see details about using Docker in development and production environment.
 
-## 📚Documentation
+## 🐳 Docker
 
-[Go to GWS documentation website](https://gwsdoc.gplates.org/)
+Click this 👉[link](docker/README.md)👈 to see details about using Docker in the development/production environment.
 
-The Swagger UI is at https://gws.gplates.org/swagger-ui/
+## 📚 Documentation
 
-The OpenAPI schema is at https://gws.gplates.org/openapi
+- [GWS Documentation Website](https://gwsdoc.gplates.org/)
 
-## 📮Contact
+- [Swagger UI](https://gws.gplates.org/swagger-ui/)
+
+- [OpenAPI Schema](https://gws.gplates.org/openapi)
+
+- [Usage Examples](https://gwsdoc.gplates.org/examples)
+
+Some more examples of accessing the service from different languages (R, matlab, bash/GMT, python) can be found at https://github.com/siwill22/gws-examples.
+
+## 📮 Contact
 
 👉 [Contact EarthByte](https://www.earthbyte.org/contact-us-3/)
 
-## 📝License
+## 📝 License
 
-The GPlates Web Service is free software (also known as open-source software), licensed for distribution under the GNU [General Public License (GPL)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html), version 2. Contact [Earthbyte](https://www.earthbyte.org/contact-us-3/) group about the details of the software licensing.
+The GPlates Web Service is free software (also known as open-source software), licensed for distribution under the GNU [General Public License (GPL) Version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html), . Contact [EarthByte](https://www.earthbyte.org/contact-us-3/) group regarding the details of the software licensing.
 
-## Servers
+## 🖥️ Servers
 
-The main server is provided by [NCI](https://nci.org.au/) under AuScope scheme.
+The main server is provided by [NCI Could](https://nci.org.au/) under AuScope scheme. Two backup servers are provided by NCI and EarthByte group.
 
-- https://gws.gplates.org
-- https://gws1.gplates.org
-- https://gws2.gplates.org
+- https://gws.gplates.org (main server)
+- https://gws1.gplates.org (NCI backup server)
+- https://gws2.gplates.org (EarthByte backup server)
 
 
