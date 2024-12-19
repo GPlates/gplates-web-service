@@ -4,7 +4,7 @@
 ![Build Docker](https://github.com/gplates/gplates-web-service/actions/workflows/build-and-push-docker.yml/badge.svg)
 ![Release Test](https://github.com/gplates/gplates-web-service/actions/workflows/release-test.yml/badge.svg)
 
-The **🔥GPlates Web Service🔥** is a part of the on-going GPlates project funded by [AuScope](https://www.auscope.org.au/). The web service is built upon [pyGPlates](https://www.gplates.org/docs/pygplates/index.html) and allows users to utilize the pyGPlates functionalities without the need of installing pyGPlates locally. Users send HTTP requests to https://gws.gplates.org or the On-Prem [dockerized](https://hub.docker.com/r/gplates/gws) server, and the server will process the requests and send the results back. The web service provides access to pyGPlates functionalities across multiple programming languages and operating systems.
+The **🔥GPlates Web Service🔥** is a part of the on-going GPlates project funded by [AuScope](https://www.auscope.org.au/). The web service is built upon [pyGPlates](https://www.gplates.org/docs/pygplates/index.html) and allows users to utilize the pyGPlates functionalities without the need of installing pyGPlates locally. Users send HTTP requests to https://gws.gplates.org or On-Prem [dockerized](https://hub.docker.com/r/gplates/gws) server, and the server will process the requests and send the results back. The web service provides access to pyGPlates functionalities across multiple programming languages and operating systems.
 
 The GPlates Web Service is created and maintained by [EarthByte](https://www.earthbyte.org) group at the [University of Sydney](https://www.sydney.edu.au/).
 
@@ -20,37 +20,52 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 
 👉 Use the GPlates Web Service in a web browser
 
-- Step 1: open this link in a web browser <https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022>
-- Step 2: the paleo-coordinates will show in the web browser in GeoJSON format. see the output below.
+- Step 1: click this [link](https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022) 
+- Step 2: the paleo-coordinates will show in the web browser in GeoJSON format(see the explanation below).
 
 ```
 {"type": "MultiPoint", "coordinates": [[59.3469, 60.9242], [124.7549, -59.069]]}
 ```
-This example returns a valid GeoJSON MultiPoint geometry containing the paleo-coordinates of two present-day locations at 140Ma. The paleo-coordinates are calculated using the plate reconstruction model [ZAHIROVIC2022](https://gwsdoc.gplates.org/models#zahirovic2022). 
+
+The server returns a valid GeoJSON MultiPoint geometry containing the paleo-coordinates of two present-day locations([95,54] and [142,-33]) at 140 Ma. The paleo-coordinates are calculated using the plate reconstruction model [ZAHIROVIC2022](https://gwsdoc.gplates.org/models#zahirovic2022). 
 
 👉 Use curl or wget
 
-```wget -qO - "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022" ```
+```
+wget -qO - "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022" 
+```
 
-```curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022" ```
+```
+curl "https://gws.gplates.org/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140&model=ZAHIROVIC2022" 
+```
 
 👉 Use GPlates Web Service Python Wrapper(gwspy)
 
-The examples of using the web service in Python can be found at <https://github.com/michaelchin/gwspy/blob/main/README.md>
+The examples of using the web service in Python can be found at [here](https://github.com/michaelchin/gwspy/blob/main/README.md).
+
+👉 Use GPlates Web Service in R
+
+The [rgplates](https://gplates.github.io/rgplates/) is a good example of using GPlates Web Service in R programming language. 
+
+👉 Use GPlates Web Service in JavaScript
+
+The [gplates-js](https://github.com/michaelchin/gplates-js) is an experimental project of using GPlates Web Service in JavaScript programming language.
 
 👉 Setup your own server
 
 **📌For better performance and data security, you may setup the service on your own server/personal computer.**
 
-Start your own GWS server may be as simple as 
+Start your own GWS server is as simple as the one-line command below. You need [Docker](https://www.docker.com/get-started/) to run the commmand.
 
-```docker run -d --rm -p 18000:80 gplates/gws```
+```
+docker run -d --rm -p 18000:80 gplates/gws
+```
 
 See [docker/README.md](docker/README.md) for the step-by-step instructions.
 
 ## 📂 Contents
 
-- **django** -- source code files for the backend
+- **django** -- source files for the backend
 
 - **docker** -- files for building Docker image
 
@@ -87,7 +102,7 @@ Some more examples of accessing the service from different languages (R, matlab,
 
 ## 📝 License
 
-The GPlates Web Service is free software (also known as open-source software), licensed for distribution under the GNU [General Public License (GPL) Version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html), . Contact [EarthByte](https://www.earthbyte.org/contact-us-3/) group regarding the details of the software licensing.
+The GPlates Web Service is free software (also known as open-source software), licensed for distribution under the GNU [General Public License (GPL) Version 2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html). Contact [EarthByte](https://www.earthbyte.org/contact-us-3/) group regarding the details of the software licensing.
 
 ## 🖥️ Servers
 
