@@ -5,7 +5,8 @@ from functools import cmp_to_key
 
 from django.conf import settings
 from django.http import HttpResponseBadRequest
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, schema
+from rest_framework.schemas.openapi import AutoSchema
 from utils.decorators import return_HttpResponse
 from utils.plate_model_utils import get_layer_names, get_model_cfg, get_model_name_list
 
@@ -46,7 +47,14 @@ def _compare(first, second):
     return 1
 
 
+class PlateModelSchema(AutoSchema):
+
+    def get_operation_id(self, path, method):
+        return path + "list_model_names" + str(method)
+
+
 @api_view(["GET"])
+@schema(PlateModelSchema())
 @return_HttpResponse()
 def list_model_names(request):
     """HTTP request handler for /model/list
@@ -64,6 +72,7 @@ def list_model_names(request):
 
 
 @api_view(["GET"])
+@schema(PlateModelSchema())
 @return_HttpResponse()
 def get_model_details(request):
     """HTTP request handler for /model/show
@@ -94,6 +103,7 @@ def get_model_details(request):
 
 
 @api_view(["GET"])
+@schema(PlateModelSchema())
 @return_HttpResponse()
 def list_model_layers(request):
     """HTTP request handler for /model/list_layers

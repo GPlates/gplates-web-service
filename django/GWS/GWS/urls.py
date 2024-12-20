@@ -10,7 +10,7 @@ urlpatterns = [
         "openapi",
         get_schema_view(
             title="GPlates Web Service API",
-            description="the API allows users to access GPlates functionalities over network interface",
+            description="the API allows users to access pyGPlates functionalities over network interface",
             version=VERSION,
         ),
         name="openapi-schema",
