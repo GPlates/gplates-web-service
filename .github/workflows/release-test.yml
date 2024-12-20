@@ -46,7 +46,7 @@ jobs:
         name: Start Docker compose
         run: |   
           cd docker
-          docker-compose up -d
+          docker compose up -d
       - 
         name: Sleep for 30 seconds
         run: sleep 30s
