@@ -2,8 +2,8 @@ name: build and push docker
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    #tags:
+    #  - 'v*.*.*'
     branches:
       - build-docker-images
 
