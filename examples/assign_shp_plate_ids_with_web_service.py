@@ -1,10 +1,9 @@
-# open this script in vs code
-# connect to gplates web service docker container
-# run it inside vs code
 import os
 from pathlib import Path
 
 import requests
+
+# The "requests" Python package is required to run this example https://pypi.org/project/requests/
 
 SERVER_URL = os.getenv("GWS_SERVER_URL")
 if not SERVER_URL:
@@ -41,7 +40,7 @@ data = {
 r = requests.post(url, files=files, data=data)
 print(r.reason)
 
-with open(f"{output_path}/result.zip", "wb") as of:
+with open(f"{output_path}/Australia_Points_with_pids.zip", "wb") as of:
     of.write(r.content)
 
-print("done!")
+print(f"The result has been saved in {output_path}/Australia_Points_with_pids.zip.")

@@ -9,6 +9,9 @@ import matplotlib.pyplot as plt
 import requests
 from shapely.geometry import shape
 
+# cartopy, matplotlib, requests, shapely are required to run this example
+# pip3 install cartopy matplotlib requests shapely
+
 SERVER_URL = os.getenv("GWS_SERVER_URL")
 if not SERVER_URL:
     SERVER_URL = "https://gws.gplates.org"
@@ -17,7 +20,7 @@ else:
     print(f"Using server URL in environment variable {SERVER_URL}")
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-output_path = f"{script_path}/output/labels"
+output_path = f"{script_path}/output/"
 Path(output_path).mkdir(parents=True, exist_ok=True)
 
 
@@ -69,38 +72,11 @@ def plot_labels(time, model):
     fig.savefig(output_file, dpi=120)
     plt.close(fig)
 
-    print(f"Done! The labels-{time}-Ma.png has been saved in {output_path}.")
+    print(
+        f"Done! The label image has been saved in {output_path}/labels-{time}-Ma.png."
+    )
     return output_file
 
 
-def make_movie(frame_list):
-    # micromamba install -c conda-forge moviepy
-    # create the mp4 video
-    import moviepy.editor as mpy
-
-    # print(frame_list)
-    clip = mpy.ImageSequenceClip(frame_list, fps=6)
-
-    clip.write_videofile(
-        f"{output_path}/labels.mp4",
-        codec="libx264",
-        # audio_codec='aac',
-        ffmpeg_params=["-s", "1920x1440", "-pix_fmt", "yuv420p"],
-    )  # give image size here(the numbers must divide by 2)
-    print(f"The video {output_path}/labels.mp4 has been created!")
-
-
 if __name__ == "__main__":
-    model = "MERDITH2021"
-    frame_list = []
-    for time in range(0, 1001, 10):
-        # avoid bad time
-        if time == 390:
-            time = 395
-        if time == 450:
-            time = 455
-        filepath = plot_labels(time, model)
-        frame_list.append(filepath)
-        # frame_list.append(f"{output_path}/labels-{time}-Ma.png")
-    frame_list.reverse()
-    make_movie(frame_list)
+    plot_labels(100, "MERDITH2021")

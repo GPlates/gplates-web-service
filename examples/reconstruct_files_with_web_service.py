@@ -1,11 +1,11 @@
-# open this script in vs code
-# connect to gplates web service docker container
-# run it inside vs code
 import os
 from pathlib import Path
 
 import requests
 from dotenv import load_dotenv
+
+# The "requests" Python package is required to run this example https://pypi.org/project/requests/
+# Open the output file with GPlates desktop to check the result
 
 SERVER_URL = os.getenv("GWS_SERVER_URL")
 if not SERVER_URL:
@@ -22,7 +22,7 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 output_path = f"{script_path}/output"
 Path(output_path).mkdir(parents=True, exist_ok=True)
 
-load_dotenv(f"{script_path}/.env")  # take environment variables from .env.
+# load_dotenv(f"{script_path}/.env")  # take environment variables from .env.
 
 data_folder = f"{script_path}/data"
 files = {
@@ -51,7 +51,7 @@ data = {
 r = requests.post(url, files=files, data=data)
 print(r.reason)
 
-with open(f"{output_path}/result.zip", "wb") as of:
+with open(f"{output_path}/reconstructed.zip", "wb") as of:
     of.write(r.content)
 
-print("done!")
+print(f"The output file has been saved at {output_path}/reconstructed.zip")

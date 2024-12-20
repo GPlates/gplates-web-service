@@ -4,6 +4,8 @@ import random
 
 import requests
 
+# The "requests" Python package is required to run this example https://pypi.org/project/requests/
+
 SERVER_URL = os.getenv("GWS_SERVER_URL")
 if not SERVER_URL:
     SERVER_URL = "https://gws.gplates.org"

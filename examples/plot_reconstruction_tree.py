@@ -1,17 +1,17 @@
-import igraph as ig
-import requests, json
-import matplotlib.pyplot as plt
+import json
+import os
+from pathlib import Path
 
-# this script plots reconstruction tree nicely
-# use parameter "pids" to specify the sub-trees
-# you need igraphy and matplotlib
-# python3 -m venv my-venv
-# source my-venv/bin/activate
-# pip3 install matplotlib igraph
+import igraph as ig
+import matplotlib.pyplot as plt
+import requests
+
+# requests matplotlib igraph are required to run this example
+# pip3 install matplotlib igraph request
 
 r = requests.get(
-    "http://localhost:18000/rotation/get_reconstruction_tree_edges/?model=seton2012&level=4&pids=707,702,314,833",
-    verify=False,
+    "https://gws.gplates.org/rotation/get_reconstruction_tree_edges/?model=seton2012&level=4&pids=707,702,314,833",
+    verify=True,
 )
 print(r.text)
 edges = json.loads(r.text)
@@ -64,7 +64,7 @@ ig.plot(
     target=ax,
     layout=lo,
     # layout="circle",  # print nodes in a circular layout
-    vertex_size=0.1,
+    vertex_size=40,
     vertex_frame_width=1.0,
     vertex_frame_color="white",
     vertex_label=names,
@@ -73,4 +73,10 @@ ig.plot(
 
 # plt.show()
 
-fig.savefig("reconstruction-tree.png")
+script_path = os.path.dirname(os.path.realpath(__file__))
+output_path = f"{script_path}/output"
+Path(output_path).mkdir(parents=True, exist_ok=True)
+fig.savefig(f"{output_path}/reconstruction-tree.png")
+print(
+    f"\nThe reconstruction tree image has been saved at {output_path}/reconstruction-tree.png.\n"
+)

@@ -9,6 +9,7 @@ import requests
 # The results will be saved into two files in geojson format.
 # feature_collection_retrieved_from_paleobiodb.json - the feature collection retrieved from http://paleobiodb.org/
 # paleobiodb_feature_collection_reconstructed_by_gws.json - the feature collection reconstructed by GWS
+# Open the .json files in GPlates desktop to check the result
 
 
 # SERVER_URL = "http://127.0.0.1:18000"
@@ -75,6 +76,9 @@ def main():
 
     with open("feature_collection_retrieved_from_paleobiodb.json", "w+") as f:
         f.write(json.dumps(fc, indent=4))
+        print(
+            "\nThe feature collection before reconstruction has been saved in feature_collection_retrieved_from_paleobiodb.json."
+        )
 
     data["keep_properties"] = True
     data["time"] = 120.0  # reconstruct coordinates to 120Ma
@@ -86,14 +90,16 @@ def main():
         verify=True,
     )
 
-    # save the reconstructed coordinates in geojson format
-    with open("paleobiodb_feature_collection_reconstructed_by_gws.json", "w+") as f:
-        f.write(json.dumps(json.loads(r.text), indent=4))
-
     print()
     for f in json.loads(r.text)["features"]:
         print(
             f"oid: {f['properties']['oid']}, paleo-coordinates: {f['geometry']['coordinates']}"
+        )
+    # save the reconstructed coordinates in geojson format
+    with open("paleobiodb_feature_collection_reconstructed_by_gws.json", "w+") as f:
+        f.write(json.dumps(json.loads(r.text), indent=4))
+        print(
+            "\nThe feature collection after reconstruction has been saved in paleobiodb_feature_collection_reconstructed_by_gws.json."
         )
 
 
