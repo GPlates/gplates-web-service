@@ -28,10 +28,8 @@ with open(f"{this_file_path}/../django/GWS/GWS/version.py", "w") as of:
 subprocess.call(["git", "add", f"{this_file_path}/../django/GWS/GWS/version.py"])
 
 files = [
-    f"{this_file_path}/../docker/gws-amd64/Dockerfile",
-    f"{this_file_path}/../docker/gws-arm64/Dockerfile",
-    f"{this_file_path}/../docker/gws-postgis-amd64/Dockerfile",
-    f"{this_file_path}/../docker/gws-postgis-arm64/Dockerfile",
+    f"{this_file_path}/../docker/Dockerfile",
+    f"{this_file_path}/../docker/postgis/Dockerfile",
 ]
 
 for file in files:
