@@ -24,6 +24,7 @@ services:
   gws:
     image: gplates/gws
     hostname: gws
+    container_name: docker-gws
     volumes:
        - gws-code:/gws
     networks:

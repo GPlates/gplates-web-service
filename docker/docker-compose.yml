@@ -13,6 +13,7 @@ services:
 
   gws:
     image: gplates/gws
+    container_name: docker-gws
     hostname: gws
     networks:
       - gplates-net

@@ -58,7 +58,7 @@ jobs:
         run: |
            docker ps
            docker network ls
-           docker inspect docker_gws_1 -f "{{json .NetworkSettings.Networks }}"
+           docker inspect docker-gws -f "{{json .NetworkSettings.Networks }}"
            wget http://localhost:18000/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140
            curl --fail -s "http://localhost:18000/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness" || exit 1
            
