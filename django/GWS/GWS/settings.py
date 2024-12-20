@@ -122,7 +122,7 @@ INSTALLED_APPS = [
     "rotation",
     "topology",
     "earth",
-    "doc",
+    # "doc",
     "plate_model",
     "paleomap",
     "mobile",
@@ -144,7 +144,7 @@ ROOT_URLCONF = "GWS.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [f"{BASE_DIR}/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -216,7 +216,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = "/var/www/html/static/"
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATICFILES_DIRS = ()
 
 # flag to indicate if the traffic should be throttled.
 if isinstance(THROTTLE, str) and (

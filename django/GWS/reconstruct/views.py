@@ -113,7 +113,7 @@ def flowline(request):
     """
 
     # ret = json.dumps(round_floats(data))
-    ret = "dummy"
+    ret = "TODO"
 
     # add header for CORS
     # http://www.html5rocks.com/en/tutorials/cors/
@@ -121,17 +121,6 @@ def flowline(request):
     # TODO:
     response["Access-Control-Allow-Origin"] = "*"
     return response
-
-
-@csrf_exempt
-def html_model_list(request):
-    # df = pd.read_csv(
-    #   "%s/%s" % (settings.PALEO_STORE_DIR, "ngeo2429-s2.csv"),
-    #    index_col="Deposit number",
-    # )
-    # html_table = df.to_html(index=False)
-    html_table = "dummy"
-    return render(request, "list_template.html", {"html_table": html_table})
 
 
 # negative -- counter-clockwise
