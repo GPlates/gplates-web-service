@@ -46,7 +46,8 @@ jobs:
         name: Start Docker compose
         run: |   
           cd docker
-          docker compose up -d
+          docker network create --driver bridge gplates-net
+          docker compose -f docker-compose.yml up -d
       - 
         name: Sleep for 30 seconds
         run: sleep 30s
