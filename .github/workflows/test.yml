@@ -66,7 +66,7 @@ jobs:
         name: Check gws docker container
         if: always()
         run: |
-           wget http://localhost:18000
+           wget http://localhost:18000/reconstruct/reconstruct_points/?lons=95,142&lats=54,-33&time=140
            docker ps
            docker network ls
            docker inspect gws -f "{{json .NetworkSettings.Networks }}"
