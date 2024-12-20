@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# This file is deprecated due to the redesign of plate labels.
+# See https://github.com/GPlates/plate-labels instead
+
 # use gplately and plate_model_manager to run this script
 # this script do two things
 # 1. assign plate ids for labels (pre-compute/pre-assign plate ids to improve response time)

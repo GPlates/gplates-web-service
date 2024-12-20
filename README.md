@@ -10,13 +10,13 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 
 Please give us a ⭐**star**⭐ to show your support for our development team. Thank you very much!!!
 
-## 🤔 Why use GPlates Web Service
+## 🤔 Why GPlates Web Service
 
 - easy to use -- it can be as easy as opening a URL in a web browser or a one-line curl command in a terminal
-- cross-platform and language-independent -- the service can be used in various programming languanges and on various operating systems
+- cross-platform and programming language independent -- the service can be used in various programming languanges and on various operating systems
 - scalability -- distribute workload among servers, cluster, grid or Cloud to improve throughput and support concurrent usage
 - automated plate reconstruction model management -- provide a wide range of plate reconstruction models out of the box
-- software deployment and upgrade -- make the software installation and upgrade easier
+- software deployment and upgrade -- the software installation and upgrade is easier than local software
 
 ## 🚀 Quick start
 
@@ -57,7 +57,7 @@ The [gplates-js](https://github.com/michaelchin/gplates-js) is an experimental p
 
 You are welcome to use our servers. But for better performance and data security, you might want to setup the service on your own server/personal computer.
 
-Start your own GWS server is as simple as the one-line command below. You need [Docker](https://www.docker.com/get-started/) to run the commmand.
+Start your own GWS server is as simple as the one-line command below, which needs [Docker](https://www.docker.com/get-started/) to run.
 
 ```
 docker run -d --rm -p 18000:80 gplates/gws
