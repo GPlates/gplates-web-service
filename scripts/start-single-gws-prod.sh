@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# use ./scripts/start-single-gws-prod.sh `pwd` to use the source code in the current working directory
+# use ./scripts/start-single-gws-prod.sh to use the built-in source code
+
 echo $1
 
 HCMD='curl --fail -s "http://localhost:80/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140" || exit 1'

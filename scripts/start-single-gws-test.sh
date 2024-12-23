@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# use ./scripts/start-single-gws-test.sh `pwd` to use the source code in the current working directory
+# use ./scripts/start-single-gws-test.sh to use the built-in source code
+
 echo $1
 
 PORT=18007
