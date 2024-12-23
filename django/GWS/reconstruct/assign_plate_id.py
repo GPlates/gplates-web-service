@@ -4,7 +4,7 @@ import pygplates
 from django.conf import settings
 from django.http import HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-from utils.decorators import check_get_post_request_and_get_params, return_HttpResponse
+from utils.decorators import extract_params, return_HttpResponse
 from utils.geojson_io import load_geojson
 from utils.parameter_helper import get_bool, get_lats_lons
 from utils.reconstruct_tools import assign_plate_ids
@@ -31,7 +31,7 @@ def _prepare_ret(pids_and_times, with_valid_time):
 
 
 @csrf_exempt
-@check_get_post_request_and_get_params
+@extract_params
 @return_HttpResponse()
 def get_points_pids(request, params={}):
     """http request handler for reconstruct/assign_points_plate_ids
@@ -54,7 +54,7 @@ def get_points_pids(request, params={}):
 
 
 @csrf_exempt
-@check_get_post_request_and_get_params
+@extract_params
 @return_HttpResponse()
 def get_plate_ids_for_geojson(request, params={}):
     """http request handler for /reconstruct/assign_geojson_plate_ids

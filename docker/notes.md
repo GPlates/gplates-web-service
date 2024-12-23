@@ -1,12 +1,12 @@
 
 
-## ☣☣☣ Warning: The notes from this line below are meant for Michael Chin. Other people might fail to understand them. Ask him! 👀 
+## ☣👀Warning: The notes in this page are meant for development team only. Others may fail to understand them.☣👀 
 
 ### Use the "build-docker-images" branch to build Docker images.
 
 - merge master branch to the "build-docker-images" branch
 - update build-docker-images.txt in the "build-docker-images" branch
-- push
+- push (you don't need to remove the old docker images. the images will be updated.)
 - the new docker images will be built by the github action
 
 ## 👉 Setup PostGIS database

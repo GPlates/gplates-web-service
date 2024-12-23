@@ -1,6 +1,7 @@
 from django.urls import re_path
 
-from .api import get_plate_polygons, get_topological_boundaries
+from .plate_boundaries import get_topological_boundaries
+from .plate_polygons import get_plate_polygons
 from .subduction import get_subduction_zones
 
 urlpatterns = [

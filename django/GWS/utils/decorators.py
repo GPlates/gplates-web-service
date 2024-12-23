@@ -8,11 +8,47 @@ from utils.plate_model_utils import get_valid_time, is_time_valid_for_model
 logger = logging.getLogger("default")
 
 
-def check_get_post_request_and_get_params(func_pointer):
-    """decorator to check request type"""
+def extract_params_GET_only(func_pointer):
+    """decorator to get params for the http GET request"""
 
     def wrapped_func(*args, **kwargs):
-        logger.debug("check_get_post_request_and_get_params decorator")
+        logger.debug("extract_params_GET_only decorator")
+        if args[0].method == "GET":
+            params = args[0].GET
+        else:
+            return HttpResponseBadRequest(
+                "Unsupported request type. Only accept HTTP GET requests."
+            )
+
+        kwargs["params"] = params
+        return func_pointer(*args, **kwargs)
+
+    return wrapped_func
+
+
+def extract_params_POST_only(func_pointer):
+    """decorator to get params for the http POST request"""
+
+    def wrapped_func(*args, **kwargs):
+        logger.debug("extract_params_POST_only decorator")
+        if args[0].method == "POST":
+            params = args[0].POST
+        else:
+            return HttpResponseBadRequest(
+                "Unsupported request type. Only accept HTTP POST requests."
+            )
+
+        kwargs["params"] = params
+        return func_pointer(*args, **kwargs)
+
+    return wrapped_func
+
+
+def extract_params(func_pointer):
+    """decorator to get params for both http GET and POST request"""
+
+    def wrapped_func(*args, **kwargs):
+        logger.debug("extract_params decorator")
         if args[0].method == "POST":
             params = args[0].POST
         elif args[0].method == "GET":
@@ -54,7 +90,7 @@ def return_HttpResponse(content_type: str = "application/json"):
     return inner
 
 
-def get_reconstruction_times(func_pointer):
+def extract_model_and_times(func_pointer):
     """decorator to get reconstruction times parameter"""
 
     def wrapped_func(*args, **kwargs):
@@ -84,6 +120,7 @@ def get_reconstruction_times(func_pointer):
                 )
 
         kwargs["times"] = times
+        kwargs["model"] = model_name
         return func_pointer(*args, **kwargs)
 
     return wrapped_func

@@ -11,8 +11,8 @@ from rest_framework.decorators import api_view, schema, throttle_classes
 from rest_framework.throttling import AnonRateThrottle
 from utils.access_control import get_client_ip
 from utils.decorators import (
-    check_get_post_request_and_get_params,
-    get_reconstruction_times,
+    extract_model_and_times,
+    extract_params,
     return_HttpResponse,
 )
 from utils.parameter_helper import (
@@ -43,8 +43,8 @@ else:
 @api_view(["GET", "POST"])
 @throttle_classes(throttle_class_list)
 @schema(ReconPointsSchema())
-@check_get_post_request_and_get_params
-@get_reconstruction_times
+@extract_params
+@extract_model_and_times
 @return_HttpResponse()
 def reconstruct(request, params={}, times=[]):
     """http request to reconstruct points

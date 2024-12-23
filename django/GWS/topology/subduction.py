@@ -1,18 +1,27 @@
 import json
 
 import pygplates
-from django.conf import settings
-from django.http import HttpResponse
+from utils.decorators import (
+    extract_model_and_times,
+    extract_params_GET_only,
+    return_HttpResponse,
+)
 from utils.geojson_io import dump_geojson
 from utils.plate_model_utils import get_rotation_model, get_topologies
 from utils.round_float import round_floats
 
 
-def get_subduction_zones(request):
-    """return subduction zones as polylines"""
+@extract_params_GET_only
+@extract_model_and_times
+@return_HttpResponse()
+def get_subduction_zones(_, model="", times=[], params={}):
+    """http GET request handler for /topology/get_subduction_zones/
 
-    time = request.GET.get("time", 0)
-    model = request.GET.get("model", settings.MODEL_DEFAULT)
+    http://localhost:18000/topology/get_subduction_zones?time=100&model=Muller2019
+
+    return subduction zones as polylines"""
+
+    time = times[0]
 
     resolved_topologies = []
     shared_boundary_sections = []
@@ -65,9 +74,4 @@ def get_subduction_zones(request):
 
     data["features"] = subduction_no_polarity + subduction_left + subduction_right
 
-    ret = json.dumps(round_floats(data))
-
-    response = HttpResponse(ret, content_type="application/json")
-    # TODO:
-    response["Access-Control-Allow-Origin"] = "*"
-    return response
+    return json.dumps(round_floats(data))

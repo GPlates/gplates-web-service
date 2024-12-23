@@ -5,12 +5,12 @@ import pygplates
 from django.conf import settings
 from utils import parameter_helper
 from utils.cities import get_cities as get_city_data
-from utils.decorators import check_get_post_request_and_get_params, return_HttpResponse
+from utils.decorators import extract_params, return_HttpResponse
 from utils.plate_model_utils import get_rotation_model
 from utils.round_float import round_floats
 
 
-@check_get_post_request_and_get_params
+@extract_params
 @return_HttpResponse()
 def get_cities(request, params={}):
     """get the coordinates of cities at some paleo-age for a given plate model
@@ -85,7 +85,7 @@ def get_cities(request, params={}):
     )
 
 
-@check_get_post_request_and_get_params
+@extract_params
 @return_HttpResponse()
 def get_present_day_cities(request, params={}):
     """return present day city names, coordinates and pids

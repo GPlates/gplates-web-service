@@ -7,14 +7,14 @@ from django.db import connection
 from django.db.utils import ProgrammingError
 from django.http import HttpResponseBadRequest, HttpResponseServerError
 from utils.access_control import get_client_ip
-from utils.decorators import check_get_post_request_and_get_params, return_HttpResponse
+from utils.decorators import extract_params, return_HttpResponse
 from utils.parameter_helper import get_float, get_lats_lons
 
 logger = logging.getLogger("default")
 access_logger = logging.getLogger("queue")
 
 
-@check_get_post_request_and_get_params
+@extract_params
 @return_HttpResponse()
 def query(request, params={}):
     """Query a single value from raster by lon, lat

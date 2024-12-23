@@ -1,0 +1,74 @@
+import json
+import logging
+
+import pygplates
+from utils.decorators import (
+    extract_model_and_times,
+    extract_params_GET_only,
+    return_HttpResponse,
+)
+from utils.geojson_io import dump_geojson
+from utils.plate_model_utils import get_rotation_model, get_topologies
+from utils.round_float import round_floats
+
+logger = logging.getLogger("default")
+
+
+@extract_params_GET_only
+@extract_model_and_times
+@return_HttpResponse()
+def get_topological_boundaries(_, model="", times=[], params={}):
+    """http GET request handler for topology/plate_boundaries
+    to retrieve reconstructed topological plate boundaries
+
+    http://localhost:18000/topology/plate_boundaries?time=100&model=Muller2019
+
+    :params time: time for reconstruction [default=0]
+    :params model: name for reconstruction model [defaults to default model from web service settings]
+
+    :returns: json containing reconstructed plate boundary features
+    """
+
+    time = times[0]
+    central_meridian = params.get("central_meridian", 0)
+
+    resolved_polygons = []
+    shared_boundary_sections = []
+    pygplates.resolve_topologies(
+        get_topologies(model),
+        get_rotation_model(model),
+        resolved_polygons,
+        float(time),
+        shared_boundary_sections,
+    )
+
+    geometries = []
+    list_of_properties = []
+    for shared_boundary_section in shared_boundary_sections:
+        for shared_sub_segment in shared_boundary_section.get_shared_sub_segments():
+            geom = shared_sub_segment.get_geometry()
+            feature_type = shared_sub_segment.get_feature().get_feature_type()
+            geometries.append(geom)
+            p = {
+                "type": feature_type.get_name(),
+                "length": geom.get_arc_length(),
+            }
+            if feature_type == pygplates.FeatureType.gpml_subduction_zone:
+                polarity_property = shared_sub_segment.get_feature().get(
+                    pygplates.PropertyName.create_gpml("subductionPolarity")
+                )
+                if polarity_property:
+                    p["polarity"] = polarity_property.get_value().get_content()
+                else:
+                    p["polarity"] = "Unknown"
+
+            list_of_properties.append(p)
+
+    data = {"type": "FeatureCollection"}
+    data["features"] = dump_geojson(
+        geometries,
+        list_of_properties=list_of_properties,
+        date_line_wrapper=pygplates.DateLineWrapper(central_meridian),
+    )
+
+    return json.dumps(round_floats(data))
