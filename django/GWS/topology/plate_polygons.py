@@ -23,8 +23,8 @@ def get_plate_polygons(_, model="", times=[], params={}):
 
     http://localhost:18000/topology/plate_polygons?time=100&model=Muller2019
 
-    :params time: time for reconstruction [default=0]
-    :params model: name for reconstruction model [defaults to default model from web service settings]
+    :params time: time for reconstruction
+    :params model: name for the reconstruction model (if not specified, will use the default model)
 
     :returns: json containing reconstructed plate polygon features
     """

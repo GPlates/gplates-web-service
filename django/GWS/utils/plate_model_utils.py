@@ -1,3 +1,7 @@
+import os
+import re
+from functools import cmp_to_key
+
 import pygplates
 from django.conf import settings
 from plate_model_manager import PlateModel, PlateModelManager
@@ -107,10 +111,45 @@ def get_topologies(model):
     return get_layer(model, "Topologies")
 
 
-def get_model_name_list(folder: str) -> list[str]:
-    """get a list of model names from the given folder."""
+def get_model_dir(model_name: str, folder: str) -> str:
+    """Return the path for a given model.
+    The "folder" usually is the model repository path."""
+    for m in PlateModelManager.get_local_available_model_names(folder):
+        if model_name.lower() == m.lower():
+            return os.path.join(folder, m)
+    return ""
 
-    return PlateModelManager.get_local_available_model_names(folder)
+
+def get_model_name_list(folder: str) -> list[str]:
+    """Get a list of model names from the given folder.
+    The models must also be in settings.PUBLIC_MODELS.
+    The names will be sorted(publish year first and then alphabet order)
+    """
+
+    ret = []
+    available_models = PlateModelManager.get_local_available_model_names(folder)
+    for model_name in available_models:
+        if model_name.lower() in map(str.lower, settings.PUBLIC_MODELS):
+            ret.append(model_name)
+    return sorted(ret, key=cmp_to_key(_compare))
+
+
+def _compare(first: str, second: str):
+    """compare function to sort the model names"""
+    first_numbers = re.findall(r"\d+", first)
+    second_numbers = re.findall(r"\d+", second)
+    if not first_numbers:
+        first_numbers = [0]
+    if not second_numbers:
+        second_numbers = [0]
+
+    if int(first_numbers[0]) > int(second_numbers[0]):
+        return -1
+
+    if int(first_numbers[0]) == int(second_numbers[0]):
+        return 1 if first > second else -1
+
+    return 1
 
 
 def is_time_valid_for_model(model_name, time):

@@ -3,7 +3,11 @@ import logging
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from utils.parameter_helper import get_float, get_value_list
-from utils.plate_model_utils import get_valid_time, is_time_valid_for_model
+from utils.plate_model_utils import (
+    get_model_name_list,
+    get_valid_time,
+    is_time_valid_for_model,
+)
 
 logger = logging.getLogger("default")
 
@@ -120,6 +124,33 @@ def extract_model_and_times(func_pointer):
                 )
 
         kwargs["times"] = times
+        kwargs["model"] = model_name
+        return func_pointer(*args, **kwargs)
+
+    return wrapped_func
+
+
+def extract_model_required(func_pointer):
+    """decorator to get the required model parameter"""
+
+    def wrapped_func(*args, **kwargs):
+        logger.debug("extract_model_required decorator")
+        params = kwargs["params"]
+        model_name = params.get("model", None)
+        if not model_name:
+            return HttpResponseBadRequest(
+                'The "model" parameter is required.'
+                + ' Use <a href="https://gws.gplates.org/model/list">https://gws.gplates.org/model/list</a> to get the list of available model names.'
+            )
+
+        if model_name.lower() not in map(
+            str.lower, get_model_name_list(settings.MODEL_REPO_DIR)
+        ):
+            return HttpResponseBadRequest(
+                f"The model name({model_name}) is not recognized."
+                + ' Use <a href="https://gws.gplates.org/model/list">https://gws.gplates.org/model/list</a> to get the list of supported model names.'
+            )
+
         kwargs["model"] = model_name
         return func_pointer(*args, **kwargs)
 

@@ -319,3 +319,21 @@ CACHES = {
         "LOCATION": "redis://gplates-redis:6379",
     },
 }
+
+PUBLIC_MODELS = [
+    "CAO2024",
+    "ALFONSO2024",
+    "MULLER2022",
+    "ZAHIROVIC2022",
+    "MERDITH2021",
+    "CLENNETT2020",
+    "MULLER2019",
+    "MULLER2016",
+    "MATTHEWS2016_mantle_ref",
+    "MATTHEWS2016_pmag_ref",
+    "SETON2012",
+    "GOLONKA",
+    "PALEOMAP",
+    "TorsvikCocks2017",
+    "RODINIA",
+]

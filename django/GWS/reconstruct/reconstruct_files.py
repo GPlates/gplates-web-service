@@ -27,11 +27,9 @@ from utils.plate_model_utils import (
 )
 
 
-#
-# reconstruct uploaded files
-#
 @csrf_exempt
 def reconstruct(request):
+    """reconstruct uploaded files"""
     if not request.method == "POST":
         return HttpResponseBadRequest("ERROR: only post requests are accepted!")
     try:
@@ -158,9 +156,9 @@ def reconstruct(request):
             response = HttpResponse(
                 s.getvalue(), content_type="application/x-zip-compressed"
             )
-            response[
-                "Content-Disposition"
-            ] = f"attachment; filename={output_basename}.zip"
+            response["Content-Disposition"] = (
+                f"attachment; filename={output_basename}.zip"
+            )
 
             return response
     except NoOutputFileError as e:

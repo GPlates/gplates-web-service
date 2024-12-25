@@ -19,14 +19,14 @@ logger = logging.getLogger("default")
 @return_HttpResponse()
 def get_topological_boundaries(_, model="", times=[], params={}):
     """http GET request handler for topology/plate_boundaries
-    to retrieve reconstructed topological plate boundaries
+    to retrieve reconstructed topological plate boundaries as polylines
 
     http://localhost:18000/topology/plate_boundaries?time=100&model=Muller2019
 
-    :params time: time for reconstruction [default=0]
-    :params model: name for reconstruction model [defaults to default model from web service settings]
+    :params time: time for reconstruction
+    :params model: name for the reconstruction model (if not specified, will use the default model)
 
-    :returns: json containing reconstructed plate boundary features
+    :returns: json containing reconstructed plate boundary polylines
     """
 
     time = times[0]

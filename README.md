@@ -4,7 +4,7 @@
 ![Build Docker](https://github.com/gplates/gplates-web-service/actions/workflows/build-and-push-docker.yml/badge.svg)
 ![Release Test](https://github.com/gplates/gplates-web-service/actions/workflows/release-test.yml/badge.svg)
 
-The **🔥GPlates Web Service🔥** is a part of the on-going GPlates project funded by [AuScope](https://www.auscope.org.au/). The web service is built upon [pyGPlates](https://www.gplates.org/docs/pygplates/index.html) and allows users to utilize the pyGPlates functionalities without the need of installing pyGPlates locally. Users send HTTP requests to https://gws.gplates.org or On-Prem [dockerized](https://hub.docker.com/r/gplates/gws) server, and the server will process the requests and send the results back. The web service provides access to pyGPlates functionalities across multiple programming languages and operating systems.
+The **🔥GPlates Web Service🔥** is a part of the on-going GPlates project funded by [AuScope](https://www.auscope.org.au/). The web service is built upon [pyGPlates](https://www.gplates.org/docs/pygplates/index.html) and allows users to utilize the pyGPlates functionalities without the need of installing pyGPlates locally. Users send HTTP requests to https://gws.gplates.org or On-Prem [dockerized](https://hub.docker.com/r/gplates/gws) server, and then the server will process the requests and send the results back. The web service provides access to pyGPlates functionalities across multiple programming languages and operating systems.
 
 The GPlates Web Service is created and maintained by [EarthByte](https://www.earthbyte.org) group at the [University of Sydney](https://www.sydney.edu.au/).
 

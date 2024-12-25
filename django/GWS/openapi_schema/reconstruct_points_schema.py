@@ -123,3 +123,6 @@ class ReconPointsSchema(AutoSchema):
 
         operation.update(my_operation)
         return operation
+
+    def get_operation_id(self, path, method):
+        return path + str(method)
