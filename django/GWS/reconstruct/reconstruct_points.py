@@ -46,7 +46,7 @@ else:
 @extract_params
 @extract_model_and_times
 @return_HttpResponse()
-def reconstruct(request, params={}, times=[]):
+def reconstruct(request, params={}, times=[], model=""):
     """http request to reconstruct points
 
     this docstring is for developers only. the docs for users are in openapi_schema folder.
