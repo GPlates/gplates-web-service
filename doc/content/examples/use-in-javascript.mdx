@@ -1,12 +1,36 @@
 ---
-title: "Use GWS In JavaScript"
-metaTitle: "Use GWS In JavaScript"
-metaDescription: "Demonstrate the usage of GWS in JavaScript programming language."
+title: "Use GWS with JavaScript"
+metaTitle: "Use GWS with JavaScript"
+metaDescription: "Demonstrate the usage of GWS with JavaScript programming language."
 ---
 
-The code below shows how the GPlates Web Service can be used in JavaScript.
+The experimental project [gplates-js](https://github.com/michaelchin/gplates-js#readme) is a good example of how the GPlates Web Service can be used with JavaScript.
 
-You might also want to check out the experimental project [gplates-js](https://github.com/michaelchin/gplates-js#readme).
+### Use the fetch API
+
+```html
+
+<!DOCTYPE html>
+<html>
+
+<body>
+    <script async>
+        (async () => {
+            const response = await fetch("https://gws.gplates.org/reconstruct/coastlines/?time=50&model=muller2019")
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            } else {
+                document.write(await response.text());
+            }
+        })();
+    </script>
+</body>
+
+</html>
+
+```
+
+### Use the XMLHttpRequest object
 
 ```javascript
 
@@ -35,3 +59,5 @@ xhr.onerror = function() {
 xhr.send();
 
 ```
+
+Alternatively, you can also choose to use [jQuery](https://jquery.com/), [Axios](https://axios-http.com/docs/intro), etc.

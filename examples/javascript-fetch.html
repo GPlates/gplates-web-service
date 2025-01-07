@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <script async>
+        (async () => {
+            const response = await fetch("https://gws.gplates.org/reconstruct/coastlines/?time=50&model=muller2019")
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            } else {
+                document.write(await response.text());
+            }
+        })();
+    </script>
+</body>
+
+</html>
