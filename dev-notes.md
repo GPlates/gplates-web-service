@@ -1,4 +1,4 @@
-## This Markdown page is for the GPlates Web Service developers only. It contains some technical notes which may seem confusing for other end users. Contact the development team if you would like to know some details about anything in this page.
+## This Markdown page is for the GPlates Web Service developers only. It contains some technical notes which may seem confusing for other people. Contact the development team if you would like to know some details about anything in this page.
 
 ### Redis
 

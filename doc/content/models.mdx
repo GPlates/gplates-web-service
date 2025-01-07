@@ -8,7 +8,7 @@ This web page contains a list of available plate tectonics reconstruction models
 
 By default, all models comprise a minimum of a rotation model and a set of static polygons. The availability of other components varies between different models. Models also vary in the range of geological time that they cover.
 
-More information about the EarthByte global and regional plate motion models can be found at this [web page](https://www.earthbyte.org/category/resources/data-models/global-regional-plate-motion-models/). Not all models in the web page have been included in this web service. Contact [EarthByte group](https://www.earthbyte.org/contact-us-3/) to request adding new models into GPlates Web Service.
+More information about the EarthByte global and regional plate motion models can be found at this [web page](https://www.earthbyte.org/category/resources/data-models/global-regional-plate-motion-models/). Not all models on the web page have been included in this web service. Contact [EarthByte group](https://www.earthbyte.org/contact-us-3/) to request adding new models into GPlates Web Service.
 
 ---
 ### CAO2024
@@ -28,7 +28,7 @@ Earth’s tectonic and plate boundary evolution over 1.8 billion years.
 ---
 ### ALFONSO2024
 
-This plate model is based on [Clennett et al. (2020)](https://zenodo.org/records/10348271). The Clennett et al. (2020) model is an extension of the global model of [Müller et al. (2019)](https://zenodo.org/records/10525287), with a focus on producing a more detailed tectonic reconstruction of the North American Cordillera. Further minor modifications are made to the model for a paper by Alfonso et al. (2024), using the [GPlates](https://www.gplates.org/) software . 
+This plate model is based on [Clennett et al. (2020)](https://zenodo.org/records/10348271). The Clennett et al. (2020) model is an extension of the global model of [Müller et al. (2019)](https://zenodo.org/records/10525287), with a focus on producing a more detailed tectonic reconstruction of the North American Cordillera. Further minor modifications are made to the model for a paper by Alfonso et al. (2024), using the [GPlates](https://www.gplates.org/) software. 
 
 **Layers**: StaticPolygons, Coastlines, Isochrons, Topologies, Terranes
 
@@ -43,12 +43,7 @@ Christopher P. Alfonso, R. Dietmar Müller, Ben Mather, Michele Anthony; Spatio-
 ---
 ### MULLER2022
 
-This model is based on MERDITH2021 for relative plate motions but uses a mantle reference frame 
-that orients the plates relative to the mantle using a set of geodynamic rules to exclude 
-geodynamically unreasonable plate motions. The difference between the paleomagnetic and mantle 
-reference frames grows cumulatively back in time – hence the two reconstructions (MERDITH2021 versus 
-MULLER2022) diverge progressively in the Paleozoic and Proterozoic both in terms of paleolatitude and 
-paleolongitude.
+This model is based on MERDITH2021 for relative plate motions but uses a mantle reference frame that orients the plates relative to the mantle using a set of geodynamic rules to exclude geodynamically unreasonable plate motions. The difference between the paleomagnetic and mantle reference frames grows cumulatively back in time – hence the two reconstructions (MERDITH2021 versus MULLER2022) diverge progressively in the Paleozoic and Proterozoic both in terms of paleolatitude and paleolongitude.
 
    **Layers**: StaticPolygons, Coastlines, ContinentalPolygons, Topologies, COBs, Cratons
    
@@ -85,11 +80,8 @@ Subduction kinematics and carbonate platform interactions.
 ---
 ### MERDITH2021
 
-This plate model for the last 1000 Ma is based on a paleomagnetic reference frame. 
-In this model the longitudinal positions of the plates are unconstrained, due to the radial 
-symmetry of the Earth's magnetic field. It is broadly based on a modified combination of MULLER2016 
-for the last 230 Ma, the MATTHEWS2016_pmag_ref model for 250-410 Ma and a newly constructed model for
- earlier times.
+This plate model for the last 1000 Ma is based on a paleomagnetic reference frame. In this model the longitudinal positions of the plates are unconstrained, due to the radial 
+symmetry of the Earth's magnetic field. It is broadly based on a modified combination of MULLER2016 for the last 230 Ma, the MATTHEWS2016_pmag_ref model for 250-410 Ma and a newly constructed model for earlier times.
 
    **Layers**: StaticPolygons, Coastlines, ContinentalPolygons, Topologies, Cratons
  
@@ -122,11 +114,8 @@ Clennett, E., Sigloch, K., Mihalynuk, M. G., Seton, M., Hosseini, K., Mohammadza
 ---
 ### MULLER2019 
 
-This plate model for the last 250 Ma is based on a mantle reference frame, 
-ie it orients the plates relative to the mantle using a set of geodynamic rules to exclude 
-geodynamically unreasonable plate motions, which typically result from models based on paleomagnetic data. 
-The model also includes continental deformation both along major rift systems and collisional plate 
-boundary zones.
+This plate model for the last 250 Ma is based on a mantle reference frame, i.e. it orients the plates relative to the mantle using a set of geodynamic rules to exclude 
+geodynamically unreasonable plate motions, which typically result from models based on paleomagnetic data. The model also includes continental deformation both along major rift systems and collisional plate boundary zones.
 
    **Layers**: Coastlines, StaticPolygons, ContinentalPolygons, Topologies, COBs, Hotspots, SeafloorFabric, Whittaker2015LIPs, Johansson2018LIPs
 
@@ -143,11 +132,7 @@ boundary zones.
 ---
 ### MULLER2016
 
-This model represents an update of the SETON2012 model, both in terms of relative and absolute plate motions. 
-The absolute reference used is based on the same hotspot model for the last 100 Ma as used in SETON2012, 
-and a true-polar wander corrected paleomagnetic model for 230 to 100 Ma, with an added 10 deg longitudinal 
-correction for the time period from 100-230 Ma in an attempt to minimise geodynamically unreasonable 
-longitudinal plate motions, resulting in a modified mantle reference frame.
+This model represents an update of the SETON2012 model, both in terms of relative and absolute plate motions. The absolute reference used is based on the same hotspot model for the last 100 Ma as used in SETON2012, and a true-polar wander corrected paleomagnetic model for 230 to 100 Ma, with an added 10 deg longitudinal correction for the time period from 100-230 Ma in an attempt to minimise geodynamically unreasonable longitudinal plate motions, resulting in a modified mantle reference frame.
 
    **Layers**: Coastlines, StaticPolygons, Topologies, COBs
 
@@ -166,8 +151,7 @@ longitudinal plate motions, resulting in a modified mantle reference frame.
 ---
 ### MATTHEWS2016_mantle_ref
 
-This model is identical to MATTHEWS2016_pmag_ref in terms of relative plate models but uses a true 
-polar wander corrected paleomagnetic model, viewed as a proxy for a mantle reference frame model.
+This model is identical to MATTHEWS2016_pmag_ref in terms of relative plate models but uses a true polar wander corrected paleomagnetic model, viewed as a proxy for a mantle reference frame model.
 
    **Layers**: Coastlines, StaticPolygons, ContinentalPolygons, Topologies
 
@@ -184,11 +168,7 @@ polar wander corrected paleomagnetic model, viewed as a proxy for a mantle refer
 ---
 ###  MATTHEWS2016_pmag_ref
 
-This plate model represents the first continuous late Paleozoic to present-day global plate model with evolving plate boundaries, 
-building on and extending two previously published models for the late Paleozoic (410–250 Ma) ([Domeier and Torsvik, 2014](https://www.sciencedirect.com/science/article/pii/S1674987114000061) )
-and the MULLER2016 model Mesozoic-Cenozoic (230–0 Ma). The model was designed for continuity during the 250–230 Ma transition period 
-between the two models, used an updated absolute reference frame of the Mesozoic-Cenozoic model and added a new Paleozoic 
-reconstruction for the Baltica-derived Alexander Terrane, now accreted to western North America. 
+This plate model represents the first continuous late Paleozoic to present-day global plate model with evolving plate boundaries, building on and extending two previously published models for the late Paleozoic (410–250 Ma) ([Domeier and Torsvik, 2014](https://www.sciencedirect.com/science/article/pii/S1674987114000061) ) and the MULLER2016 model Mesozoic-Cenozoic (230–0 Ma). The model was designed for continuity during the 250–230 Ma transition period between the two models, used an updated absolute reference frame of the Mesozoic-Cenozoic model and added a new Paleozoic reconstruction for the Baltica-derived Alexander Terrane, now accreted to western North America. 
 
    **Layers**: Coastlines, StaticPolygons, ContinentalPolygons, Topologies
 
@@ -206,10 +186,7 @@ reconstruction for the Baltica-derived Alexander Terrane, now accreted to wester
 ---
 ### SETON2012 
 
-This model represents the first global plate model with topological plate boundaries. 
-It is based on a hybrid reference frame hybrid absolute reference frame, based on a moving hotspot model for the last 100 Ma, 
-and a true-polar wander corrected paleomagnetic model for 200 to 100 Ma. This combination of absolute reference frames is 
-viewed as a proxy for a mantle reference frame model.
+This model represents the first global plate model with topological plate boundaries. It is based on a hybrid reference frame hybrid absolute reference frame, based on a moving hotspot model for the last 100 Ma, and a true-polar wander corrected paleomagnetic model for 200 to 100 Ma. This combination of absolute reference frames is viewed as a proxy for a mantle reference frame model.
 
    **Layers**: Coastlines，StaticPolygons，ContinentalPolygons, Topologies, COBs
 

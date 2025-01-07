@@ -1,8 +1,8 @@
 ## 👉 Quick start 
 
-To setup GPlates Web Service quickly, follow the steps in this "Quick start" section. The basic setup will start the Docker container using the built-in source code. 
+To set up GPlates Web Service quickly, follow the steps in this "Quick start" section. The service will use the source code in the Docker image. 
 
-- run the one-line command below to start a basic GPlates Web Service (You need [Docker](https://www.docker.com/get-started/) to run the commmand)
+- run the one-line command below to start a basic GPlates Web Service You need [Docker](https://www.docker.com/get-started/) to run the command.
 
     ```
     docker run -d --rm -p 18000:80 gplates/gws
@@ -27,11 +27,11 @@ To setup GPlates Web Service quickly, follow the steps in this "Quick start" sec
 
 👏👏👏Congratulations! At this point, the most basic GPlates Web Service is up and running. Now, if you're up for some challenges, read on.
 
-## 👉 Use the latest source code from github repository
+## 👉 Use the latest source code from GitHub repository
 
-The source code included in the Docker image is the official release version. If you would like to use the latest source code from github repository, you need to follow the steps below.
+The source code included in the Docker image is the official release version. If you would like to use the latest source code from GitHub repository, you need to follow the steps below.
 
-- get the source code from github repository
+- get the source code from GitHub repository
 ```
 git clone --depth 1 -b master https://github.com/GPlates/gplates-web-service gplates-web-service.git
 ```
@@ -45,7 +45,7 @@ docker run -d --rm -v /THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplat
 
 The official GWS setup includes the GPlates database and Redis cache. You can use the Docker compose to start the service along with the GPlates database and Redis cache.
     
-- get the latest source code from github repository
+- get the latest source code from GitHub repository
 ```
 git clone --depth 1 -b master https://github.com/GPlates/gplates-web-service gplates-web-service.git
 ```
@@ -62,11 +62,11 @@ docker compose -f gplates-web-service.git/docker/docker-compose.yml up -d
 
 ## 👉 Use external Docker volumes
 
-If you would like to use the latest source code from github repository and keep the database files on your host computer, follow the steps below. 
+If you would like to use the latest source code from GitHub repository and keep the database files on your host computer, follow the steps below. 
 
 👀 👀 You need to change the paths accordingly in the steps below. 
 
-- get the source code from github repository
+- get the source code from GitHub repository
 ```
 git clone --depth 1 -b master https://github.com/GPlates/gplates-web-service gplates-web-service.git
 ```

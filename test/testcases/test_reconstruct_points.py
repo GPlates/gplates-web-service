@@ -409,12 +409,16 @@ class ReconstructPointsTestCase(unittest.TestCase):
         if r.request.url:
             msg += r.request.url + "\n" + str(r.request.headers) + "\n"
 
+        gws_return_data = None
         try:
             gws_return_data = json.loads(str(r.text))
             msg += json.dumps(gws_return_data, sort_keys=True, indent=4) + "\n"
         except:
             msg += r.text + "\n"
             self.assertTrue(False)  # invalid return data
+
+        if not gws_return_data:
+            raise Exception("invalid return data")
 
         self.assertEqual(r.status_code, 200)
         self.assertEqual(
