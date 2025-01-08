@@ -1,12 +1,13 @@
 ---
-title: "Use GWS In C#"
-metaTitle: "Use GWS In C#"
-metaDescription: "Demonstrate how to use GWS in C# programming language."
+title: "Use GWS with C#"
+metaTitle: "Use GWS with C#"
+metaDescription: "This page demonstrates how to use GWS with the C# programming language."
 ---
 
-The code below shows how the GPlates Web Service can be used in C#.
+The code snippet below shows how the GPlates Web Service can be used with C#.
 
-```c#
+```csharp
+
     string sURL;
     sURL = "https://gws.gplates.org/reconstruct/coastlines/?time=50";
 
@@ -18,4 +19,5 @@ The code below shows how the GPlates Web Service can be used in C#.
 
     StreamReader objReader = new StreamReader(objStream);
     objReader.ReadLine();
+
 ```
