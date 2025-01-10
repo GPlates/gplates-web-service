@@ -10,6 +10,8 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 
 Please give us a ⭐**star**⭐ to show your support for our development team. Thank you very much!
 
+![Main Animation](https://github.com/GPlates/gplates-web-service/raw/master/doc/content/images/gws-location-reconstruction.gif)
+
 ## 🤔 Why GPlates Web Service
 
 - easy to use -- it can be as easy as opening a URL in a web browser or a one-line curl command in a terminal
