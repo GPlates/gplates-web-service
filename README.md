@@ -10,7 +10,9 @@ The GPlates Web Service is created and maintained by [EarthByte](https://www.ear
 
 Please give us a ⭐**star**⭐ to show your support for our development team. Thank you very much!
 
-![Main Animation](https://github.com/GPlates/gplates-web-service/raw/master/doc/content/images/gws-location-reconstruction.gif)
+<p align="center">
+  <img width="504" height="315" style="border-radius: 15px;" src="https://github.com/GPlates/gplates-web-service/raw/master/doc/content/images/gws-location-reconstruction.gif">
+</p>
 
 ## 🤔 Why GPlates Web Service
 
