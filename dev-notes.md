@@ -60,3 +60,10 @@ You can change the numbers at docker/gws.conf. Each wsgi process may require 1.5
 - sudo systemctl restart apache2
 - sudo certbot --apache 
 - go into gws docker container and change number of processes
+ 
+### make screenshot gif
+
+- command + shif + space and click
+- `magick -delay 20 $(ls *.png | sort -Vr) out.gif`
+- `magick out.gif -coalesce temporary.gif` (make .gif smaller - step 1)
+- `magick temporary.gif -resize 504x315 gws-location-reconstruction.gif` (make .gif smaller - step 2)
