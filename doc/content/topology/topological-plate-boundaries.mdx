@@ -1,0 +1,33 @@
+---
+title: "Topological Plate Boundaries"
+metaTitle: "Topological Plate Boundaries"
+metaDescription: "Topological Plate Boundaries"
+---
+
+## Topological Plate Boundaries
+
+**Description**:
+
+Use HTTP GET request to retrieve reconstructed topological plate boundaries
+
+**Endpoint**:
+
+    https://gws.gplates.org/topology/plate_boundaries
+    
+**Parameters**:
+
+- ***time*** : reconstruction time (Ma) [required]
+
+- ***model*** : name of the [reconstruction model](/models) (if not specified, will use the default model)
+
+**Return**:
+
+JSON data containing reconstructed plate boundary features
+
+**Examples**: 
+
+**&#128994; E1:** This [link](https://gws.gplates.org/topology/plate_boundaries?time=100&model=muller2019) will retrieve the topological plate boundary features for model Muller2019 at 100Ma.
+
+**&#128994; E2:** The image below was generated with the [GPlates Web Service Python Wrapper](https://github.com/michaelchin/gwspy). Click the image to see the Python source code for this example.
+
+[![](https://raw.githubusercontent.com/michaelchin/gwspy/main/examples/output/plot_topological_features.png)](https://github.com/michaelchin/gwspy/blob/main/examples/plot_topological_plate_boundaries.py)

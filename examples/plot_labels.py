@@ -39,7 +39,11 @@ def plot_labels(time, model):
     geoms = [shape(feature["geometry"]).buffer(0) for feature in feature_collection]
 
     ax.add_geometries(
-        geoms, crs=ccrs.PlateCarree(), facecolor="lime", edgecolor="black", alpha=0.8
+        geoms,
+        crs=ccrs.PlateCarree(),
+        facecolor="lightgrey",
+        edgecolor="grey",
+        alpha=0.8,
     )
 
     r = requests.get(f"{SERVER_URL}/earth/get_labels?time={time}&model={model}")

@@ -1,0 +1,13 @@
+---
+title: "Topology"
+metaTitle: "Topology"
+metaDescription: "get topological plate boundary features"
+---
+
+The topology APIs are compatible with a subset of reconstruction models, specifically those built using the 'continuously closing plates' methodology within the GPlates GUI. These plate configurations can be returned either as polygons or as boundary segments, with various boundary types (e.g., subduction zones, mid-ocean ridges) defined.
+
+To determine if a reconstruction model includes topology features, use the endpoint at https://gws.gplates.org/model/list_layers. For instance, the 'paleomap' model does not contain a 'Topologies' layer (<https://gws.gplates.org/model/list_layers?model=paleomap>), so the topology APIs are not compatible with it. In contrast, the 'Muller2019' model includes a 'Topologies' layer (<https://gws.gplates.org/model/list_layers?model=Muller2019>), making it compatible with the topology APIs.
+
+- [topological plate boundaries](/topology/topological-plate-boundaries)
+- [topological plate polygons](/topology/topological-plate-polygons)
+- [subduction zones](/topology/subduction-zones)

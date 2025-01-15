@@ -1,0 +1,33 @@
+---
+title: "Subduction Zones"
+metaTitle: "Subduction Zones"
+metaDescription: "get the subduction zone features"
+---
+
+## Subduction Zones
+
+**Description**:
+
+Use HTTP GET request to retrieve subduction zone features
+
+**Endpoint**:
+
+    https://gws.gplates.org/topology/get_subduction_zones    
+    
+**Parameters**:
+
+- ***time*** : reconstruction time (Ma) [required]
+
+- ***model*** : name of the [reconstruction model](/models) (if not specified, will use the default model)
+
+**Return**:
+
+JSON data containing reconstructed plate polygon features
+
+**Examples**: 
+
+**&#128994; E1:** This [link](https://gws.gplates.org/topology/get_subduction_zones?time=100&model=muller2019) will retrieve the subduction zone features for model Muller2019 at 100Ma.
+
+**&#128994; E2:** The image below was generated with the [GPlates Web Service Python Wrapper](https://github.com/michaelchin/gwspy). Click the image to see the Python source code for this example.
+
+[![](https://raw.githubusercontent.com/michaelchin/gwspy/main/examples/output/plot_subduction_zones.png)](https://github.com/michaelchin/gwspy/blob/main/examples/plot_subduction_zones.py)

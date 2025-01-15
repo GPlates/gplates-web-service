@@ -51,9 +51,10 @@ def get_plate_polygons(_, model="", times=[], params={}):
         logger.debug(f.get_feature_type())
         geoms = f.get_geometries()
         if as_lines:
-            geoms = [pygplates.PolylineOnSphere(g.to_lat_lon_list()) for g in geoms]
+            geoms = [pygplates.PolylineOnSphere(g) for g in geoms]
         geometries.extend(geoms)
-        properties.extend([{"type": str(f.get_feature_type())}] * len(geoms))
+        p = {"type": str(f.get_feature_type()), "name": f.get_name()}
+        properties.extend([p] * len(geoms))
 
     data = {"type": "FeatureCollection"}
     data["features"] = dump_geojson(

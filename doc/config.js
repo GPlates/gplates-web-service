@@ -58,7 +58,7 @@ const config = {
       '/reconstruction', // add trailing slash if enabled above
       '/rotation',
       '/assign-plate-ids',
-      //'/topology',
+      '/topology',
       '/raster-query',
       //'/velocity',
     ],
