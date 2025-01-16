@@ -104,7 +104,7 @@ def download_model(_, model="", **kwags):
 
     model_dir = get_model_dir(model, settings.MODEL_REPO_DIR)
     s = io.BytesIO()
-    with zipfile.ZipFile(s, "w") as zf:
+    with zipfile.ZipFile(s, "w", zipfile.ZIP_DEFLATED) as zf:
         for root, dirs, files in os.walk(model_dir):
             for file in files:
                 zf.write(

@@ -41,6 +41,7 @@ def get_plate_polygons(_, model="", times=[], params={}):
         get_rotation_model(model),
         resolved_topologies,
         float(time),
+        # resolve_topology_types=pygplates.ResolveTopologyType.boundary,
     )
 
     geometries = []
@@ -53,7 +54,11 @@ def get_plate_polygons(_, model="", times=[], params={}):
         if as_lines:
             geoms = [pygplates.PolylineOnSphere(g) for g in geoms]
         geometries.extend(geoms)
-        p = {"type": str(f.get_feature_type()), "name": f.get_name()}
+        p = {
+            "type": str(f.get_feature_type()),
+            "name": f.get_name(),
+            "pid": f.get_reconstruction_plate_id(),
+        }
         properties.extend([p] * len(geoms))
 
     data = {"type": "FeatureCollection"}

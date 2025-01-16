@@ -40,6 +40,7 @@ def get_topological_boundaries(_, model="", times=[], params={}):
         resolved_polygons,
         float(time),
         shared_boundary_sections,
+        resolve_topology_types=pygplates.ResolveTopologyType.boundary,
     )
 
     geometries = []
@@ -47,11 +48,14 @@ def get_topological_boundaries(_, model="", times=[], params={}):
     for shared_boundary_section in shared_boundary_sections:
         for shared_sub_segment in shared_boundary_section.get_shared_sub_segments():
             geom = shared_sub_segment.get_geometry()
-            feature_type = shared_sub_segment.get_feature().get_feature_type()
+            feat = shared_sub_segment.get_feature()
+            feature_type = feat.get_feature_type()
             geometries.append(geom)
             p = {
                 "type": feature_type.get_name(),
                 "length": geom.get_arc_length(),
+                "pid": feat.get_reconstruction_plate_id(),
+                "name": feat.get_name(),
             }
             if feature_type == pygplates.FeatureType.gpml_subduction_zone:
                 polarity_property = shared_sub_segment.get_feature().get(
