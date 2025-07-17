@@ -72,7 +72,7 @@ PALEO_STORE_DIR = f"{BASE_DIR}/data/paleo/"
 MODEL_REPO_DIR = f"{BASE_DIR}/data/model-repo/"
 MOBILE_APP_DIR = f"{BASE_DIR}/data/mobile-app"
 
-MODEL_DEFAULT = "MULLER2019"
+MODEL_DEFAULT = "ZAHIROVIC2022"
 
 MEDIA_ROOT = f"{BASE_DIR}/data/tmp/"
 
