@@ -18,7 +18,7 @@ HTTP GET request to retrieve plate velocities within topological plate polygons
 
 - ***time*** : time for reconstruction [default=0]
 
-- ***model*** : name for the [reconstruction model](/models) (if not specified, will use the default model)
+- ***model*** : the [reconstruction model](/models) name (if not specified, will use the [default model](/models#defaultmodel))
 
 - ***velocity_type*** : String specifying the type of velocity representation to return. Can be 'MagAzim' for 
                   magnitude/azimuth, or 'east_north' for velocity components in east and north directions 

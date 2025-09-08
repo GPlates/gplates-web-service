@@ -18,7 +18,7 @@ HTTP GET request to retrieve a geographical representation of a reconstruction h
 
 - ***time*** : time for reconstruction tree [required]
 
-- ***model*** : name for the [reconstruction model](/models) (if not specified, will use the default model)
+- ***model*** : the [reconstruction model](/models) name (if not specified, will use the [default model](/models#defaultmodel))
 
 **Return**:
 
