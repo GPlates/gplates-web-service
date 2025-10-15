@@ -144,19 +144,5 @@
     "endTime": 0,
     "step": 1,
     "model": "MULLER2019"
-  },
-  "BingMap": {
-    "title": "Bing Map",
-    "subTitle": "Present Day",
-    "icon": "images/bing-map-256x256.png",
-    "url": "https://dev.virtualearth.net",
-    "wmsUrl": "",
-    "layerName": "bing-map",
-    "format": "image/jpeg",
-    "style": "AlczXHSoTBl2SiwawLwrIoF_G7IK3V2hbvw4NFJBDu53AevRIzj9y4t5dNXsgV0h",
-    "maximumLevel": 0,
-    "startTime": 0,
-    "endTime": 0,
-    "step": 0
   }
 }
