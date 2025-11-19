@@ -78,5 +78,15 @@
     "maximumLevel": 8,
     "startTime": 0,
     "endtime": 0
+  },
+  "drill-sites": {
+    "displayName": "Drill Sites",
+    "url": "https://geoserver.gplates.org/geoserver/gwc/service/wmts",
+    "layerName": "gplates-app-present-day:Drilled_Holes_IODP20250818",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 0,
+    "endtime": 0
   }
 }
