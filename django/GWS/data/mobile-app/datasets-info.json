@@ -1,0 +1,74 @@
+{
+  "continental-polygons": {
+    "name": "Continental Polygons",
+    "ref": "Zahirovic, S., Eleish, A., Doss, S., Pall, J., Cannon, J., Pistone, M., and Fox, P., 2022, Subduction kinematics and carbonate platform interactions: Geoscience Data Journal, doi: 10.1002/gdj3.146"
+  },
+  "static-plate-polygons": {
+    "name": "Static Plate Polygons",
+    "ref": "Zahirovic, S., Eleish, A., Doss, S., Pall, J., Cannon, J., Pistone, M., and Fox, P., 2022, Subduction kinematics and carbonate platform interactions: Geoscience Data Journal, doi: 10.1002/gdj3.146"
+  },
+  "age-grid": {
+    "name": "Present-day Seafloor Age",
+    "ref": "Seton M., Müller, R. D., Zahirovic, S., Williams, S., Wright, N., Cannon, J., Whittaker, J., Matthews, K., McGirr, R., 2020, A global dataset of present-day oceanic crustal age and seafloor spreading parameters, doi: 10.1029/2020GC009214"
+  },
+  "coastlines": {
+    "name": "Coastlines",
+    "ref": "Zahirovic, S., Eleish, A., Doss, S., Pall, J., Cannon, J., Pistone, M., and Fox, P., 2022, Subduction kinematics and carbonate platform interactions: Geoscience Data Journal, doi: 10.1002/gdj3.146"
+  },
+  "crustal-thickness": {
+    "name": "Crustal Thickness",
+    "ref": "Afonso, J.C., Salajegheh, F., Szwillus, W., Ebbing, J., and Gaina, C., A global reference model of the lithosphere and upper mantle from joint inversion and analysis of multiple data sets, Geophysical Journal International, Volume 217, Issue 3, June 2019, Pages 1602–1628, https://doi.org/10.1093/gji/ggz094"
+  },
+  "geology": {
+    "name": "Geology",
+    "ref": "Hasterok, D., Halpin, J. A., Collins, A. S., Hand, M., Kreemer, C., Gard, M. G., & Glorie, S. (2022). New maps of global geological provinces and tectonic plates. Earth-Science Reviews, 231, 104069."
+  },
+  "isochrons": {
+    "name": "Isochrons",
+    "ref": "Seton M., Müller, R. D., Zahirovic, S., Williams, S., Wright, N., Cannon, J., Whittaker, J., Matthews, K., McGirr, R., 2020, A global dataset of present-day oceanic crustal age and seafloor spreading parameters, doi: 10.1029/2020GC009214"
+  },
+  "present-day-LIPs": {
+    "name": "Present-day LIPs",
+    "ref": "Johansson, L., Zahirovic, S., & Müller, R. D. (2018). The interplay between the eruption and weathering of Large Igneous Provinces and the deep-time carbon cycle. Geophysical Research Letters, 45, 5380–5389. https://doi.org/10.1029/2017GL076691"
+  },
+  "present-day-plate-boundaries": {
+    "name": "Present-day Plate Boundaries",
+    "ref": "Zahirovic, S., Eleish, A., Doss, S., Pall, J., Cannon, J., Pistone, M., and Fox, P., 2022, Subduction kinematics and carbonate platform interactions: Geoscience Data Journal, doi: 10.1002/gdj3.146"
+  },
+  "present-day-seafloor-fabric": {
+    "name": "Present-day Seafloor Fabric",
+    "ref": "K.J. Matthews, R.D. Müller, P. Wessel & J.M. Whittaker, The tectonic fabric of the ocean basins, The Journal of Geophysical Research. doi:10.1029/2011JB008413"
+  },
+  "present-day-topography": {
+    "name": "Present-day Topography",
+    "ref": "GEBCO Compilation Group (2025) GEBCO 2025 Grid (doi:10.5285/37c52e96-24ea-67ce-e063-7086abc05f29)"
+  },
+  "vertical-gravity-gradient": {
+    "name": "Vertical Gravity Gradient",
+    "ref": "Yu, Y., Sandwell, D.T., and Dibarboure, G., 2024. Abyssal marine tectonics from the SWOT mission. Science, 386(6727), pp. 1251-1256. "
+  },
+  "present-day-satellite-topography": {
+    "name": "Present-day Satellite Derived Topography",
+    "ref": "Yu, Y., Sandwell, D.T., and Dibarboure, G., 2024. Abyssal marine tectonics from the SWOT mission. Science, 386(6727), pp. 1251-1256. "
+  },
+  "present-day-polymetallic-nodules": {
+    "name": "Present-day Polymetallic Nodules",
+    "ref": "Dutkiewicz, A., Judge, A., Müller R.D., 2020, Environmental predictors of deep-sea polymetallic nodule occurrence in the global ocean, Geology. doi:10.1130/G46836.1"
+  },
+  "present-day-seafloor-lithology": {
+    "name": "Present-day Seafloor Lithology",
+    "ref": "Dutkiewicz, A., Müller R.D., O'Callaghan, S. and Jóson, H., 2015, Census of seafloor sediments in the world's ocean, Geology, 43, 795-798."
+  },
+  "present-day-seafloor-spreading-rate": {
+    "name": "Present-day Seafloor Spreading Rate",
+    "ref": "Seton M., Müller, R. D., Zahirovic, S., Williams, S., Wright, N., Cannon, J., Whittaker, J., Matthews, K., McGirr, R., 2020, A global dataset of present-day oceanic crustal age and seafloor spreading parameters, doi: 10.1029/2020GC009214"
+  },
+  "present-day-asymmetry": {
+    "name": "Present-day Asymmetry",
+    "ref": "Seton M., Müller, R. D., Zahirovic, S., Williams, S., Wright, N., Cannon, J., Whittaker, J., Matthews, K., McGirr, R., 2020, A global dataset of present-day oceanic crustal age and seafloor spreading parameters, doi: 10.1029/2020GC009214"
+  },
+  "present-day-drill-sites": {
+    "name": "Present-day DSDP/ODP/IODP Drill Sites",
+    "ref": "Downloaded from: https://www.iodp.org/resources/maps-and-kml-tools"
+  }
+}

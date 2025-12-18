@@ -24,6 +24,11 @@ urlpatterns = [
         name="get_graphs",
     ),
     re_path(
+        r"^get_datasets_info/?$",
+        get_data.get_datasets_info,
+        name="get_datasets_info",
+    ),
+    re_path(
         r"^get_cities/?$",
         get_data.get_cities,
         name="mobile_app_get_cities",

@@ -99,3 +99,11 @@ def load_csv_data(filepath):
                 print(f"bad line {line}!")
                 continue
     return data
+
+
+def get_datasets_info(request):
+    """return the JSON data in data/mobile-app/datasets-info.json."""
+    with open(f"{data_path}/datasets-info.json", "r", encoding="utf-8") as f:
+        response = HttpResponse(f, content_type="application/json; charset=utf8")
+        response["Access-Control-Allow-Origin"] = "*"
+        return response
