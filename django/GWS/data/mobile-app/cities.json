@@ -1,5 +1,5 @@
 {
-  "comment": "deprecated. only using in mobile app. will be replaced by https://gws.gplate.org/earth/get_cities",
+  "comment": "deprecated. only using in mobile app. will be replaced by https://gws.gplates.org/earth/get_cities",
   "dirty": false,
   "coords": {
     "Sydney": [151.2099, -33.8651, 0],
@@ -50,6 +50,11 @@
       602, 6023, 60402, 737, 647, 698, 6023
     ],
     "MULLER2019": [
+      801, 801, 101, 503, 101, 501, 302, 701, 521, 202, 201, 215, 305, 315,
+      3071, 315, 601, 657, 629, 601, 315, 801, 801, 801, 801, 8064, 601, 602,
+      602, 602, 60402, 737, 647, 698, 602
+    ],
+    "Zahirovic2022": [
       801, 801, 101, 503, 101, 501, 302, 701, 521, 202, 201, 215, 305, 315,
       3071, 315, 601, 657, 629, 601, 315, 801, 801, 801, 801, 8064, 601, 602,
       602, 602, 60402, 737, 647, 698, 602

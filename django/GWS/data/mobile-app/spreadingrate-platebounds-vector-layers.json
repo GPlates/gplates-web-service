@@ -1,0 +1,26 @@
+{
+  "coastlines": {
+    "displayName": "Coastlines",
+    "url": "https://geoserver.gplates.org/geoserver/gwc/service/wmts",
+    "wmsUrl": "https://geoserver.gplates.org/geoserver/gplates-app-zahirovic2022/wms",
+    "layerName": "gplates-app-zahirovic2022:coastlines-{{time}}-Ma",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 250,
+    "endtime": 0,
+    "step": 1
+  },
+  "static-polygons": {
+    "displayName": "Static Polygons",
+    "url": "https://geoserver.gplates.org/geoserver/gwc/service/wmts",
+    "wmsUrl": "https://geoserver.gplates.org/geoserver/gplates-app-zahirovic2022/wms",
+    "layerName": "gplates-app-zahirovic2022:static-polygons-{{time}}-Ma",
+    "format": "image/jpeg",
+    "style": "",
+    "maximumLevel": 8,
+    "startTime": 250,
+    "endtime": 0,
+    "step": 1
+  }
+}
