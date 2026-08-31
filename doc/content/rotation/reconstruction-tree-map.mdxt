@@ -28,7 +28,7 @@ JSON data containing reconstructed feature collection with a geometry representi
 
 **Examples:** 
 
-**&#128994; E1:** get the reconstruction tree map at 100Ma
+**👉 E1:** get the reconstruction tree map at 100Ma
 
 **Click this [link](https://gws.gplates.org/rotation/reconstruction_tree_map?time=100) to try this example in a web browser.**(a bit slow)
 
