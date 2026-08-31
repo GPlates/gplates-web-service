@@ -12,7 +12,9 @@ HTTP GET request to retrieve plate velocities within static polygons.
 
 **Endpoint**:
 
-    https://gws.gplates.org/velocity/static_polygons
+```text
+https://gws.gplates.org/velocity/static_polygons
+```
  
 **Parameters**:
 

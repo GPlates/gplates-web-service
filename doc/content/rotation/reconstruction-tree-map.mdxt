@@ -12,7 +12,9 @@ HTTP GET request to retrieve a geographical representation of a reconstruction h
 
 **Endpoint**:
 
-    https://gws.gplates.org/rotation/reconstruction_tree_map
+```text
+https://gws.gplates.org/rotation/reconstruction_tree_map
+```
 
 **Parameters**:
 

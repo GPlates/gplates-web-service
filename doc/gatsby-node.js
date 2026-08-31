@@ -18,6 +18,9 @@ exports.createPages = ({ graphql, actions }) => {
                   fields {
                     id
                   }
+                  internal {
+                    contentFilePath
+                  }
                   tableOfContents
                   fields {
                     slug
@@ -37,7 +40,7 @@ exports.createPages = ({ graphql, actions }) => {
         result.data.allMdx.edges.forEach(({ node }) => {
           createPage({
             path: node.fields.slug ? node.fields.slug : '/',
-            component: path.resolve('./src/templates/docs.js'),
+            component: `${path.resolve('./src/templates/docs.js')}?__contentFilePath=${node.internal.contentFilePath}`,
             context: {
               id: node.fields.id,
             },

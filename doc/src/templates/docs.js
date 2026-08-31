@@ -1,11 +1,10 @@
+import { graphql } from 'gatsby';
 import React, { Component } from 'react';
 import Helmet from 'react-helmet';
-import { graphql } from 'gatsby';
-import MDXRenderer from 'gatsby-plugin-mdx/mdx-renderer';
 
 import { Layout, Link } from '$components';
-import NextPrevious from '../components/NextPrevious';
 import config from '../../config';
+import NextPrevious from '../components/NextPrevious';
 import { Edit, StyledHeading, StyledMainWrapper } from '../components/styles/Docs';
 
 const forcedNavOrder = config.sidebar.forcedNavOrder;
@@ -97,11 +96,11 @@ export default class MDXRuntimeTest extends Component {
                 <img src={githubIcon} alt={'Github logo'} /> Edit on GitHub
               </Link>
             )}
-            </Edit>
+          </Edit>
         </div>
-        
+
         <StyledMainWrapper>
-          <MDXRenderer>{mdx.body}</MDXRenderer>
+          {this.props.children}
         </StyledMainWrapper>
         <div className={'addPaddTopBottom'}>
           <NextPrevious mdx={mdx} nav={nav} />
@@ -125,7 +124,6 @@ export const pageQuery = graphql`
         title
         slug
       }
-      body
       tableOfContents
       parent {
         ... on File {

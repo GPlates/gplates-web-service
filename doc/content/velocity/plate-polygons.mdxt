@@ -12,7 +12,9 @@ HTTP GET request to retrieve plate velocities within topological plate polygons
 
 **Endpoint**:
 
-    https://gws.gplates.org/velocity/plate_polygons
+```text
+https://gws.gplates.org/velocity/plate_polygons
+```
  
 **Parameters**:
 
