@@ -56,7 +56,12 @@ def get_rotation_model(model):
         return ROTATION_FC[model]
     else:
         rotation_files = get_rotation_files(model)
-        m = pygplates.RotationModel(rotation_files)
+        if (
+            model.upper() == "ZAHIROVIC2022"
+        ):  # use pmag reference frame for Zahirovic2022 model, set the default anchor plate id to 701701
+            m = pygplates.RotationModel(rotation_files, default_anchor_plate_id=701701)
+        else:
+            m = pygplates.RotationModel(rotation_files)
         ROTATION_FC[model] = m
         return m
 
