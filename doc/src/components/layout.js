@@ -81,8 +81,16 @@ const Layout = ({ children, location }) => (
         <RightSideBarWidth className={'hiddenMobile'}>
           <RightSidebar location={location} />
         </RightSideBarWidth>
+
       </Wrapper>
     </MDXProvider>
+    <div>
+      <p style={{ fontSize: "80%", marginTop: "0.5rem", marginBottom: "0.5rem", textAlign: "center" }}>
+        <i>
+          Copyright © 2020-2026 The University of Sydney. All rights reserved.
+        </i>
+      </p>
+    </div>
   </ThemeProvider>
 );
 
