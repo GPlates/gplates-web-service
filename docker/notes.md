@@ -44,7 +44,7 @@
 - `git clone https://github.com/GPlates/gplates-web-service gplates-web-service.git`
 - `cp gplates-web-service.git/django/GWS/env.template gplates-web-service.git/django/GWS/.env`
 - `docker volume create --name gws-code --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-SOURCE-CODE-FOLDER/gplates-web-service.git --opt o=bind`
-- `docker volume create --name gws-db-data --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-SOURCE-CODE-FOLDER/gws-db-data --opt o=bind`
+- `docker volume create --name gplates-db-data --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-SOURCE-CODE-FOLDER/gplates-db-data --opt o=bind`
 - `docker compose -f gplates-web-service.git/docker/docker-compose-code-and-db-volume.yml up -d`
 
 👀 👀 You may not have to do the steps below. But sometimes you do. I did not have to do this on my Ubuntu server. But I had to do it on my Macbook. Attention, you need to change the docker container name accordingly.

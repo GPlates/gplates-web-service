@@ -4,66 +4,102 @@
 # step 2: go into folder gplates-web-service
 # step 3: docker build -f docker/Dockerfile -t gplates/gws .
 #
-
 # if error, try with --no-cache option
+#
 
-FROM ubuntu:22.04
+FROM mambaorg/micromamba:2.9.0
 
 LABEL org.opencontainers.image.authors="michael.chin@sydney.edu.au"
-LABEL version="v1.0.0"
+LABEL version="v1.1.0"
 
 ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=Australia 
+ENV TZ=Australia/Sydney
 
-RUN apt-get update -y
-RUN apt-get install -y wget python3 python3-pip less gdal-bin libgdal-dev curl
-RUN apt-get install -y apache2 apache2-dev libapache2-mod-wsgi-py3 ghostscript ffmpeg
-RUN apt-get install -y gmt gmt-dcw gmt-gshhg libpq-dev libgeos-dev libproj-dev proj-data proj-bin 
+USER root
 
-RUN pip3 install --upgrade pip
-RUN pip3 install django djangorestframework uritemplate mod_wsgi numpy==1.26.4 pandas scipy healpy requests netCDF4 pyshp psycopg2 
-RUN pip3 install Cartopy pyopenssl==22.1.0 GDAL geoserver-rest python-dotenv tzdata redis inflection
-RUN pip3 install plate-model-manager --upgrade
+# System packages only -- no python3/python3-pip and no
+# libapache2-mod-wsgi-py3 here. Every Python package (Django, numpy,
+# GDAL, Cartopy, GMT, and mod_wsgi's own Apache module -- see below) comes
+# from the micromamba environment instead, so there is exactly one Python
+# and one set of package versions in this image, not two.
+#
+# apache2-dev is needed so `pip install mod_wsgi` (below) can compile the
+# Apache module against this exact Apache build.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      apache2 \
+      apache2-dev \
+      ffmpeg \
+      libsm6 \
+      libxext6 \
+      ghostscript \
+      wget \
+      curl \
+      less \
+      tini && \
+    rm -rf /var/lib/apt/lists/*
+
+USER $MAMBA_USER
+COPY --chown=$MAMBA_USER:$MAMBA_USER ./docker/env.yaml /tmp/env.yaml
+RUN micromamba install -y -n base -f /tmp/env.yaml && \
+    micromamba clean --all --yes
+
+USER root
+
+# Apache/mod_wsgi is started as a system service (service apache2 start),
+# not through micromamba's own activation wrapper, so it never gets
+# LD_LIBRARY_PATH pointed at this environment's lib/ directory. Native
+# libraries that conda-forge packages need at runtime (e.g. netCDF4's
+# libnetcdf.so, GDAL's, GEOS's, PROJ's) would otherwise fail to load with
+# "cannot open shared object file" the moment Apache imports them. Register
+# the environment's lib directory with the system's dynamic linker instead,
+# so it's found unconditionally by every process, not just ones that went
+# through `micromamba activate`/`micromamba run`.
+RUN echo "${MAMBA_ROOT_PREFIX}/lib" > /etc/ld.so.conf.d/conda.conf && ldconfig
+
+USER $MAMBA_USER
+ARG MAMBA_DOCKERFILE_ACTIVATE=1
+
+# Compile mod_wsgi from source (via pip, inside the activated environment)
+# against *this* Python and *this* Apache. A prebuilt conda-forge mod_wsgi
+# binary can't guarantee ABI compatibility with whatever Apache build ends
+# up in this image, so it's built locally instead, where both are known.
+RUN pip install --no-cache-dir mod_wsgi && \
+    pip install --no-cache-dir --upgrade plate-model-manager
+
+USER root
+
+# Ask mod_wsgi itself where it (and this environment's Python) actually are,
+# instead of hand-writing LoadModule/WSGIPythonHome paths that change across
+# mod_wsgi/micromamba/Python versions.
+RUN mod_wsgi-express module-config > /etc/apache2/conf-enabled/mod_wsgi.conf
+
+RUN rm -f /etc/apache2/sites-enabled/000-default.conf && \
+    ln -s /gws/docker/gws.conf /etc/apache2/sites-enabled/gws.conf
+
+RUN ln -s /gws/django/GWS/static/ /var/www/html/static
 
 ADD ./docker/startup.sh /startup.sh
 RUN chmod +x /startup.sh
 
-RUN rm /etc/apache2/sites-enabled/000-default.conf
-RUN ln -s /gws/docker/gws.conf /etc/apache2/sites-enabled/gws.conf
-
-#install pygplates
-ADD ./docker/download-pygplates.sh /
-RUN chmod +x /download-pygplates.sh
-RUN /download-pygplates.sh
-RUN apt-get install -y /pygplates_0.36.0_py310_ubuntu-22.04.deb
-RUN rm /pygplates_0.36.0_py310_ubuntu-22.04.deb && rm /download-pygplates.sh
-
-RUN ln -s /gws/django/GWS/static/ /var/www/html/static
-
 ADD . /gws
 RUN mv /gws/django/GWS/env.template /gws/django/GWS/.env
 RUN pmm download all /gws/django/GWS/data/model-repo/
+#RUN chown www-data:www-data /pmm.log
 
-RUN chown www-data:www-data /pmm.log
+RUN mkdir -p /tmp/gws && chown www-data /tmp/gws && chown www-data /var/www
 
-# Add Tini
-RUN apt-get install -y tini
-ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["/startup.sh"]
-
-ENV PYTHONPATH=/usr/lib
+# Make the environment's binaries (pmm, python, etc.) resolvable at
+# container runtime too, not just during the build -- ENTRYPOINT below
+# replaces micromamba's own activation wrapper, and startup.sh's runtime
+# fallback call to `pmm` needs this.
+ENV PATH="${MAMBA_ROOT_PREFIX}/bin:${PATH}"
 ENV PAGER=less
 
-# Clean up APT when done.
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN mkdir /tmp/gws
-RUN chown www-data /tmp/gws
-RUN chown www-data /var/www
-
+# Add Tini
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["/startup.sh"]
 
 HEALTHCHECK CMD curl --fail -s "http://localhost:80/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140" || exit 1
 #HEALTHCHECK CMD curl --fail -s "http://localhost:80/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness" || exit 1
 
 EXPOSE 80
-
