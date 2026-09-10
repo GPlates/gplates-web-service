@@ -1,4 +1,6 @@
 {
+  "python.defaultInterpreterPath": "/Users/mchin/micromamba/envs/gws/bin/python",
+  "black-formatter.interpreter": ["/Users/mchin/micromamba/envs/gws/bin/python"],
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "ms-python.python",
@@ -20,4 +22,11 @@
   "[html]": {
     "editor.defaultFormatter": "vscode.html-language-features"
   },
+  "python-envs.pythonProjects": [
+    {
+      "path": ".",
+      "envManager": "ms-python.python:system",
+      "packageManager": "ms-python.python:pip"
+    }
+  ]
 }

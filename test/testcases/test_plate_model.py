@@ -94,6 +94,46 @@ class PlateModelTestCase(unittest.TestCase):
             + "\n########## end of test_get_model_layers ##########\n"
         )
 
+    @add_server_url_to_docstring()
+    def test_get_model_info_unknown_model(self):
+        """-   testing {}/model/show?model=this-model-does-not-exist"""
+        msg = ""
+
+        r = send_get_request(
+            self.SERVER_URL + "/model/show?model=this-model-does-not-exist"
+        )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+
+        msg += r.text + "\n"
+        self.assertEqual(r.status_code, 400)
+
+        self.logger.info(
+            "######### test_get_model_info_unknown_model ###########\n"
+            + msg
+            + "\n########## end of test_get_model_info_unknown_model ##########\n"
+        )
+
+    @add_server_url_to_docstring()
+    def test_download_model(self):
+        """-   testing {}/model/download?model=muller2019"""
+        msg = ""
+
+        r = send_get_request(self.SERVER_URL + "/model/download?model=muller2019")
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(
+            r.headers.get("Content-Type"), "application/x-zip-compressed"
+        )
+        self.assertGreater(len(r.content), 0)
+
+        self.logger.info(
+            "######### test_download_model ###########\n"
+            + msg
+            + "\n########## end of test_download_model ##########\n"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

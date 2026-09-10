@@ -1,7 +1,17 @@
+# These volumes must be created before running `docker compose up` -- they
+# are external, so compose will not create them for you.
 volumes:
+  # docker volume create --name gws-code --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-web-service.git --opt o=bind
   gws-code:
     external: true
     name: gws-code
+  # Recommended: a plain Docker-managed volume (avoids host/container UID
+  # mismatches -- see docker/notes.md):
+  #   docker volume create --name gplates-db-data
+  # Alternative: bind-mount a host folder instead, if you need direct
+  # host-filesystem access to the DB files for inspection/backup:
+  #   mkdir gplates-db-data
+  #   docker volume create --name gplates-db-data --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-db-data --opt o=bind
   gplates-db-data:
     external: true
     name: gplates-db-data
@@ -11,7 +21,7 @@ services:
     image: gplates/postgis
     hostname: gplates-postgis
     volumes:
-      - gplates-db-data:/var/lib/postgresql/15/main
+      - gplates-db-data:/var/lib/postgresql/18/main
     networks:
       - gplates-net
     restart: on-failure
@@ -53,6 +63,8 @@ services:
       timeout: 10s
       retries: 3
 
+# Also external -- create before running `docker compose up`:
+#   docker network create --driver bridge gplates-net
 networks:
   gplates-net:
     name: gplates-net

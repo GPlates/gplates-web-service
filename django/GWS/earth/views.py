@@ -77,7 +77,7 @@ def paleolithology(request):
     print(valid_points)
 
     assigned_features = pygplates.partition_into_plates(
-        get_static_polygons(),
+        get_static_polygons(model),
         rotation_model,
         valid_points,
         properties_to_copy=[pygplates.PartitionProperty.reconstruction_plate_id],
@@ -127,7 +127,7 @@ def paleomagnetic_poles(request):
     #        valid_points.append(point)
 
     assigned_features = pygplates.partition_into_plates(
-        get_static_polygons(),
+        get_static_polygons(model),
         rotation_model,
         vgp_points,
         properties_to_copy=[pygplates.PartitionProperty.reconstruction_plate_id],

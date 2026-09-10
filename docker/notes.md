@@ -50,9 +50,9 @@
 👀 👀 You may not have to do the steps below. But sometimes you do. I did not have to do this on my Ubuntu server. But I had to do it on my Macbook. Attention, you need to change the docker container name accordingly.
 
 - `docker exec -ti docker-gws-postgis-1 /bin/bash`
-- `chown postgres:postgres -R /var/lib/postgresql/15/main/`
+- `chown postgres:postgres -R /var/lib/postgresql/18/main/`
 - `su postgres`
-- `/usr/lib/postgresql/15/bin/initdb -D /var/lib/postgresql/15/main`
+- `/usr/lib/postgresql/18/bin/initdb -D /var/lib/postgresql/18/main`
 - `cd /workspace/ && ./init-db.sh`
 - continue to restore the database from gplates.sql
 

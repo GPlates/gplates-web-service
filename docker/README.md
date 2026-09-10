@@ -78,14 +78,18 @@ cp gplates-web-service.git/django/GWS/env.template gplates-web-service.git/djang
 ```
 docker volume create --name gws-code --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-web-service.git --opt o=bind
 ```
-- create a folder for database files
-```
-mkdir gplates-db-data
-```
 - create database volume
-```
-docker volume create --name gplates-db-data --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-db-data --opt o=bind
-```
+
+  **Recommended**: a plain Docker-managed volume. Docker owns the storage directly, which avoids host/container file-ownership mismatches (see `notes.md` for a real example of this biting on macOS but not Linux).
+  ```
+  docker volume create --name gplates-db-data
+  ```
+
+  Alternative: bind-mount a specific folder on your host instead, if you need to inspect or back up the database files directly from the host filesystem. This is more prone to the UID/permission mismatch mentioned above, and you lose the safety of Docker managing the storage lifecycle for you.
+  ```
+  mkdir gplates-db-data
+  docker volume create --name gplates-db-data --opt type=none --opt device=/THE-ABSOLUTE-PATH-TO-YOUR-CURRENT-WORKING-DIRECTORY/gplates-db-data --opt o=bind
+  ```
 - create a gplates network
 ```
 docker network create --driver bridge gplates-net

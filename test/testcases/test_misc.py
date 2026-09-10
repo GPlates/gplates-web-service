@@ -155,6 +155,110 @@ class MiscTestCase(unittest.TestCase):
         )
 
     @add_server_url_to_docstring()
+    def test_get_plate_names(self):
+        """-   testing {}/earth/get_plate_names"""
+        msg = ""
+        r = send_get_request(
+            self.SERVER_URL + "/earth/get_plate_names",
+        )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+
+        self.assertEqual(r.status_code, 200)
+        msg += r.text[:2000] + "\n"
+
+        plate_names = json.loads(r.text)
+        self.assertGreater(len(plate_names), 0)
+
+        self.logger.info(
+            "######### test_get_plate_names ###########\n"
+            + msg
+            + "\n########## end of test_get_plate_names ##########\n"
+        )
+
+    @add_server_url_to_docstring()
+    def test_get_globe_mesh(self):
+        """-   testing {}/earth/get_globe_mesh?level=2"""
+        msg = ""
+        r = send_get_request(
+            self.SERVER_URL + "/earth/get_globe_mesh",
+            params={"level": 2},
+        )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+
+        self.assertEqual(r.status_code, 200)
+        msg += r.text[:2000] + "\n"
+
+        mesh = json.loads(r.text)
+        self.assertGreater(len(mesh["vertices"]), 0)
+        self.assertGreater(len(mesh["faces"]), 0)
+
+        self.logger.info(
+            "######### test_get_globe_mesh ###########\n"
+            + msg
+            + "\n########## end of test_get_globe_mesh ##########\n"
+        )
+
+    @add_server_url_to_docstring()
+    def test_get_globe_mesh_invalid_level(self):
+        """-   testing {}/earth/get_globe_mesh?level=8   (level exceeds the maximum allowed value of 7)"""
+        msg = ""
+        r = send_get_request(
+            self.SERVER_URL + "/earth/get_globe_mesh",
+            params={"level": 8},
+        )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+
+        msg += r.text + "\n"
+        self.assertEqual(r.status_code, 400)
+
+        self.logger.info(
+            "######### test_get_globe_mesh_invalid_level ###########\n"
+            + msg
+            + "\n########## end of test_get_globe_mesh_invalid_level ##########\n"
+        )
+
+    @add_server_url_to_docstring()
+    def test_paleolithology(self):
+        """-   testing {}/earth/paleolithology?time=100&model=muller2019"""
+        msg = ""
+        r = send_get_request(
+            self.SERVER_URL + "/earth/paleolithology",
+            params={"time": 100, "model": "muller2019"},
+        )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+
+        self.assertEqual(r.status_code, 200)
+        msg += r.text[:2000] + "\n"
+        self.logger.info(
+            "######### test_paleolithology ###########\n"
+            + msg
+            + "\n########## end of test_paleolithology ##########\n"
+        )
+
+    @add_server_url_to_docstring()
+    def test_paleomagnetism(self):
+        """-   testing {}/earth/paleomagnetism?time=100&model=muller2019"""
+        msg = ""
+        r = send_get_request(
+            self.SERVER_URL + "/earth/paleomagnetism",
+            params={"time": 100, "model": "muller2019"},
+        )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+
+        self.assertEqual(r.status_code, 200)
+        msg += r.text[:2000] + "\n"
+        self.logger.info(
+            "######### test_paleomagnetism ###########\n"
+            + msg
+            + "\n########## end of test_paleomagnetism ##########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_version(self):
         """-   testing {}/version"""
         msg = ""

@@ -166,6 +166,46 @@ class RasterQueryCase(unittest.TestCase):
         )
         self.assertEqual(r.status_code, 400)
 
+    def test_raster_query_missing_raster_name(self):
+        """-   testing {}/raster/query/?lon=99.50&lat=-40.24   (missing required raster_name parameter)"""
+        msg = ""
+        data = {"lon": 99.50, "lat": -40.24}
+        r = send_get_request(
+            self.SERVER_URL + "/raster/query/",
+            params=data,
+        )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+        msg += r.text + "\n"
+        self.logger.info(
+            "######### test_raster_query_missing_raster_name ###########\n\n"
+            + msg
+            + "\n########## end of test_raster_query_missing_raster_name ##########\n"
+        )
+        self.assertEqual(r.status_code, 400)
+
+    def test_raster_query_unknown_raster_name(self):
+        """-   testing {}/raster/query/?lon=99.50&lat=-40.24&raster_name=this_raster_does_not_exist"""
+        msg = ""
+        data = {
+            "lon": 99.50,
+            "lat": -40.24,
+            "raster_name": "this_raster_does_not_exist",
+        }
+        r = send_get_request(
+            self.SERVER_URL + "/raster/query/",
+            params=data,
+        )
+        if r.request.url:
+            msg += r.request.url + "\n" + str(r.request.headers) + "\n"
+        msg += r.text + "\n"
+        self.logger.info(
+            "######### test_raster_query_unknown_raster_name ###########\n\n"
+            + msg
+            + "\n########## end of test_raster_query_unknown_raster_name ##########\n"
+        )
+        self.assertEqual(r.status_code, 500)
+
     def test_list_raster_names(self):
         """-   testing {}/raster/list/"""
         msg = ""

@@ -65,7 +65,7 @@ def velocity_within_topological_boundaries(request):
 
     topology_features = []
     pygplates.resolve_topologies(
-        get_topologies(),
+        get_topologies(model),
         rotation_model,
         topology_features,
         reconstruction_time=float(time),

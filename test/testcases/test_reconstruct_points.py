@@ -14,9 +14,14 @@ from common import (
     send_post_request,
     setup_logger,
 )
-from plate_model_manager import PlateModelManager
 
 # python3 -m unittest -vv test_reconstruct_points.py
+#
+# NOTE: plate_model_manager and pygplates are only required when
+# GWS_TEST_VALIDATE_WITH_PYGPLATES is enabled, so they are imported lazily
+# inside _reconstruct() below instead of at module scope. An unconditional
+# top-level import here would make this whole module fail to load in any
+# environment that doesn't have those optional packages installed.
 
 
 class ReconstructPointsTestCase(unittest.TestCase):
@@ -288,7 +293,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
         data["pids"] = "701, 801"
         r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
-            params=self.data_1,
+            params=data,
         )
 
         if r.request.url:
@@ -311,7 +316,7 @@ class ReconstructPointsTestCase(unittest.TestCase):
         data["ignore_valid_time"] = True
         r = send_get_request(
             self.SERVER_URL + "/reconstruct/reconstruct_points/",
-            params=self.data_1,
+            params=data,
         )
 
         if r.request.url:
@@ -587,6 +592,7 @@ def _reconstruct(
 ) -> tuple[Sequence[float | None], Sequence[float | None]]:
     """use pygplates to reconstruct coordinates"""
     import pygplates
+    from plate_model_manager import PlateModelManager
 
     point_features = []
     p_index = 0

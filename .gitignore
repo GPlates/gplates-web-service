@@ -32,6 +32,9 @@ examples/output/
 
 examples/.env
 
+Claude outputs/
+
+**/pmm.log
 
 # Local Netlify folder
 .netlify

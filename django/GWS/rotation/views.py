@@ -8,27 +8,21 @@ from utils.plate_model_utils import get_rotation_model, get_static_polygons
 from utils.round_float import round_floats
 from utils.wrapping_tools import wrap_polylines
 
-# this file contains legacy code from Simon Williams
-
 
 def reconstruction_tree_map(request):
     """
     http GET request to retrieve a geographical representation of a reconstruction hierarchy
 
-    **usage**
+    Example:
+        https://gws.gplates.org/rotation/reconstruction_tree_map/time=100&model=Muller2025
 
-    <http-address-to-gws>/rotation/reconstruction_tree_map/time=\ *reconstruction_time*\&model=\ *reconstruction_model*
+    Parameters:
+        time : time for reconstruction [required]
+        model : name for reconstruction model [defaults to default model from web service settings]
 
-    **parameters:**
-
-    *time* : time for reconstruction [required]
-
-    *model* : name for reconstruction model [defaults to default model from web service settings]
-
-    **returns:**
-
-    json containing reconstructed feature collection with a geometry representing the rotation hierarchy in a
-    geographical arrangement
+    Return:
+        The json containing reconstructed feature collection with a geometry representing the rotation hierarchy in a
+        geographical arrangement
     """
 
     time = request.GET.get("time", 0)
