@@ -285,8 +285,10 @@ def _reconstruct(
     btimes = point_count * [None]
     etimes = point_count * [None]
     for rfg in reconstructed_feature_geometries:
-        lat, lon = rfg.get_reconstructed_geometry().to_lat_lon()
         feature = rfg.get_feature()
+        if _is_unassigned_point_feature(feature):
+            continue
+        lat, lon = rfg.get_reconstructed_geometry().to_lat_lon()
         idx = int(feature.get_name())
         lons[idx] = lon
         lats[idx] = lat
@@ -324,8 +326,14 @@ def _reverse_reconstruct(
     btimes = point_count * [None]
     etimes = point_count * [None]
     for feature in assigned_point_features:
-        lat, lon = feature.get_geometry().to_lat_lon()
         idx = int(feature.get_name())
+        if _is_unassigned_point_feature(feature):
+            pids[idx] = feature.get_reconstruction_plate_id()
+            btime, etime = feature.get_valid_time()
+            btimes[idx] = btime
+            etimes[idx] = etime
+            continue
+        lat, lon = feature.get_geometry().to_lat_lon()
         lons[idx] = lon
         lats[idx] = lat
         pids[idx] = feature.get_reconstruction_plate_id()
@@ -333,6 +341,10 @@ def _reverse_reconstruct(
         btimes[idx] = btime
         etimes[idx] = etime
     return lons, lats, pids, btimes, etimes
+
+
+def _is_unassigned_point_feature(feature):
+    return feature.get_reconstruction_plate_id() is None
 
 
 def _prepare_multipoint_ret(lons, lats, return_null_points):
