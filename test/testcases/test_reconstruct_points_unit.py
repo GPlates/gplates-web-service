@@ -145,8 +145,9 @@ class FakeFeature:
     def get_name(self):
         return self._name
 
-    def get_reconstruction_plate_id(self):
-        return self._pid
+    def get_reconstruction_plate_id(self, default=0):
+        # mirror pygplates: a missing plate id property returns `default` (0 unless given)
+        return default if self._pid is None else self._pid
 
     def get_valid_time(self):
         return self._valid_time
@@ -211,6 +212,52 @@ class ReconstructPointsUnitTestCase(unittest.TestCase):
 
         self.assertEqual(lons, [95.0])
         self.assertEqual(lats, [54.0])
+
+    def test_reconstruct_keeps_explicit_plate_zero(self):
+        # a plate id of 0 that was explicitly set is a valid assignment
+        features = [FakeFeature("0", pid=0, valid_time=(None, None), geometry=(10.0, 20.0))]
+
+        def fake_reconstruct(assigned_point_features, rotation_model, output, timef, anchor_plate_id=0):
+            output.append(
+                FakeReconstructedFeatureGeometry(assigned_point_features[0], 10.0, 20.0)
+            )
+
+        self.reconstruct_points.pygplates.reconstruct = fake_reconstruct
+
+        lons, lats, pids, *_ = self.reconstruct_points._reconstruct(
+            features, rotation_model=object(), timef=100.0, anchor_plate_id=0
+        )
+
+        self.assertEqual(lons, [20.0])
+        self.assertEqual(lats, [10.0])
+        self.assertEqual(pids, [0])
+
+    def test_reconstruct_uses_feature_name_for_order(self):
+        # partition_into_plates() may return features in a different order to the input
+        features = [
+            FakeFeature("1", pid=306, valid_time=(550, 0), geometry=(39.444, 8.418)),
+            FakeFeature("0", pid=None, valid_time=(float("inf"), float("-inf")), geometry=(36.892, 3.975)),
+        ]
+
+        def fake_reconstruct(assigned_point_features, rotation_model, output, timef, anchor_plate_id=0):
+            output.extend(
+                [
+                    FakeReconstructedFeatureGeometry(assigned_point_features[0], -25.3722, -55.8914),
+                    FakeReconstructedFeatureGeometry(assigned_point_features[1], 36.892, 3.975),
+                ]
+            )
+
+        self.reconstruct_points.pygplates.reconstruct = fake_reconstruct
+
+        lons, lats, pids, btimes, etimes = self.reconstruct_points._reconstruct(
+            features, rotation_model=object(), timef=463.8, anchor_plate_id=0
+        )
+
+        self.assertEqual(lons, [None, -55.8914])
+        self.assertEqual(lats, [None, -25.3722])
+        self.assertEqual(pids, [None, 306])
+        self.assertEqual(btimes, [float("inf"), 550])
+        self.assertEqual(etimes, [float("-inf"), 0])
 
     def test_reverse_reconstruct_skips_unassigned_points(self):
         features = [
