@@ -102,6 +102,8 @@ Click this 👉[link](docker/README.md)👈 to see details about using Docker in
 
 - [Usage Examples](https://gwsdoc.gplates.org/examples)
 
+- [API Versioning](https://gwsdoc.gplates.org/versioning) -- every endpoint is also served under its major version (e.g. `/v1/reconstruct/...`); pin that in scripts and published code. Running versions side by side: [docker/versioning/README.md](docker/versioning/README.md)
+
 Some more examples of accessing the service from different languages (R, MATLAB, bash/GMT, Python) can be found at https://github.com/siwill22/gws-examples.
 
 ## 📮 Contact

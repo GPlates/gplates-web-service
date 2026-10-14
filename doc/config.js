@@ -60,6 +60,7 @@ const config = {
       '/assign-plate-ids',
       '/topology',
       '/raster-query',
+      '/versioning',
       //'/velocity',
     ],
     collapsedNav: [

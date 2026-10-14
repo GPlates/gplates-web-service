@@ -19,6 +19,8 @@ import sys
 
 from dotenv import load_dotenv
 
+from .version_info import API_MAJOR
+
 logger = logging.getLogger("default")
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -63,6 +65,15 @@ DEFAULT_THROTTLE_USER_RATE = (
 )
 BING_KEY = os.getenv("BING_KEY") if BING_KEY is None else BING_KEY
 CACHE_NAME = os.getenv("CACHE_NAME") if CACHE_NAME is None else CACHE_NAME
+
+# API version deprecation (see GWS/middleware.py and GitHub issue #24).
+# Leave unset for the current version. When a newer major version is released,
+# set these on the OLD version's container, e.g.
+#   GWS_DEPRECATION_DATE=2027-01-01  GWS_SUNSET_DATE=2027-12-31
+#   GWS_SUCCESSOR_URL=https://gws.gplates.org/v2/
+GWS_DEPRECATION_DATE = os.getenv("GWS_DEPRECATION_DATE")
+GWS_SUNSET_DATE = os.getenv("GWS_SUNSET_DATE")
+GWS_SUCCESSOR_URL = os.getenv("GWS_SUCCESSOR_URL")
 
 if not CACHE_NAME:
     CACHE_NAME = "default"
@@ -129,6 +140,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "GWS.middleware.APIVersionHeadersMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -317,6 +329,9 @@ CACHES = {
     "redis": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": "redis://gplates-redis:6379",
+        # versions running side by side share this Redis; keep their
+        # cached results apart (see GitHub issue #24)
+        "KEY_PREFIX": f"gws-{API_MAJOR}",
     },
 }
 
