@@ -17,16 +17,15 @@ on:
 
 jobs:
   claude:
-    # Only run when @claude is mentioned, and only for users with write access
-    # (OWNER, MEMBER or COLLABORATOR) so outsiders can't spend the quota.
+    # Only run when @claude is mentioned, and only for requests from
+    # michaelchin. Add more GitHub usernames to the list to allow others.
     if: |
       (
         (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
         (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
         (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
         (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
-      ) && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'),
-        github.event.comment.author_association || github.event.review.author_association || github.event.issue.author_association)
+      ) && contains(fromJSON('["michaelchin"]'), github.actor)
     runs-on: ubuntu-latest
     permissions:
       contents: write
