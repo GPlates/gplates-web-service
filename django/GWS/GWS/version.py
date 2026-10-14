@@ -1,7 +1,7 @@
 from django.http import HttpResponseBadRequest
 from utils.decorators import return_HttpResponse
 
-VERSION = "v1.0.0"
+from .version_info import API_MAJOR, VERSION  # noqa: F401  (re-exported)
 
 
 @return_HttpResponse()
