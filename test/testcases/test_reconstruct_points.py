@@ -377,6 +377,72 @@ class ReconstructPointsTestCase(unittest.TestCase):
         )
 
     @add_server_url_to_docstring()
+    def test_get_points_outside_static_polygons(self):
+        """-   testing {}/reconstruct/reconstruct_points/  (points not covered by the model's static polygons, issue #22)"""
+        # both points are outside GOLONKA's static polygons;
+        # in TorsvikCocks2017 only the first point is outside (the second is on plate 306)
+        lons = [3.975, 8.418]
+        lats = [36.892, 39.444]
+        expected_invalid = {"GOLONKA": [True, True], "TorsvikCocks2017": [True, False]}
+        msg = ""
+        for model, invalid_flags in expected_invalid.items():
+            data = {
+                "lons": ",".join(str(v) for v in lons),
+                "lats": ",".join(str(v) for v in lats),
+                "times": "463.8,445.2",
+                "model": model,
+            }
+
+            # default geojson output: invalid points are [999.99, 999.99]
+            r = send_get_request(
+                self.SERVER_URL + "/reconstruct/reconstruct_points/", params=data
+            )
+            self.assertEqual(r.status_code, 200)
+            ret = json.loads(r.text)
+            msg += f"{model}: {json.dumps(ret)}\n"
+            for time_str in ret:
+                coords = ret[time_str]["coordinates"]
+                for idx, invalid in enumerate(invalid_flags):
+                    if invalid:
+                        self.assertEqual(coords[idx], [999.99, 999.99])
+                    else:
+                        # a valid point must not simply echo the input coordinates
+                        self.assertNotEqual(coords[idx], [lons[idx], lats[idx]])
+
+            # return_null_points: invalid points are null
+            data["return_null_points"] = "true"
+            r = send_get_request(
+                self.SERVER_URL + "/reconstruct/reconstruct_points/", params=data
+            )
+            self.assertEqual(r.status_code, 200)
+            ret = json.loads(r.text)
+            msg += f"{model} (return_null_points): {json.dumps(ret)}\n"
+            for time_str in ret:
+                coords = ret[time_str]["coordinates"]
+                for idx, invalid in enumerate(invalid_flags):
+                    self.assertEqual(coords[idx] is None, invalid)
+
+            # simple format: invalid points have null lon/lat/pid
+            del data["return_null_points"]
+            data["fmt"] = "simple"
+            r = send_get_request(
+                self.SERVER_URL + "/reconstruct/reconstruct_points/", params=data
+            )
+            self.assertEqual(r.status_code, 200)
+            ret = json.loads(r.text)
+            msg += f"{model} (fmt=simple): {json.dumps(ret)}\n"
+            for time_str in ret:
+                for idx, invalid in enumerate(invalid_flags):
+                    self.assertEqual(ret[time_str]["lons"][idx] is None, invalid)
+                    self.assertEqual(ret[time_str]["pids"][idx] is None, invalid)
+
+        self.logger.info(
+            "######### test_get_points_outside_static_polygons ###########\n"
+            + msg
+            + "\n######### test_get_points_outside_static_polygons ###########\n"
+        )
+
+    @add_server_url_to_docstring()
     def test_get_reverse(self):
         """-   testing {}/reconstruct/reconstruct_points/?reverse=true"""
         msg = ""
