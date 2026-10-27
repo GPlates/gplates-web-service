@@ -109,13 +109,11 @@ ACCESS_CONTROL_URL = "https://portal.gplates.org/access_control/"
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.admindocs",
     "rest_framework",
     # 'rest_framework_swagger',
     "reconstruct",

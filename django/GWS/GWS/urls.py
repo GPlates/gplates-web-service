@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from rest_framework.schemas import get_schema_view
@@ -30,8 +29,6 @@ urlpatterns = [
         name="get_version",
     ),
     re_path(r"^$", index),
-    re_path(r"^admin/doc/", include("django.contrib.admindocs.urls")),
-    re_path(r"^admin/", admin.site.urls),
     re_path(r"^reconstruct/", include("reconstruct.urls")),
     re_path(r"^topology/", include("topology.urls")),
     re_path(r"^velocity/", include("velocity.urls")),
