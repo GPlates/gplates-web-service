@@ -101,7 +101,71 @@ if isinstance(DEBUG, str) and (DEBUG.strip().lower() == "true" or DEBUG.strip() 
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+# SECURITY WARNING: do not put a wildcard here!
+# Django validates the Host header against ALLOWED_HOSTS. A wildcard makes the
+# service answer to any name pointed at it and lets a client choose the host
+# name Django builds absolute URLs from.
+# On-prem deployments which serve GWS under their own host name must set the
+# GWS_ALLOWED_HOSTS environment variable (or put it in .env) to a
+# comma-separated list of host names, e.g.
+# GWS_ALLOWED_HOSTS=gws.my-institution.edu,localhost
+ALLOWED_HOSTS_ENV = os.getenv("GWS_ALLOWED_HOSTS")
+
+if ALLOWED_HOSTS_ENV:
+    ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS_ENV.split(",") if h.strip()]
+else:
+    ALLOWED_HOSTS = [
+        # the public servers, see the "Servers" section in README.md
+        "gws.gplates.org",
+        "gws1.gplates.org",
+        "gws2.gplates.org",
+        # the container host name used by docker/docker-compose.yml and by
+        # GWS_SERVER_URL in .github/workflows/test.yml
+        "gws",
+        # local development and the port-mapped container, e.g.
+        # http://localhost:18000 (Django ignores the port when matching)
+        "localhost",
+        "127.0.0.1",
+        "[::1]",
+    ]
+
+# Security settings
+# https://docs.djangoproject.com/en/stable/topics/security/
+#
+# The flags below are switched off when DEBUG is on, so that the usual local
+# development loop over plain HTTP keeps working.
+
+# Only send the CSRF and session cookies over HTTPS. The public servers are
+# HTTPS-only, so nothing is lost there.
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+
+# HTTP Strict Transport Security.
+#
+# Start with 5 minutes on purpose. Browsers cache HSTS for the whole max-age
+# and there is no way to withdraw it early, so a host which cannot serve every
+# path over TLS becomes unreachable until the max-age expires. Raise this to
+# 31536000 (one year, the value the HSTS preload list wants) only after
+# confirming that every path on the host serves TLS correctly.
+#
+# SECURE_HSTS_INCLUDE_SUBDOMAINS is deliberately NOT set: it would commit every
+# *.gplates.org host to HTTPS, and not all of them are known to be HTTPS-ready.
+#
+# NOTE: django.middleware.security.SecurityMiddleware only adds this header to
+# requests it considers secure. TLS is terminated upstream of the container
+# (docker/gws.conf serves plain HTTP on port 80), so Django sees HTTP and will
+# not emit the header until SECURE_PROXY_SSL_HEADER is configured to match the
+# forwarded-protocol header the upstream proxy actually sets.
+SECURE_HSTS_SECONDS = 0 if DEBUG else 300
+
+# SECURE_SSL_REDIRECT and SECURE_PROXY_SSL_HEADER are intentionally left unset.
+# How TLS terminates in front of this container is not visible from this
+# repository: docker/gws.conf only defines <VirtualHost *:80> and the image only
+# exposes port 80. Setting SECURE_SSL_REDIRECT without a trustworthy
+# SECURE_PROXY_SSL_HEADER makes Django redirect every proxied request to HTTPS
+# forever, and trusting the wrong header would let a client claim its plain HTTP
+# request was secure. Both need to be set together, by someone who can confirm
+# what the NCI front end forwards.
 
 # if empty, there is no access control.
 ACCESS_CONTROL_URL = "https://portal.gplates.org/access_control/"
