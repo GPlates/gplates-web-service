@@ -61,6 +61,7 @@ const config = {
       '/topology',
       '/raster-query',
       '/versioning',
+      '/magnetic-picks',
       //'/velocity',
     ],
     collapsedNav: [
