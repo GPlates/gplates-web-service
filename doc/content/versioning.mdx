@@ -1,0 +1,54 @@
+---
+title: "API Versioning"
+metaTitle: "API Versioning"
+metaDescription: "How GPlates Web Service versions its API, and how to pin a version so your scripts keep giving the same results."
+---
+
+## Pin a version in anything you want to keep working
+
+Every endpoint is available under an explicit major version:
+
+```
+https://gws.gplates.org/v1/reconstruct/reconstruct_points/?points=95,54,142,-33&time=140&model=MULLER2019
+```
+
+The same endpoint without the prefix (`https://gws.gplates.org/reconstruct/...`) also works, but it always
+points at whichever version is current, so its behaviour can change after a major release.
+
+**Use the `/v1/` form in research scripts, notebooks, teaching material and any code published with a paper**, so
+the results stay reproducible.
+
+## What changes between versions
+
+- **Minor and patch releases** (e.g. v1.1.0 → v1.2.0) are backward compatible: same endpoints, parameters, response
+  formats and results. They replace the running version in place and the URL prefix stays `/v1/`.
+- **Major releases** (e.g. v1 → v2) may remove or rename endpoints or parameters, change response formats, or
+  change results (for example updated plate models or algorithms). A major release is published under a new prefix
+  (`/v2/`) and runs **alongside** the previous one, so `/v1/` keeps working.
+
+## Which version answered my request?
+
+Every response includes an `X-GWS-Version` header with the full release number:
+
+```shell
+curl -sI "https://gws.gplates.org/version/" | grep -i x-gws-version
+# X-GWS-Version: v1.1.0
+```
+
+The [`/version/`](https://gws.gplates.org/version/) endpoint returns the same value. Log it alongside your results
+if you use the unversioned URLs.
+
+## Deprecation and retirement
+
+When a new major version is released, the previous one is deprecated but keeps running for an announced period.
+The deprecation and retirement dates are published in the release notes, and responses from the deprecated version
+carry standard headers you can check for:
+
+| Header | Meaning |
+| --- | --- |
+| `Deprecation` | This version is deprecated ([RFC 9745](https://www.rfc-editor.org/rfc/rfc9745)). |
+| `Sunset` | The date after which this version may be switched off ([RFC 8594](https://www.rfc-editor.org/rfc/rfc8594)). |
+| `Link: <...>; rel="successor-version"` | Where the newer version lives. |
+
+At the end of the deprecation period, the unversioned URLs switch to the new version. The old `/vN/` URLs are
+retired once their usage is negligible.

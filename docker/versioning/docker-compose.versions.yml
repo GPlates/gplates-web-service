@@ -1,0 +1,53 @@
+# One GWS container per major API version, each pinned to a released image.
+# See docker/versioning/README.md and GitHub issue #24.
+#
+# Runs alongside docker/docker-compose.yml, which provides gplates-postgis and
+# gplates-redis on the external "gplates-net" network. Both versions share
+# them; their Redis cache keys are kept apart by version (KEY_PREFIX).
+#
+# The reverse proxy in front (apache-gws-proxy.conf or nginx-gws-proxy.conf)
+# sends /v1/... to gws-v1, /v2/... to gws-v2, and unversioned URLs to
+# whichever version is the default.
+#
+#   docker compose -f docker/versioning/docker-compose.versions.yml up -d
+
+x-gws-common: &gws-common
+  networks:
+    - gplates-net
+  restart: on-failure
+  healthcheck:
+    test: curl --fail -s "http://localhost:80/version/" || exit 1
+    interval: 1m30s
+    timeout: 10s
+    retries: 3
+
+services:
+  gws-v1:
+    <<: *gws-common
+    # Pin the exact release; never use :latest here. Must be a release that
+    # includes the /v1/ URL alias (the first release after v1.0.0) -- older
+    # images only answer unversioned URLs and would 404 on /v1/...
+    image: gplates/gws:${GWS_V1_IMAGE_TAG:-v1.1.0}
+    container_name: gws-v1
+    hostname: gws-v1
+    ports:
+      - 127.0.0.1:18001:80
+    # environment:
+    #   # set these once v2 is released, to warn v1 callers
+    #   GWS_DEPRECATION_DATE: "2027-01-01"
+    #   GWS_SUNSET_DATE: "2027-12-31"
+    #   GWS_SUCCESSOR_URL: "https://gws.gplates.org/v2/"
+
+  # Uncomment when the first breaking release (v2.x.x) is published.
+  # gws-v2:
+  #   <<: *gws-common
+  #   image: gplates/gws:${GWS_V2_IMAGE_TAG:-v2.0.0}
+  #   container_name: gws-v2
+  #   hostname: gws-v2
+  #   ports:
+  #     - 127.0.0.1:18002:80
+
+networks:
+  gplates-net:
+    name: gplates-net
+    external: true
