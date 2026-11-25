@@ -65,6 +65,13 @@ class VersioningTestCase(unittest.TestCase):
         self.assertEqual(r.status_code, 404)
         self.assertEqual(r.headers.get("X-GWS-Version"), self.version)
 
+    def test_admin_routes_are_disabled(self):
+        for prefix in ("", self.prefix):
+            for path in ("/admin/", "/admin/login/", "/admin/doc/"):
+                with self.subTest(path=prefix + path):
+                    r = send_get_request(self.SERVER_URL + prefix + path)
+                    self.assertEqual(r.status_code, 404)
+
 
 if __name__ == "__main__":
     unittest.main()

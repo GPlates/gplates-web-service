@@ -1,4 +1,3 @@
-from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 from rest_framework.schemas import get_schema_view
@@ -46,9 +45,6 @@ api_patterns = [
 
 urlpatterns = [
     re_path(r"^$", index),
-    # admin stays unversioned: it is not part of the public API
-    re_path(r"^admin/doc/", include("django.contrib.admindocs.urls")),
-    re_path(r"^admin/", admin.site.urls),
     # versioned alias, e.g. /v1/reconstruct/... (namespaced so URL names
     # such as "openapi-schema" still reverse to the unversioned path)
     re_path(rf"^{API_MAJOR}/", include((api_patterns, API_MAJOR))),

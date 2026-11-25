@@ -107,7 +107,8 @@ def reconstruct(request, params={}, times=[], model=""):
             point_feature = pygplates.Feature()
             point_feature.set_geometry(pygplates.PointOnSphere(lat, lon))
             point_feature.set_name(str(p_index))
-            if pid:
+            if pid is not None:
+                # an explicit plate id of 0 is valid (fixed to the anchor plate)
                 point_feature.set_reconstruction_plate_id(pid)
             point_features.append(point_feature)
             p_index += 1
@@ -285,14 +286,21 @@ def _reconstruct(
     btimes = point_count * [None]
     etimes = point_count * [None]
     for rfg in reconstructed_feature_geometries:
-        lat, lon = rfg.get_reconstructed_geometry().to_lat_lon()
         feature = rfg.get_feature()
+        if _is_unassigned_point_feature(feature):
+            # pygplates reconstructs a point without a plate id using plate 0
+            # (identity rotation), which would echo the input coordinates.
+            # leave lon/lat as None so the point is reported as invalid.
+            continue
+        lat, lon = rfg.get_reconstructed_geometry().to_lat_lon()
         idx = int(feature.get_name())
         lons[idx] = lon
         lats[idx] = lat
-    for idx in range(len(assigned_point_features)):
-        feature = assigned_point_features[idx]
-        pids[idx] = feature.get_reconstruction_plate_id()
+    for feature in assigned_point_features:
+        # partition_into_plates() does not preserve the input order,
+        # so use the feature name (the input index) rather than the list position
+        idx = int(feature.get_name())
+        pids[idx] = feature.get_reconstruction_plate_id(None)
         btime, etime = feature.get_valid_time()
         btimes[idx] = btime
         etimes[idx] = etime
@@ -324,15 +332,25 @@ def _reverse_reconstruct(
     btimes = point_count * [None]
     etimes = point_count * [None]
     for feature in assigned_point_features:
-        lat, lon = feature.get_geometry().to_lat_lon()
         idx = int(feature.get_name())
-        lons[idx] = lon
-        lats[idx] = lat
-        pids[idx] = feature.get_reconstruction_plate_id()
+        if not _is_unassigned_point_feature(feature):
+            lat, lon = feature.get_geometry().to_lat_lon()
+            lons[idx] = lon
+            lats[idx] = lat
+        pids[idx] = feature.get_reconstruction_plate_id(None)
         btime, etime = feature.get_valid_time()
         btimes[idx] = btime
         etimes[idx] = etime
     return lons, lats, pids, btimes, etimes
+
+
+def _is_unassigned_point_feature(feature):
+    """True if the feature has no reconstruction plate id property, e.g. a point
+    outside all static polygons after partition_into_plates().
+
+    NOTE: pygplates' get_reconstruction_plate_id() defaults to 0 when the property
+    is missing, so pass None as the default to detect the missing property."""
+    return feature.get_reconstruction_plate_id(None) is None
 
 
 def _prepare_multipoint_ret(lons, lats, return_null_points):

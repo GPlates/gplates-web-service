@@ -102,6 +102,18 @@ docker compose -f gplates-web-service.git/docker/docker-compose-external-volumes
 - verify the database is working with this [link](http://localhost:18000/raster/query?lon=128.86&lat=-12.42&raster_name=crustal_thickness)
 - (optional) use `psql gplates < gplates.sql` to restore GPlates database
 
+## 👉 Serve GWS under your own host name
+
+Django checks the `Host` header of every request against `ALLOWED_HOSTS` in `django/GWS/GWS/settings.py`. The default list covers the gplates.org servers, the `gws` container host name and `localhost`/`127.0.0.1`, so the quick start and the Docker compose setups work out of the box.
+
+If you serve GWS under a host name of your own, add it to the `GWS_ALLOWED_HOSTS` environment variable (a comma-separated list), otherwise Django answers those requests with `400 Bad Request`.
+
+```
+docker run -d --rm -e GWS_ALLOWED_HOSTS=gws.my-institution.edu,localhost -p 18000:80 gplates/gws
+```
+
+The variable can also go in `django/GWS/.env` (see `django/GWS/env.template`).
+
 ## 👉 Docker images
 
 The GWS Docker images are in two repositories, [Docker Hub](https://hub.docker.com/r/gplates/gws/tags) and [GitHub Packages](https://github.com/GPlates/gplates-web-service/pkgs/container/gws).
