@@ -3,6 +3,15 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [master]
+  # Build (but do not deploy) on pull requests that touch the docs site, so a
+  # change to doc/package-lock.json is proven to still `npm ci` and build
+  # before it reaches master. Without this, nothing in CI ever installs or
+  # builds doc/ on a PR -- the unittest workflow only covers the Django API.
+  pull_request:
+    branches: [master]
+    paths:
+      - 'doc/**'
+      - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -11,7 +20,9 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  # Keep one deploy at a time on master, but give each pull request its own
+  # group so a docs PR build never queues behind (or blocks) a real deploy.
+  group: pages-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -23,6 +34,7 @@ jobs:
 
       - name: Configure GitHub Pages
         id: pages
+        if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v5
 
       - name: Set up Node.js
@@ -43,12 +55,16 @@ jobs:
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
 
       - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: doc/public
 
   deploy:
     needs: build
+    # Pull requests only get the build job above; deploying to Pages stays
+    # restricted to master and manual runs.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
