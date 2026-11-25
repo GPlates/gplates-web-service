@@ -3,6 +3,7 @@ from django.urls import re_path
 from . import api, views
 from .cities import get_cities, get_present_day_cities
 from .labels import get_labels
+from .magnetic_picks import get_magnetic_picks
 from .plate_names import get_plate_names
 
 urlpatterns = [
@@ -30,5 +31,10 @@ urlpatterns = [
         r"^get_present_day_cities/?$",
         get_present_day_cities,
         name="get_present_day_cities",
+    ),
+    re_path(
+        r"^get_magnetic_picks/?$",
+        get_magnetic_picks,
+        name="get_magnetic_picks",
     ),
 ]

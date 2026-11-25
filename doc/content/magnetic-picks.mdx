@@ -1,0 +1,125 @@
+---
+title: "Magnetic Picks"
+metaTitle: "Magnetic Picks"
+metaDescription: "Query the GSFML magnetic anomaly identification picks"
+---
+
+## Magnetic Picks
+
+**Description**:
+
+Query the [GSFML](https://www.soest.hawaii.edu/PT/GSFML/) magnetic anomaly identification picks.
+The picks are returned as GeoJSON and can be filtered by ocean region and by age.
+**You need to setup the database properly to use this API.** See [On-Prem Hosting](/on-prem-hosting).
+
+**Endpoint**:
+
+```text
+https://gws.gplates.org/earth/get_magnetic_picks
+```
+
+**Parameters**:
+
+- ***region*** : one of `atlantic`, `indian`, `pacific` or `marginal_backarc_basins`.
+  Omit the parameter (or use `all`) to query every region. The GSFML file names are
+  also accepted, so `AtlanticOcean` works as well as `atlantic`.
+
+- ***start_index*** : the index of the first pick to return, counting from 0. Default 0.
+
+- ***end_index*** : the index just past the last pick to return. The range is half-open,
+  so `start_index=0&end_index=100` returns 100 picks. Defaults to `start_index` + 10000.
+  A single request returns at most 50000 picks.
+
+- ***min_age*** : only return picks which are at least this old, in million years (Ma)
+
+- ***max_age*** : only return picks which are at most this old, in million years (Ma)
+
+The indices count through the picks which match the `region` and age filters, in order of
+the pick's `pick_index`. That order is stable across requests, so you can page through a
+query with `start_index` and `end_index` without picks being skipped or repeated.
+`min_age` and `max_age` filter on the `GeeK2007` column — the age in Ma on the
+Gee & Kent (2007) timescale.
+
+**Return**:
+
+A GeoJSON `FeatureCollection`. Each feature is a `Point` whose properties are the pick's
+attributes from the GSFML data set:
+
+- ***pick_index*** : the pick's index in the whole data set. It follows the row order of
+  `GSFML.global.picks.shp` and does not change between requests, so it is a stable way to
+  refer to a pick.
+- ***region*** : the ocean region the pick belongs to
+- ***chron*** : the magnetic chron, for example `C13n`
+- ***anomaly_end*** : `y` (young), `o` (old) or `c` (centre)
+- ***anom_end_quality*** : the quality of the anomaly end, 1, 2 or 3
+- ***cruise_name*** : the cruise the pick comes from, or `null` when unknown
+- ***reference*** : the publication the pick comes from, for example `Cande++_1988_JGR`
+- ***doi*** : the DOI of that publication, or `null` when unknown
+- ***geek2007*** : the age of the pick in Ma, on the Gee & Kent (2007) timescale
+- ***id_method*** : how the pick was identified, for example `Magnetic Anomaly`
+
+Alongside `type` and `features`, the collection carries the numbers you need to page
+through a query:
+
+- ***total_matched*** : how many picks match the filters in total
+- ***returned*** : how many picks are in this response
+- ***start_index*** and ***end_index*** : the range this response covers
+- ***region*** : the region which was queried, or `all`
+
+**Examples:**
+
+**👉 E1:** the first 10 picks
+
+**Click this [link](https://gws.gplates.org/earth/get_magnetic_picks?start_index=0&end_index=10) to try this example in a web browser.**
+
+```shell
+curl "https://gws.gplates.org/earth/get_magnetic_picks?start_index=0&end_index=10"
+```
+
+**👉 E2:** picks in the Pacific Ocean
+
+```shell
+curl "https://gws.gplates.org/earth/get_magnetic_picks?region=pacific&start_index=0&end_index=100"
+```
+
+**👉 E3:** picks in the Indian Ocean which are between 10 and 20 Ma old
+
+```shell
+curl "https://gws.gplates.org/earth/get_magnetic_picks?region=indian&min_age=10&max_age=20"
+```
+
+**👉 E4:** how many picks are there in the Atlantic Ocean?
+
+Ask for a single pick and read `total_matched` from the response.
+
+```shell
+curl "https://gws.gplates.org/earth/get_magnetic_picks?region=atlantic&start_index=0&end_index=1"
+```
+
+**👉 E5:** page through all the picks in a region
+
+```shell
+curl "https://gws.gplates.org/earth/get_magnetic_picks?region=pacific&start_index=0&end_index=10000"
+curl "https://gws.gplates.org/earth/get_magnetic_picks?region=pacific&start_index=10000&end_index=20000"
+curl "https://gws.gplates.org/earth/get_magnetic_picks?region=pacific&start_index=20000&end_index=30000"
+```
+
+**Loading the data**:
+
+The picks are not part of this repository. They are downloaded from
+[gsfml.earthbyte.org](https://gsfml.earthbyte.org/ML/DATA/) and loaded into the
+`magnetic.picks` table by a management command:
+
+```shell
+cd django/GWS && python manage.py load_magnetic_picks
+```
+
+Use `--recreate` to drop the table and load the data again, for example after GSFML
+publishes a new release. Use `--data-dir` to load from zip files which have already
+been downloaded.
+
+**Data citation**:
+
+The picks are from the Global Seafloor Fabric and Magnetic Lineation Data Base Project
+(GSFML). Please cite the GSFML project and the original publication of each pick — the
+`reference` and `doi` properties of every feature say where that pick came from.
